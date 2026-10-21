@@ -199,6 +199,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		updatePriceRefresh();
 
 		eventBus.register(tracker);
+		bankFilter.startUp();
 		eventBus.register(bankFilter);
 		eventBus.register(shortestPath);
 		overlayManager.add(sceneOverlay);
@@ -408,6 +409,11 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if ("livePrices".equals(e.getKey()))
 		{
 			updatePriceRefresh();
+		}
+		if ("bankFilterOn".equals(e.getKey()))
+		{
+			// Saved by the bank button itself, nothing in the guide changes
+			return;
 		}
 		clientThread.invokeLater(() ->
 		{
@@ -882,7 +888,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		switch (config.inventoryFullAction())
 		{
 			case ALWAYS_BANK:
-				return m.getBank() == null;
+				// Methods without a bank of their own use the closest one
+				return false;
 			case ALWAYS_DROP:
 				return true;
 			case METHOD_DEFAULT:

@@ -296,7 +296,11 @@ public class SkillingHelperPanel extends PluginPanel
 			}
 			if (!method.getInputs().isEmpty() || !method.getProducts().isEmpty())
 			{
-				long goalCost = Math.round(-option.getGpPerAction() * option.getActions());
+				// Every method the plan switches through, not just the current one
+				long goalCost = guide.getPlan().isEmpty()
+					? Math.round(-option.getGpPerAction() * option.getActions())
+					: Math.round(guide.getPlan().stream()
+					.mapToDouble(seg -> -seg.getOption().getGpPerAction() * seg.getOption().getActions()).sum());
 				if (goalCost > 0)
 				{
 					content.add(text("Whole goal costs ~" + StepResolver.gp(goalCost) + " net (after selling products)",

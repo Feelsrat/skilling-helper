@@ -11,9 +11,11 @@ import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.ToolType;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 
@@ -83,10 +85,16 @@ public final class StepResolver
 			}
 		}
 
+		// One line per substitute, e.g. bird houses stand in for both the logs and the clockworks
+		Set<String> substitutesListed = new HashSet<>();
 		for (ItemReq tool : m.getTools())
 		{
 			if (tool.hasSubstitute() && s.owned(tool.getSubstituteIds()) > 0)
 			{
+				if (!substitutesListed.add(tool.getSubstituteName()))
+				{
+					continue;
+				}
 				Requirement r = itemRequirement(ItemReq.tool(tool.getSubstituteName(), tool.getSubstituteIds()), s, 1, 1);
 				reqs.add(new Requirement(r.getText() + " (instead of " + tool.getName().toLowerCase() + ")",
 					r.getStatus(), r.getItemIds(), r.getQuantity(), r.getBuyCost()));
@@ -99,6 +107,10 @@ public final class StepResolver
 		{
 			if (input.hasSubstitute() && s.owned(input.getSubstituteIds()) > 0)
 			{
+				if (!substitutesListed.add(input.getSubstituteName()))
+				{
+					continue;
+				}
 				ItemReq sub = ItemReq.tool(input.getSubstituteName(), input.getSubstituteIds());
 				Requirement r = itemRequirement(sub, s, 1, 1);
 				reqs.add(new Requirement(r.getText() + " (instead of " + input.getName().toLowerCase() + ")",
@@ -554,7 +566,7 @@ public final class StepResolver
 		}
 
 		boolean fullOfProduce = gather && s.inventoryFull() && carriesProduct(m, s);
-		if (!inBank.isEmpty() || needsInputs || (fullOfProduce && !drop && m.getBank() != null))
+		if (!inBank.isEmpty() || needsInputs || (fullOfProduce && !drop))
 		{
 			// Inputs get their own "withdraw N x" lines below, so leave them out of the generic list
 			List<Requirement> withdraw = new ArrayList<>();

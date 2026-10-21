@@ -1,5 +1,6 @@
 package com.skillinghelper;
 
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Target;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
@@ -63,6 +65,19 @@ public class TargetTracker
 	private final Set<String> npcNames = new HashSet<>();
 	private final Map<TileObject, Tracked<TileObject>> objects = new HashMap<>();
 	private final Map<NPC, Tracked<NPC>> npcs = new HashMap<>();
+	/**
+	 * Which guide name each object with several states (by base object id) answers to, if any.
+	 */
+	private final Map<Integer, Match> impostorMatches = new HashMap<>();
+
+	@AllArgsConstructor
+	private static final class Match
+	{
+		final String name;
+		final String[] actions;
+	}
+
+	private static final Match NO_MATCH = new Match(null, null);
 
 	@Inject
 	TargetTracker(Client client)
@@ -77,11 +92,32 @@ public class TargetTracker
 	{
 		objectNames.clear();
 		npcNames.clear();
+		impostorMatches.clear();
 		for (Method m : methods)
 		{
 			addNames(m.getTargets());
+			// Where to make or fetch items: furnaces, the tanner, Otto's bed...
+			for (ItemReq req : m.getTools())
+			{
+				addItemNames(req);
+			}
+			for (ItemReq req : m.getInputs())
+			{
+				addItemNames(req);
+			}
 		}
 		addNames(BANK_TARGETS);
+	}
+
+	private void addItemNames(ItemReq req)
+	{
+		for (Target t : new Target[]{req.getSourceTarget(), req.getMakeTarget()})
+		{
+			if (t != null)
+			{
+				addNames(List.of(t));
+			}
+		}
 	}
 
 	private void addNames(List<Target> targets)
@@ -234,17 +270,49 @@ public class TargetTracker
 		}
 		if (def.getImpostorIds() != null)
 		{
-			ObjectComposition impostor = def.getImpostor();
-			if (impostor != null)
+			// Farming patches and bird house spaces change name as they grow or get built ("Herb patch" becomes
+			// "Herbs"), so match on any of the object's states and keep it tracked whatever state it's in
+			Match match = impostorMatches.computeIfAbsent(obj.getId(), id -> impostorMatch(id));
+			if (match != NO_MATCH)
 			{
-				def = impostor;
+				objects.put(obj, new Tracked<>(obj, match.name, match.actions));
 			}
+			return;
 		}
 		String name = def.getName();
 		if (name != null && objectNames.contains(name.toLowerCase(Locale.ROOT)))
 		{
 			objects.put(obj, new Tracked<>(obj, name, def.getActions()));
 		}
+	}
+
+	private Match impostorMatch(int objectId)
+	{
+		ObjectComposition def = client.getObjectDefinition(objectId);
+		ObjectComposition current = def.getImpostor();
+		if (current != null && current.getName() != null
+			&& objectNames.contains(current.getName().toLowerCase(Locale.ROOT)))
+		{
+			return new Match(current.getName(), current.getActions());
+		}
+		if (def.getName() != null && objectNames.contains(def.getName().toLowerCase(Locale.ROOT)))
+		{
+			return new Match(def.getName(), def.getActions());
+		}
+		for (int id : def.getImpostorIds())
+		{
+			if (id == -1)
+			{
+				continue;
+			}
+			ObjectComposition state = client.getObjectDefinition(id);
+			if (state != null && state.getName() != null
+				&& objectNames.contains(state.getName().toLowerCase(Locale.ROOT)))
+			{
+				return new Match(state.getName(), state.getActions());
+			}
+		}
+		return NO_MATCH;
 	}
 
 	private void addNpc(NPC npc)

@@ -38,6 +38,10 @@ class PatchTracker
 	 */
 	private final Map<String, long[]> seen = new HashMap<>();
 	private boolean loaded;
+	/**
+	 * The region the player was in last tick: right after arriving, the varbits still describe the old region.
+	 */
+	private int lastRegion = -1;
 
 	@Inject
 	PatchTracker(Client client, ConfigManager configManager, GuideRepository guides)
@@ -84,6 +88,7 @@ class PatchTracker
 	void reset()
 	{
 		loaded = false;
+		lastRegion = -1;
 		seen.clear();
 	}
 
@@ -93,6 +98,13 @@ class PatchTracker
 	void tick(WorldPoint player)
 	{
 		if (!loaded || player == null)
+		{
+			return;
+		}
+		int region = player.getRegionID();
+		boolean settled = region == lastRegion;
+		lastRegion = region;
+		if (!settled)
 		{
 			return;
 		}

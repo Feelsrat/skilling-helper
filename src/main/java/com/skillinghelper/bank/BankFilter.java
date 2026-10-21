@@ -60,6 +60,14 @@ public class BankFilter
 		this.active = config.bankFilterOn();
 	}
 
+	/**
+	 * Picks the saved setting back up: the plugin may have been switched off and on, which keeps this instance.
+	 */
+	public void startUp()
+	{
+		active = config.bankFilterOn();
+	}
+
 	public void toggle()
 	{
 		clientThread.invoke(() -> setActive(!active));
@@ -226,6 +234,12 @@ public class BankFilter
 			case FISHING: return SpriteID.Staticons.FISHING;
 			case COOKING: return SpriteID.Staticons.COOKING;
 			case FIREMAKING: return SpriteID.Staticons.FIREMAKING;
+			case RUNECRAFT: return SpriteID.Staticons2.RUNECRAFT;
+			case SLAYER: return SpriteID.Staticons2.SLAYER;
+			case FARMING: return SpriteID.Staticons2.FARMING;
+			case HUNTER: return SpriteID.Staticons2.HUNTER;
+			case CONSTRUCTION: return SpriteID.Staticons2.CONSTRUCTION;
+			case SAILING: return SpriteID.Staticons2.SAILING;
 			default: return SpriteID.Staticons.WOODCUTTING;
 		}
 	}

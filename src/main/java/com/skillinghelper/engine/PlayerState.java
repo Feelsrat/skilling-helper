@@ -17,7 +17,7 @@ import net.runelite.api.gameval.ItemID;
  * Kept free of client references so the planner and step logic can be unit tested.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class PlayerState
 {
 	@Builder.Default

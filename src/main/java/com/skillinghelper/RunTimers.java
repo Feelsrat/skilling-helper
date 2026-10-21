@@ -107,7 +107,7 @@ class RunTimers
 		public String getText()
 		{
 			long left = minutesLeft();
-			return left == 0 ? "Ready" : left >= 60 ? (left / 60) + "h" + (left % 60) : left + "m";
+			return left == 0 ? "Ready" : left >= 60 ? String.format("%dh%02d", left / 60, left % 60) : left + "m";
 		}
 
 		@Override
