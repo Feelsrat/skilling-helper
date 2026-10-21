@@ -84,6 +84,8 @@ final class SmithingGuide
 				.notes("Below 60 Smithing you pay the foreman 2,500 gp per 10 minutes, and the coffer needs coins "
 					+ "to pay the stokers.")
 				.requirementText("Goldsmith gauntlets (Family Crest) and ice gloves (Bree, Ice Mountain)")
+				.supply(Supplies.COINS)
+				.supply(Supplies.STAMINA)
 				.wikiPage("Blast_Furnace")
 				.build(),
 			Method.builder()
@@ -97,6 +99,8 @@ final class SmithingGuide
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.AFK)
 				.quest(Quest.SLEEPING_GIANTS)
+				.supply(ItemReq.supply("Bars for the sword (e.g. 14 mithril + 14 adamantite)", 28, ItemID.MITHRIL_BAR,
+					ItemID.ADAMANTITE_BAR, ItemID.STEEL_BAR, ItemID.IRON_BAR, ItemID.RUNITE_BAR))
 				.location(Location.of("Giants' Foundry", 3360, 3150, 20))
 				.target(Target.object(null, "Trip hammer", "Grindstone", "Polishing wheel", "Crucible (empty)",
 					"Crucible (partially full)", "Crucible (full)", "Mould jig (Empty)", "Lava pool", "Waterfall"))

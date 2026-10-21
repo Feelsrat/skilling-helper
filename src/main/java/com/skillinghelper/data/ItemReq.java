@@ -30,6 +30,22 @@ public class ItemReq
 		return new ItemReq(name, ids, 1, 0, null, null);
 	}
 
+	/**
+	 * Several copies of a tool that isn't used up, e.g. bird snares or box traps.
+	 */
+	public static ItemReq tools(String name, int count, int... ids)
+	{
+		return new ItemReq(name, ids, count, 0, null, null);
+	}
+
+	/**
+	 * An optional supply to bring, e.g. 10 food. {@code carry} 0 means the whole stack.
+	 */
+	public static ItemReq supply(String name, int carry, int... ids)
+	{
+		return new ItemReq(name, ids, carry, 0, null, null);
+	}
+
 	public static ItemReq consumed(String name, int carry, int perAction, int... ids)
 	{
 		return new ItemReq(name, ids, carry, perAction, null, null);

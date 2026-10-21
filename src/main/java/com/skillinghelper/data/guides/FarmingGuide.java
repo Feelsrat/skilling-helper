@@ -20,6 +20,8 @@ final class FarmingGuide
 	private static final ItemReq SPADE = ItemReq.tool("Spade", ItemID.SPADE);
 	private static final ItemReq RAKE = ItemReq.tool("Rake", ItemID.RAKE);
 	private static final ItemReq DIBBER = ItemReq.tool("Seed dibber", ItemID.DIBBER);
+	private static final ItemReq COMPOST = ItemReq.supply("Compost (ultracompost is best)", 5,
+		ItemID.BUCKET_ULTRACOMPOST, ItemID.BUCKET_SUPERCOMPOST, ItemID.BUCKET_COMPOST);
 
 	static List<Method> methods()
 	{
@@ -37,6 +39,7 @@ final class FarmingGuide
 				.location(Location.of("Falador farming patches", 3052, 3309, 8))
 				.tool(SPADE).tool(RAKE).tool(DIBBER)
 				.input(ItemReq.stack("Potato seeds", 3, ItemID.POTATO_SEED))
+				.supply(COMPOST)
 				.target(Target.object(null, "Allotment"))
 				.target(Target.npc(null, "Elstan"))
 				.instruction("Rake the allotments, plant 3 potato seeds in each and come back to harvest")
@@ -64,14 +67,16 @@ final class FarmingGuide
 				.notes("Costs nothing but watering cans and earns the Farmer's outfit (+2.5% Farming xp) and a seed box.")
 				.wikiPage("Tithe_Farm")
 				.build(),
-			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 20_000),
+			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 20_000,
+				ItemReq.consumed("Baskets of tomatoes (gardener payment)", 5, 1, ItemID.BASKET_TOMATO_5)),
 			treeRun("farm_tree_willow", "Willow tree runs", 30, 1_481, "Willow saplings", ItemID.PLANTPOT_WILLOW_SAPLING,
-				50_000),
+				50_000, ItemReq.consumed("Baskets of apples (gardener payment)", 5, 1, ItemID.BASKET_APPLE_5)),
 			treeRun("farm_tree_maple", "Maple tree runs", 45, 3_448, "Maple saplings", ItemID.PLANTPOT_MAPLE_SAPLING,
-				100_000),
-			treeRun("farm_tree_yew", "Yew tree runs", 60, 7_150, "Yew saplings", ItemID.PLANTPOT_YEW_SAPLING, 150_000),
+				100_000, ItemReq.consumed("Baskets of oranges (gardener payment)", 5, 1, ItemID.BASKET_ORANGE_5)),
+			treeRun("farm_tree_yew", "Yew tree runs", 60, 7_150, "Yew saplings", ItemID.PLANTPOT_YEW_SAPLING, 150_000,
+				ItemReq.consumed("Cactus spines (10 per tree, gardener payment)", 50, 10, ItemID.CACTUS_SPINE)),
 			treeRun("farm_tree_magic", "Magic tree runs", 75, 13_913, "Magic saplings", ItemID.PLANTPOT_MAGIC_TREE_SAPLING,
-				200_000),
+				200_000, ItemReq.consumed("Coconuts (25 per tree, gardener payment)", 125, 25, ItemID.COCONUT)),
 			Method.builder()
 				.id("farm_herb_runs")
 				.skill(Skill.FARMING)
@@ -85,6 +90,7 @@ final class FarmingGuide
 				.location(Location.of("Falador herb patch", 3058, 3311, 6))
 				.tool(SPADE).tool(RAKE).tool(DIBBER)
 				.input(ItemReq.stack("Ranarr seeds", 1, ItemID.RANARR_SEED))
+				.supply(COMPOST)
 				.target(Target.object(null, "Herb patch"))
 				.instruction("Harvest, rake and replant each herb patch: Falador, Catherby, Ardougne, Port Phasmatys "
 					+ "and Hosidius")
@@ -96,7 +102,7 @@ final class FarmingGuide
 	}
 
 	private static Method treeRun(String id, String name, int level, double xp, String saplingName, int sapling,
-		int xpHr)
+		int xpHr, ItemReq payment)
 	{
 		return Method.builder()
 			.id(id)
@@ -113,11 +119,14 @@ final class FarmingGuide
 			.location(Location.of("Lumbridge tree patch", 3189, 3233, 6))
 			.tool(SPADE)
 			.input(ItemReq.consumed(saplingName, 5, 1, sapling))
+			.input(payment)
+			.supply(ItemReq.supply("Coins (200 gp to have each grown tree removed)", 0, ItemID.COINS))
 			.target(Target.object(null, "Tree patch"))
 			.target(Target.npc("Pay", "Fayeth", "Treznor", "Heskel", "Alain", "Prissy Scilla"))
 			.instruction("Plant a sapling in each tree patch and pay the gardener to protect it: Lumbridge, Varrock, "
 				+ "Falador, Taverley and the Gnome Stronghold")
-			.notes("Trees take a few hours to grow; come back, check health and pay to have the tree removed. "
+			.notes("Trees take a few hours to grow; come back, check health and pay to have the tree removed. Pay "
+				+ "the gardener with the payment items to protect each tree. "
 				+ "The most xp per minute in the game, but saplings cost money.")
 			.wikiPage("Tree_run")
 			.build();

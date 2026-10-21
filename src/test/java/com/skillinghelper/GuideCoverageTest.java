@@ -16,7 +16,9 @@ import com.skillinghelper.engine.StepType;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.runelite.api.Experience;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 import static org.junit.Assert.assertEquals;
@@ -161,5 +163,47 @@ public class GuideCoverageTest
 			.findFirst().orElseThrow();
 		assertFalse(duradel.isAvailable());
 		assertTrue(duradel.getBlockers().contains("Needs combat level 100"));
+	}
+
+	@Test
+	public void combatGuideSuggestsGearToWearAndBuy()
+	{
+		Method cows = guides.byId("attack_cows");
+		StepResolver resolver = new StepResolver(id -> 100);
+		PlayerState s = player(Skill.ATTACK, 45, new ItemCounts(Map.of(ItemID.ADAMANT_SCIMITAR, 1))).build();
+		List<Requirement> reqs = resolver.requirements(cows, s, 100);
+		assertTrue(reqs.stream().anyMatch(r -> r.getStatus() == Requirement.Status.OPTIONAL
+			&& r.getText().equals("Gear: wear your Adamant scimitar (in bank)")));
+		assertTrue(reqs.stream().anyMatch(r -> r.getStatus() == Requirement.Status.SUGGESTED
+			&& r.getText().startsWith("Gear upgrade (weapon): Rune scimitar")));
+		assertTrue(reqs.stream().anyMatch(r -> r.getText().startsWith("Optional: bring 10 x food")));
+	}
+
+	@Test
+	public void toolSetsNeedEveryCopy()
+	{
+		Method chins = guides.byId("hunter_red_chinchompas");
+		StepResolver resolver = new StepResolver(id -> 30);
+		PlayerState s = player(Skill.HUNTER, 70, new ItemCounts(Map.of(ItemID.HUNTING_BOX_TRAP, 2))).build();
+		List<Requirement> reqs = resolver.requirements(chins, s, 100);
+		Requirement traps = reqs.stream().filter(r -> r.getText().startsWith("5 x Box traps")).findFirst().orElseThrow();
+		assertEquals(Requirement.Status.MISSING, traps.getStatus());
+		assertEquals(90, traps.getBuyCost());
+	}
+
+	@Test
+	public void birdhouseRunsAskForSupplies()
+	{
+		Method birdhouses = guides.byId("hunter_birdhouses");
+		StepResolver resolver = new StepResolver(id -> 30);
+		PlayerState s = player(Skill.HUNTER, 30, new ItemCounts(Map.of(ItemID.HAMMER, 1, ItemID.CHISEL, 1,
+			ItemID.OAK_LOGS, 20, ItemID.POH_CLOCKWORK_MECHANISM, 10, ItemID.BARLEY_SEED, 100)))
+			.completedQuests(Set.of(Quest.BONE_VOYAGE))
+			.location(birdhouses.getLocation().getPoint())
+			.build();
+		GuideStep step = resolver.resolve(birdhouses, s, 40, false, resolver.requirements(birdhouses, s, 8));
+		assertEquals(StepType.BANK, step.getType());
+		assertTrue(step.getDetails().stream().anyMatch(l -> l.contains("Clockworks")));
+		assertTrue(step.getDetails().stream().anyMatch(l -> l.contains("seeds")));
 	}
 }

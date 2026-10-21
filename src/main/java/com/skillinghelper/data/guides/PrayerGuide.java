@@ -44,6 +44,7 @@ final class PrayerGuide
 				.target(Target.object(null, "Altar"))
 				.target(Target.object(null, "Portal"))
 				.target(Target.npc("Exchange", "Phials"))
+				.supply(Supplies.COINS)
 				.useItem(ItemID.DRAGON_BONES)
 				.instruction("Use the bones on a gilded altar with both incense burners lit, then unnote more at Phials "
 					+ "in Rimmington")
@@ -67,6 +68,7 @@ final class PrayerGuide
 				.input(ItemReq.stack("Dragon bones (noted)", 1, ItemID.DRAGON_BONES, ItemID.Cert.DRAGON_BONES))
 				.target(Target.object(null, "Chaos altar"))
 				.target(Target.npc("Exchange", "Elder Chaos druid"))
+				.supply(Supplies.COINS)
 				.useItem(ItemID.DRAGON_BONES)
 				.instruction("Use the bones on the Chaos altar; the Elder Chaos druid unnotes more for 50 gp each")
 				.notes("Same 350% xp as a gilded altar and half the bones are saved, so it's the cheapest gp/xp. "

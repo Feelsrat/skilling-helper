@@ -1,5 +1,6 @@
 package com.skillinghelper.data.guides;
 
+import com.skillinghelper.data.CombatStyle;
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
@@ -118,6 +119,10 @@ final class CombatGuide
 		{
 			b.tag(MethodTag.AFK);
 		}
+		if (mon.hitpoints > 3)
+		{
+			b.supply(Supplies.food(mon.hitpoints >= 60 ? 20 : 10));
+		}
 		if ("nmz".equals(mon.key))
 		{
 			b.tag(MethodTag.MINIGAME).target(Target.object(null, "Potion")).target(Target.npc(null, "Dominic Onion"));
@@ -132,6 +137,7 @@ final class CombatGuide
 			.xpPerAction(4.0 * mon.hitpoints)
 			.xpPerHour(mon.meleeXpHr)
 			.tag(MethodTag.CHEAP)
+			.gearStyle(CombatStyle.MELEE)
 			.instruction("Set your combat style to " + style + " (" + skill.getName() + " xp) and attack the "
 				+ targetNoun(mon));
 	}
@@ -144,6 +150,7 @@ final class CombatGuide
 			.xpPerAction(1.33 * mon.hitpoints)
 			.xpPerHour(mon.meleeXpHr / 3)
 			.tag(MethodTag.CHEAP)
+			.gearStyle(CombatStyle.MELEE)
 			.instruction("Attack the " + targetNoun(mon) + " with any combat style; Hitpoints xp comes with every hit");
 	}
 
@@ -159,6 +166,7 @@ final class CombatGuide
 			.xpPerHour((int) (mon.meleeXpHr * 1.1))
 			// Roughly one arrow lost per kill once you pick arrows back up (or wear Ava's device)
 			.input(ammo)
+			.gearStyle(CombatStyle.RANGED)
 			.instruction("Equip your best bow with the arrows, set Rapid and attack the " + targetNoun(mon))
 			.wikiPage(RANGED_WIKI);
 	}

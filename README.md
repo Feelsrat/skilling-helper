@@ -20,6 +20,11 @@ RuneLite's and Jagex's third-party client rules.
   live instant-buy/sell prices from the OSRS Wiki if you turn that on). Product values have the 2% GE tax taken off.
   When buying, each item shows quantity × price, and if you can't afford the whole goal the guide says how many
   actions your gold covers and whether selling the products pays for the next batch.
+- **Supplies**: every guide lists what to bring and withdraw first (e.g. logs, clockworks and seeds for birdhouse
+  runs, enough traps for hunting, gardener payments for tree runs), plus optional extras like food, stamina
+  potions and compost with their GE price.
+- **Combat gear**: combat and Slayer guides suggest the best weapon and armour you can wear for melee or ranged:
+  wear it if it's in your bank, or buy the upgrade (price shown). Always optional.
 - **Time to goal**: the panel shows the estimated time to your target level for the whole plan, and for each method.
 - **Skilling outfits**: if you own Lumberjack, Prospector, Angler, Pyromancer, Farmer's, Carpenter's, Raiments of
   the Eye, Smiths' uniform, Rogue or cooking gauntlets, the guide tells you to wear them and highlights them. If

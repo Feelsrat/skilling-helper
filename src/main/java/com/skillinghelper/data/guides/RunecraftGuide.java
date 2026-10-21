@@ -108,6 +108,7 @@ final class RunecraftGuide
 			.bank(bank)
 			.tool(ItemReq.tool(element + " talisman or tiara", tiara, talisman))
 			.input(ESSENCE)
+			.supply(Supplies.STAMINA)
 			.product(rune)
 			.target(Target.object("Enter", "Mysterious ruins"))
 			.target(Target.object("Craft-rune", "Altar"))

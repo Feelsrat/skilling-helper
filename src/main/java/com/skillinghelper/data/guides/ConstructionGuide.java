@@ -58,6 +58,9 @@ final class ConstructionGuide
 				.location(Location.of("Falador contracts office", 2989, 3363, 8))
 				.tool(HAMMER).tool(SAW)
 				.target(Target.npc(null, "Amy"))
+				.supply(ItemReq.supply("Planks for your tier (plank, oak, teak or mahogany)", 26, ItemID.PLANK_OAK,
+					ItemID.WOODPLANK, ItemID.PLANK_TEAK, ItemID.PLANK_MAHOGANY))
+				.supply(ItemReq.supply("Steel bars", 4, ItemID.STEEL_BAR))
 				.instruction("Get a contract from Amy, go to the client's house and repair or build the furniture "
 					+ "marked on the map")
 				.notes("Uses fewer planks per xp than building in your house and earns the Carpenter's outfit "

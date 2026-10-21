@@ -77,6 +77,15 @@ public class Method
 	@Singular
 	List<ItemReq> tools;
 	/**
+	 * Optional things worth bringing (food, stamina potions, compost...). Suggested with their GE price, never required.
+	 */
+	@Singular
+	List<ItemReq> supplies;
+	/**
+	 * Combat style whose weapon and armour the guide should recommend, or null for non-combat methods.
+	 */
+	CombatStyle gearStyle;
+	/**
 	 * Items consumed by the method (logs, raw fish, feathers...).
 	 */
 	@Singular

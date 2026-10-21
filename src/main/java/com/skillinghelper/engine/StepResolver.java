@@ -2,6 +2,7 @@ package com.skillinghelper.engine;
 
 import com.skillinghelper.data.Banks;
 import com.skillinghelper.data.BoostItem;
+import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.runelite.api.Quest;
+import net.runelite.api.Skill;
 
 /**
  * Turns a method and the player's current state into the single next step, Quest Helper style. Steps are
@@ -162,6 +164,12 @@ public final class StepResolver
 			}
 		}
 
+		gearRequirements(m, s, reqs);
+		for (ItemReq supply : m.getSupplies())
+		{
+			reqs.add(supplyRequirement(supply, s));
+		}
+
 		for (Quest q : m.getQuests())
 		{
 			boolean done = s.getCompletedQuests().contains(q);
@@ -181,6 +189,10 @@ public final class StepResolver
 		int banked = s.bankCount(req.getIds());
 		String name = req.getName();
 		boolean consumed = req.getPerAction() > 0;
+		if (!consumed && req.getQuantity() > 1)
+		{
+			return toolSet(req, carried, banked);
+		}
 		String counts = consumed
 			? String.format(" (%,d carried, %,d in bank, %,d needed for goal)", carried, banked, needed)
 			: "";
@@ -200,6 +212,120 @@ public final class StepResolver
 			? String.format(" - buy %,d x ~%s = ~%s", toBuy, gp(unit), gp(cost))
 			: " - buy for ~" + gp(cost);
 		return new Requirement(name + counts + buy, Requirement.Status.MISSING, req.getIds(), trip, cost);
+	}
+
+	/**
+	 * Several copies of a tool, e.g. 4 box traps: all of them should be carried.
+	 */
+	private Requirement toolSet(ItemReq req, int carried, int banked)
+	{
+		int want = req.getQuantity();
+		String name = String.format("%d x %s", want, req.getName());
+		if (carried >= want)
+		{
+			return new Requirement(name, Requirement.Status.READY, req.getIds(), want, 0);
+		}
+		if (carried + banked >= want)
+		{
+			return new Requirement(name + String.format(" (%d carried, %d in bank)", carried, banked),
+				Requirement.Status.IN_BANK, req.getIds(), want - carried, 0);
+		}
+		int toBuy = want - carried - banked;
+		int unit = prices.price(req.primaryId());
+		return new Requirement(name + String.format(" (you have %d) - buy %d x ~%s", carried + banked, toBuy, gp(unit)),
+			Requirement.Status.MISSING, req.getIds(), want - carried, (long) toBuy * unit);
+	}
+
+	/**
+	 * An optional supply such as food: fine to skip, so it's only ever a suggestion.
+	 */
+	private Requirement supplyRequirement(ItemReq req, PlayerState s)
+	{
+		int carried = s.carried(req.getIds());
+		int banked = s.bankCount(req.getIds());
+		String amount = req.isWholeStack() ? "" : req.getQuantity() + " x ";
+		if (carried > 0)
+		{
+			return new Requirement("Optional: " + req.getName() + " (carried)", Requirement.Status.READY, req.getIds(),
+				Math.max(1, req.getQuantity()), 0);
+		}
+		if (banked > 0)
+		{
+			return new Requirement("Optional: " + amount + req.getName() + " (" + String.format("%,d", banked)
+				+ " in bank)", Requirement.Status.SUGGESTED, req.getIds(), Math.max(1, req.getQuantity()), 0);
+		}
+		int unit = prices.price(req.primaryId());
+		String price = unit > 0 ? " (~" + gp(unit) + " each on the GE)" : "";
+		return new Requirement("Optional: bring " + amount + req.getName().toLowerCase() + price,
+			Requirement.Status.SUGGESTED, new int[0], 0, 0);
+	}
+
+	/**
+	 * Suggests the best weapon and armour per slot: wear what you own, or buy an upgrade from the GE.
+	 */
+	private void gearRequirements(Method m, PlayerState s, List<Requirement> reqs)
+	{
+		if (m.getGearStyle() == null)
+		{
+			return;
+		}
+		for (CombatGear slot : CombatGear.values())
+		{
+			if (slot.getStyle() != m.getGearStyle())
+			{
+				continue;
+			}
+			int bestUsable = -1;
+			int worn = -1;
+			int owned = -1;
+			int ownedId = -1;
+			List<CombatGear.Tier> tiers = slot.getTiers();
+			for (int i = 0; i < tiers.size(); i++)
+			{
+				CombatGear.Tier t = tiers.get(i);
+				if (!canWear(t, s))
+				{
+					continue;
+				}
+				if (bestUsable == -1)
+				{
+					bestUsable = i;
+				}
+				if (worn == -1 && s.getEquipment().has(t.getIds()))
+				{
+					worn = i;
+				}
+				if (owned == -1 && s.owned(t.getIds()) > 0)
+				{
+					owned = i;
+					ownedId = firstOwned(t.getIds(), s);
+				}
+			}
+			if (bestUsable == -1)
+			{
+				continue;
+			}
+			if (owned != -1 && ownedId != -1 && (worn == -1 || owned < worn))
+			{
+				boolean carried = s.getInventory().has(ownedId);
+				reqs.add(new Requirement("Gear: wear your " + tiers.get(owned).getName() + (carried ? "" : " (in bank)"),
+					Requirement.Status.OPTIONAL, new int[]{ownedId}, 1, 0));
+			}
+			int have = worn != -1 && (owned == -1 || worn < owned) ? worn : owned;
+			if (s.bankKnown() && (have == -1 || bestUsable < have))
+			{
+				CombatGear.Tier best = tiers.get(bestUsable);
+				reqs.add(new Requirement("Gear upgrade (" + slot.getSlotName() + "): " + best.getName() + " (~"
+					+ gp(prices.price(best.getIds()[0])) + " on the GE)", Requirement.Status.SUGGESTED, new int[0], 0, 0));
+			}
+		}
+	}
+
+	private static boolean canWear(CombatGear.Tier t, PlayerState s)
+	{
+		return s.level(t.getSkill()) >= t.getLevel()
+			&& s.level(Skill.DEFENCE) >= t.getDefenceLevel()
+			&& (!t.isMembers() || s.isMembersWorld());
 	}
 
 	private static String unlockText(SkillOutfit outfit, int missingPieces, double goalHours, Method m)
@@ -289,6 +415,13 @@ public final class StepResolver
 						wearNow.add(r);
 					}
 					else if (isItem)
+					{
+						optionalInBank.add(r);
+					}
+					break;
+				case SUGGESTED:
+					// Supplies like food that are in the bank: mention them whenever we're banking anyway
+					if (isItem)
 					{
 						optionalInBank.add(r);
 					}
@@ -472,7 +605,7 @@ public final class StepResolver
 		{
 			if (s.bankCount(r.getItemIds()) > 0)
 			{
-				b.line("• Optional: " + r.getText().replace(" (in bank)", ""));
+				b.line("• Optional: " + r.getText().replace(" (in bank)", "").replaceFirst("^Optional: ", ""));
 				for (int id : r.getItemIds())
 				{
 					b.itemHighlight(id, ItemHighlight.WITHDRAW);

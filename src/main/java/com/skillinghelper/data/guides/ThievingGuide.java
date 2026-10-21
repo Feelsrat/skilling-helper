@@ -35,6 +35,7 @@ final class ThievingGuide
 				.tag(MethodTag.CHEAP)
 				.location(Location.of("Lumbridge Castle courtyard", 3222, 3218, 12))
 				.target(Target.npc("Pickpocket", "Man", "Woman"))
+				.supply(Supplies.food(5))
 				.instruction("Pickpocket the men and women")
 				.notes("You get stunned now and then; just wait it out. " + POUCHES)
 				.wikiPage(WIKI)
@@ -89,6 +90,8 @@ final class ThievingGuide
 				.location(Location.of("Pyramid Plunder (Sophanem)", 3288, 2787, 15))
 				.target(Target.object(null, "Urn", "Grand Gold Chest", "Speartrap", "Tomb Door", "Sarcophagus"))
 				.target(Target.npc(null, "Guardian mummy"))
+				.supply(Supplies.food(5))
+				.supply(Supplies.STAMINA)
 				.instruction("Talk to the Guardian mummy to start, then loot urns and the gold chest in each room and "
 					+ "find the right tomb door")
 				.notes("Xp per hour rises a lot as you unlock deeper rooms every 10 levels.")
@@ -106,6 +109,7 @@ final class ThievingGuide
 				.tag(MethodTag.MINIGAME)
 				.location(Location.of("Rogues' Den (Burthorpe)", 2905, 3537, 10))
 				.target(Target.npc(null, "Brian O'Richard"))
+				.supply(Supplies.STAMINA)
 				.instruction("Talk to Brian O'Richard to enter the maze, bring nothing but stamina potions, and work "
 					+ "through the traps to crack the safe")
 				.notes("Each run gives a Rogue outfit piece; the full set doubles pickpocket loot for good. "
@@ -125,6 +129,7 @@ final class ThievingGuide
 				.location(Location.of("Draynor market", 3080, 3250, 8))
 				.bank(Banks.DRAYNOR)
 				.target(Target.npc("Pickpocket", "Master Farmer"))
+				.supply(Supplies.food(10))
 				.instruction("Pickpocket the master farmer and bank the seeds")
 				.notes("Ranarr and snapdragon seeds make this decent money for Farming later.")
 				.wikiPage(WIKI)
@@ -143,6 +148,7 @@ final class ThievingGuide
 				.location(Location.of("Ardougne market", 2655, 3302, 12))
 				.bank(Banks.ARDOUGNE_SOUTH)
 				.target(Target.npc("Pickpocket", "Knight of Ardougne"))
+				.supply(Supplies.food(20))
 				.instruction("Pickpocket a knight of Ardougne over and over")
 				.notes("Bring food. The Ardougne diary and a dodgy necklace raise success a lot. " + POUCHES)
 				.wikiPage(WIKI)

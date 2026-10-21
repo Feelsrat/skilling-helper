@@ -76,6 +76,8 @@ final class AgilityGuide
 			.tag(MethodTag.CHEAP)
 			.location(Location.area(name, x, y, 40))
 			.target(Target.object(null, obstacles))
+			.supply(Supplies.STAMINA)
+			.supply(Supplies.food(5))
 			.instruction("Run laps of the course, clicking each highlighted obstacle in turn")
 			.notes(MARKS)
 			.wikiPage(WIKI);

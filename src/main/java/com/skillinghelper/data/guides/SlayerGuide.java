@@ -1,5 +1,6 @@
 package com.skillinghelper.data.guides;
 
+import com.skillinghelper.data.CombatStyle;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -60,6 +61,8 @@ final class SlayerGuide
 			.xpPerHour(xpHr)
 			.members(true)
 			.tag(MethodTag.PROFIT)
+			.gearStyle(CombatStyle.MELEE)
+			.supply(Supplies.food(combat >= 40 ? 20 : 10))
 			.location(where)
 			.target(Target.npc("Assignment", name, "Steve"))
 			.instruction("Get a task from " + name + ", then check it with your enchanted gem and go kill the monsters")

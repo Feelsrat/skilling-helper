@@ -476,7 +476,7 @@ public class SkillingHelperPanel extends PluginPanel
 				color = HINT;
 				break;
 			case SUGGESTED:
-				icon = "$ ";
+				icon = "+ ";
 				color = HINT;
 				break;
 			case UNLOCK:

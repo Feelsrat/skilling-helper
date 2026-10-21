@@ -1,6 +1,7 @@
 package com.skillinghelper.data.guides;
 
 import com.skillinghelper.data.Banks;
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -53,6 +54,7 @@ final class MiningGuide
 				.tag(MethodTag.AFK).tag(MethodTag.PROFIT).tag(MethodTag.MINIGAME)
 				.location(Location.of("Motherlode Mine", 3757, 5666, 12))
 				.toolType(ToolType.PICKAXE)
+				.supply(ItemReq.supply("Hammer (to fix broken struts)", 1, ItemID.HAMMER))
 				.target(Target.object("Mine", "Ore vein"))
 				.target(Target.object("Deposit", "Hopper"))
 				.target(Target.object("Search", "Sack"))
