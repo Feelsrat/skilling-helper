@@ -470,7 +470,7 @@ public final class StepResolver
 			}
 			if (!GRAND_EXCHANGE.contains(s.getLocation()))
 			{
-				b.destination(GRAND_EXCHANGE.getPoint()).destinationName(GRAND_EXCHANGE.getName());
+				travel(b, Route.to(s, GRAND_EXCHANGE));
 			}
 			return b.build();
 		}
@@ -557,11 +557,13 @@ public final class StepResolver
 
 		if (!m.isAt(s.getLocation(), s.isInInstance()))
 		{
-			return b.type(StepType.WALK)
-				.title("Go to " + m.getLocation().getName())
-				.destination(m.getLocation().getPoint())
-				.destinationName(m.getLocation().getName())
-				.line("Then: " + m.getInstruction() + ".")
+			List<Location> spots = new ArrayList<>();
+			spots.add(m.getLocation());
+			spots.addAll(m.getAlsoAt());
+			Route route = Route.to(s, spots);
+			b.type(StepType.WALK).title(route.title());
+			travel(b, route);
+			return b.line("Then: " + m.getInstruction() + ".")
 				.build();
 		}
 
@@ -573,6 +575,15 @@ public final class StepResolver
 		return b.build();
 	}
 
+	private static void travel(GuideStep.GuideStepBuilder b, Route route)
+	{
+		b.route(route);
+		for (String hint : route.hints())
+		{
+			b.line(hint);
+		}
+	}
+
 	private GuideStep.GuideStepBuilder bankStep(PlayerState s, Location bank, String title, List<Requirement> withdraw,
 		List<Requirement> optional, Method m, boolean depositProduce)
 	{
@@ -582,7 +593,7 @@ public final class StepResolver
 			.highlightBank(true);
 		if (!bank.contains(s.getLocation()))
 		{
-			b.destination(bank.getPoint()).destinationName(bank.getName());
+			travel(b, Route.to(s, bank));
 		}
 		if (depositProduce && carriesProduct(m, s))
 		{

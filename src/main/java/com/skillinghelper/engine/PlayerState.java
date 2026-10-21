@@ -1,5 +1,6 @@
 package com.skillinghelper.engine;
 
+import com.skillinghelper.data.Mooring;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,14 @@ public class PlayerState
 	 * In an instanced area such as a player-owned house.
 	 */
 	boolean inInstance;
+	/**
+	 * Standing on a boat (sailing).
+	 */
+	boolean onBoat;
+	/**
+	 * Where the player last docked their boat, or null if not seen yet.
+	 */
+	Mooring boatMooring;
 	@Builder.Default
 	Set<Quest> completedQuests = Collections.emptySet();
 

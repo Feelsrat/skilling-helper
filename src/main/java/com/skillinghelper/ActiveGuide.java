@@ -18,7 +18,7 @@ import net.runelite.api.Skill;
  * Immutable snapshot of the open guide. Built on the client thread each tick and read by overlays and the panel.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class ActiveGuide
 {
 	public static final ActiveGuide NONE = ActiveGuide.builder().build();

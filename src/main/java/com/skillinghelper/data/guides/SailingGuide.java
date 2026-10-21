@@ -37,20 +37,32 @@ final class SailingGuide
 				.notes("Port tasks give steady early xp and unlock new ports as you level.")
 				.wikiPage(WIKI)
 				.build(),
-			salvage("sail_salvage_small", "Small shipwrecks", 15, 3110, 2948, 18_000)
+			salvage("sail_salvage_small", "Small shipwrecks", 15, 18_000,
+				3110, 2948, 1589, 3323)
 				.build(),
-			salvage("sail_salvage_fishy", "Fishy shipwrecks", 26, 2782, 3319, 28_000)
+			salvage("sail_salvage_fishy", "Fishy shipwrecks", 26, 28_000,
+				2782, 3319, 2698, 3047, 1903, 3835)
 				.build(),
-			salvage("sail_salvage_barracuda", "Barracuda shipwrecks", 35, 2996, 2917, 38_000)
+			salvage("sail_salvage_barracuda", "Barracuda shipwrecks", 35, 38_000,
+				2996, 2917, 3123, 2808, 2447, 3021, 2478, 2823, 2142, 3350, 2222, 3444)
 				.build(),
-			salvage("sail_salvage_large", "Large shipwrecks", 53, 1563, 2679, 55_000)
+			salvage("sail_salvage_large", "Large shipwrecks", 53, 55_000,
+				1563, 2679, 1886, 2508, 2459, 2144, 2845, 4030, 3394, 2138)
 				.build()
 		);
 	}
 
-	private static Method.MethodBuilder salvage(String id, String name, int level, int x, int y, int xpHr)
+	/**
+	 * @param spots x, y pairs of every wreck site of this type, from RuneLite's world map (SalvagingSpotLocation)
+	 */
+	private static Method.MethodBuilder salvage(String id, String name, int level, int xpHr, int... spots)
 	{
-		return Method.builder()
+		Method.MethodBuilder b = Method.builder();
+		for (int i = 2; i + 1 < spots.length; i += 2)
+		{
+			b.alsoAt(Location.sea(name, spots[i], spots[i + 1], 25));
+		}
+		return b
 			.id(id)
 			.skill(Skill.SAILING)
 			.type(MethodType.ACTIVITY)
@@ -61,12 +73,11 @@ final class SailingGuide
 			.members(true)
 			.tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 			.quest(Quest.PANDEMONIUM)
-			.location(Location.of(name, x, y, 25))
+			.location(Location.sea(name, spots[0], spots[1], 25))
 			.target(Target.object(null, "Shipwreck", "Salvaging hook", "Salvaging station"))
 			.instruction("Sail to the " + name.toLowerCase() + ", deploy your salvaging hook and sort the salvage "
 				+ "at your salvaging station")
-			.notes("Fit a salvaging hook to your boat first. There are more wrecks of this type around the sea; "
-				+ "open the world map with Sailing markers on to find them.")
+			.notes("Fit a salvaging hook to your boat first. The path leads to the nearest wreck site of this type.")
 			.wikiPage("Salvaging");
 	}
 

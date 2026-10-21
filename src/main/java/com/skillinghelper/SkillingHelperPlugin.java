@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.data.Method;
+import com.skillinghelper.data.Mooring;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
@@ -14,6 +15,7 @@ import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.engine.Requirement;
+import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.StepResolver;
 import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
@@ -64,7 +66,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.events.PluginMessage;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SkillIconManager;
@@ -93,6 +94,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private static final String KEY_TARGET = "target.";
 	private static final String KEY_METHOD = "method.";
 	private static final String KEY_PREFERENCE = "preference";
+	private static final String KEY_BOAT_MOORING = "boatMooring";
 	private static final int QUEST_REFRESH_TICKS = 50;
 
 	@Inject
@@ -124,6 +126,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private BankFilter bankFilter;
 	@Inject
+	private ShortestPathBridge shortestPath;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -150,7 +154,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private int questRefreshCountdown;
 	private boolean profileLoaded;
 
-	private WorldPoint pathDestination;
+	private Route pathRoute;
+	private boolean wasOnBoat;
+	private Mooring boatMooring;
 	private boolean hintArrowSet;
 	private WorldMapPoint mapPoint;
 	private ScheduledFuture<?> priceRefresh;
@@ -183,6 +189,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 		eventBus.register(tracker);
 		eventBus.register(bankFilter);
+		eventBus.register(shortestPath);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(minimapOverlay);
 		overlayManager.add(itemOverlay);
@@ -225,6 +232,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			bankCache.save();
 			clearPath();
 			tracker.clear();
+			eventBus.unregister(shortestPath);
 		});
 		guide = ActiveGuide.NONE;
 		profileLoaded = false;
@@ -264,7 +272,31 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			refreshQuests();
 		}
+		trackBoat();
 		refresh();
+	}
+
+	/**
+	 * Remembers which dock the player left their boat at, so sailing guides can send them back to it.
+	 */
+	private void trackBoat()
+	{
+		Player me = client.getLocalPlayer();
+		if (me == null || !profileLoaded)
+		{
+			return;
+		}
+		boolean onBoat = isOnBoat(me);
+		if (wasOnBoat && !onBoat)
+		{
+			Mooring docked = Mooring.at(me.getWorldLocation(), 20);
+			if (docked != null && docked != boatMooring)
+			{
+				boatMooring = docked;
+				configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_BOAT_MOORING, docked.name());
+			}
+		}
+		wasOnBoat = onBoat;
 	}
 
 	@Subscribe
@@ -496,6 +528,19 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				// keep the config default
 			}
 		}
+		String mooring = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_BOAT_MOORING);
+		boatMooring = null;
+		if (mooring != null)
+		{
+			try
+			{
+				boatMooring = Mooring.valueOf(mooring);
+			}
+			catch (IllegalArgumentException ignored)
+			{
+				// unknown mooring name
+			}
+		}
 		String active = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_ACTIVE_SKILL);
 		activeSkill = null;
 		if (active != null)
@@ -598,6 +643,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.location(me == null ? null : worldLocation(me))
 			.membersWorld(client.getWorldType().contains(WorldType.MEMBERS))
 			.inInstance(client.getTopLevelWorldView().isInstance())
+			.onBoat(me != null && isOnBoat(me))
+			.boatMooring(boatMooring)
 			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
 			.build();
 	}
@@ -617,6 +664,12 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			}
 		}
 		return me.getWorldLocation();
+	}
+
+	private static boolean isOnBoat(Player me)
+	{
+		LocalPoint local = me.getLocalLocation();
+		return local != null && local.getWorldView() != WorldView.TOPLEVEL;
 	}
 
 	private Set<Quest> completedQuestsOrEmpty()
@@ -664,7 +717,15 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 		GuideStep step = next.getStep();
 		boolean showPath = step != null && step.getType() != StepType.TRAIN && step.getType() != StepType.DONE;
-		setPath(showPath ? step.getDestination() : null, step == null ? null : step.getDestinationName());
+		setPath(showPath ? step.getRoute() : null);
+		if (showPath && shortestPath.isUnreachable(step.getRoute()))
+		{
+			next = next.toBuilder().step(step.toBuilder()
+				.line("Shortest Path can't find a full route there with your current unlocks, so it shows how close "
+					+ "it can get. You may need a quest, level or item for a transport, or a teleport closer.")
+				.build()).build();
+			guide = next;
+		}
 
 		final ActiveGuide forPanel = next;
 		final TrainingPreference pref = preference;
@@ -763,8 +824,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private void clearPath()
 	{
-		WorldPoint previous = pathDestination;
-		setPath(null, null);
+		Route previous = pathRoute;
+		setPath(null);
 		if (previous == null && hintArrowSet)
 		{
 			client.clearHintArrow();
@@ -772,13 +833,15 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 	}
 
-	private void setPath(WorldPoint destination, String name)
+	private void setPath(Route route)
 	{
-		if (Objects.equals(destination, pathDestination))
+		if (Objects.equals(route, pathRoute))
 		{
 			return;
 		}
-		pathDestination = destination;
+		pathRoute = route;
+		WorldPoint destination = route == null ? null : route.getPoint();
+		String name = route == null ? null : route.getStopName();
 
 		if (hintArrowSet)
 		{
@@ -802,25 +865,13 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				.worldPoint(destination)
 				.image(MapArrow.image())
 				.name(name)
-				.tooltip(name == null ? "Skilling Helper" : "Skilling Helper: " + name)
+				.tooltip("Skilling Helper: " + name)
 				.snapToEdge(true)
 				.jumpOnClick(true)
 				.build();
 			worldMapPointManager.add(mapPoint);
 		}
 
-		if (config.shortestPath())
-		{
-			if (destination != null)
-			{
-				Map<String, Object> data = new HashMap<>();
-				data.put("target", destination);
-				eventBus.post(new PluginMessage("shortestpath", "path", data));
-			}
-			else
-			{
-				eventBus.post(new PluginMessage("shortestpath", "clear"));
-			}
-		}
+		shortestPath.show(config.shortestPath() ? route : null);
 	}
 }

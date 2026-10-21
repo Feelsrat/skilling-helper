@@ -13,7 +13,7 @@ import net.runelite.api.coords.WorldPoint;
  * What the player should do right now, plus everything the overlays need to show it.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class GuideStep
 {
 	StepType type;
@@ -23,8 +23,7 @@ public class GuideStep
 	/**
 	 * Where to go, or null when the player is already in the right spot.
 	 */
-	WorldPoint destination;
-	String destinationName;
+	Route route;
 	@Singular
 	List<Target> highlights;
 	boolean highlightBank;
@@ -37,6 +36,19 @@ public class GuideStep
 	public static GuideStep empty(String title, String detail)
 	{
 		return GuideStep.builder().type(StepType.DONE).title(title).line(detail).build();
+	}
+
+	/**
+	 * Where the arrows point, or null when the player is already in the right spot.
+	 */
+	public WorldPoint getDestination()
+	{
+		return route == null ? null : route.getPoint();
+	}
+
+	public String getDestinationName()
+	{
+		return route == null ? null : route.getStopName();
 	}
 
 	public List<String> getDetails()

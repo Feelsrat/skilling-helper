@@ -248,4 +248,18 @@ public interface SkillingHelperConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "shortestPathTransports",
+		name = "Allow all transports in path",
+		description = "While Skilling Helper shows a path, let Shortest Path use boats, ships, charter ships, canoes, "
+			+ "shortcuts, fairy rings, spirit trees, gliders and other transports you've unlocked, even if they're off "
+			+ "in its own settings. Your Shortest Path settings come back when the path is cleared.",
+		section = pathingSection,
+		position = 5
+	)
+	default boolean shortestPathTransports()
+	{
+		return true;
+	}
 }

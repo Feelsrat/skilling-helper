@@ -16,10 +16,14 @@ public class Location
 	 * Count any floor as being there, e.g. for rooftop agility courses where the player climbs between planes.
 	 */
 	boolean anyPlane;
+	/**
+	 * Out at sea: only reachable by sailing a boat there.
+	 */
+	boolean atSea;
 
 	public static Location of(String name, int x, int y, int plane, int radius)
 	{
-		return new Location(name, new WorldPoint(x, y, plane), radius, false);
+		return new Location(name, new WorldPoint(x, y, plane), radius, false, false);
 	}
 
 	public static Location of(String name, int x, int y, int radius)
@@ -32,7 +36,15 @@ public class Location
 	 */
 	public static Location area(String name, int x, int y, int radius)
 	{
-		return new Location(name, new WorldPoint(x, y, 0), radius, true);
+		return new Location(name, new WorldPoint(x, y, 0), radius, true, false);
+	}
+
+	/**
+	 * A spot out at sea, such as a shipwreck, that the player has to sail to.
+	 */
+	public static Location sea(String name, int x, int y, int radius)
+	{
+		return new Location(name, new WorldPoint(x, y, 0), radius, false, true);
 	}
 
 	public boolean contains(WorldPoint wp)

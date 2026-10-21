@@ -35,8 +35,12 @@ RuneLite's and Jagex's third-party client rules.
 - **Highlights**: trees, rocks, fishing spots, ranges and banks are outlined (or clickbox/tile). Items to use,
   wear, drop, deposit or withdraw are outlined in the inventory and bank.
 - **Pathing**: minimap arrow, world map marker, hint arrow and destination tile. If the
-  [Shortest Path](https://runelite.net/plugin-hub/show/shortest-path) plugin is installed, the full walking
-  route is drawn with it. Training spots are chosen near banks.
+  [Shortest Path](https://runelite.net/plugin-hub/show/shortest-path) plugin is installed, the full
+  route is drawn with it. The route ends anywhere in the training area (not on one exact tile), boats, ships,
+  shortcuts and other unlocked transports are allowed (turn off with "Allow all transports in path"), and if
+  there's still no full route the step says so. For Sailing, it sends you to the dock where you left your boat,
+  then sails to the nearest wreck; while sailing, a land step docks you near it first. Training spots are chosen
+  near banks.
 - **Bank filter button**: a button in the bank (next to the `?`) shows only the items the guide needs, like Quest
   Helper's. There's also a button for it in the panel.
 
