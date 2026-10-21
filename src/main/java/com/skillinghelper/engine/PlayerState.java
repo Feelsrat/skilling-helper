@@ -47,6 +47,12 @@ public class PlayerState
 	 * Where the player last docked their boat, or null if not seen yet.
 	 */
 	Mooring boatMooring;
+	/**
+	 * Minutes until each finished stop of a run (e.g. a seeded bird house) needs another visit. Stops that aren't
+	 * listed need a visit now.
+	 */
+	@Builder.Default
+	Map<String, Integer> stopWaits = Collections.emptyMap();
 	@Builder.Default
 	Set<Quest> completedQuests = Collections.emptySet();
 

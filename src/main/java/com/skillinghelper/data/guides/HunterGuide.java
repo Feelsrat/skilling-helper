@@ -5,6 +5,7 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
+import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.Target;
 import java.util.List;
 import net.runelite.api.Quest;
@@ -19,6 +20,9 @@ final class HunterGuide
 	private static final String WIKI = "Hunter_training";
 	// Enough for the most traps you can lay below level 60; extras cost almost nothing
 	private static final ItemReq SNARES = ItemReq.tools("Bird snares", 3, ItemID.HUNTING_OJIBWAY_BIRD_SNARE);
+	private static final int[] BIRD_HOUSES = {ItemID.BIRDHOUSE_NORMAL, ItemID.BIRDHOUSE_OAK, ItemID.BIRDHOUSE_WILLOW,
+		ItemID.BIRDHOUSE_TEAK, ItemID.BIRDHOUSE_MAPLE, ItemID.BIRDHOUSE_MAHOGANY, ItemID.BIRDHOUSE_YEW,
+		ItemID.BIRDHOUSE_MAGIC, ItemID.BIRDHOUSE_REDWOOD};
 	private static final String TRAPS = "You can set one more trap every 20 levels (two at 20, three at 40...).";
 
 	static List<Method> methods()
@@ -65,24 +69,32 @@ final class HunterGuide
 				.members(true)
 				.tag(MethodTag.AFK).tag(MethodTag.CHEAP)
 				.quest(Quest.BONE_VOYAGE)
-				.location(Location.of("Fossil Island (House on the Hill)", 3763, 3869, 60))
+				.location(Location.of("Fossil Island bird house spots", 3722, 3818, 70))
+				// Run order: the Verdant Valley pair by the Digsite pendant, then the Mushroom Meadow pair by mushtree
+				.stop(Stop.of("birdhouse_valley_ne", "Verdant Valley bird house (northeast)", 3768, 3761))
+				.stop(Stop.of("birdhouse_valley_sw", "Verdant Valley bird house (southwest)", 3763, 3755))
+				.stop(Stop.of("birdhouse_meadow_s", "Mushroom Meadow bird house (south)", 3679, 3815))
+				.stop(Stop.of("birdhouse_meadow_n", "Mushroom Meadow bird house (north)", 3677, 3882))
 				.tool(ItemReq.tool("Hammer", ItemID.HAMMER))
 				.tool(ItemReq.tool("Chisel", ItemID.CHISEL))
+				// Bird houses crafted ahead of the run replace the logs and clockworks they were made from
 				.input(ItemReq.consumed("Logs for your level (oak 14+, willow 24+, teak 34+, maple 44+, mahogany 49+, "
 					+ "yew 59+, magic 74+)", 4, 1, ItemID.OAK_LOGS, ItemID.LOGS, ItemID.WILLOW_LOGS, ItemID.TEAK_LOGS,
-					ItemID.MAPLE_LOGS, ItemID.MAHOGANY_LOGS, ItemID.YEW_LOGS, ItemID.MAGIC_LOGS, ItemID.REDWOOD_LOGS))
-				.input(ItemReq.consumed("Clockworks", 4, 1, ItemID.POH_CLOCKWORK_MECHANISM))
+					ItemID.MAPLE_LOGS, ItemID.MAHOGANY_LOGS, ItemID.YEW_LOGS, ItemID.MAGIC_LOGS, ItemID.REDWOOD_LOGS)
+					.orUse("Bird houses", BIRD_HOUSES))
+				.input(ItemReq.consumed("Clockworks", 4, 1, ItemID.POH_CLOCKWORK_MECHANISM).orUse("Bird houses",
+					BIRD_HOUSES))
 				.input(ItemReq.consumed("Hop or grain seeds (10 per house)", 40, 10, ItemID.BARLEY_SEED,
 					ItemID.HAMMERSTONE_HOP_SEED, ItemID.ASGARNIAN_HOP_SEED, ItemID.JUTE_SEED, ItemID.YANILLIAN_HOP_SEED,
 					ItemID.KRANDORIAN_HOP_SEED, ItemID.WILDBLOOD_HOP_SEED))
 				.target(Target.object(null, "Space", "Bird house", "Oak bird house", "Willow bird house",
 					"Teak bird house", "Maple bird house", "Mahogany bird house", "Yew bird house", "Magic bird house",
 					"Redwood bird house"))
-				.instruction("Build bird houses on the four Fossil Island spots, fill them with seeds and come back "
-					+ "after 50 minutes to collect")
-				.notes("Only a few minutes of work per hour, so do it between other skills. A digsite pendant "
-					+ "teleports you straight there. Clockworks are made at a POH clockmaker's bench or bought. "
-					+ "Gives bird nests too.")
+				.instruction("Empty the bird house if there is one, build a new one in the space and add 10 seeds")
+				.notes("Craft the bird houses before you go (use a clockwork on your logs with a hammer and chisel). "
+					+ "A digsite pendant teleports you next to the Verdant Valley spots; the mushtree there takes you "
+					+ "to Mushroom Meadow. They fill up in 50 minutes, so do other skills in between. "
+					+ "Clockworks are made at a POH clockmaker's bench or bought. Gives bird nests too.")
 				.wikiPage("Birdhouse_run")
 				.build(),
 			Method.builder()

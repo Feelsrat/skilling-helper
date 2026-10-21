@@ -206,4 +206,54 @@ public class GuideCoverageTest
 		assertTrue(step.getDetails().stream().anyMatch(l -> l.contains("Clockworks")));
 		assertTrue(step.getDetails().stream().anyMatch(l -> l.contains("seeds")));
 	}
+
+	private PlayerState.PlayerStateBuilder birdhouser(ItemCounts inventory, Map<String, Integer> waits)
+	{
+		return player(Skill.HUNTER, 30, new ItemCounts(Map.of(ItemID.COINS, 10_000)))
+			.inventory(inventory)
+			.completedQuests(Set.of(Quest.BONE_VOYAGE))
+			.stopWaits(waits);
+	}
+
+	@Test
+	public void craftedBirdHousesReplaceLogsAndClockworks()
+	{
+		Method birdhouses = guides.byId("hunter_birdhouses");
+		StepResolver resolver = new StepResolver(id -> 30);
+		PlayerState s = birdhouser(new ItemCounts(Map.of(ItemID.HAMMER, 1, ItemID.CHISEL, 1,
+			ItemID.BIRDHOUSE_OAK, 4, ItemID.BARLEY_SEED, 40)), Map.of()).build();
+		GuideStep step = resolver.resolve(birdhouses, s, 40, false, resolver.requirements(birdhouses, s, 8));
+		assertEquals(StepType.WALK, step.getType());
+		assertEquals("Go to Verdant Valley bird house (northeast)", step.getTitle());
+	}
+
+	@Test
+	public void birdhouseRunGoesToTheNextUnseededSpot()
+	{
+		Method birdhouses = guides.byId("hunter_birdhouses");
+		StepResolver resolver = new StepResolver(id -> 30);
+		PlayerState.PlayerStateBuilder b = birdhouser(new ItemCounts(Map.of(ItemID.HAMMER, 1, ItemID.CHISEL, 1,
+			ItemID.BIRDHOUSE_OAK, 2, ItemID.BARLEY_SEED, 20)),
+			Map.of("birdhouse_valley_ne", 49, "birdhouse_valley_sw", 50));
+		PlayerState s = b.build();
+		GuideStep step = resolver.resolve(birdhouses, s, 40, false, resolver.requirements(birdhouses, s, 8));
+		assertEquals("Go to Mushroom Meadow bird house (south)", step.getTitle());
+		assertTrue(step.getDetails().contains("Stop 3 of 4: Mushroom Meadow bird house (south) (2 still to do this run)"));
+
+		PlayerState there = b.location(birdhouses.getStops().get(2).getLocation().getPoint()).build();
+		step = resolver.resolve(birdhouses, there, 40, false, resolver.requirements(birdhouses, there, 8));
+		assertEquals(StepType.TRAIN, step.getType());
+	}
+
+	@Test
+	public void finishedBirdhouseRunWaitsWithCountdown()
+	{
+		Method birdhouses = guides.byId("hunter_birdhouses");
+		StepResolver resolver = new StepResolver(id -> 30);
+		PlayerState s = birdhouser(ItemCounts.EMPTY, Map.of("birdhouse_valley_ne", 12, "birdhouse_valley_sw", 13,
+			"birdhouse_meadow_s", 15, "birdhouse_meadow_n", 16)).build();
+		GuideStep step = resolver.resolve(birdhouses, s, 40, false, resolver.requirements(birdhouses, s, 8));
+		assertEquals(StepType.WAIT, step.getType());
+		assertEquals("Run done: next one ready in ~12 min", step.getTitle());
+	}
 }

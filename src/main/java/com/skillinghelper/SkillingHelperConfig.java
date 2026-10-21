@@ -7,6 +7,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Notification;
 import net.runelite.client.config.Range;
 
 @ConfigGroup(SkillingHelperConfig.GROUP)
@@ -39,6 +40,33 @@ public interface SkillingHelperConfig extends Config
 
 	@ConfigSection(name = "Prices", description = "Where Grand Exchange prices come from", position = 3)
 	String pricesSection = "prices";
+
+	@ConfigSection(name = "Bird houses", description = "Fossil Island bird house timer", position = 4)
+	String birdhouseSection = "birdhouses";
+
+	@ConfigItem(
+		keyName = "birdhouseTimer",
+		name = "Bird house timer",
+		description = "Show a countdown until your seeded bird houses are full",
+		section = birdhouseSection,
+		position = 0
+	)
+	default boolean birdhouseTimer()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "birdhouseNotification",
+		name = "Notify when full",
+		description = "Send a notification when your bird houses are full and ready for a run",
+		section = birdhouseSection,
+		position = 1
+	)
+	default Notification birdhouseNotification()
+	{
+		return Notification.ON;
+	}
 
 	@ConfigItem(
 		keyName = "livePrices",

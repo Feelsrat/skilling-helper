@@ -58,6 +58,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
@@ -127,6 +128,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private BankFilter bankFilter;
 	@Inject
 	private ShortestPathBridge shortestPath;
+	@Inject
+	private BirdhouseTracker birdhouses;
 	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
@@ -232,6 +235,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			bankCache.save();
 			clearPath();
 			tracker.clear();
+			birdhouses.reset();
 			eventBus.unregister(shortestPath);
 		});
 		guide = ActiveGuide.NONE;
@@ -251,6 +255,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			profileLoaded = false;
+			birdhouses.reset();
 			clearPath();
 		}
 	}
@@ -259,6 +264,16 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	public void onRuneScapeProfileChanged(RuneScapeProfileChanged e)
 	{
 		profileLoaded = false;
+		birdhouses.reset();
+	}
+
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged e)
+	{
+		if (e.getVarpId() != -1)
+		{
+			birdhouses.onVarpChanged(e.getVarpId(), e.getValue());
+		}
 	}
 
 	@Subscribe
@@ -273,6 +288,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			refreshQuests();
 		}
 		trackBoat();
+		birdhouses.tick(this);
 		refresh();
 	}
 
@@ -555,6 +571,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			}
 		}
 		refreshQuests();
+		birdhouses.load();
 		profileLoaded = true;
 	}
 
@@ -645,6 +662,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.inInstance(client.getTopLevelWorldView().isInstance())
 			.onBoat(me != null && isOnBoat(me))
 			.boatMooring(boatMooring)
+			.stopWaits(birdhouses.waits())
 			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
 			.build();
 	}

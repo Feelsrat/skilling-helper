@@ -59,6 +59,12 @@ public class Method
 	 */
 	boolean instanced;
 	/**
+	 * For runs (bird houses...): the spots to visit in order. The guide sends the player to the next one that needs a
+	 * visit and waits once they're all done.
+	 */
+	@Singular
+	List<Stop> stops;
+	/**
 	 * Nearest bank, or null if the method never banks.
 	 */
 	Location bank;

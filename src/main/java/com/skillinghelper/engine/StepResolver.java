@@ -8,6 +8,7 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.SkillOutfit;
+import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.ToolType;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -392,6 +393,17 @@ public final class StepResolver
 				.build();
 		}
 
+		// On a run, once every stop is done there's nothing to fetch or do until the next one is ready
+		Stop stop = null;
+		if (!m.getStops().isEmpty())
+		{
+			stop = nextStop(m, s);
+			if (stop == null)
+			{
+				return waitStep(m, s);
+			}
+		}
+
 		Location bank = m.getBank() != null ? m.getBank() : GRAND_EXCHANGE;
 
 		List<Requirement> missing = new ArrayList<>();
@@ -555,24 +567,96 @@ public final class StepResolver
 		}
 		toolWieldTip(m, s, b);
 
-		if (!m.isAt(s.getLocation(), s.isInInstance()))
+		String progress = stop == null ? null : String.format("Stop %d of %d: %s (%d still to do this run)",
+			m.getStops().indexOf(stop) + 1, m.getStops().size(), stop.getLocation().getName(), dueStops(m, s));
+		boolean there = stop != null ? stop.getLocation().contains(s.getLocation())
+			: m.isAt(s.getLocation(), s.isInInstance());
+		if (!there)
 		{
 			List<Location> spots = new ArrayList<>();
-			spots.add(m.getLocation());
-			spots.addAll(m.getAlsoAt());
+			if (stop != null)
+			{
+				spots.add(stop.getLocation());
+			}
+			else
+			{
+				spots.add(m.getLocation());
+				spots.addAll(m.getAlsoAt());
+			}
 			Route route = Route.to(s, spots);
 			b.type(StepType.WALK).title(route.title());
+			if (progress != null)
+			{
+				b.line(progress);
+			}
 			travel(b, route);
 			return b.line("Then: " + m.getInstruction() + ".")
 				.build();
 		}
 
 		b.type(StepType.TRAIN).title(m.getInstruction());
+		if (progress != null)
+		{
+			b.line(progress);
+		}
 		if (m.getNotes() != null)
 		{
 			b.line(m.getNotes());
 		}
 		return b.build();
+	}
+
+	/**
+	 * The stop to visit next: the one the player is standing at if it needs a visit, otherwise the first one in run
+	 * order that does. Null when every stop is done.
+	 */
+	private static Stop nextStop(Method m, PlayerState s)
+	{
+		Stop first = null;
+		for (Stop stop : m.getStops())
+		{
+			if (s.getStopWaits().containsKey(stop.getId()))
+			{
+				continue;
+			}
+			if (stop.getLocation().contains(s.getLocation()))
+			{
+				return stop;
+			}
+			if (first == null)
+			{
+				first = stop;
+			}
+		}
+		return first;
+	}
+
+	private static int dueStops(Method m, PlayerState s)
+	{
+		int due = 0;
+		for (Stop stop : m.getStops())
+		{
+			if (!s.getStopWaits().containsKey(stop.getId()))
+			{
+				due++;
+			}
+		}
+		return due;
+	}
+
+	private static GuideStep waitStep(Method m, PlayerState s)
+	{
+		int soonest = Integer.MAX_VALUE;
+		for (Stop stop : m.getStops())
+		{
+			soonest = Math.min(soonest, s.getStopWaits().getOrDefault(stop.getId(), 0));
+		}
+		return GuideStep.builder()
+			.type(StepType.WAIT)
+			.title("Run done: next one ready in ~" + soonest + " min")
+			.line("Every stop on this run is done. Train another skill meanwhile and come back when it's ready; "
+				+ "this guide picks up again on its own.")
+			.build();
 	}
 
 	private static void travel(GuideStep.GuideStepBuilder b, Route route)
