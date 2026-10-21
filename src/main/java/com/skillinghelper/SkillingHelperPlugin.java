@@ -137,6 +137,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private RunTimers runTimers;
 	@Inject
+	private RateTracker rates;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -241,6 +243,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			bankCache.save();
 			clearPath();
 			tracker.clear();
+			rates.save();
 			resetRuns();
 			eventBus.unregister(shortestPath);
 		});
@@ -295,6 +298,12 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		trackBoat();
 		updateRuns();
+		ActiveGuide current = guide;
+		if (profileLoaded)
+		{
+			rates.tick(current.isActive() ? current.getMethod() : null,
+				current.getSkill() == null ? 0 : client.getSkillExperience(current.getSkill()));
+		}
 		refresh();
 	}
 
@@ -323,6 +332,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		birdhouses.reset();
 		patches.reset();
 		runTimers.clear();
+		rates.reset();
 	}
 
 	private Map<String, Integer> stopWaits()
@@ -613,6 +623,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		refreshQuests();
 		birdhouses.load();
 		patches.load();
+		rates.load();
 		profileLoaded = true;
 	}
 
@@ -704,6 +715,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.onBoat(me != null && isOnBoat(me))
 			.boatMooring(boatMooring)
 			.stopWaits(stopWaits())
+			.measuredXpPerHour(rates.rates())
 			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
 			.build();
 	}

@@ -138,7 +138,8 @@ public final class MethodPlanner
 			}
 		}
 
-		int actions = m.getXpPerAction() <= 0 ? 0 : (int) Math.ceil(xpNeeded / m.getXpPerAction());
+		double xpPerAction = m.xpPerAction(level);
+		int actions = xpPerAction <= 0 ? 0 : (int) Math.ceil(xpNeeded / xpPerAction);
 
 		double inputCost = 0;
 		double unownedCostPerAction = 0;
@@ -184,8 +185,9 @@ public final class MethodPlanner
 		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
 		boolean affordable = buyCost <= state.gp() || (gpPerAction >= 0 && tripCost <= state.gp());
 
-		double xpHr = m.getXpPerHour();
-		double actionsPerHour = m.getXpPerAction() <= 0 ? 0 : xpHr / m.getXpPerAction();
+		Integer measuredXpHr = state.getMeasuredXpPerHour().get(m.getId());
+		double xpHr = measuredXpHr != null ? measuredXpHr : m.xpPerHour(level);
+		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
 		double gpHr = gpPerAction * actionsPerHour;
 		// Items already in the bank don't need buying, so they only count partially against the method
 		double cashGpHr = (productValue - inputCost * (1 - ownedFraction)) * actionsPerHour;
@@ -217,7 +219,7 @@ public final class MethodPlanner
 		}
 
 		return new MethodOption(m, blockers, gpPerAction, actions, buyCost, affordable, ownedFraction, unownedCostPerAction,
-			score);
+			xpHr, measuredXpHr != null, xpPerAction, score);
 	}
 
 	public static long xpBetween(int currentXp, int targetLevel)

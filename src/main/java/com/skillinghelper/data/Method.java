@@ -40,6 +40,12 @@ public class Method
 	 * Xp for one action, used to work out how many actions (and items) the goal needs.
 	 */
 	double xpPerAction;
+	/**
+	 * Better xp per action unlocked at higher levels, as {level, xp} pairs, e.g. bird houses made from better logs.
+	 * Xp per hour scales with it.
+	 */
+	@Singular("xpAt")
+	List<int[]> xpAt;
 	boolean members;
 	@Singular
 	Set<MethodTag> tags;
@@ -64,6 +70,11 @@ public class Method
 	 */
 	@Singular
 	List<Stop> stops;
+	/**
+	 * For runs: minutes between runs while the crops or bird houses grow. {@link #xpPerHour} is then xp per hour of
+	 * play, not of waiting.
+	 */
+	int cycleMinutes;
 	/**
 	 * Nearest bank, or null if the method never banks.
 	 */
@@ -148,6 +159,30 @@ public class Method
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Xp per action at this level, counting {@link #xpAt} upgrades.
+	 */
+	public double xpPerAction(int level)
+	{
+		double best = xpPerAction;
+		for (int[] tier : xpAt)
+		{
+			if (level >= tier[0])
+			{
+				best = Math.max(best, tier[1]);
+			}
+		}
+		return best;
+	}
+
+	/**
+	 * Estimated xp per hour at this level.
+	 */
+	public double xpPerHour(int level)
+	{
+		return xpPerAction <= 0 ? xpPerHour : xpPerHour * xpPerAction(level) / xpPerAction;
 	}
 
 	public boolean hasTag(MethodTag tag)

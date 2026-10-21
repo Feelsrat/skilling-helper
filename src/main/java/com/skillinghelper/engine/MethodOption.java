@@ -36,6 +36,15 @@ public class MethodOption
 	 * GP per action spent on inputs the player still has to buy.
 	 */
 	double buyCostPerAction;
+	/**
+	 * Xp per hour of play: the player's own measured rate if there is one, otherwise the guide's estimate.
+	 */
+	double xpPerHour;
+	boolean measured;
+	/**
+	 * Xp per action at the player's level.
+	 */
+	double xpPerAction;
 	double score;
 
 	public boolean isAvailable()
@@ -45,7 +54,21 @@ public class MethodOption
 
 	public double hours(long xpNeeded)
 	{
-		return method.getXpPerHour() <= 0 ? 0 : (double) xpNeeded / method.getXpPerHour();
+		return xpPerHour <= 0 ? 0 : (double) xpNeeded / xpPerHour;
+	}
+
+	/**
+	 * For runs: how many runs the xp takes (one action per stop).
+	 */
+	public int runs(long xpNeeded)
+	{
+		int stops = Math.max(1, method.getStops().size());
+		return xpPerAction <= 0 ? 0 : (int) Math.ceil(xpNeeded / xpPerAction / stops);
+	}
+
+	public boolean isRun()
+	{
+		return method.getCycleMinutes() > 0;
 	}
 
 	/**
@@ -53,15 +76,15 @@ public class MethodOption
 	 */
 	public double gpPerXp()
 	{
-		return method.getXpPerAction() <= 0 ? 0 : gpPerAction / method.getXpPerAction();
+		return xpPerAction <= 0 ? 0 : gpPerAction / xpPerAction;
 	}
 
 	public long gpPerHour()
 	{
-		if (method.getXpPerAction() <= 0)
+		if (xpPerAction <= 0)
 		{
 			return 0;
 		}
-		return Math.round(gpPerAction * method.getXpPerHour() / method.getXpPerAction());
+		return Math.round(gpPerAction * xpPerHour / xpPerAction);
 	}
 }

@@ -53,6 +53,11 @@ public class PlayerState
 	 */
 	@Builder.Default
 	Map<String, Integer> stopWaits = Collections.emptyMap();
+	/**
+	 * Xp per hour the player actually gets with each method, by method id, once there's enough play to measure.
+	 */
+	@Builder.Default
+	Map<String, Integer> measuredXpPerHour = Collections.emptyMap();
 	@Builder.Default
 	Set<Quest> completedQuests = Collections.emptySet();
 

@@ -61,6 +61,7 @@ final class FarmingGuide
 				.minLevel(1)
 				.xpPerAction(9.5)
 				.xpPerHour(3_000)
+				.cycleMinutes(40)
 				.members(true)
 				.tag(MethodTag.CHEAP)
 				.location(Location.of("Falador farming patches", 3052, 3309, 8))
@@ -100,17 +101,17 @@ final class FarmingGuide
 				.notes("Costs nothing but watering cans and earns the Farmer's outfit (+2.5% Farming xp) and a seed box.")
 				.wikiPage("Tithe_Farm")
 				.build(),
-			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 20_000,
+			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 18_000, 200,
 				basket("Baskets of tomatoes (gardener payment)", ItemID.BASKET_TOMATO_5, "tomatoes", ItemID.TOMATO)),
 			treeRun("farm_tree_willow", "Willow tree runs", 30, 1_481, "Willow saplings", ItemID.PLANTPOT_WILLOW_SAPLING,
-				50_000, basket("Baskets of apples (gardener payment)", ItemID.BASKET_APPLE_5, "cooking apples",
+				55_000, 280, basket("Baskets of apples (gardener payment)", ItemID.BASKET_APPLE_5, "cooking apples",
 					ItemID.COOKING_APPLE)),
 			treeRun("farm_tree_maple", "Maple tree runs", 45, 3_448, "Maple saplings", ItemID.PLANTPOT_MAPLE_SAPLING,
-				100_000, basket("Baskets of oranges (gardener payment)", ItemID.BASKET_ORANGE_5, "oranges", ItemID.ORANGE)),
-			treeRun("farm_tree_yew", "Yew tree runs", 60, 7_150, "Yew saplings", ItemID.PLANTPOT_YEW_SAPLING, 150_000,
+				125_000, 320, basket("Baskets of oranges (gardener payment)", ItemID.BASKET_ORANGE_5, "oranges", ItemID.ORANGE)),
+			treeRun("farm_tree_yew", "Yew tree runs", 60, 7_150, "Yew saplings", ItemID.PLANTPOT_YEW_SAPLING, 265_000, 400,
 				ItemReq.consumed("Cactus spines (10 per tree, gardener payment)", 50, 10, ItemID.CACTUS_SPINE)),
 			treeRun("farm_tree_magic", "Magic tree runs", 75, 13_913, "Magic saplings", ItemID.PLANTPOT_MAGIC_TREE_SAPLING,
-				200_000, ItemReq.consumed("Coconuts (25 per tree, gardener payment)", 125, 25, ItemID.COCONUT)),
+				520_000, 480, ItemReq.consumed("Coconuts (25 per tree, gardener payment)", 125, 25, ItemID.COCONUT)),
 			Method.builder()
 				.id("farm_herb_runs")
 				.skill(Skill.FARMING)
@@ -118,7 +119,9 @@ final class FarmingGuide
 				.name("Herb runs (ranarr)")
 				.minLevel(32)
 				.xpPerAction(240)
-				.xpPerHour(20_000)
+				// Per hour of play: about 8 minutes for a five-patch run
+				.xpPerHour(10_000)
+				.cycleMinutes(80)
 				.members(true)
 				.tag(MethodTag.PROFIT).tag(MethodTag.AFK)
 				.location(Location.of("Falador herb patch", 3058, 3311, 6))
@@ -152,7 +155,7 @@ final class FarmingGuide
 	}
 
 	private static Method treeRun(String id, String name, int level, double xp, String saplingName, int sapling,
-		int xpHr, ItemReq payment)
+		int xpHr, int growMinutes, ItemReq payment)
 	{
 		return Method.builder()
 			.id(id)
@@ -162,8 +165,9 @@ final class FarmingGuide
 			.minLevel(level)
 			// Planting plus checking health, per tree
 			.xpPerAction(xp)
-			// Tree runs are a few minutes of work, so this is xp per hour of actual playtime
+			// Tree runs are about 8 minutes of work, so this is xp per hour of actual playtime
 			.xpPerHour(xpHr)
+			.cycleMinutes(growMinutes)
 			.members(true)
 			.tag(MethodTag.FAST).tag(MethodTag.AFK)
 			.location(Location.of("Lumbridge tree patch", 3189, 3233, 6))

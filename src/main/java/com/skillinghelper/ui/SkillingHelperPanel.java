@@ -272,9 +272,19 @@ public class SkillingHelperPanel extends PluginPanel
 			double planHours = guide.getPlan().isEmpty()
 				? option.hours(guide.getXpRemaining())
 				: guide.getPlan().stream().mapToDouble(seg -> seg.getOption().hours(seg.getXp())).sum();
-			JLabel eta = text("Time to level " + guide.getTargetLevel() + ": " + duration(planHours), Color.WHITE);
+			JLabel eta = text("Time to level " + guide.getTargetLevel() + ": " + duration(planHours)
+				+ (option.isRun() ? " of play" : ""), Color.WHITE);
 			eta.setFont(FontManager.getRunescapeBoldFont());
 			content.add(eta);
+			if (option.isRun())
+			{
+				content.add(text(String.format("~%,d runs, one every %s while they grow", option.runs(
+					guide.getXpRemaining()), duration(method.getCycleMinutes() / 60.0)), Color.LIGHT_GRAY));
+			}
+			content.add(text(option.isMeasured()
+				? String.format("Based on your own rate: ~%,d xp/hr", Math.round(option.getXpPerHour()))
+				: String.format("Guide estimate ~%,d xp/hr; switches to your own rate after 10 minutes of training",
+					Math.round(option.getXpPerHour())), HINT));
 			String progress = String.format("%,d xp to go · ~%,d actions with this method", guide.getXpRemaining(),
 				option.getActions());
 			content.add(text(progress, Color.LIGHT_GRAY));
@@ -393,13 +403,14 @@ public class SkillingHelperPanel extends PluginPanel
 		name.setFont(FontManager.getRunescapeSmallFont().deriveFont(Font.BOLD));
 		row.add(name);
 		String tags = m.getTags().stream().map(MethodTag::getLabel).collect(Collectors.joining(", "));
-		String info = String.format("Lvl %d · ~%dk xp/hr%s%s", m.getMinLevel(), m.getXpPerHour() / 1000,
+		String info = String.format("Lvl %d · ~%dk xp/hr%s%s%s", m.getMinLevel(), Math.round(o.getXpPerHour() / 1000),
+			o.isMeasured() ? " (yours)" : "",
 			m.isMembers() ? " · Members" : "", tags.isEmpty() ? "" : " · " + tags);
 		row.add(text(info, Color.LIGHT_GRAY));
 		if (xpRemaining > 0)
 		{
-			row.add(text(duration(o.hours(xpRemaining)) + " to level " + targetLevel + " using only this",
-				Color.LIGHT_GRAY));
+			row.add(text(duration(o.hours(xpRemaining)) + (o.isRun() ? " of play (" + String.format("%,d", o.runs(
+				xpRemaining)) + " runs)" : "") + " to level " + targetLevel + " using only this", Color.LIGHT_GRAY));
 		}
 		if (earns != null)
 		{
@@ -585,7 +596,8 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		for (MethodOption o : g.getOptions())
 		{
-			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.gpPerHour() / 1000).append(o.isAffordable());
+			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.gpPerHour() / 1000).append(o.isAffordable())
+				.append(Math.round(o.getXpPerHour() / 1000));
 		}
 		if (g.getPlayer() != null)
 		{
