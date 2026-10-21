@@ -398,4 +398,19 @@ public class GuideCoverageTest
 		assertEquals(3, o.runs(5_000));
 		assertFalse(willows.getStops().isEmpty());
 	}
+
+	@Test
+	public void banksAtTheClosestBank()
+	{
+		Method glass = guides.byId("craft_glass_beer");
+		StepResolver resolver = new StepResolver(id -> 10);
+		// Standing next to Varrock East bank with the materials banked: no trip to the GE
+		PlayerState s = player(Skill.CRAFTING, 5, new ItemCounts(Map.of(ItemID.MOLTEN_GLASS, 100,
+			ItemID.GLASSBLOWINGPIPE, 1)))
+			.location(new net.runelite.api.coords.WorldPoint(3255, 3420, 0))
+			.build();
+		GuideStep step = resolver.resolve(glass, s, 10, false, resolver.requirements(glass, s, 50));
+		assertEquals(StepType.BANK, step.getType());
+		assertEquals("Bank", step.getTitle());
+	}
 }

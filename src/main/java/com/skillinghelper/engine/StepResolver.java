@@ -431,7 +431,7 @@ public final class StepResolver
 			}
 		}
 
-		Location bank = m.getBank() != null ? m.getBank() : GRAND_EXCHANGE;
+		Location bank = bankFor(m, s);
 
 		List<Requirement> missing = new ArrayList<>();
 		List<Requirement> inBank = new ArrayList<>();
@@ -732,6 +732,33 @@ public final class StepResolver
 			.line("Every stop on this run is done. Train another skill meanwhile and come back when it's ready; "
 				+ "this guide picks up again on its own.")
 			.build();
+	}
+
+	/**
+	 * The bank to use: the closest one to the player. A method's own bank (picked for the route, e.g. not across a
+	 * river, or a bank chest inside the activity) wins unless another is much closer as the crow flies. Falls back
+	 * to the method's bank, or the GE, when the player's position doesn't help (in an instance or underground).
+	 */
+	static Location bankFor(Method m, PlayerState s)
+	{
+		Location own = m.getBank() != null ? m.getBank() : GRAND_EXCHANGE;
+		if (s.isInInstance() || s.getLocation() == null)
+		{
+			return own;
+		}
+		Location nearest = Banks.nearest(s.getLocation(), s.isMembersWorld());
+		if (nearest == null)
+		{
+			return own;
+		}
+		int ownDistance = Banks.distance(s.getLocation(), own.getPoint());
+		int nearestDistance = Banks.distance(s.getLocation(), nearest.getPoint());
+		if (m.getBank() == null)
+		{
+			// No preferred bank (the GE is only a fallback), so just take the closest
+			return ownDistance <= nearestDistance ? own : nearest;
+		}
+		return ownDistance <= nearestDistance * 3 / 2 + 10 ? own : nearest;
 	}
 
 	private static void travel(GuideStep.GuideStepBuilder b, Route route)
