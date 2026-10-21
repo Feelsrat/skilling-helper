@@ -17,6 +17,7 @@ import net.runelite.api.gameval.ItemID;
  */
 final class ConstructionGuide
 {
+	private static final Location SAWMILL = Location.of("Varrock sawmill", 3302, 3491, 5);
 	private static final String WIKI = "Construction_training";
 	private static final Location HOUSE_PORTAL = Location.of("Rimmington house portal", 2954, 3224, 8);
 	private static final ItemReq HAMMER = ItemReq.tool("Hammer", ItemID.HAMMER);
@@ -70,6 +71,43 @@ final class ConstructionGuide
 		);
 	}
 
+	/**
+	 * Planks, which the sawmill operator north-east of Varrock makes from logs for a fee.
+	 */
+	private static ItemReq sawn(String plankName, int perBuild, int plank)
+	{
+		int logs;
+		String logName;
+		int fee;
+		switch (plank)
+		{
+			case ItemID.PLANK_OAK:
+				logs = ItemID.OAK_LOGS;
+				logName = "Oak logs";
+				fee = 250;
+				break;
+			case ItemID.PLANK_TEAK:
+				logs = ItemID.TEAK_LOGS;
+				logName = "Teak logs";
+				fee = 500;
+				break;
+			case ItemID.PLANK_MAHOGANY:
+				logs = ItemID.MAHOGANY_LOGS;
+				logName = "Mahogany logs";
+				fee = 1_500;
+				break;
+			default:
+				logs = ItemID.LOGS;
+				logName = "Logs";
+				fee = 100;
+				break;
+		}
+		return ItemReq.consumed(plankName, 24, perBuild, plank)
+			.madeFrom("Buy-plank from the sawmill operator: " + logName.toLowerCase() + " and " + fee
+				+ " gp per plank", false, ItemReq.part(logName, 1, logs), ItemReq.stack("Coins", fee, ItemID.COINS))
+			.madeAt(SAWMILL, Target.npc("Buy-plank", "Sawmill operator"));
+	}
+
 	private static Method.MethodBuilder build(String id, String name, int level, double xp, int planks,
 		String plankName, int plank, String space)
 	{
@@ -86,7 +124,7 @@ final class ConstructionGuide
 			.instanced(true)
 			.bank(Banks.GRAND_EXCHANGE)
 			.tool(HAMMER).tool(SAW)
-			.input(ItemReq.consumed(plankName, 24, planks, plank))
+			.input(sawn(plankName, planks, plank))
 			.target(Target.object("Build", space))
 			.target(Target.object("Remove", name.substring(0, name.length() - 1)))
 			.instruction("In build mode, build " + name.toLowerCase() + " in the " + space.toLowerCase()

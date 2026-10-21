@@ -242,6 +242,17 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "bankFilterOn",
+		name = "",
+		description = "Whether the bank filter is switched on; it stays on between bank visits until turned off",
+		hidden = true
+	)
+	default boolean bankFilterOn()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "hintArrow",
 		name = "Hint arrow",
 		description = "Show the yellow game hint arrow over the destination",

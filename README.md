@@ -29,6 +29,12 @@ RuneLite's and Jagex's third-party client rules.
   works. When a run is done the panel says how long until the next one, countdown infoboxes show when bird houses,
   herbs, trees and allotments are ready, and you get a notification when it's time for a run (all can be turned
   off under Run timers in the plugin settings).
+- **Making things first**: when an input is cheaper to make, or you already have what it's made from, the guide
+  has you make it: baskets of fruit for gardeners, unfinished potions from herbs and vials, ground secondaries,
+  gold bars and molten glass at the furnace, leather at the tanner and planks at the sawmill (with the route
+  there). Items the GE doesn't sell, like the barbarian rod or an enchanted gem, send you to where you get them.
+- **Bank filter stays on**: once you switch on "show only items for this guide" in the bank, it stays on between
+  bank visits until you switch it off.
 - **Combat gear**: combat and Slayer guides suggest the best weapon and armour you can wear for melee or ranged:
   wear it if it's in your bank, or buy the upgrade (price shown). Always optional.
 - **Time to goal**: the panel shows the estimated time to your target level for the whole plan, and for each method.

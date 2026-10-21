@@ -101,11 +101,12 @@ final class FarmingGuide
 				.wikiPage("Tithe_Farm")
 				.build(),
 			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 20_000,
-				ItemReq.consumed("Baskets of tomatoes (gardener payment)", 5, 1, ItemID.BASKET_TOMATO_5)),
+				basket("Baskets of tomatoes (gardener payment)", ItemID.BASKET_TOMATO_5, "tomatoes", ItemID.TOMATO)),
 			treeRun("farm_tree_willow", "Willow tree runs", 30, 1_481, "Willow saplings", ItemID.PLANTPOT_WILLOW_SAPLING,
-				50_000, ItemReq.consumed("Baskets of apples (gardener payment)", 5, 1, ItemID.BASKET_APPLE_5)),
+				50_000, basket("Baskets of apples (gardener payment)", ItemID.BASKET_APPLE_5, "cooking apples",
+					ItemID.COOKING_APPLE)),
 			treeRun("farm_tree_maple", "Maple tree runs", 45, 3_448, "Maple saplings", ItemID.PLANTPOT_MAPLE_SAPLING,
-				100_000, ItemReq.consumed("Baskets of oranges (gardener payment)", 5, 1, ItemID.BASKET_ORANGE_5)),
+				100_000, basket("Baskets of oranges (gardener payment)", ItemID.BASKET_ORANGE_5, "oranges", ItemID.ORANGE)),
 			treeRun("farm_tree_yew", "Yew tree runs", 60, 7_150, "Yew saplings", ItemID.PLANTPOT_YEW_SAPLING, 150_000,
 				ItemReq.consumed("Cactus spines (10 per tree, gardener payment)", 50, 10, ItemID.CACTUS_SPINE)),
 			treeRun("farm_tree_magic", "Magic tree runs", 75, 13_913, "Magic saplings", ItemID.PLANTPOT_MAGIC_TREE_SAPLING,
@@ -136,6 +137,18 @@ final class FarmingGuide
 				.wikiPage("Herb_run")
 				.build()
 		);
+	}
+
+	/**
+	 * A full basket of fruit for a gardener. These are rarely on the GE, so the guide has the player fill empty
+	 * baskets (GE, or Sarah's farming shop south of Falador) with 5 fruit each.
+	 */
+	private static ItemReq basket(String name, int full, String fruitName, int fruit)
+	{
+		return ItemReq.consumed(name, 5, 1, full).madeFrom("Use " + fruitName + " on empty baskets (5 per basket). "
+				+ "Empty baskets are on the GE or at Sarah's farming shop south of Falador", true,
+			ItemReq.part("Empty baskets", 1, ItemID.BASKET_EMPTY),
+			ItemReq.part(Character.toUpperCase(fruitName.charAt(0)) + fruitName.substring(1), 5, fruit));
 	}
 
 	private static Method treeRun(String id, String name, int level, double xp, String saplingName, int sapling,

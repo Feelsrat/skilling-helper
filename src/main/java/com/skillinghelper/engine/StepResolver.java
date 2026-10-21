@@ -85,6 +85,13 @@ public final class StepResolver
 
 		for (ItemReq tool : m.getTools())
 		{
+			if (tool.hasSubstitute() && s.owned(tool.getSubstituteIds()) > 0)
+			{
+				Requirement r = itemRequirement(ItemReq.tool(tool.getSubstituteName(), tool.getSubstituteIds()), s, 1, 1);
+				reqs.add(new Requirement(r.getText() + " (instead of " + tool.getName().toLowerCase() + ")",
+					r.getStatus(), r.getItemIds(), r.getQuantity(), r.getBuyCost()));
+				continue;
+			}
 			reqs.add(itemRequirement(tool, s, 1, 1));
 		}
 
@@ -99,6 +106,21 @@ public final class StepResolver
 				continue;
 			}
 			long needed = (long) Math.max(actions, 1) * input.getPerAction();
+			if (making(input, s))
+			{
+				long toMake = Math.max(1, needed - s.owned(input.getIds()));
+				int perTrip = makePerTrip(m, input, s);
+				reqs.add(new Requirement(input.getName() + ": make them yourself. " + input.getRecipeText() + ".",
+					Requirement.Status.INFO, new int[0], 0, 0));
+				for (ItemReq part : input.getRecipe())
+				{
+					Requirement r = itemRequirement(part, s, toMake * part.getPerAction(),
+						Math.max(1, perTrip * part.getPerAction()));
+					reqs.add(new Requirement(r.getText() + " (to make " + input.getName().toLowerCase() + ")",
+						r.getStatus(), r.getItemIds(), r.getQuantity(), r.getBuyCost()));
+				}
+				continue;
+			}
 			int trip = (int) Math.min(input.isWholeStack() ? Integer.MAX_VALUE : input.getQuantity(), Math.max(needed, 1));
 			Requirement r = itemRequirement(input, s, needed, trip);
 			if (input.hasSubstitute() && r.getStatus() == Requirement.Status.MISSING)
@@ -204,6 +226,11 @@ public final class StepResolver
 		if (banked > 0)
 		{
 			return new Requirement(name + (consumed ? counts : " (in bank)"), Requirement.Status.IN_BANK, req.getIds(),
+				trip, 0);
+		}
+		if (req.getSource() != null)
+		{
+			return new Requirement(name + counts + " - " + req.getSource(), Requirement.Status.MISSING, req.getIds(),
 				trip, 0);
 		}
 		long toBuy = consumed ? Math.max(0, needed - banked) : 1;
@@ -457,6 +484,19 @@ public final class StepResolver
 			}
 		}
 
+		// Items the GE doesn't sell: go and get them from where they come from first
+		if (s.bankKnown())
+		{
+			for (ItemReq req : sourcedItems(m))
+			{
+				boolean substituted = req.hasSubstitute() && s.owned(req.getSubstituteIds()) > 0;
+				if (s.owned(req.getIds()) == 0 && !substituted)
+				{
+					return sourceStep(m, req, s);
+				}
+			}
+		}
+
 		if (!missing.isEmpty())
 		{
 			if (!s.bankKnown())
@@ -487,11 +527,26 @@ public final class StepResolver
 			return b.build();
 		}
 
-		boolean gather = m.getType() != MethodType.PROCESS;
-		boolean needsInputs = false;
+		// Inputs made from parts (baskets of apples, unfinished potions): make them as soon as the parts are carried,
+		// and otherwise fetch only the parts so they fit in the inventory
+		List<ItemReq> toMake = new ArrayList<>();
 		for (ItemReq input : m.getInputs())
 		{
-			if (needsWithdraw(input, s, gather))
+			if (making(input, s))
+			{
+				if (partsCarried(input, s))
+				{
+					return makeStep(input, s);
+				}
+				toMake.add(input);
+			}
+		}
+
+		boolean gather = m.getType() != MethodType.PROCESS;
+		boolean needsInputs = !toMake.isEmpty();
+		for (ItemReq input : m.getInputs())
+		{
+			if (!toMake.contains(input) && needsWithdraw(input, s, gather))
 			{
 				needsInputs = true;
 				break;
@@ -511,7 +566,23 @@ public final class StepResolver
 				}
 			}
 			GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, optionalInBank, m, true);
-			if (needsInputs)
+			for (ItemReq input : toMake)
+			{
+				int perTrip = makePerTrip(m, input, s);
+				for (ItemReq part : input.getRecipe())
+				{
+					b.line(part.getPerAction() == 0
+						? String.format("• Withdraw a %s (to make %s)", part.getName().toLowerCase(),
+							input.getName().toLowerCase())
+						: String.format("• Withdraw %,d x %s (to make %s)", perTrip * part.getPerAction(),
+							part.getName(), input.getName().toLowerCase()));
+					for (int id : part.getIds())
+					{
+						b.itemHighlight(id, ItemHighlight.WITHDRAW);
+					}
+				}
+			}
+			if (needsInputs && toMake.isEmpty())
 			{
 				for (ItemReq input : m.getInputs())
 				{
@@ -800,9 +871,158 @@ public final class StepResolver
 				{
 					return true;
 				}
+				for (ItemReq part : input.getRecipe())
+				{
+					if (part.matches(id))
+					{
+						return true;
+					}
+				}
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Whether the player should make this input from its recipe instead of buying it: they don't have enough of it,
+	 * and they already own the parts, making is cheaper, or it's hardly ever sold.
+	 */
+	private boolean making(ItemReq input, PlayerState s)
+	{
+		if (!input.hasRecipe() || s.owned(input.getIds()) >= Math.max(1, input.getQuantity()))
+		{
+			return false;
+		}
+		if (input.isAlwaysMake())
+		{
+			return true;
+		}
+		boolean haveParts = true;
+		long partsCost = 0;
+		for (ItemReq part : input.getRecipe())
+		{
+			haveParts &= s.owned(part.getIds()) >= part.getPerAction();
+			partsCost += (long) prices.price(part.primaryId()) * part.getPerAction();
+		}
+		int price = prices.price(input.primaryId());
+		return haveParts || price <= 0 || partsCost < price;
+	}
+
+	/**
+	 * How many to make per bank trip: enough for one trip of the method, as far as the parts fit in the inventory.
+	 */
+	private static int makePerTrip(Method m, ItemReq input, PlayerState s)
+	{
+		// Leave room for the method's tools
+		int space = 28 - m.getTools().size() - (m.getToolType() != null ? 1 : 0);
+		int slots = 0;
+		for (ItemReq part : input.getRecipe())
+		{
+			if (part.isWholeStack())
+			{
+				// Coins and other stackables take one slot whatever the amount
+				space--;
+			}
+			else if (part.getPerAction() == 0)
+			{
+				// A tool such as a pestle and mortar
+				space--;
+			}
+			else
+			{
+				slots += part.getPerAction();
+			}
+		}
+		int want = Math.max(1, input.getQuantity()) - s.owned(input.getIds());
+		return Math.max(1, Math.min(want, space / Math.max(1, slots)));
+	}
+
+	private static List<ItemReq> sourcedItems(Method m)
+	{
+		List<ItemReq> sourced = new ArrayList<>();
+		for (ItemReq req : m.getTools())
+		{
+			if (req.getSource() != null)
+			{
+				sourced.add(req);
+			}
+		}
+		for (ItemReq req : m.getInputs())
+		{
+			if (req.getSource() != null)
+			{
+				sourced.add(req);
+			}
+		}
+		return sourced;
+	}
+
+	/**
+	 * Sends the player to get an item the GE doesn't sell, e.g. a barbarian rod from Otto.
+	 */
+	private static GuideStep sourceStep(Method m, ItemReq req, PlayerState s)
+	{
+		Location where = req.getSourceAt() != null ? req.getSourceAt() : m.getLocation();
+		GuideStep.GuideStepBuilder b = GuideStep.builder();
+		if (req.getSourceTarget() != null)
+		{
+			b.highlight(req.getSourceTarget());
+		}
+		if (!where.contains(s.getLocation()))
+		{
+			Route route = Route.to(s, where);
+			b.type(StepType.WALK).title(route.title())
+				.line("You need a " + req.getName().toLowerCase() + ", which isn't sold on the GE. " + req.getSource()
+					+ ".");
+			travel(b, route);
+			return b.build();
+		}
+		return b.type(StepType.GET_ITEMS)
+			.title("Get a " + req.getName().toLowerCase())
+			.line(req.getSource() + ".")
+			.build();
+	}
+
+	private static boolean partsCarried(ItemReq input, PlayerState s)
+	{
+		for (ItemReq part : input.getRecipe())
+		{
+			if (s.getInventory().count(part.getIds()) < Math.max(1, part.getPerAction()))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static GuideStep makeStep(ItemReq input, PlayerState s)
+	{
+		GuideStep.GuideStepBuilder b = GuideStep.builder();
+		Location where = input.getMakeAt();
+		if (where != null && !where.contains(s.getLocation()))
+		{
+			Route route = Route.to(s, where);
+			b.type(StepType.WALK).title(route.title())
+				.line("To make " + input.getName().toLowerCase() + ": " + input.getRecipeText() + ".");
+			travel(b, route);
+			return b.build();
+		}
+		b.type(StepType.MAKE)
+			.title("Make " + input.getName().toLowerCase())
+			.line(input.getRecipeText() + ".")
+			.line("Make as many as your parts allow; the guide carries on once you're done.");
+		if (input.getMakeTarget() != null)
+		{
+			b.highlight(input.getMakeTarget());
+		}
+		for (ItemReq part : input.getRecipe())
+		{
+			for (int id : part.getIds())
+			{
+				b.itemHighlight(id, ItemHighlight.USE);
+			}
+		}
+		return b.build();
 	}
 
 	private static boolean carriesProduct(Method m, PlayerState s)

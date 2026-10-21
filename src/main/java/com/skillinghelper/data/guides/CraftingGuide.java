@@ -27,6 +27,13 @@ final class CraftingGuide
 	private static final ItemReq PIPE = ItemReq.tool("Glassblowing pipe", ItemID.GLASSBLOWINGPIPE);
 	private static final ItemReq RING_MOULD = ItemReq.tool("Ring mould", ItemID.RING_MOULD);
 	private static final Location EDGEVILLE_FURNACE = Location.of("Edgeville furnace", 3109, 3499, 4);
+	private static final Target FURNACE = Target.object("Smelt", "Furnace");
+	private static final Location TANNER = Location.of("Al Kharid tanner (Ellis)", 3274, 3191, 4);
+	private static final ItemReq MOLTEN_GLASS = ItemReq.consumed("Molten glass", 27, 1, ItemID.MOLTEN_GLASS)
+		.madeFrom("Use the buckets of sand on the furnace with soda ash in your inventory", false,
+			ItemReq.part("Buckets of sand", 1, ItemID.BUCKET_SAND),
+			ItemReq.part("Soda ash", 1, ItemID.SODA_ASH))
+		.madeAt(EDGEVILLE_FURNACE, FURNACE);
 
 	static List<Method> methods()
 	{
@@ -109,11 +116,58 @@ final class CraftingGuide
 	{
 		return bankstanding(id, "Craft " + name.toLowerCase(), level, xp, 1_400, false)
 			.tool(NEEDLE).tool(THREAD)
-			.input(ItemReq.consumed(leatherName, 26, perItem, leather))
+			.input(tanned(leatherName, 26, perItem, leather))
 			.product(product)
 			.useItem(ItemID.NEEDLE).useItem(leather)
 			.instruction("Use the needle on the " + leatherName.toLowerCase() + " and make " + name.toLowerCase())
 			.notes("Thread runs out every 5 items; keep a stack of it in your inventory.");
+	}
+
+	/**
+	 * Leather, which Ellis the tanner in Al Kharid makes from hides for a small fee.
+	 */
+	private static ItemReq tanned(String name, int carry, int perItem, int leather)
+	{
+		int hide;
+		String hideName;
+		int fee;
+		switch (leather)
+		{
+			case ItemID.HARD_LEATHER:
+				hide = ItemID.COW_HIDE;
+				hideName = "Cowhides";
+				fee = 3;
+				break;
+			case ItemID.DRAGON_LEATHER:
+				hide = ItemID.DRAGONHIDE_GREEN;
+				hideName = "Green dragonhides";
+				fee = 20;
+				break;
+			case ItemID.DRAGON_LEATHER_BLUE:
+				hide = ItemID.DRAGONHIDE_BLUE;
+				hideName = "Blue dragonhides";
+				fee = 20;
+				break;
+			case ItemID.DRAGON_LEATHER_RED:
+				hide = ItemID.DRAGONHIDE_RED;
+				hideName = "Red dragonhides";
+				fee = 20;
+				break;
+			case ItemID.DRAGON_LEATHER_BLACK:
+				hide = ItemID.DRAGONHIDE_BLACK;
+				hideName = "Black dragonhides";
+				fee = 20;
+				break;
+			default:
+				hide = ItemID.COW_HIDE;
+				hideName = "Cowhides";
+				fee = 1;
+				break;
+		}
+		return ItemReq.consumed(name, carry, perItem, leather)
+			.madeFrom("Trade Ellis the tanner and tan your " + hideName.toLowerCase() + " (" + fee + " gp each)", false,
+				ItemReq.part(hideName, 1, hide), ItemReq.stack("Coins", fee, ItemID.COINS))
+			.madeAt(TANNER, Target.npc("Trade", "Ellis"));
 	}
 
 	private static Method.MethodBuilder furnace(String id, String name, int level, double xp, ItemReq mould,
@@ -129,9 +183,12 @@ final class CraftingGuide
 			.location(EDGEVILLE_FURNACE)
 			.bank(Banks.EDGEVILLE)
 			.tool(mould)
-			.input(ItemReq.consumed("Gold bars", gem == 0 ? 27 : 13, 1, ItemID.GOLD_BAR))
+			.input(ItemReq.consumed("Gold bars", gem == 0 ? 27 : 13, 1, ItemID.GOLD_BAR)
+				.madeFrom("Use the gold ore on the furnace to smelt gold bars", false,
+					ItemReq.part("Gold ore", 1, ItemID.GOLD_ORE))
+				.madeAt(EDGEVILLE_FURNACE, FURNACE))
 			.product(product)
-			.target(Target.object("Smelt", "Furnace"))
+			.target(FURNACE)
 			.useItem(ItemID.GOLD_BAR)
 			.instruction("Use a gold bar on the furnace and make " + name.toLowerCase())
 			.wikiPage(F2P_WIKI);
@@ -164,7 +221,7 @@ final class CraftingGuide
 		return bankstanding(id, "Blow " + name.toLowerCase(), level, xp, 1_700, true)
 			.tag(MethodTag.AFK)
 			.tool(PIPE)
-			.input(ItemReq.consumed("Molten glass", 27, 1, ItemID.MOLTEN_GLASS))
+			.input(MOLTEN_GLASS)
 			.product(product)
 			.useItem(ItemID.GLASSBLOWINGPIPE).useItem(ItemID.MOLTEN_GLASS)
 			.instruction("Use the glassblowing pipe on the molten glass and choose " + name.toLowerCase());
@@ -188,7 +245,7 @@ final class CraftingGuide
 		return bankstanding(id, "Craft " + name.toLowerCase(), level, xp, 1_700, true)
 			.tag(MethodTag.FAST)
 			.tool(NEEDLE).tool(THREAD)
-			.input(ItemReq.consumed(leatherName, 24, 3, leather))
+			.input(tanned(leatherName, 24, 3, leather))
 			.product(product)
 			.useItem(ItemID.NEEDLE).useItem(leather)
 			.instruction("Use the needle on the " + leatherName.toLowerCase() + " and make bodies (3 leather each)");

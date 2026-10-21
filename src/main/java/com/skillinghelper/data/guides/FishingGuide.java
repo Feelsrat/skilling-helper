@@ -50,7 +50,9 @@ final class FishingGuide
 				.build(),
 			fish("fish_barbarian_otto", "Barbarian fishing (Otto's Grotto)", 48, 60, 45_000,
 				Location.of("Otto's Grotto", 2500, 3510, 8), null, "Use-rod", "Fishing spot")
-				.tool(ItemReq.tool("Barbarian rod", ItemID.BRUT_FISHING_ROD, ItemID.FISHINGROD_PEARL_BRUT))
+				.tool(ItemReq.tool("Barbarian rod", ItemID.BRUT_FISHING_ROD, ItemID.FISHINGROD_PEARL_BRUT)
+					.from("Search the bed in Otto's hut at the grotto to get one (talk to Otto first to start the "
+						+ "training)", null, Target.object("Search", "Bed")))
 				.input(FEATHERS)
 				.product(ItemID.BRUT_SPAWNING_TROUT).product(ItemID.BRUT_SPAWNING_SALMON).product(ItemID.BRUT_STURGEON)
 				.members(true).tag(MethodTag.POWER).tag(MethodTag.FAST).dropByDefault(true)

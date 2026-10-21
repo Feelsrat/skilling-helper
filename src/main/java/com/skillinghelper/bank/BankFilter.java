@@ -19,13 +19,15 @@ import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.bank.BankSearch;
 
 /**
  * Adds a button to the bank that, like Quest Helper's, shows only the items the open guide needs. It hooks the
- * bank's own search filter script, so nothing is clicked or moved for the player.
+ * bank's own search filter script, so nothing is clicked or moved for the player. Once switched on it stays on,
+ * across bank visits and restarts, until the player switches it off.
  */
 @Singleton
 public class BankFilter
@@ -38,6 +40,7 @@ public class BankFilter
 	private final ItemManager itemManager;
 	private final SkillingHelperPlugin plugin;
 	private final SkillingHelperConfig config;
+	private final ConfigManager configManager;
 
 	@Getter
 	private boolean active;
@@ -45,7 +48,7 @@ public class BankFilter
 
 	@Inject
 	BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
-		SkillingHelperPlugin plugin, SkillingHelperConfig config)
+		SkillingHelperPlugin plugin, SkillingHelperConfig config, ConfigManager configManager)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
@@ -53,6 +56,8 @@ public class BankFilter
 		this.itemManager = itemManager;
 		this.plugin = plugin;
 		this.config = config;
+		this.configManager = configManager;
+		this.active = config.bankFilterOn();
 	}
 
 	public void toggle()
@@ -63,6 +68,7 @@ public class BankFilter
 	public void setActive(boolean active)
 	{
 		this.active = active;
+		configManager.setConfiguration(SkillingHelperConfig.GROUP, "bankFilterOn", active);
 		updateButton();
 		if (client.getItemContainer(InventoryID.BANK) != null)
 		{
@@ -74,9 +80,11 @@ public class BankFilter
 	{
 		clientThread.invoke(() ->
 		{
-			if (active)
+			// Show the whole bank again, but remember the setting for next time
+			active = false;
+			if (client.getItemContainer(InventoryID.BANK) != null)
 			{
-				setActive(false);
+				bankSearch.layoutBank();
 			}
 			removeButton();
 		});
@@ -96,7 +104,6 @@ public class BankFilter
 	{
 		if (e.getGroupId() == InterfaceID.BANKMAIN)
 		{
-			active = false;
 			button = null;
 		}
 	}
@@ -105,7 +112,8 @@ public class BankFilter
 	@Subscribe(priority = -1)
 	public void onScriptCallbackEvent(ScriptCallbackEvent e)
 	{
-		if (!active)
+		// No guide open means no items to show, so show the whole bank
+		if (!active || !plugin.getGuide().isActive())
 		{
 			return;
 		}

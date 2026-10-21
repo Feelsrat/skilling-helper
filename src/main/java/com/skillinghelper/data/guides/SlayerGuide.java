@@ -1,6 +1,7 @@
 package com.skillinghelper.data.guides;
 
 import com.skillinghelper.data.CombatStyle;
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -9,6 +10,7 @@ import com.skillinghelper.data.Target;
 import java.util.List;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Based on the OSRS wiki "Slayer training" guide. Slayer is trained by killing assigned monsters, so each method is
@@ -63,11 +65,15 @@ final class SlayerGuide
 			.tag(MethodTag.PROFIT)
 			.gearStyle(CombatStyle.MELEE)
 			.supply(Supplies.food(combat >= 40 ? 20 : 10))
+			.tool(ItemReq.tool("Enchanted gem", ItemID.SLAYER_GEM)
+				.orUse("Slayer ring", ItemID.SLAYER_RING_ETERNAL, ItemID.SLAYER_RING_8, ItemID.SLAYER_RING_7,
+					ItemID.SLAYER_RING_6, ItemID.SLAYER_RING_5, ItemID.SLAYER_RING_4, ItemID.SLAYER_RING_3,
+					ItemID.SLAYER_RING_2, ItemID.SLAYER_RING_1)
+				.from("Buy one from " + name + " for 1 gp", null, Target.npc("Trade", name)))
 			.location(where)
 			.target(Target.npc("Assignment", name, "Steve"))
 			.instruction("Get a task from " + name + ", then check it with your enchanted gem and go kill the monsters")
-			.notes("Any Slayer master gives you a free enchanted gem if you ask. Use the best master your combat level "
-				+ "allows: harder masters give much more xp per task.")
+			.notes("Use the best master your combat level allows: harder masters give much more xp per task.")
 			.wikiPage(WIKI);
 	}
 

@@ -306,4 +306,76 @@ public class GuideCoverageTest
 		}
 		assertTrue(ids.size() >= 16);
 	}
+
+	@Test
+	public void basketsOfApplesAreMadeFromCookingApples()
+	{
+		Method willows = guides.byId("farm_tree_willow");
+		StepResolver resolver = new StepResolver(id -> 100);
+		ItemCounts bank = new ItemCounts(Map.of(ItemID.COINS, 100_000, ItemID.PLANTPOT_WILLOW_SAPLING, 5,
+			ItemID.COOKING_APPLE, 25, ItemID.BASKET_EMPTY, 5));
+		PlayerState s = player(Skill.FARMING, 35, bank)
+			.inventory(new ItemCounts(Map.of(ItemID.SPADE, 1)))
+			.build();
+		List<Requirement> reqs = resolver.requirements(willows, s, 5);
+		assertTrue(reqs.stream().anyMatch(r -> r.getText().startsWith("Baskets of apples (gardener payment): make")));
+		GuideStep step = resolver.resolve(willows, s, 40, false, reqs);
+		assertEquals(StepType.BANK, step.getType());
+		assertTrue(step.getDetails().contains("• Withdraw 20 x Cooking apples (to make baskets of apples "
+			+ "(gardener payment))"));
+
+		PlayerState carrying = player(Skill.FARMING, 35, bank)
+			.inventory(new ItemCounts(Map.of(ItemID.SPADE, 1, ItemID.COOKING_APPLE, 20, ItemID.BASKET_EMPTY, 4)))
+			.build();
+		step = resolver.resolve(willows, carrying, 40, false, resolver.requirements(willows, carrying, 5));
+		assertEquals(StepType.MAKE, step.getType());
+	}
+
+	@Test
+	public void unfinishedPotionsAreMadeWhenYouHaveTheHerbs()
+	{
+		Method prayer = guides.byId("herb_prayer");
+		StepResolver resolver = new StepResolver(id -> 500);
+		PlayerState s = player(Skill.HERBLORE, 40, new ItemCounts(Map.of(ItemID.RANARR_WEED, 50,
+			ItemID.VIAL_WATER, 50, ItemID.SNAPE_GRASS, 50)))
+			.completedQuests(Set.of(Quest.DRUIDIC_RITUAL))
+			.location(prayer.getLocation().getPoint())
+			.build();
+		GuideStep step = resolver.resolve(prayer, s, 45, false, resolver.requirements(prayer, s, 100));
+		assertEquals(StepType.BANK, step.getType());
+		assertTrue(step.getDetails().contains("• Withdraw 14 x Clean ranarr (to make ranarr potions (unf))"));
+		assertTrue(step.getDetails().stream().noneMatch(l -> l.contains("Snape grass")));
+	}
+
+	@Test
+	public void itemsTheGeDoesntSellSendYouToTheirSource()
+	{
+		Method otto = guides.byId("fish_barbarian_otto");
+		StepResolver resolver = new StepResolver(id -> 10);
+		PlayerState s = player(Skill.FISHING, 50, new ItemCounts(Map.of(ItemID.FEATHER, 1_000))).build();
+		GuideStep step = resolver.resolve(otto, s, 55, false, resolver.requirements(otto, s, 100));
+		assertEquals(StepType.WALK, step.getType());
+		assertTrue(step.getDetails().get(0).contains("Search the bed in Otto's hut"));
+
+		// A slayer ring replaces the enchanted gem
+		Method turael = guides.byId("slayer_turael");
+		PlayerState ringed = player(Skill.SLAYER, 5, new ItemCounts(Map.of(ItemID.SLAYER_RING_8, 1))).build();
+		List<Requirement> reqs = resolver.requirements(turael, ringed, 10);
+		assertTrue(reqs.stream().anyMatch(r -> r.getText().startsWith("Slayer ring (in bank) (instead of enchanted gem)")));
+	}
+
+	@Test
+	public void planksAreMadeAtTheSawmillWhenCheaper()
+	{
+		Method larders = guides.byId("con_oak_larders");
+		StepResolver resolver = new StepResolver(id -> id == ItemID.PLANK_OAK ? 600 : id == ItemID.OAK_LOGS ? 50 : 1);
+		PlayerState s = player(Skill.CONSTRUCTION, 40, new ItemCounts(Map.of(ItemID.COINS, 1_000_000,
+			ItemID.OAK_LOGS, 500)))
+			.inventory(new ItemCounts(Map.of(ItemID.HAMMER, 1, ItemID.POH_SAW, 1, ItemID.OAK_LOGS, 24,
+				ItemID.COINS, 10_000)))
+			.build();
+		GuideStep step = resolver.resolve(larders, s, 45, false, resolver.requirements(larders, s, 100));
+		assertEquals(StepType.WALK, step.getType());
+		assertEquals("Go to Varrock sawmill", step.getTitle());
+	}
 }
