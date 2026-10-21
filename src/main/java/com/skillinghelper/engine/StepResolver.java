@@ -589,6 +589,10 @@ public final class StepResolver
 			{
 				b.line(progress);
 			}
+			if (stop != null && stop.getHint() != null)
+			{
+				b.line(stop.getHint() + ".");
+			}
 			travel(b, route);
 			return b.line("Then: " + m.getInstruction() + ".")
 				.build();

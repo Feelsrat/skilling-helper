@@ -1,7 +1,9 @@
 package com.skillinghelper;
 
 import com.skillinghelper.data.Method;
+import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.SkillOutfit;
+import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
@@ -255,5 +257,53 @@ public class GuideCoverageTest
 		GuideStep step = resolver.resolve(birdhouses, s, 40, false, resolver.requirements(birdhouses, s, 8));
 		assertEquals(StepType.WAIT, step.getType());
 		assertEquals("Run done: next one ready in ~12 min", step.getTitle());
+	}
+
+	@Test
+	public void patchStatesTellGrowingFromReady()
+	{
+		// Ranarr just planted, ranarr ready, weeds
+		assertEquals(80, PatchType.HERB.minutesLeft(32));
+		assertEquals(20, PatchType.HERB.minutesLeft(35));
+		assertEquals(0, PatchType.HERB.minutesLeft(36));
+		assertEquals(0, PatchType.HERB.minutesLeft(3));
+		// Oak waiting for a health check
+		assertEquals(0, PatchType.TREE.minutesLeft(12));
+		assertEquals(160, PatchType.TREE.minutesLeft(8));
+	}
+
+	@Test
+	public void herbRunSkipsGrowingPatchesAndSaysHowToGetThere()
+	{
+		Method herbs = guides.byId("farm_herb_runs");
+		StepResolver resolver = new StepResolver(id -> 100);
+		PlayerState s = player(Skill.FARMING, 40, new ItemCounts(Map.of(ItemID.COINS, 10_000)))
+			.inventory(new ItemCounts(Map.of(ItemID.SPADE, 1, ItemID.RAKE, 1, ItemID.DIBBER, 1, ItemID.RANARR_SEED, 5)))
+			.stopWaits(Map.of("herb_falador", 30, "herb_port_phasmatys", 40))
+			.build();
+		GuideStep step = resolver.resolve(herbs, s, 50, false, resolver.requirements(herbs, s, 10));
+		assertEquals(StepType.WALK, step.getType());
+		assertEquals("Go to Catherby herb patch", step.getTitle());
+		assertTrue(step.getDetails().stream().anyMatch(l -> l.startsWith("Fastest: Camelot Teleport")));
+	}
+
+	@Test
+	public void everyRunStopHasAUniqueIdAndPatchVarbit()
+	{
+		Set<String> ids = new java.util.HashSet<>();
+		for (Method m : guides.all())
+		{
+			Set<String> inMethod = new java.util.HashSet<>();
+			for (Stop stop : m.getStops())
+			{
+				assertTrue(m.getId() + " repeats " + stop.getId(), inMethod.add(stop.getId()));
+				ids.add(stop.getId());
+				if (stop.getPatch() != null)
+				{
+					assertTrue(stop.getId(), stop.getVarbit() > 0);
+				}
+			}
+		}
+		assertTrue(ids.size() >= 16);
 	}
 }

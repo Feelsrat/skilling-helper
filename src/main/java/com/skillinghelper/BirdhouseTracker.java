@@ -1,6 +1,5 @@
 package com.skillinghelper;
 
-import java.awt.Color;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,19 +8,13 @@ import javax.inject.Singleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.api.Client;
-import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.VarPlayerID;
-import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.game.ItemManager;
-import net.runelite.client.plugins.Plugin;
-import net.runelite.client.ui.overlay.infobox.InfoBox;
-import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 /**
  * Follows the four Fossil Island bird houses through their varps, the same way RuneLite's Time Tracking plugin does,
- * and remembers when each one was seeded so the guide knows which still need a visit. Also shows a countdown until
- * they're full and sends a notification when it's time for a run. Everything runs on the client thread.
+ * and remembers when each one was seeded so the guide knows which still need a visit and when they'll be full.
+ * Everything runs on the client thread.
  */
 @Singleton
 class BirdhouseTracker
@@ -49,14 +42,6 @@ class BirdhouseTracker
 	private Client client;
 	@Inject
 	private ConfigManager configManager;
-	@Inject
-	private SkillingHelperConfig config;
-	@Inject
-	private InfoBoxManager infoBoxManager;
-	@Inject
-	private ItemManager itemManager;
-	@Inject
-	private Notifier notifier;
 
 	private final int[] values = new int[Space.values().length];
 	/**
@@ -64,12 +49,11 @@ class BirdhouseTracker
 	 */
 	private final long[] changed = new long[Space.values().length];
 	private boolean loaded;
-	private boolean notified;
 	/**
 	 * When every seeded bird house will be full, in epoch seconds, or 0 if none are seeded.
 	 */
+	@Getter
 	private long readyAt;
-	private Countdown countdown;
 
 	/**
 	 * Loads the saved timestamps for the logged-in account and catches up on changes made while it wasn't tracked.
@@ -99,15 +83,12 @@ class BirdhouseTracker
 		}
 		loaded = true;
 		updateReadyAt();
-		// Don't notify on login for houses that filled up while logged out; the countdown already says "Ready"
-		notified = readyAt <= now();
 	}
 
 	void reset()
 	{
 		loaded = false;
 		readyAt = 0;
-		removeCountdown();
 	}
 
 	void onVarpChanged(int varpId, int value)
@@ -124,38 +105,6 @@ class BirdhouseTracker
 				record(i, value);
 				updateReadyAt();
 			}
-		}
-	}
-
-	/**
-	 * Updates the countdown and notifies once the bird houses are full. Call every game tick.
-	 */
-	void tick(Plugin plugin)
-	{
-		if (!loaded)
-		{
-			return;
-		}
-		long now = now();
-		if (readyAt > now)
-		{
-			notified = false;
-		}
-		else if (readyAt > 0 && !notified)
-		{
-			notified = true;
-			notifier.notify(config.birdhouseNotification(), "Your bird houses are full: time for a bird house run!");
-		}
-
-		boolean show = readyAt > 0 && config.birdhouseTimer();
-		if (show && countdown == null)
-		{
-			countdown = new Countdown(plugin);
-			infoBoxManager.addInfoBox(countdown);
-		}
-		else if (!show)
-		{
-			removeCountdown();
 		}
 	}
 
@@ -220,51 +169,8 @@ class BirdhouseTracker
 		return value > 0 && value % 3 == 0;
 	}
 
-	private void removeCountdown()
-	{
-		if (countdown != null)
-		{
-			infoBoxManager.removeInfoBox(countdown);
-			countdown = null;
-		}
-	}
-
 	private static long now()
 	{
 		return Instant.now().getEpochSecond();
-	}
-
-	private final class Countdown extends InfoBox
-	{
-		Countdown(Plugin plugin)
-		{
-			super(itemManager.getImage(ItemID.BIRDHOUSE_OAK), plugin);
-		}
-
-		private long secondsLeft()
-		{
-			return readyAt - now();
-		}
-
-		@Override
-		public String getText()
-		{
-			long left = secondsLeft();
-			return left <= 0 ? "Ready" : ((left + 59) / 60) + "m";
-		}
-
-		@Override
-		public Color getTextColor()
-		{
-			return secondsLeft() <= 0 ? Color.GREEN : Color.WHITE;
-		}
-
-		@Override
-		public String getTooltip()
-		{
-			long left = secondsLeft();
-			return left <= 0 ? "Bird houses are full: time for a run"
-				: "Bird houses full in ~" + ((left + 59) / 60) + " min";
-		}
 	}
 }

@@ -23,10 +23,12 @@ RuneLite's and Jagex's third-party client rules.
 - **Supplies**: every guide lists what to bring and withdraw first (e.g. logs, clockworks and seeds for birdhouse
   runs, enough traps for hunting, gardener payments for tree runs), plus optional extras like food, stamina
   potions and compost with their GE price.
-- **Bird house runs**: the guide leads you from one Fossil Island bird house to the next in run order, skipping
-  the ones already seeded, and bird houses you crafted in advance count instead of their logs and clockworks. A
-  countdown infobox shows when they're full, and you get a notification when it's time for a run (both can be
-  turned off in the plugin settings).
+- **Runs**: bird house, herb, tree and allotment runs lead you from one spot or patch to the next, with the fastest
+  teleport for each, and skip the ones still growing (read from the game's own patch and bird house state). Bird
+  houses you crafted in advance count instead of their logs and clockworks, and any herb or allotment seed you own
+  works. When a run is done the panel says how long until the next one, countdown infoboxes show when bird houses,
+  herbs, trees and allotments are ready, and you get a notification when it's time for a run (all can be turned
+  off under Run timers in the plugin settings).
 - **Combat gear**: combat and Slayer guides suggest the best weapon and armour you can wear for melee or ranged:
   wear it if it's in your bank, or buy the upgrade (price shown). Always optional.
 - **Time to goal**: the panel shows the estimated time to your target level for the whole plan, and for each method.

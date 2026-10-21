@@ -5,14 +5,17 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
+import com.skillinghelper.data.PatchType;
+import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.Target;
 import java.util.List;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
+import net.runelite.api.gameval.VarbitID;
 
 /**
- * Based on the OSRS wiki "Farming training" guide. Patch locations match RuneLite's world map. Runs visit several
- * patches; the guide points at the first one and lists the rest.
+ * Based on the OSRS wiki "Farming training" guide. Patch locations and varbits match RuneLite's world map and Time
+ * Tracking plugin. Runs lead the player from patch to patch, skipping patches that are still growing.
  */
 final class FarmingGuide
 {
@@ -22,6 +25,30 @@ final class FarmingGuide
 	private static final ItemReq DIBBER = ItemReq.tool("Seed dibber", ItemID.DIBBER);
 	private static final ItemReq COMPOST = ItemReq.supply("Compost (ultracompost is best)", 5,
 		ItemID.BUCKET_ULTRACOMPOST, ItemID.BUCKET_SUPERCOMPOST, ItemID.BUCKET_COMPOST);
+
+	// Each farming area keeps its herb patch in the same varbit; the varbit only means this patch when nearby
+	private static final List<Stop> HERB_PATCHES = List.of(
+		Stop.patch("herb_falador", "Falador herb patch", 3052, 3309, PatchType.HERB, VarbitID.FARMING_TRANSMIT_D,
+			"Fastest: explorer's ring 2+ teleport, or Falador Teleport and walk south"),
+		Stop.patch("herb_port_phasmatys", "Port Phasmatys herb patch", 3598, 3524, PatchType.HERB,
+			VarbitID.FARMING_TRANSMIT_D, "Fastest: ectophial, then walk west"),
+		Stop.patch("herb_catherby", "Catherby herb patch", 2810, 3462, PatchType.HERB, VarbitID.FARMING_TRANSMIT_D,
+			"Fastest: Camelot Teleport, then walk east to Catherby"),
+		Stop.patch("herb_ardougne", "Ardougne herb patch", 2663, 3375, PatchType.HERB, VarbitID.FARMING_TRANSMIT_D,
+			"Fastest: Ardougne cloak farm teleport, or Ardougne Teleport and walk north"),
+		Stop.patch("herb_hosidius", "Hosidius herb patch", 1729, 3558, PatchType.HERB, VarbitID.FARMING_TRANSMIT_D,
+			"Fastest: Xeric's talisman (Xeric's Glade) or a Hosidius house teleport"));
+	private static final List<Stop> TREE_PATCHES = List.of(
+		Stop.patch("tree_lumbridge", "Lumbridge tree patch", 3189, 3233, PatchType.TREE, VarbitID.FARMING_TRANSMIT_A,
+			"Fastest: Lumbridge Teleport or home teleport"),
+		Stop.patch("tree_varrock", "Varrock tree patch", 3226, 3457, PatchType.TREE, VarbitID.FARMING_TRANSMIT_A,
+			"Fastest: Varrock Teleport, then walk north-east to the castle"),
+		Stop.patch("tree_falador", "Falador tree patch", 3005, 3375, PatchType.TREE, VarbitID.FARMING_TRANSMIT_A,
+			"Fastest: Falador Teleport, then walk to Falador Park"),
+		Stop.patch("tree_taverley", "Taverley tree patch", 2933, 3436, PatchType.TREE, VarbitID.FARMING_TRANSMIT_A,
+			"Fastest: Falador Teleport and walk west, or a Taverley house teleport"),
+		Stop.patch("tree_gnome_stronghold", "Gnome Stronghold tree patch", 2434, 3418, PatchType.TREE,
+			VarbitID.FARMING_TRANSMIT_A, "Fastest: spirit tree or a necklace of passage to the Gnome Stronghold"));
 
 	static List<Method> methods()
 	{
@@ -37,12 +64,18 @@ final class FarmingGuide
 				.members(true)
 				.tag(MethodTag.CHEAP)
 				.location(Location.of("Falador farming patches", 3052, 3309, 8))
+				.stop(Stop.patch("allotment_falador_nw", "Falador allotment (north-west)", 3052, 3309,
+					PatchType.ALLOTMENT, VarbitID.FARMING_TRANSMIT_A, "Fastest: Falador Teleport, then walk south"))
+				.stop(Stop.patch("allotment_falador_se", "Falador allotment (south-east)", 3052, 3309,
+					PatchType.ALLOTMENT, VarbitID.FARMING_TRANSMIT_B, null))
 				.tool(SPADE).tool(RAKE).tool(DIBBER)
-				.input(ItemReq.stack("Potato seeds", 3, ItemID.POTATO_SEED))
+				.input(ItemReq.stack("Allotment seeds (potatoes to start; 3 per patch)", 3, ItemID.POTATO_SEED,
+					ItemID.ONION_SEED, ItemID.CABBAGE_SEED, ItemID.TOMATO_SEED, ItemID.SWEETCORN_SEED, ItemID.STRAWBERRY_SEED,
+					ItemID.WATERMELON_SEED, ItemID.SNAPE_GRASS_SEED))
 				.supply(COMPOST)
 				.target(Target.object(null, "Allotment"))
 				.target(Target.npc(null, "Elstan"))
-				.instruction("Rake the allotments, plant 3 potato seeds in each and come back to harvest")
+				.instruction("Harvest the crop (or rake the weeds), then plant 3 seeds")
 				.notes("Pay the gardener Elstan to protect the crops (a sack of potatoes later). Move on to tree runs at 15.")
 				.wikiPage(WIKI)
 				.build(),
@@ -88,12 +121,16 @@ final class FarmingGuide
 				.members(true)
 				.tag(MethodTag.PROFIT).tag(MethodTag.AFK)
 				.location(Location.of("Falador herb patch", 3058, 3311, 6))
+				.stops(HERB_PATCHES)
 				.tool(SPADE).tool(RAKE).tool(DIBBER)
-				.input(ItemReq.stack("Ranarr seeds", 1, ItemID.RANARR_SEED))
+				.input(ItemReq.stack("Herb seeds (ranarr is the usual pick; any herb you can plant works)", 1,
+					ItemID.RANARR_SEED, ItemID.SNAPDRAGON_SEED, ItemID.TORSTOL_SEED, ItemID.TOADFLAX_SEED, ItemID.AVANTOE_SEED,
+					ItemID.KWUARM_SEED, ItemID.CADANTINE_SEED, ItemID.LANTADYME_SEED, ItemID.DWARF_WEED_SEED, ItemID.IRIT_SEED,
+					ItemID.HARRALANDER_SEED, ItemID.TARROMIN_SEED, ItemID.MARRENTILL_SEED, ItemID.GUAM_SEED,
+					ItemID.HUASCA_SEED))
 				.supply(COMPOST)
 				.target(Target.object(null, "Herb patch"))
-				.instruction("Harvest, rake and replant each herb patch: Falador, Catherby, Ardougne, Port Phasmatys "
-					+ "and Hosidius")
+				.instruction("Harvest the herbs (or rake the weeds), add compost and plant a herb seed")
 				.notes("A run takes a few minutes every 80 minutes and is one of the best money makers. Use ultracompost "
 					+ "and magic secateurs if you have them.")
 				.wikiPage("Herb_run")
@@ -117,14 +154,15 @@ final class FarmingGuide
 			.members(true)
 			.tag(MethodTag.FAST).tag(MethodTag.AFK)
 			.location(Location.of("Lumbridge tree patch", 3189, 3233, 6))
+			.stops(TREE_PATCHES)
 			.tool(SPADE)
 			.input(ItemReq.consumed(saplingName, 5, 1, sapling))
 			.input(payment)
 			.supply(ItemReq.supply("Coins (200 gp to have each grown tree removed)", 0, ItemID.COINS))
 			.target(Target.object(null, "Tree patch"))
 			.target(Target.npc("Pay", "Fayeth", "Treznor", "Heskel", "Alain", "Prissy Scilla"))
-			.instruction("Plant a sapling in each tree patch and pay the gardener to protect it: Lumbridge, Varrock, "
-				+ "Falador, Taverley and the Gnome Stronghold")
+			.instruction("Check the grown tree's health and pay the gardener 200 gp to remove it, then plant a "
+				+ "sapling and pay the gardener to protect it")
 			.notes("Trees take a few hours to grow; come back, check health and pay to have the tree removed. Pay "
 				+ "the gardener with the payment items to protect each tree. "
 				+ "The most xp per minute in the game, but saplings cost money.")

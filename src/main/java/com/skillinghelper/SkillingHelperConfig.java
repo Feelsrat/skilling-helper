@@ -41,7 +41,7 @@ public interface SkillingHelperConfig extends Config
 	@ConfigSection(name = "Prices", description = "Where Grand Exchange prices come from", position = 3)
 	String pricesSection = "prices";
 
-	@ConfigSection(name = "Bird houses", description = "Fossil Island bird house timer", position = 4)
+	@ConfigSection(name = "Run timers", description = "Countdowns for bird house and farming runs", position = 4)
 	String birdhouseSection = "birdhouses";
 
 	@ConfigItem(
@@ -64,6 +64,30 @@ public interface SkillingHelperConfig extends Config
 		position = 1
 	)
 	default Notification birdhouseNotification()
+	{
+		return Notification.ON;
+	}
+
+	@ConfigItem(
+		keyName = "farmingTimers",
+		name = "Farming timers",
+		description = "Show countdowns until the herb, tree and allotment patches you planted are ready",
+		section = birdhouseSection,
+		position = 2
+	)
+	default boolean farmingTimers()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "farmingNotification",
+		name = "Notify when crops are ready",
+		description = "Send a notification when your herb, tree or allotment patches are ready for a run",
+		section = birdhouseSection,
+		position = 3
+	)
+	default Notification farmingNotification()
 	{
 		return Notification.ON;
 	}

@@ -5,6 +5,7 @@ import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Mooring;
+import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
@@ -62,6 +63,7 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -130,6 +132,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private ShortestPathBridge shortestPath;
 	@Inject
 	private BirdhouseTracker birdhouses;
+	@Inject
+	private PatchTracker patches;
+	@Inject
+	private RunTimers runTimers;
 	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
@@ -235,7 +241,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			bankCache.save();
 			clearPath();
 			tracker.clear();
-			birdhouses.reset();
+			resetRuns();
 			eventBus.unregister(shortestPath);
 		});
 		guide = ActiveGuide.NONE;
@@ -255,7 +261,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			profileLoaded = false;
-			birdhouses.reset();
+			resetRuns();
 			clearPath();
 		}
 	}
@@ -264,7 +270,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	public void onRuneScapeProfileChanged(RuneScapeProfileChanged e)
 	{
 		profileLoaded = false;
-		birdhouses.reset();
+		resetRuns();
 	}
 
 	@Subscribe
@@ -288,8 +294,42 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			refreshQuests();
 		}
 		trackBoat();
-		birdhouses.tick(this);
+		updateRuns();
 		refresh();
+	}
+
+	/**
+	 * Reads nearby farming patches and updates the run countdowns.
+	 */
+	private void updateRuns()
+	{
+		if (!profileLoaded)
+		{
+			return;
+		}
+		Player me = client.getLocalPlayer();
+		patches.tick(me == null ? null : worldLocation(me));
+		runTimers.update(this, "Bird houses", ItemID.BIRDHOUSE_OAK, birdhouses.getReadyAt(), config.birdhouseTimer(),
+			config.birdhouseNotification());
+		for (PatchType type : PatchType.values())
+		{
+			runTimers.update(this, type.getLabel(), type.getIcon(), patches.readyAt(type), config.farmingTimers(),
+				config.farmingNotification());
+		}
+	}
+
+	private void resetRuns()
+	{
+		birdhouses.reset();
+		patches.reset();
+		runTimers.clear();
+	}
+
+	private Map<String, Integer> stopWaits()
+	{
+		Map<String, Integer> waits = new HashMap<>(birdhouses.waits());
+		waits.putAll(patches.waits());
+		return waits;
 	}
 
 	/**
@@ -572,6 +612,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		refreshQuests();
 		birdhouses.load();
+		patches.load();
 		profileLoaded = true;
 	}
 
@@ -662,7 +703,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.inInstance(client.getTopLevelWorldView().isInstance())
 			.onBoat(me != null && isOnBoat(me))
 			.boatMooring(boatMooring)
-			.stopWaits(birdhouses.waits())
+			.stopWaits(stopWaits())
 			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
 			.build();
 	}

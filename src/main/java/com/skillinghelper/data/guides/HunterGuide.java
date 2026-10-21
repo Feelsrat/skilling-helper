@@ -71,10 +71,12 @@ final class HunterGuide
 				.quest(Quest.BONE_VOYAGE)
 				.location(Location.of("Fossil Island bird house spots", 3722, 3818, 70))
 				// Run order: the Verdant Valley pair by the Digsite pendant, then the Mushroom Meadow pair by mushtree
-				.stop(Stop.of("birdhouse_valley_ne", "Verdant Valley bird house (northeast)", 3768, 3761))
-				.stop(Stop.of("birdhouse_valley_sw", "Verdant Valley bird house (southwest)", 3763, 3755))
-				.stop(Stop.of("birdhouse_meadow_s", "Mushroom Meadow bird house (south)", 3679, 3815))
-				.stop(Stop.of("birdhouse_meadow_n", "Mushroom Meadow bird house (north)", 3677, 3882))
+				.stop(Stop.of("birdhouse_valley_ne", "Verdant Valley bird house (northeast)", 3768, 3761,
+					"Fastest: digsite pendant to Fossil Island, then walk east"))
+				.stop(Stop.of("birdhouse_valley_sw", "Verdant Valley bird house (southwest)", 3763, 3755, null))
+				.stop(Stop.of("birdhouse_meadow_s", "Mushroom Meadow bird house (south)", 3679, 3815,
+					"Fastest: the magic mushtree next to the Verdant Valley spots, to Mushroom Meadow"))
+				.stop(Stop.of("birdhouse_meadow_n", "Mushroom Meadow bird house (north)", 3677, 3882, null))
 				.tool(ItemReq.tool("Hammer", ItemID.HAMMER))
 				.tool(ItemReq.tool("Chisel", ItemID.CHISEL))
 				// Bird houses crafted ahead of the run replace the logs and clockworks they were made from
