@@ -45,6 +45,10 @@ public class ActiveGuide
 	PlayerState player;
 	boolean hasGuide;
 	String wikiPage;
+	/**
+	 * Where the GE prices shown come from, for the panel.
+	 */
+	String priceSource;
 
 	public boolean isActive()
 	{

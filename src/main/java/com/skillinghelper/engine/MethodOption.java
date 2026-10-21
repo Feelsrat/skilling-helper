@@ -32,6 +32,10 @@ public class MethodOption
 	 * Fraction (0-1) of the needed inputs the player already owns.
 	 */
 	double ownedInputFraction;
+	/**
+	 * GP per action spent on inputs the player still has to buy.
+	 */
+	double buyCostPerAction;
 	double score;
 
 	public boolean isAvailable()
@@ -42,6 +46,14 @@ public class MethodOption
 	public double hours(long xpNeeded)
 	{
 		return method.getXpPerHour() <= 0 ? 0 : (double) xpNeeded / method.getXpPerHour();
+	}
+
+	/**
+	 * GP gained (positive) or spent (negative) per xp.
+	 */
+	public double gpPerXp()
+	{
+		return method.getXpPerAction() <= 0 ? 0 : gpPerAction / method.getXpPerAction();
 	}
 
 	public long gpPerHour()

@@ -9,6 +9,7 @@ import lombok.Singular;
 import lombok.Value;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
+import net.runelite.api.coords.WorldPoint;
 
 /**
  * One way of training a skill, e.g. "Willow trees at Draynor". Rates and requirements come from the
@@ -28,6 +29,10 @@ public class Method
 	MethodType type;
 	int minLevel;
 	/**
+	 * Combat level needed, e.g. for Slayer masters. 0 when there's no requirement.
+	 */
+	int combatLevel;
+	/**
 	 * Approximate xp per hour at {@link #minLevel} with a typical setup.
 	 */
 	int xpPerHour;
@@ -44,6 +49,15 @@ public class Method
 	 */
 	@NonNull
 	Location location;
+	/**
+	 * Other places that count as being at the training spot, e.g. the inside of a runecrafting altar.
+	 */
+	@Singular("alsoAt")
+	List<Location> alsoAt;
+	/**
+	 * Training happens in an instance (e.g. the player's house), so being in any instance counts as being there.
+	 */
+	boolean instanced;
 	/**
 	 * Nearest bank, or null if the method never banks.
 	 */
@@ -72,6 +86,10 @@ public class Method
 	 */
 	@Singular
 	List<Integer> products;
+	/**
+	 * Coins gained (or spent, if negative) per action that aren't an item, e.g. High Alchemy or pickpocketing.
+	 */
+	int coinsPerAction;
 
 	/**
 	 * Things to click in the world (trees, fishing spots, ranges...).
@@ -97,6 +115,25 @@ public class Method
 	 */
 	String requirementText;
 	String wikiPage;
+
+	/**
+	 * Whether the player is at the training spot (or one of its {@link #alsoAt} areas).
+	 */
+	public boolean isAt(WorldPoint wp, boolean inInstance)
+	{
+		if ((instanced && inInstance) || location.contains(wp))
+		{
+			return true;
+		}
+		for (Location l : alsoAt)
+		{
+			if (l.contains(wp))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean hasTag(MethodTag tag)
 	{

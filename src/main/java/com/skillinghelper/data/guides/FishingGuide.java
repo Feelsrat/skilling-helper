@@ -65,6 +65,25 @@ final class FishingGuide
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.notes("Use the spots that offer Net and Harpoon.")
 				.wikiPage(P2P_WIKI)
+				.build(),
+			Method.builder()
+				.id("fish_trawler")
+				.skill(Skill.FISHING)
+				.type(MethodType.ACTIVITY)
+				.name("Fishing Trawler (Angler outfit)")
+				.minLevel(15)
+				.xpPerAction(300)
+				.xpPerHour(15_000)
+				.members(true)
+				.tag(MethodTag.MINIGAME).tag(MethodTag.AFK)
+				.location(Location.of("Fishing Trawler (Port Khazard)", 2667, 3163, 12))
+				.target(Target.object(null, "Gangplank", "Leak", "Net", "Trawler net"))
+				.target(Target.npc(null, "Murphy"))
+				.instruction("Board the trawler with Murphy, patch leaks and bail water until the net comes up, then "
+					+ "collect your fish and reward pieces")
+				.notes("Slow xp, but every game is a chance at an Angler piece. The full outfit gives +2.5% Fishing xp "
+					+ "for the rest of the grind.")
+				.wikiPage("Fishing_Trawler")
 				.build()
 		);
 	}

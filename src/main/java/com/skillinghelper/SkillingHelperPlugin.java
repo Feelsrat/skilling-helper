@@ -20,7 +20,10 @@ import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
 import com.skillinghelper.ui.SkillingHelperPanel;
+import com.skillinghelper.prices.WikiPriceClient;
 import java.awt.image.BufferedImage;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -28,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -41,7 +47,10 @@ import net.runelite.api.Player;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
+import net.runelite.api.WorldEntity;
 import net.runelite.api.WorldType;
+import net.runelite.api.WorldView;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
@@ -73,7 +82,9 @@ import net.runelite.client.util.LinkBrowser;
 @PluginDescriptor(
 	name = "Skilling Helper",
 	description = "Quest Helper-style step-by-step skilling guides with pathing, highlights and a bank filter",
-	tags = {"skilling", "guide", "training", "helper", "woodcutting", "mining", "fishing", "cooking"}
+	tags = {"skilling", "guide", "training", "helper", "woodcutting", "mining", "fishing", "cooking", "crafting",
+		"smithing", "herblore", "runecraft", "agility", "thieving", "prayer", "magic", "construction", "hunter",
+		"farming", "slayer", "sailing", "combat"}
 )
 public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.Listener
 {
@@ -118,6 +129,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private MinimapArrowOverlay minimapOverlay;
 	@Inject
 	private ItemHighlightOverlay itemOverlay;
+	@Inject
+	private WikiPriceClient wikiPrices;
+	@Inject
+	private ScheduledExecutorService executor;
 
 	@Getter
 	private volatile ActiveGuide guide = ActiveGuide.NONE;
@@ -138,15 +153,33 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private WorldPoint pathDestination;
 	private boolean hintArrowSet;
 	private WorldMapPoint mapPoint;
+	private ScheduledFuture<?> priceRefresh;
 
 	@Override
 	protected void startUp()
 	{
-		PriceLookup prices = id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id));
+		PriceLookup prices = new PriceLookup()
+		{
+			@Override
+			public int price(int itemId)
+			{
+				WikiPriceClient.Price live = livePrice(itemId);
+				return live != null && live.getHigh() > 0 ? live.getHigh() : guidePrice(itemId);
+			}
+
+			@Override
+			public int sellPrice(int itemId)
+			{
+				WikiPriceClient.Price live = livePrice(itemId);
+				return live != null && live.getLow() > 0 ? live.getLow() : guidePrice(itemId);
+			}
+		};
 		planner = new MethodPlanner(prices);
 		resolver = new StepResolver(prices);
 		tracker.setInterestingTargets(guides.all());
 		preference = config.preference();
+
+		updatePriceRefresh();
 
 		eventBus.register(tracker);
 		eventBus.register(bankFilter);
@@ -178,6 +211,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Override
 	protected void shutDown()
 	{
+		stopPriceRefresh();
+		wikiPrices.clear();
 		eventBus.unregister(tracker);
 		eventBus.unregister(bankFilter);
 		overlayManager.remove(sceneOverlay);
@@ -272,11 +307,65 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			preference = config.preference();
 		}
+		if ("livePrices".equals(e.getKey()))
+		{
+			updatePriceRefresh();
+		}
 		clientThread.invokeLater(() ->
 		{
 			clearPath();
 			refresh();
 		});
+	}
+
+	// ---- Prices ----
+
+	private int guidePrice(int itemId)
+	{
+		return (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(itemId));
+	}
+
+	private WikiPriceClient.Price livePrice(int itemId)
+	{
+		return config.livePrices() ? wikiPrices.get(itemManager.canonicalize(itemId)) : null;
+	}
+
+	private void updatePriceRefresh()
+	{
+		stopPriceRefresh();
+		if (config.livePrices())
+		{
+			priceRefresh = executor.scheduleWithFixedDelay(wikiPrices::refresh, 0, 5, TimeUnit.MINUTES);
+		}
+		else
+		{
+			wikiPrices.clear();
+		}
+	}
+
+	private void stopPriceRefresh()
+	{
+		if (priceRefresh != null)
+		{
+			priceRefresh.cancel(false);
+			priceRefresh = null;
+		}
+		wikiPrices.cancel();
+	}
+
+	private String priceSource()
+	{
+		Instant updated = wikiPrices.getUpdated();
+		if (config.livePrices() && wikiPrices.hasPrices() && updated != null)
+		{
+			long minutes = Duration.between(updated, Instant.now()).toMinutes();
+			return "Prices: live OSRS Wiki, instant buy/sell (" + (minutes < 1 ? "just now" : minutes + " min ago") + ")";
+		}
+		if (config.livePrices())
+		{
+			return "Prices: RuneLite GE guide (live wiki prices loading...)";
+		}
+		return "Prices: RuneLite GE guide. Turn on live wiki prices in the plugin settings for real-time prices.";
 	}
 
 	// ---- Panel callbacks (Swing thread) ----
@@ -506,10 +595,28 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.equipment(counts(worn))
 			.bank(bankCache.get())
 			.freeInventorySlots(28 - used)
-			.location(me == null ? null : me.getWorldLocation())
+			.location(me == null ? null : worldLocation(me))
 			.membersWorld(client.getWorldType().contains(WorldType.MEMBERS))
+			.inInstance(client.getTopLevelWorldView().isInstance())
 			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
 			.build();
+	}
+
+	/**
+	 * The player's position in the main world, also while standing on a boat (which has its own world view).
+	 */
+	private WorldPoint worldLocation(Player me)
+	{
+		LocalPoint local = me.getLocalLocation();
+		if (local != null && local.getWorldView() != WorldView.TOPLEVEL)
+		{
+			WorldEntity boat = client.getTopLevelWorldView().worldEntities().byIndex(local.getWorldView());
+			if (boat != null)
+			{
+				return WorldPoint.fromLocalInstance(client, boat.transformToMainWorld(local));
+			}
+		}
+		return me.getWorldLocation();
 	}
 
 	private Set<Quest> completedQuestsOrEmpty()
@@ -583,6 +690,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				.xpRemaining(xpRemaining)
 				.player(state)
 				.hasGuide(false)
+				.priceSource(priceSource())
 				.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()))
 				.build();
 		}
@@ -611,6 +719,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.plan(plan)
 			.player(state)
 			.hasGuide(true)
+			.priceSource(priceSource())
 			.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()));
 
 		if (current == null)

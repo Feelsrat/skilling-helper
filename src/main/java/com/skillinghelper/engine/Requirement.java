@@ -27,6 +27,14 @@ public class Requirement
 		 */
 		OPTIONAL,
 		/**
+		 * A GE-buyable item that helps but isn't needed.
+		 */
+		SUGGESTED,
+		/**
+		 * Gear the player doesn't own yet that's earned by playing, with the time it would save.
+		 */
+		UNLOCK,
+		/**
 		 * Informational only.
 		 */
 		INFO

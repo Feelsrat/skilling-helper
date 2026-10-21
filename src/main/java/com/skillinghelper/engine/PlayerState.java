@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Value;
+import net.runelite.api.Experience;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
@@ -33,6 +34,10 @@ public class PlayerState
 	int freeInventorySlots;
 	WorldPoint location;
 	boolean membersWorld;
+	/**
+	 * In an instanced area such as a player-owned house.
+	 */
+	boolean inInstance;
 	@Builder.Default
 	Set<Quest> completedQuests = Collections.emptySet();
 
@@ -44,6 +49,12 @@ public class PlayerState
 	public int xp(Skill skill)
 	{
 		return xp.getOrDefault(skill, 0);
+	}
+
+	public int combatLevel()
+	{
+		return Experience.getCombatLevel(level(Skill.ATTACK), level(Skill.STRENGTH), level(Skill.DEFENCE),
+			level(Skill.HITPOINTS), level(Skill.MAGIC), level(Skill.RANGED), level(Skill.PRAYER));
 	}
 
 	public boolean bankKnown()

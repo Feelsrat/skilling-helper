@@ -27,6 +27,20 @@ public class GuideRepository
 		all.addAll(CookingGuide.methods());
 		all.addAll(FiremakingGuide.methods());
 		all.addAll(FletchingGuide.methods());
+		all.addAll(CombatGuide.methods());
+		all.addAll(PrayerGuide.methods());
+		all.addAll(MagicGuide.methods());
+		all.addAll(RunecraftGuide.methods());
+		all.addAll(CraftingGuide.methods());
+		all.addAll(SmithingGuide.methods());
+		all.addAll(HerbloreGuide.methods());
+		all.addAll(AgilityGuide.methods());
+		all.addAll(ThievingGuide.methods());
+		all.addAll(SlayerGuide.methods());
+		all.addAll(HunterGuide.methods());
+		all.addAll(FarmingGuide.methods());
+		all.addAll(ConstructionGuide.methods());
+		all.addAll(SailingGuide.methods());
 		bySkill.putAll(all.stream().collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
 			Collectors.toUnmodifiableList())));
 	}

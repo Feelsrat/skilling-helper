@@ -3,10 +3,12 @@ package com.skillinghelper.ui;
 import com.skillinghelper.ActiveGuide;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
+import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.PlanSegment;
+import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.engine.StepResolver;
 import java.awt.BorderLayout;
@@ -46,6 +48,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private static final Color WARN = new Color(255, 170, 0);
 	private static final Color BAD = new Color(230, 80, 80);
 	private static final Color HINT = new Color(110, 170, 255);
+	private static final Color GOLD = new Color(255, 215, 90);
 
 	public interface Listener
 	{
@@ -254,19 +257,42 @@ public class SkillingHelperPanel extends PluginPanel
 
 		if (method != null && option != null)
 		{
-			String progress = String.format("%,d xp to go · ~%,d actions · %s", guide.getXpRemaining(),
-				option.getActions(), duration(option.hours(guide.getXpRemaining())));
+			double planHours = guide.getPlan().isEmpty()
+				? option.hours(guide.getXpRemaining())
+				: guide.getPlan().stream().mapToDouble(seg -> seg.getOption().hours(seg.getXp())).sum();
+			JLabel eta = text("Time to level " + guide.getTargetLevel() + ": " + duration(planHours), Color.WHITE);
+			eta.setFont(FontManager.getRunescapeBoldFont());
+			content.add(eta);
+			String progress = String.format("%,d xp to go · ~%,d actions with this method", guide.getXpRemaining(),
+				option.getActions());
 			content.add(text(progress, Color.LIGHT_GRAY));
 			long gpHr = option.gpPerHour();
 			if (gpHr != 0)
 			{
-				content.add(text((gpHr > 0 ? "Profit ~" : "Costs ~") + StepResolver.gp(Math.abs(gpHr)) + "/hr",
-					gpHr > 0 ? GOOD : WARN));
+				content.add(text((gpHr > 0 ? "Profit ~" : "Costs ~") + StepResolver.gp(Math.abs(gpHr)) + "/hr ("
+					+ gpPerXp(option) + ")", gpHr > 0 ? GOOD : WARN));
+			}
+			if (!method.getInputs().isEmpty() || !method.getProducts().isEmpty())
+			{
+				long goalCost = Math.round(-option.getGpPerAction() * option.getActions());
+				if (goalCost > 0)
+				{
+					content.add(text("Whole goal costs ~" + StepResolver.gp(goalCost) + " net (after selling products)",
+						WARN));
+				}
+				else if (goalCost < 0)
+				{
+					content.add(text("Whole goal earns ~" + StepResolver.gp(-goalCost) + " after GE tax", GOOD));
+				}
 			}
 			if (guide.getPlayer() != null)
 			{
 				content.add(text("Your GP: " + StepResolver.gp(guide.getPlayer().gp())
 					+ (guide.getPlayer().bankKnown() ? "" : " (open your bank to include it)"), Color.LIGHT_GRAY));
+			}
+			if (guide.getPriceSource() != null && (!method.getInputs().isEmpty() || !method.getProducts().isEmpty()))
+			{
+				content.add(text(guide.getPriceSource(), HINT));
 			}
 		}
 
@@ -327,7 +353,8 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		for (MethodOption o : guide.getOptions())
 		{
-			content.add(methodRow(o, o.getMethod() == method));
+			content.add(methodRow(o, o.getMethod() == method, guide.getXpRemaining(), guide.getTargetLevel(),
+				guide.getPlayer()));
 			content.add(Box.createVerticalStrut(4));
 		}
 
@@ -338,13 +365,17 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 	}
 
-	private JPanel methodRow(MethodOption o, boolean current)
+	private JPanel methodRow(MethodOption o, boolean current, long xpRemaining, int targetLevel, PlayerState player)
 	{
 		Method m = o.getMethod();
+		SkillOutfit earns = unownedOutfitEarnedBy(m, player);
 		JPanel row = new JPanel();
 		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
 		row.setBackground(current ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		row.setBorder(new EmptyBorder(4, 6, 4, 6));
+		row.setBorder(earns == null
+			? new EmptyBorder(4, 6, 4, 6)
+			: BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 3, 0, 0, GOLD),
+			new EmptyBorder(4, 3, 4, 6)));
 
 		JLabel name = text(m.getName() + (current ? "  (current)" : ""), o.isAvailable() ? Color.WHITE : Color.GRAY);
 		name.setFont(FontManager.getRunescapeSmallFont().deriveFont(Font.BOLD));
@@ -353,10 +384,25 @@ public class SkillingHelperPanel extends PluginPanel
 		String info = String.format("Lvl %d · ~%dk xp/hr%s%s", m.getMinLevel(), m.getXpPerHour() / 1000,
 			m.isMembers() ? " · Members" : "", tags.isEmpty() ? "" : " · " + tags);
 		row.add(text(info, Color.LIGHT_GRAY));
+		if (xpRemaining > 0)
+		{
+			row.add(text(duration(o.hours(xpRemaining)) + " to level " + targetLevel + " using only this",
+				Color.LIGHT_GRAY));
+		}
+		if (earns != null)
+		{
+			row.add(text("★ Earns the " + earns.getName() + " (" + earns.getBonus() + "), which makes the rest of "
+				+ "the grind faster", GOLD));
+		}
 		long gpHr = o.gpPerHour();
 		if (gpHr != 0)
 		{
-			row.add(text((gpHr > 0 ? "+" : "-") + StepResolver.gp(Math.abs(gpHr)) + "/hr", gpHr > 0 ? GOOD : WARN));
+			row.add(text((gpHr > 0 ? "+" : "-") + StepResolver.gp(Math.abs(gpHr)) + "/hr · " + gpPerXp(o),
+				gpHr > 0 ? GOOD : WARN));
+		}
+		if (o.isAvailable() && !o.isAffordable())
+		{
+			row.add(text("Can't afford the materials for your goal yet", WARN));
 		}
 		if (!o.isAvailable())
 		{
@@ -373,6 +419,38 @@ public class SkillingHelperPanel extends PluginPanel
 			row.add(left(b));
 		}
 		return full(row);
+	}
+
+	/**
+	 * The outfit this method earns, if the player is still missing pieces of it.
+	 */
+	private static SkillOutfit unownedOutfitEarnedBy(Method m, PlayerState player)
+	{
+		if (player == null)
+		{
+			return null;
+		}
+		for (SkillOutfit outfit : SkillOutfit.values())
+		{
+			if (!m.getId().equals(outfit.getSourceMethodId()))
+			{
+				continue;
+			}
+			for (int[] slot : outfit.getSlots())
+			{
+				if (player.owned(slot) == 0)
+				{
+					return outfit;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static String gpPerXp(MethodOption o)
+	{
+		double v = o.gpPerXp();
+		return String.format("%s%.1f gp/xp", v > 0 ? "+" : "", v);
 	}
 
 	private JLabel requirementLine(Requirement r)
@@ -396,6 +474,14 @@ public class SkillingHelperPanel extends PluginPanel
 			case OPTIONAL:
 				icon = "☆ ";
 				color = HINT;
+				break;
+			case SUGGESTED:
+				icon = "$ ";
+				color = HINT;
+				break;
+			case UNLOCK:
+				icon = "★ ";
+				color = GOLD;
 				break;
 			default:
 				icon = "ℹ ";
@@ -470,7 +556,8 @@ public class SkillingHelperPanel extends PluginPanel
 		StringBuilder sb = new StringBuilder();
 		sb.append(g.getSkill()).append('|').append(g.getLevel()).append('|').append(g.getTargetLevel()).append('|')
 			.append(g.getXpRemaining() / 500).append('|').append(pref).append('|').append(bankFilterOn).append('|')
-			.append(g.isForced()).append('|').append(g.getMethod() == null ? "" : g.getMethod().getId());
+			.append(g.isForced()).append('|').append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
+			.append(g.getPriceSource());
 		GuideStep s = g.getStep();
 		if (s != null)
 		{
@@ -486,7 +573,7 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		for (MethodOption o : g.getOptions())
 		{
-			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.gpPerHour() / 1000);
+			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.gpPerHour() / 1000).append(o.isAffordable());
 		}
 		if (g.getPlayer() != null)
 		{

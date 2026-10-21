@@ -37,6 +37,23 @@ public interface SkillingHelperConfig extends Config
 	@ConfigSection(name = "Pathing", description = "How the way to the next spot is shown", position = 2)
 	String pathingSection = "pathing";
 
+	@ConfigSection(name = "Prices", description = "Where Grand Exchange prices come from", position = 3)
+	String pricesSection = "prices";
+
+	@ConfigItem(
+		keyName = "livePrices",
+		name = "Live OSRS Wiki prices",
+		description = "Use real-time instant-buy and instant-sell prices from the OSRS Wiki (refreshed every 5 minutes)"
+			+ " instead of RuneLite's Grand Exchange guide prices when costing materials and products",
+		warning = "This feature submits your IP address to a 3rd-party server not controlled or verified by RuneLite developers",
+		section = pricesSection,
+		position = 0
+	)
+	default boolean livePrices()
+	{
+		return false;
+	}
+
 	@ConfigItem(
 		keyName = "preference",
 		name = "Default training style",

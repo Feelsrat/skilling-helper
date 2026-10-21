@@ -1,6 +1,7 @@
 package com.skillinghelper.engine;
 
 import com.skillinghelper.data.Banks;
+import com.skillinghelper.data.BoostItem;
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
@@ -86,17 +87,33 @@ public final class StepResolver
 
 		for (ItemReq input : m.getInputs())
 		{
+			if (input.hasSubstitute() && s.owned(input.getSubstituteIds()) > 0)
+			{
+				ItemReq sub = ItemReq.tool(input.getSubstituteName(), input.getSubstituteIds());
+				Requirement r = itemRequirement(sub, s, 1, 1);
+				reqs.add(new Requirement(r.getText() + " (instead of " + input.getName().toLowerCase() + ")",
+					r.getStatus(), r.getItemIds(), r.getQuantity(), r.getBuyCost()));
+				continue;
+			}
 			long needed = (long) Math.max(actions, 1) * input.getPerAction();
-			int trip = (int) Math.min(input.getQuantity(), Math.max(needed, 1));
-			reqs.add(itemRequirement(input, s, needed, trip));
+			int trip = (int) Math.min(input.isWholeStack() ? Integer.MAX_VALUE : input.getQuantity(), Math.max(needed, 1));
+			Requirement r = itemRequirement(input, s, needed, trip);
+			if (input.hasSubstitute() && r.getStatus() == Requirement.Status.MISSING)
+			{
+				r = new Requirement(r.getText() + ", or use a " + input.getSubstituteName().toLowerCase(), r.getStatus(),
+					r.getItemIds(), r.getQuantity(), r.getBuyCost());
+			}
+			reqs.add(r);
 		}
 
+		double goalHours = m.getXpPerHour() <= 0 ? 0 : (double) actions * m.getXpPerAction() / m.getXpPerHour();
 		for (SkillOutfit outfit : SkillOutfit.values())
 		{
 			if (outfit.getSkill() != m.getSkill())
 			{
 				continue;
 			}
+			int missingPieces = 0;
 			for (int[] slot : outfit.getSlots())
 			{
 				if (s.getEquipment().has(slot))
@@ -106,11 +123,42 @@ public final class StepResolver
 				int id = firstOwned(slot, s);
 				if (id == -1)
 				{
+					missingPieces++;
 					continue;
 				}
 				boolean carried = s.getInventory().has(id);
 				reqs.add(new Requirement(outfit.getName() + " piece: wear it (" + outfit.getBonus() + ")"
 					+ (carried ? "" : " (in bank)"), Requirement.Status.OPTIONAL, new int[]{id}, 1, 0));
+			}
+			if (missingPieces > 0 && s.bankKnown())
+			{
+				reqs.add(new Requirement(unlockText(outfit, missingPieces, goalHours, m), Requirement.Status.UNLOCK,
+					new int[0], 0, 0));
+			}
+		}
+
+		for (BoostItem boost : BoostItem.values())
+		{
+			if (!boost.appliesTo(m))
+			{
+				continue;
+			}
+			if (s.getEquipment().has(boost.getIds()))
+			{
+				reqs.add(new Requirement(boost.getName() + " (" + boost.getBonus() + ")", Requirement.Status.READY,
+					boost.getIds(), 1, 0));
+			}
+			else if (s.owned(boost.getIds()) > 0)
+			{
+				boolean carried = s.getInventory().has(boost.getIds());
+				reqs.add(new Requirement(boost.getName() + ": wear it (" + boost.getBonus() + ")"
+					+ (carried ? "" : " (in bank)"), Requirement.Status.OPTIONAL, boost.getIds(), 1, 0));
+			}
+			else
+			{
+				int price = prices.price(boost.getIds()[0]);
+				reqs.add(new Requirement("Optional buy: " + boost.getName() + " (~" + gp(price) + " on the GE): "
+					+ boost.getBonus(), Requirement.Status.SUGGESTED, new int[0], 0, 0));
 			}
 		}
 
@@ -146,9 +194,41 @@ public final class StepResolver
 				trip, 0);
 		}
 		long toBuy = consumed ? Math.max(0, needed - banked) : 1;
-		long cost = toBuy * prices.price(req.primaryId());
-		return new Requirement(name + counts + " - buy for ~" + gp(cost), Requirement.Status.MISSING, req.getIds(), trip,
-			cost);
+		int unit = prices.price(req.primaryId());
+		long cost = toBuy * unit;
+		String buy = toBuy > 1
+			? String.format(" - buy %,d x ~%s = ~%s", toBuy, gp(unit), gp(cost))
+			: " - buy for ~" + gp(cost);
+		return new Requirement(name + counts + buy, Requirement.Status.MISSING, req.getIds(), trip, cost);
+	}
+
+	private static String unlockText(SkillOutfit outfit, int missingPieces, double goalHours, Method m)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(missingPieces == outfit.getSlots().length ? "Worth chasing: " : "Missing " + missingPieces
+			+ " piece" + (missingPieces == 1 ? "" : "s") + " of the ").append(outfit.getName())
+			.append(" (").append(outfit.getBonus()).append("). Earn it from ").append(outfit.getSource());
+		if (m.getId().equals(outfit.getSourceMethodId()))
+		{
+			sb.append(", which this method does");
+		}
+		sb.append('.');
+		if (outfit.getXpBonus() > 0 && goalHours > 0)
+		{
+			double saved = goalHours * outfit.getXpBonus() / (1 + outfit.getXpBonus());
+			sb.append(" The full set would save ~").append(hoursText(saved)).append(" on this goal.");
+		}
+		return sb.toString();
+	}
+
+	public static String hoursText(double hours)
+	{
+		long minutes = Math.round(hours * 60);
+		if (minutes < 60)
+		{
+			return Math.max(1, minutes) + "m";
+		}
+		return String.format("%dh %02dm", minutes / 60, minutes % 60);
 	}
 
 	private static int firstOwned(int[] ids, PlayerState s)
@@ -250,10 +330,10 @@ public final class StepResolver
 			{
 				b.line("• " + r.getText());
 			}
-			b.line(String.format("Total ~%s. You have %s.", gp(total), gp(s.gp())));
+			b.line(String.format("Total ~%s at current GE prices. You have %s.", gp(total), gp(s.gp())));
 			if (total > s.gp())
 			{
-				b.line("You can't afford all of this yet: try the Cheapest preference or a gathering method.");
+				affordabilityHint(m, s, b);
 			}
 			if (!GRAND_EXCHANGE.contains(s.getLocation()))
 			{
@@ -264,27 +344,12 @@ public final class StepResolver
 
 		boolean gather = m.getType() != MethodType.PROCESS;
 		boolean needsInputs = false;
-		if (!gather)
+		for (ItemReq input : m.getInputs())
 		{
-			for (ItemReq input : m.getInputs())
+			if (needsWithdraw(input, s, gather))
 			{
-				if (s.getInventory().count(input.getIds()) == 0)
-				{
-					needsInputs = true;
-					break;
-				}
-			}
-		}
-		else
-		{
-			// Gathering with consumables (feathers, bait): only bank when they've run out.
-			for (ItemReq input : m.getInputs())
-			{
-				if (s.carried(input.getIds()) == 0)
-				{
-					needsInputs = true;
-					break;
-				}
+				needsInputs = true;
+				break;
 			}
 		}
 
@@ -305,10 +370,11 @@ public final class StepResolver
 			{
 				for (ItemReq input : m.getInputs())
 				{
-					int trip = Math.max(1, input.getQuantity());
-					if (!gather || s.carried(input.getIds()) == 0)
+					if (needsWithdraw(input, s, gather))
 					{
-						b.line(String.format("• Withdraw %,d x %s", trip, input.getName()));
+						b.line(input.isWholeStack()
+							? "• Withdraw all your " + input.getName().toLowerCase()
+							: String.format("• Withdraw %,d x %s", input.getQuantity(), input.getName()));
 						for (int id : input.getIds())
 						{
 							b.itemHighlight(id, ItemHighlight.WITHDRAW);
@@ -356,7 +422,7 @@ public final class StepResolver
 		}
 		toolWieldTip(m, s, b);
 
-		if (!m.getLocation().contains(s.getLocation()))
+		if (!m.isAt(s.getLocation(), s.isInInstance()))
 		{
 			return b.type(StepType.WALK)
 				.title("Go to " + m.getLocation().getName())
@@ -430,6 +496,68 @@ public final class StepResolver
 		}
 	}
 
+	/**
+	 * Whether the player has to fetch more of an input before training. Processing needs it in the inventory;
+	 * gathering with consumables (feathers, bait, runes) only banks once they've run out.
+	 */
+	private static boolean needsWithdraw(ItemReq input, PlayerState s, boolean gather)
+	{
+		if (input.hasSubstitute() && s.carried(input.getSubstituteIds()) > 0)
+		{
+			return false;
+		}
+		int have = gather || input.isWholeStack() ? s.carried(input.getIds()) : s.getInventory().count(input.getIds());
+		return have == 0;
+	}
+
+	/**
+	 * Explains how far the player's gold goes when they can't buy everything for the goal at once.
+	 */
+	private void affordabilityHint(Method m, PlayerState s, GuideStep.GuideStepBuilder b)
+	{
+		double costPerAction = 0;
+		for (ItemReq input : m.getInputs())
+		{
+			if (input.hasSubstitute() && s.owned(input.getSubstituteIds()) > 0)
+			{
+				continue;
+			}
+			costPerAction += (double) prices.price(input.primaryId()) * input.getPerAction();
+		}
+		double earnedPerAction = m.getCoinsPerAction();
+		if (!m.getProducts().isEmpty() && !m.isDropByDefault())
+		{
+			double products = 0;
+			for (int id : m.getProducts())
+			{
+				products += prices.sellPriceAfterTax(id);
+			}
+			earnedPerAction += products / m.getProducts().size();
+		}
+		if (costPerAction <= 0)
+		{
+			b.line("You can't afford all of this yet: try the Cheapest preference or a gathering method.");
+			return;
+		}
+		long affordable = (long) (s.gp() / costPerAction);
+		b.line(String.format("You can afford about %,d actions (~%,d xp) right now.", affordable,
+			(long) (affordable * m.getXpPerAction())));
+		if (earnedPerAction >= costPerAction)
+		{
+			b.line(String.format("Each action sells for ~%s after GE tax vs ~%s in materials, so buy what you can, "
+				+ "sell the products and repeat.", gp(Math.round(earnedPerAction)), gp(Math.round(costPerAction))));
+		}
+		else if (earnedPerAction > 0)
+		{
+			b.line(String.format("Selling the products gets ~%s of the ~%s per action back, so sell them as you go "
+				+ "to stretch your gold.", gp(Math.round(earnedPerAction)), gp(Math.round(costPerAction))));
+		}
+		else
+		{
+			b.line("Try the Cheapest preference or a gathering method to fund this.");
+		}
+	}
+
 	private static boolean isInput(Method m, Requirement r)
 	{
 		for (ItemReq input : m.getInputs())
@@ -467,6 +595,10 @@ public final class StepResolver
 				return "ore";
 			case FISHING:
 				return "fish";
+			case HUNTER:
+				return "catches";
+			case THIEVING:
+				return "loot";
 			default:
 				return "products";
 		}

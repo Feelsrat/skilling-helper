@@ -122,6 +122,10 @@ public final class MethodPlanner
 		{
 			blockers.add("Needs level " + m.getMinLevel());
 		}
+		if (m.getCombatLevel() > 0 && state.combatLevel() < m.getCombatLevel())
+		{
+			blockers.add("Needs combat level " + m.getCombatLevel());
+		}
 		if (m.isMembers() && !state.isMembersWorld())
 		{
 			blockers.add("Members only");
@@ -137,18 +141,32 @@ public final class MethodPlanner
 		int actions = m.getXpPerAction() <= 0 ? 0 : (int) Math.ceil(xpNeeded / m.getXpPerAction());
 
 		double inputCost = 0;
+		double unownedCostPerAction = 0;
 		long buyCost = 0;
+		long tripCost = 0;
 		long neededTotal = 0;
 		long ownedTotal = 0;
 		for (ItemReq input : m.getInputs())
 		{
+			long needed = (long) actions * input.getPerAction();
+			neededTotal += needed;
+			if (input.hasSubstitute() && state.owned(input.getSubstituteIds()) > 0)
+			{
+				// e.g. a staff of air instead of air runes: nothing to buy
+				ownedTotal += needed;
+				continue;
+			}
 			int price = prices.price(input.primaryId());
 			inputCost += (double) price * input.getPerAction();
-			long needed = (long) actions * input.getPerAction();
 			long owned = Math.min(needed, state.owned(input.getIds()));
-			neededTotal += needed;
 			ownedTotal += owned;
 			buyCost += (needed - owned) * price;
+			if (owned < needed)
+			{
+				unownedCostPerAction += (double) price * input.getPerAction();
+				long trip = input.isWholeStack() ? Math.min(needed - owned, 1_000) : input.getQuantity();
+				tripCost += Math.min(needed - owned, trip) * price;
+			}
 		}
 		double productValue = 0;
 		// Power-training drops the produce, so it earns nothing
@@ -156,13 +174,15 @@ public final class MethodPlanner
 		{
 			for (int product : m.getProducts())
 			{
-				productValue += prices.price(product);
+				productValue += prices.sellPriceAfterTax(product);
 			}
 			productValue /= m.getProducts().size();
 		}
+		productValue += m.getCoinsPerAction();
 		double gpPerAction = productValue - inputCost;
 		double ownedFraction = neededTotal == 0 ? 1 : (double) ownedTotal / neededTotal;
-		boolean affordable = buyCost <= state.gp();
+		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
+		boolean affordable = buyCost <= state.gp() || (gpPerAction >= 0 && tripCost <= state.gp());
 
 		double xpHr = m.getXpPerHour();
 		double actionsPerHour = m.getXpPerAction() <= 0 ? 0 : xpHr / m.getXpPerAction();
@@ -196,7 +216,8 @@ public final class MethodPlanner
 			score -= 1e9;
 		}
 
-		return new MethodOption(m, blockers, gpPerAction, actions, buyCost, affordable, ownedFraction, score);
+		return new MethodOption(m, blockers, gpPerAction, actions, buyCost, affordable, ownedFraction, unownedCostPerAction,
+			score);
 	}
 
 	public static long xpBetween(int currentXp, int targetLevel)
