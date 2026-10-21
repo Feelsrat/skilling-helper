@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -190,6 +191,11 @@ public class SkillingHelperPanel extends PluginPanel
 	 */
 	public void update(ActiveGuide guide, TrainingPreference preference, boolean bankFilterOn)
 	{
+		// Rebuilding the panel while a dropdown is open closes it, so wait until it's closed (updates come every tick)
+		if (skillBox.isPopupVisible() || prefBox.isPopupVisible())
+		{
+			return;
+		}
 		String signature = signature(guide, preference, bankFilterOn);
 		if (signature.equals(lastSignature))
 		{
@@ -200,8 +206,14 @@ public class SkillingHelperPanel extends PluginPanel
 		updating = true;
 		try
 		{
-			skillBox.setSelectedItem(guide.getSkill());
-			prefBox.setSelectedItem(preference);
+			if (!Objects.equals(skillBox.getSelectedItem(), guide.getSkill()))
+			{
+				skillBox.setSelectedItem(guide.getSkill());
+			}
+			if (prefBox.getSelectedItem() != preference)
+			{
+				prefBox.setSelectedItem(preference);
+			}
 			if (guide.isActive())
 			{
 				int min = Math.min(guide.getLevel() + 1, Experience.MAX_REAL_LEVEL);
