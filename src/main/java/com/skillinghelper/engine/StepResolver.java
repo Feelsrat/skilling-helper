@@ -722,16 +722,26 @@ public final class StepResolver
 	private static GuideStep waitStep(Method m, PlayerState s)
 	{
 		int soonest = Integer.MAX_VALUE;
+		Stop next = null;
 		for (Stop stop : m.getStops())
 		{
-			soonest = Math.min(soonest, s.getStopWaits().getOrDefault(stop.getId(), 0));
+			int wait = s.getStopWaits().getOrDefault(stop.getId(), 0);
+			if (wait < soonest)
+			{
+				soonest = wait;
+				next = stop;
+			}
 		}
-		return GuideStep.builder()
+		GuideStep.GuideStepBuilder b = GuideStep.builder()
 			.type(StepType.WAIT)
 			.title("Run done: next one ready in ~" + soonest + " min")
 			.line("Every stop on this run is done. Train another skill meanwhile and come back when it's ready; "
-				+ "this guide picks up again on its own.")
-			.build();
+				+ "this guide picks up again on its own.");
+		if (next != null)
+		{
+			b.line("First up then: " + next.getLocation().getName() + ".");
+		}
+		return b.build();
 	}
 
 	/**

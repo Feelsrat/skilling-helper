@@ -21,6 +21,11 @@ class BirdhouseTracker
 {
 	static final int FILL_MINUTES = 50;
 	private static final String KEY = "birdhouse.";
+	/**
+	 * RuneLite's Time Tracking plugin keeps "value:epoch" per bird house varp under this group, as birdhouse.(varp).
+	 */
+	private static final String TIME_TRACKING_GROUP = "timetracking";
+	private static final int SETTLE_TICKS = 3;
 
 	/**
 	 * The bird house spaces, keyed by the stop ids the Hunter guide uses.
@@ -49,6 +54,7 @@ class BirdhouseTracker
 	 */
 	private final long[] changed = new long[Space.values().length];
 	private boolean loaded;
+	private int loadedTick;
 	/**
 	 * When every seeded bird house will be full, in epoch seconds, or 0 if none are seeded.
 	 */
@@ -57,6 +63,8 @@ class BirdhouseTracker
 
 	/**
 	 * Loads the saved timestamps for the logged-in account and catches up on changes made while it wasn't tracked.
+	 * A space whose state changed while we weren't watching gets its time from RuneLite's Time Tracking plugin if
+	 * that saw it, otherwise its age is unknown and the guide sends the player there to check it.
 	 */
 	void load()
 	{
@@ -65,24 +73,53 @@ class BirdhouseTracker
 		{
 			values[i] = -1;
 			changed[i] = 0;
-			String stored = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY + spaces[i].name());
-			if (stored != null)
-			{
-				String[] parts = stored.split(":");
-				try
-				{
-					values[i] = Integer.parseInt(parts[0]);
-					changed[i] = Long.parseLong(parts[1]);
-				}
-				catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored)
-				{
-					// corrupt entry: treat as unknown
-				}
-			}
-			record(i, client.getVarpValue(spaces[i].getVarp()));
+			parse(configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY + spaces[i].name()), i);
+			catchUp(i, client.getVarpValue(spaces[i].getVarp()));
 		}
 		loaded = true;
+		loadedTick = client.getTickCount();
 		updateReadyAt();
+	}
+
+	private void parse(String stored, int i)
+	{
+		if (stored == null)
+		{
+			return;
+		}
+		String[] parts = stored.split(":");
+		try
+		{
+			values[i] = Integer.parseInt(parts[0]);
+			changed[i] = Long.parseLong(parts[1]);
+		}
+		catch (NumberFormatException | ArrayIndexOutOfBoundsException ignored)
+		{
+			// corrupt entry: treat as unknown
+			values[i] = -1;
+			changed[i] = 0;
+		}
+	}
+
+	/**
+	 * Takes in a value seen without watching it change, so we can't say it changed just now.
+	 */
+	private void catchUp(int i, int value)
+	{
+		if (values[i] == value && changed[i] > 0)
+		{
+			return;
+		}
+		Space space = Space.values()[i];
+		values[i] = -1;
+		changed[i] = 0;
+		parse(configManager.getRSProfileConfiguration(TIME_TRACKING_GROUP, KEY + space.getVarp()), i);
+		if (values[i] != value)
+		{
+			values[i] = value;
+			changed[i] = 0;
+		}
+		save(i);
 	}
 
 	void reset()
@@ -102,7 +139,15 @@ class BirdhouseTracker
 		{
 			if (spaces[i].getVarp() == varpId)
 			{
-				record(i, value);
+				// Varps arrive in a burst right after login: those are the saved state, not a fresh change
+				if (client.getTickCount() - loadedTick < SETTLE_TICKS)
+				{
+					catchUp(i, value);
+				}
+				else
+				{
+					record(i, value);
+				}
 				updateReadyAt();
 			}
 		}
@@ -140,8 +185,13 @@ class BirdhouseTracker
 		}
 		values[i] = value;
 		changed[i] = now();
+		save(i);
+	}
+
+	private void save(int i)
+	{
 		configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY + Space.values()[i].name(),
-			value + ":" + changed[i]);
+			values[i] + ":" + changed[i]);
 	}
 
 	/**
