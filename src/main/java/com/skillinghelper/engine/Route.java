@@ -38,6 +38,14 @@ public class Route
 	 */
 	private static final int GRID = 7;
 
+	// The Wilderness, above ground and in its dungeons
+	private static final int WILDERNESS_MIN_X = 2944;
+	private static final int WILDERNESS_MAX_X = 3391;
+	private static final int WILDERNESS_MIN_Y = 3520;
+	private static final int WILDERNESS_MAX_Y = 3967;
+	private static final int WILDERNESS_UNDERGROUND_MIN_Y = 9920;
+	private static final int WILDERNESS_UNDERGROUND_MAX_Y = 10367;
+
 	Kind kind;
 	/**
 	 * The place the player is ultimately heading for.
@@ -58,37 +66,47 @@ public class Route
 	public static Route to(PlayerState s, List<Location> places)
 	{
 		Location first = places.get(0);
-		WorldPoint me = s.getLocation();
+		Route boatLeg = null;
 		if (first.isAtSea() && !s.isOnBoat())
 		{
-			Mooring known = s.getBoatMooring();
-			List<Location> docks = new ArrayList<>();
-			if (known != null)
-			{
-				docks.add(known.location());
-			}
-			else
-			{
-				for (Mooring m : Mooring.usable(s.level(Skill.SAILING), me))
-				{
-					docks.add(m.location());
-				}
-			}
-			if (!docks.isEmpty())
-			{
-				return new Route(Kind.BOARD_BOAT, first.getName(), docks, known != null);
-			}
+			boatLeg = boardBoat(s, first);
 		}
 		else if (!first.isAtSea() && s.isOnBoat())
 		{
-			// Dock where the walk to the place is shortest; the boat stays there for next time
-			List<Mooring> near = Mooring.usable(s.level(Skill.SAILING), first.getPoint());
-			if (!near.isEmpty())
+			boatLeg = dock(s, first);
+		}
+		return boatLeg != null ? boatLeg
+			: new Route(Kind.TRAVEL, first.getName(), nearestFirst(places, s.getLocation()), true);
+	}
+
+	/**
+	 * To the boat's mooring, or every dock the player could have left it at. Null if there's none.
+	 */
+	private static Route boardBoat(PlayerState s, Location place)
+	{
+		Mooring known = s.getBoatMooring();
+		List<Location> docks = new ArrayList<>();
+		if (known != null)
+		{
+			docks.add(known.location());
+		}
+		else
+		{
+			for (Mooring m : Mooring.usable(s.level(Skill.SAILING), s.getLocation()))
 			{
-				return new Route(Kind.DOCK, first.getName(), List.of(near.get(0).location()), true);
+				docks.add(m.location());
 			}
 		}
-		return new Route(Kind.TRAVEL, first.getName(), nearestFirst(places, me), true);
+		return docks.isEmpty() ? null : new Route(Kind.BOARD_BOAT, place.getName(), docks, known != null);
+	}
+
+	/**
+	 * Dock where the walk to the place is shortest; the boat stays there for next time. Null if there's no dock.
+	 */
+	private static Route dock(PlayerState s, Location place)
+	{
+		List<Mooring> near = Mooring.usable(s.level(Skill.SAILING), place.getPoint());
+		return near.isEmpty() ? null : new Route(Kind.DOCK, place.getName(), List.of(near.get(0).location()), true);
 	}
 
 	public static Route to(PlayerState s, Location place)
@@ -256,7 +274,9 @@ public class Route
 	{
 		int x = wp.getX();
 		int y = wp.getY();
-		return x >= 2944 && x <= 3391 && ((y >= 3520 && y <= 3967) || (y >= 9920 && y <= 10367));
+		return x >= WILDERNESS_MIN_X && x <= WILDERNESS_MAX_X
+			&& ((y >= WILDERNESS_MIN_Y && y <= WILDERNESS_MAX_Y)
+			|| (y >= WILDERNESS_UNDERGROUND_MIN_Y && y <= WILDERNESS_UNDERGROUND_MAX_Y));
 	}
 
 	private static int distance(WorldPoint a, WorldPoint b)

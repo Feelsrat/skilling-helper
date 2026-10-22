@@ -58,14 +58,36 @@ public final class MethodPlanner
 
 		if (forced != null)
 		{
-			MethodOption option = evaluate(forced, state, pref, current, xpBetween(currentXp, targetLevel));
+			long xp = xpBetween(currentXp, targetLevel);
+			MethodOption option = evaluate(forced, state, pref, current, xp);
 			if (option.isAvailable())
 			{
-				plan.add(new PlanSegment(current, targetLevel, xpBetween(currentXp, targetLevel), option));
+				plan.add(new PlanSegment(current, targetLevel, xp, option));
 				return plan;
 			}
 		}
 
+		TreeSet<Integer> breakpoints = breakpoints(methods, current, targetLevel);
+		Integer from = breakpoints.first();
+		for (Integer to : breakpoints.tailSet(from, false))
+		{
+			int startXp = Math.max(currentXp, Experience.getXpForLevel(from));
+			long xp = xpBetween(startXp, to);
+			List<MethodOption> ranked = rankAt(methods, state, pref, from, xp);
+			if (!ranked.isEmpty() && ranked.get(0).isAvailable())
+			{
+				addSegment(plan, state, pref, new PlanSegment(from, to, xp, ranked.get(0)));
+			}
+			from = to;
+		}
+		return plan;
+	}
+
+	/**
+	 * The levels where the plan may switch method: now, each level a new method unlocks, and the goal.
+	 */
+	private static TreeSet<Integer> breakpoints(List<Method> methods, int current, int targetLevel)
+	{
 		TreeSet<Integer> breakpoints = new TreeSet<>();
 		breakpoints.add(current);
 		for (Method m : methods)
@@ -76,30 +98,24 @@ public final class MethodPlanner
 			}
 		}
 		breakpoints.add(targetLevel);
+		return breakpoints;
+	}
 
-		Integer from = breakpoints.first();
-		for (Integer to : breakpoints.tailSet(from, false))
+	/**
+	 * Adds a segment, or extends the last one when it uses the same method.
+	 */
+	private void addSegment(List<PlanSegment> plan, PlayerState state, TrainingPreference pref, PlanSegment next)
+	{
+		PlanSegment last = plan.isEmpty() ? null : plan.get(plan.size() - 1);
+		Method method = next.getOption().getMethod();
+		if (last == null || last.getOption().getMethod() != method)
 		{
-			int startXp = Math.max(currentXp, Experience.getXpForLevel(from));
-			long xp = xpBetween(startXp, to);
-			List<MethodOption> ranked = rankAt(methods, state, pref, from, xp);
-			MethodOption best = ranked.isEmpty() || !ranked.get(0).isAvailable() ? null : ranked.get(0);
-			if (best != null)
-			{
-				PlanSegment last = plan.isEmpty() ? null : plan.get(plan.size() - 1);
-				if (last != null && last.getOption().getMethod() == best.getMethod())
-				{
-					MethodOption merged = evaluate(best.getMethod(), state, pref, last.getFromLevel(), last.getXp() + xp);
-					plan.set(plan.size() - 1, new PlanSegment(last.getFromLevel(), to, last.getXp() + xp, merged));
-				}
-				else
-				{
-					plan.add(new PlanSegment(from, to, xp, best));
-				}
-			}
-			from = to;
+			plan.add(next);
+			return;
 		}
-		return plan;
+		long xp = last.getXp() + next.getXp();
+		MethodOption merged = evaluate(method, state, pref, last.getFromLevel(), xp);
+		plan.set(plan.size() - 1, new PlanSegment(last.getFromLevel(), next.getToLevel(), xp, merged));
 	}
 
 	private List<MethodOption> rankAt(List<Method> methods, PlayerState state, TrainingPreference pref, int level,
@@ -116,6 +132,36 @@ public final class MethodPlanner
 	}
 
 	MethodOption evaluate(Method m, PlayerState state, TrainingPreference pref, int level, long xpNeeded)
+	{
+		double xpPerAction = m.xpPerAction(level);
+		int actions = xpPerAction <= 0 ? 0 : (int) Math.ceil(xpNeeded / xpPerAction);
+		InputCosts inputs = inputCosts(m, state, actions);
+		double productValue = productValue(m);
+		double gpPerAction = productValue - inputs.costPerAction;
+		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
+		boolean affordable = inputs.buyCost <= state.gp() || (gpPerAction >= 0 && inputs.tripCost <= state.gp());
+
+		Integer measuredXpHr = state.getMeasuredXpPerHour().get(m.getId());
+		double xpHr = measuredXpHr != null ? measuredXpHr : m.xpPerHour(level);
+		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
+		double gpHr = gpPerAction * actionsPerHour;
+		// Items already in the bank don't need buying, so they only count partially against the method
+		double cashGpHr = (productValue - inputs.costPerAction * (1 - inputs.ownedFraction)) * actionsPerHour;
+		double score = score(m, pref, xpHr, gpHr, cashGpHr, inputs.ownedFraction);
+		if (!affordable)
+		{
+			// Rank methods the player can't pay for after every affordable one
+			score -= 1e9;
+		}
+
+		return new MethodOption(m, blockers(m, state, level), gpPerAction, actions, inputs.buyCost, affordable,
+			inputs.ownedFraction, inputs.unownedCostPerAction, xpHr, measuredXpHr != null, xpPerAction, score);
+	}
+
+	/**
+	 * Why the player can't use a method yet. Empty when they can.
+	 */
+	private static List<String> blockers(Method m, PlayerState state, int level)
 	{
 		List<String> blockers = new ArrayList<>();
 		if (m.getMinLevel() > level)
@@ -137,40 +183,74 @@ public final class MethodPlanner
 				blockers.add("Needs " + q.getName());
 			}
 		}
+		return blockers;
+	}
 
-		double xpPerAction = m.xpPerAction(level);
-		int actions = xpPerAction <= 0 ? 0 : (int) Math.ceil(xpNeeded / xpPerAction);
+	/**
+	 * What a method's inputs cost for the goal, given what the player already owns.
+	 */
+	private static final class InputCosts
+	{
+		/**
+		 * GP per action spent on inputs, owned or not.
+		 */
+		double costPerAction;
+		/**
+		 * GP per action spent on inputs the player still has to buy.
+		 */
+		double unownedCostPerAction;
+		/**
+		 * GP to buy everything the goal needs that the player doesn't own.
+		 */
+		long buyCost;
+		/**
+		 * GP to buy one trip's worth of what the player doesn't own.
+		 */
+		long tripCost;
+		/**
+		 * Fraction (0-1) of the needed inputs the player already owns.
+		 */
+		double ownedFraction;
+	}
 
-		double inputCost = 0;
-		double unownedCostPerAction = 0;
-		long buyCost = 0;
-		long tripCost = 0;
+	private InputCosts inputCosts(Method m, PlayerState state, int actions)
+	{
+		InputCosts costs = new InputCosts();
 		long neededTotal = 0;
 		long ownedTotal = 0;
 		for (ItemReq input : m.getInputs())
 		{
 			long needed = (long) actions * input.getPerAction();
 			neededTotal += needed;
-			if (input.hasSubstitute() && state.owned(input.getSubstituteIds()) > 0)
+			if (state.ownsSubstitute(input))
 			{
 				// e.g. a staff of air instead of air runes: nothing to buy
 				ownedTotal += needed;
 				continue;
 			}
 			int price = prices.price(input.primaryId());
-			inputCost += (double) price * input.getPerAction();
+			costs.costPerAction += (double) price * input.getPerAction();
 			long owned = Math.min(needed, state.owned(input.getIds()));
 			ownedTotal += owned;
-			buyCost += (needed - owned) * price;
+			costs.buyCost += (needed - owned) * price;
 			if (owned < needed)
 			{
-				unownedCostPerAction += (double) price * input.getPerAction();
+				costs.unownedCostPerAction += (double) price * input.getPerAction();
 				long trip = input.isWholeStack() ? Math.min(needed - owned, 1_000) : input.getQuantity();
-				tripCost += Math.min(needed - owned, trip) * price;
+				costs.tripCost += Math.min(needed - owned, trip) * price;
 			}
 		}
+		costs.ownedFraction = neededTotal == 0 ? 1 : (double) ownedTotal / neededTotal;
+		return costs;
+	}
+
+	/**
+	 * GP earned per action: the average product's price after GE tax, plus any coins. Power-training drops the
+	 * produce, so that earns nothing.
+	 */
+	private double productValue(Method m)
+	{
 		double productValue = 0;
-		// Power-training drops the produce, so it earns nothing
 		if (!m.getProducts().isEmpty() && !m.isDropByDefault())
 		{
 			for (int product : m.getProducts())
@@ -179,47 +259,32 @@ public final class MethodPlanner
 			}
 			productValue /= m.getProducts().size();
 		}
-		productValue += m.getCoinsPerAction();
-		double gpPerAction = productValue - inputCost;
-		double ownedFraction = neededTotal == 0 ? 1 : (double) ownedTotal / neededTotal;
-		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
-		boolean affordable = buyCost <= state.gp() || (gpPerAction >= 0 && tripCost <= state.gp());
+		return productValue + m.getCoinsPerAction();
+	}
 
-		Integer measuredXpHr = state.getMeasuredXpPerHour().get(m.getId());
-		double xpHr = measuredXpHr != null ? measuredXpHr : m.xpPerHour(level);
-		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
-		double gpHr = gpPerAction * actionsPerHour;
-		// Items already in the bank don't need buying, so they only count partially against the method
-		double cashGpHr = (productValue - inputCost * (1 - ownedFraction)) * actionsPerHour;
-		double score;
+	/**
+	 * How well a method fits the training preference; higher is better.
+	 */
+	private static double score(Method m, TrainingPreference pref, double xpHr, double gpHr, double cashGpHr,
+		double ownedFraction)
+	{
+		// Owning the inputs already only matters for methods that use any
+		double ownsInputs = ownedFraction * (m.getInputs().isEmpty() ? 0 : 1);
 		switch (pref)
 		{
 			case FAST:
-				score = xpHr;
-				break;
+				return xpHr;
 			case AFK:
-				score = xpHr * (m.hasTag(MethodTag.AFK) ? 3 : 1) * (m.getType() == MethodType.ACTIVITY ? 0.8 : 1);
-				break;
+				return xpHr * (m.hasTag(MethodTag.AFK) ? 3 : 1) * (m.getType() == MethodType.ACTIVITY ? 0.8 : 1);
 			case CHEAP:
-				score = xpHr + 10 * Math.min(cashGpHr, 0) + 30_000 * ownedFraction * (m.getInputs().isEmpty() ? 0 : 1);
-				break;
+				return xpHr + 10 * Math.min(cashGpHr, 0) + 30_000 * ownsInputs;
 			case PROFIT:
-				score = 3 * gpHr + 0.2 * xpHr;
-				break;
+				return 3 * gpHr + 0.2 * xpHr;
 			case RECOMMENDED:
 			default:
-				score = xpHr + 2 * Math.min(cashGpHr, 0) + (m.hasTag(MethodTag.AFK) ? 0.15 * xpHr : 0)
-					+ 20_000 * ownedFraction * (m.getInputs().isEmpty() ? 0 : 1);
-				break;
+				return xpHr + 2 * Math.min(cashGpHr, 0) + (m.hasTag(MethodTag.AFK) ? 0.15 * xpHr : 0)
+					+ 20_000 * ownsInputs;
 		}
-		if (!affordable)
-		{
-			// Rank methods the player can't pay for after every affordable one
-			score -= 1e9;
-		}
-
-		return new MethodOption(m, blockers, gpPerAction, actions, buyCost, affordable, ownedFraction, unownedCostPerAction,
-			xpHr, measuredXpHr != null, xpPerAction, score);
 	}
 
 	public static long xpBetween(int currentXp, int targetLevel)
