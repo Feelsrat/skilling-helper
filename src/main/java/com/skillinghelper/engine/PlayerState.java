@@ -26,6 +26,12 @@ public class PlayerState
 	Map<Skill, Integer> xp = Collections.emptyMap();
 	@Builder.Default
 	ItemCounts inventory = ItemCounts.EMPTY;
+	/**
+	 * How many inventory slots each item takes up: its quantity, or 1 for a stack. Empty when unknown, and then
+	 * {@link #inventory} counts are used.
+	 */
+	@Builder.Default
+	ItemCounts inventorySlots = ItemCounts.EMPTY;
 	@Builder.Default
 	ItemCounts equipment = ItemCounts.EMPTY;
 	/**
@@ -106,6 +112,14 @@ public class PlayerState
 	public long gp()
 	{
 		return owned(ItemID.COINS) + 1000L * owned(ItemID.PLATINUM);
+	}
+
+	/**
+	 * Inventory slots taken up by these items.
+	 */
+	public int slots(int... ids)
+	{
+		return inventorySlots.asMap().isEmpty() ? inventory.count(ids) : inventorySlots.count(ids);
 	}
 
 	public boolean inventoryFull()

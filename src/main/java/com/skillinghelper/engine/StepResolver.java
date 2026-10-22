@@ -11,13 +11,16 @@ import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.Stop;
 import com.skillinghelper.data.ToolType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.runelite.api.Experience;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Turns a method and the player's current state into the single next step, Quest Helper style. Steps are
@@ -43,6 +46,7 @@ public final class StepResolver
 	public List<Requirement> requirements(Method m, PlayerState s, int actions)
 	{
 		List<Requirement> reqs = new ArrayList<>();
+		Map<ItemReq, Integer> tripAmounts = tripAmounts(m, s, actions);
 
 		ToolType toolType = m.getToolType();
 		if (toolType != null)
@@ -121,7 +125,7 @@ public final class StepResolver
 			if (making(input, s))
 			{
 				long toMake = Math.max(1, needed - s.owned(input.getIds()));
-				int perTrip = makePerTrip(m, input, s);
+				int perTrip = makePerTrip(input, s);
 				reqs.add(new Requirement(input.getName() + ": make them yourself. " + input.getRecipeText() + ".",
 					Requirement.Status.INFO, new int[0], 0, 0));
 				for (ItemReq part : input.getRecipe())
@@ -133,7 +137,8 @@ public final class StepResolver
 				}
 				continue;
 			}
-			int trip = (int) Math.min(input.isWholeStack() ? Integer.MAX_VALUE : input.getQuantity(), Math.max(needed, 1));
+			int trip = (int) Math.min(input.isWholeStack() ? Integer.MAX_VALUE
+				: tripAmounts.getOrDefault(input, input.getQuantity()), Math.max(needed, 1));
 			Requirement r = itemRequirement(input, s, needed, trip);
 			if (input.hasSubstitute() && r.getStatus() == Requirement.Status.MISSING)
 			{
@@ -513,7 +518,7 @@ public final class StepResolver
 		{
 			if (!s.bankKnown())
 			{
-				return bankStep(s, bank, "Open your bank so I can check what you own", missing, optionalInBank, m, false)
+				return bankStep(s, bank, "Open your bank so I can check what you own", missing, optionalInBank, m, null)
 					.line("I haven't seen your bank yet, so I can't tell if you already have these.")
 					.line(BANK_TIP)
 					.build();
@@ -568,47 +573,41 @@ public final class StepResolver
 		boolean fullOfProduce = gather && s.inventoryFull() && carriesProduct(m, s);
 		if (!inBank.isEmpty() || needsInputs || (fullOfProduce && !drop))
 		{
+			// A trip to make inputs (molten glass, unfinished potions) only needs the parts, so the method's own tools
+			// stay in the bank to make room
+			Set<Integer> kept = toMake.isEmpty() ? keptIds(m) : makeKeptIds(toMake);
 			// Inputs get their own "withdraw N x" lines below, so leave them out of the generic list
 			List<Requirement> withdraw = new ArrayList<>();
 			for (Requirement r : inBank)
 			{
-				if (!isInput(m, r))
+				if (!isInput(m, r) && (toMake.isEmpty() || containsAny(kept, r.getItemIds())))
 				{
 					withdraw.add(r);
 				}
 			}
-			GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, optionalInBank, m, true);
+			GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, optionalInBank, m, kept);
 			for (ItemReq input : toMake)
 			{
-				int perTrip = makePerTrip(m, input, s);
+				int perTrip = makePerTrip(input, s);
 				for (ItemReq part : input.getRecipe())
 				{
+					int amount = part.getPerAction() == 0 ? 1 : perTrip * part.getPerAction();
+					int more = Math.max(0, amount - s.getInventory().count(part.getIds()));
+					if (more == 0)
+					{
+						continue;
+					}
 					b.line(part.getPerAction() == 0
 						? String.format("• Withdraw a %s (to make %s)", part.getName().toLowerCase(),
 							input.getName().toLowerCase())
-						: String.format("• Withdraw %,d x %s (to make %s)", perTrip * part.getPerAction(),
-							part.getName(), input.getName().toLowerCase()));
-					for (int id : part.getIds())
-					{
-						b.itemHighlight(id, ItemHighlight.WITHDRAW);
-					}
+						: String.format("• Withdraw %,d x %s (to make %s)", more, part.getName(),
+							input.getName().toLowerCase()));
+					withdrawHighlight(b, part.getIds(), more);
 				}
 			}
-			if (needsInputs && toMake.isEmpty())
+			if (toMake.isEmpty())
 			{
-				for (ItemReq input : m.getInputs())
-				{
-					if (needsWithdraw(input, s, gather))
-					{
-						b.line(input.isWholeStack()
-							? "• Withdraw all your " + input.getName().toLowerCase()
-							: String.format("• Withdraw %,d x %s", input.getQuantity(), input.getName()));
-						for (int id : input.getIds())
-						{
-							b.itemHighlight(id, ItemHighlight.WITHDRAW);
-						}
-					}
-				}
+				withdrawInputs(b, m, s, gather, actionsLeft(m, s, targetLevel));
 			}
 			return b.line(BANK_TIP).build();
 		}
@@ -793,7 +792,7 @@ public final class StepResolver
 	}
 
 	private GuideStep.GuideStepBuilder bankStep(PlayerState s, Location bank, String title, List<Requirement> withdraw,
-		List<Requirement> optional, Method m, boolean depositProduce)
+		List<Requirement> optional, Method m, Set<Integer> kept)
 	{
 		GuideStep.GuideStepBuilder b = GuideStep.builder()
 			.type(StepType.BANK)
@@ -803,35 +802,286 @@ public final class StepResolver
 		{
 			travel(b, Route.to(s, bank));
 		}
-		if (depositProduce && carriesProduct(m, s))
+		if (kept != null && carriesProduct(m, s))
 		{
 			b.line("• Deposit your " + productNoun(m));
 			for (int id : m.getProducts())
 			{
 				b.itemHighlight(id, ItemHighlight.DEPOSIT);
+				b.depositAmount(id, 0);
+			}
+		}
+		if (kept != null && m.getType() != MethodType.ACTIVITY)
+		{
+			// Anything else the trip doesn't use only takes up room
+			boolean other = false;
+			for (int id : s.getInventory().asMap().keySet())
+			{
+				if (!kept.contains(id) && !m.getProducts().contains(id))
+				{
+					b.itemHighlight(id, ItemHighlight.DEPOSIT);
+					b.depositAmount(id, 0);
+					other = true;
+				}
+			}
+			if (other)
+			{
+				b.line("• Deposit the other outlined items: this trip doesn't use them");
 			}
 		}
 		for (Requirement r : withdraw)
 		{
 			b.line("• " + (r.getStatus() == Requirement.Status.MISSING ? "Check for " : "Withdraw ")
 				+ r.getText().replace(" (in bank)", ""));
-			for (int id : r.getItemIds())
-			{
-				b.itemHighlight(id, ItemHighlight.WITHDRAW);
-			}
+			withdrawHighlight(b, r.getItemIds(), r.getQuantity());
 		}
 		for (Requirement r : optional)
 		{
 			if (s.bankCount(r.getItemIds()) > 0)
 			{
 				b.line("• Optional: " + r.getText().replace(" (in bank)", "").replaceFirst("^Optional: ", ""));
-				for (int id : r.getItemIds())
-				{
-					b.itemHighlight(id, ItemHighlight.WITHDRAW);
-				}
+				withdrawHighlight(b, r.getItemIds(), r.getQuantity());
 			}
 		}
 		return b;
+	}
+
+	/**
+	 * Highlights an item to take out of the bank, and how many: 0 for all of them.
+	 */
+	private static void withdrawHighlight(GuideStep.GuideStepBuilder b, int[] ids, int amount)
+	{
+		for (int id : ids)
+		{
+			b.itemHighlight(id, ItemHighlight.WITHDRAW);
+			b.withdrawAmount(id, Math.max(0, amount));
+		}
+	}
+
+	/**
+	 * Lines for the inputs to take out. Processing tops every input up to this trip's loadout (and puts back any
+	 * extra); gathering takes a fresh set of whatever ran out.
+	 */
+	private void withdrawInputs(GuideStep.GuideStepBuilder b, Method m, PlayerState s, boolean gather, long actionsLeft)
+	{
+		Map<ItemReq, Integer> trip = tripAmounts(m, s, actionsLeft);
+		List<String> plan = new ArrayList<>();
+		for (ItemReq input : m.getInputs())
+		{
+			if (input.hasSubstitute() && s.carried(input.getSubstituteIds()) > 0)
+			{
+				continue;
+			}
+			Integer target = trip.get(input);
+			if (target == null)
+			{
+				if (needsWithdraw(input, s, gather))
+				{
+					b.line(input.isWholeStack()
+						? "• Withdraw all your " + input.getName().toLowerCase()
+						: String.format("• Withdraw %,d x %s", input.getQuantity(), input.getName()));
+					withdrawHighlight(b, input.getIds(), input.getQuantity());
+				}
+				continue;
+			}
+			plan.add(String.format("%,d x %s", target, input.getName().toLowerCase()));
+			int carried = s.getInventory().count(input.getIds());
+			if (carried < target)
+			{
+				int more = target - carried;
+				b.line(carried == 0
+					? String.format("• Withdraw %,d x %s", more, input.getName())
+					: String.format("• Withdraw %,d more %s (%,d for this trip)", more, input.getName().toLowerCase(),
+						target));
+				withdrawHighlight(b, input.getIds(), more);
+			}
+			else if (carried > target)
+			{
+				int extra = carried - target;
+				b.line(String.format("• Deposit %,d x %s (%,d is enough for this trip)", extra, input.getName(), target));
+				for (int id : input.getIds())
+				{
+					if (s.getInventory().has(id))
+					{
+						b.itemHighlight(id, ItemHighlight.DEPOSIT);
+						b.depositAmount(id, extra);
+					}
+				}
+			}
+		}
+		if (!plan.isEmpty())
+		{
+			b.line("This trip: " + String.join(" + ", plan) + ".");
+		}
+	}
+
+	/**
+	 * How many of each input to carry out of the bank on a processing trip, sized to the free inventory slots (see
+	 * {@link Loadout}). Empty for gathering, where the room is for what's gathered and inputs keep their set amount.
+	 */
+	Map<ItemReq, Integer> tripAmounts(Method m, PlayerState s, long actionsLeft)
+	{
+		if (m.getType() != MethodType.PROCESS)
+		{
+			return Collections.emptyMap();
+		}
+		List<ItemReq> fill = new ArrayList<>();
+		for (ItemReq input : m.getInputs())
+		{
+			if (input.isWholeStack() || input.getPerAction() <= 0 || making(input, s)
+				|| (input.hasSubstitute() && s.owned(input.getSubstituteIds()) > 0))
+			{
+				continue;
+			}
+			fill.add(input);
+		}
+		Set<Integer> kept = keptIds(m);
+		for (ItemReq input : fill)
+		{
+			for (int id : input.getIds())
+			{
+				kept.remove(id);
+			}
+		}
+		return Loadout.of(fill, kept, slotsToWithdraw(m, s), s, actionsLeft).getAmounts();
+	}
+
+	/**
+	 * Inventory slots the trip's tools and stacks will take once they're out of the bank.
+	 */
+	private static int slotsToWithdraw(Method m, PlayerState s)
+	{
+		int slots = 0;
+		if (m.getToolType() != null && ToolAdvisor.bestCarried(m.getToolType(), s) == null
+			&& ToolAdvisor.bestOwned(m.getToolType(), s) != null)
+		{
+			slots++;
+		}
+		for (ItemReq tool : m.getTools())
+		{
+			if (tool.hasSubstitute() && s.carried(tool.getSubstituteIds()) > 0)
+			{
+				continue;
+			}
+			int want = tool.isWholeStack() ? 1 : tool.getQuantity();
+			int have = tool.isWholeStack() ? Math.min(1, s.carried(tool.getIds())) : s.carried(tool.getIds());
+			slots += Math.min(Math.max(0, want - have), s.bankCount(tool.getIds()));
+		}
+		for (ItemReq input : m.getInputs())
+		{
+			if (input.isWholeStack() && s.carried(input.getIds()) == 0 && s.bankCount(input.getIds()) > 0
+				&& !(input.hasSubstitute() && s.carried(input.getSubstituteIds()) > 0))
+			{
+				slots++;
+			}
+		}
+		return slots;
+	}
+
+	/**
+	 * Every item a trip of this method keeps in the inventory: tools, inputs and their parts, supplies and gear.
+	 * Anything else is put back in the bank.
+	 */
+	static Set<Integer> keptIds(Method m)
+	{
+		Set<Integer> ids = new HashSet<>();
+		if (m.getToolType() != null)
+		{
+			addIds(ids, m.getToolType().allIds());
+		}
+		for (ItemReq tool : m.getTools())
+		{
+			addReq(ids, tool);
+		}
+		for (ItemReq input : m.getInputs())
+		{
+			addReq(ids, input);
+			for (ItemReq part : input.getRecipe())
+			{
+				addReq(ids, part);
+			}
+		}
+		for (ItemReq supply : m.getSupplies())
+		{
+			addReq(ids, supply);
+		}
+		for (BoostItem boost : BoostItem.values())
+		{
+			if (boost.appliesTo(m))
+			{
+				addIds(ids, boost.getIds());
+			}
+		}
+		for (SkillOutfit outfit : SkillOutfit.values())
+		{
+			if (outfit.getSkill() == m.getSkill())
+			{
+				for (int[] slot : outfit.getSlots())
+				{
+					addIds(ids, slot);
+				}
+			}
+		}
+		if (m.getGearStyle() != null)
+		{
+			for (CombatGear slot : CombatGear.values())
+			{
+				if (slot.getStyle() == m.getGearStyle())
+				{
+					for (CombatGear.Tier t : slot.getTiers())
+					{
+						addIds(ids, t.getIds());
+					}
+				}
+			}
+		}
+		// Cash is handy to keep on you
+		ids.add(ItemID.COINS);
+		ids.add(ItemID.PLATINUM);
+		return ids;
+	}
+
+	private static boolean containsAny(Set<Integer> ids, int[] any)
+	{
+		for (int id : any)
+		{
+			if (ids.contains(id))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static void addReq(Set<Integer> ids, ItemReq req)
+	{
+		addIds(ids, req.getIds());
+		if (req.hasSubstitute())
+		{
+			addIds(ids, req.getSubstituteIds());
+		}
+	}
+
+	private static void addIds(Set<Integer> ids, int[] add)
+	{
+		for (int id : add)
+		{
+			ids.add(id);
+		}
+	}
+
+	/**
+	 * Actions the goal still needs, or {@link Long#MAX_VALUE} when the method has no xp per action.
+	 */
+	static long actionsLeft(Method m, PlayerState s, int targetLevel)
+	{
+		double perAction = m.xpPerAction(s.level(m.getSkill()));
+		if (perAction <= 0 || targetLevel < 1 || targetLevel > Experience.MAX_VIRT_LEVEL)
+		{
+			return Long.MAX_VALUE;
+		}
+		long xpLeft = Experience.getXpForLevel(targetLevel) - s.xp(m.getSkill());
+		return Math.max(1, (long) Math.ceil(xpLeft / perAction));
 	}
 
 	private static void toolWieldTip(Method m, PlayerState s, GuideStep.GuideStepBuilder b)
@@ -958,32 +1208,56 @@ public final class StepResolver
 	}
 
 	/**
-	 * How many to make per bank trip: enough for one trip of the method, as far as the parts fit in the inventory.
+	 * How many to make per bank trip: as many as the parts fit in the inventory (14 buckets of sand + 14 soda ash),
+	 * up to what the method needs.
 	 */
-	private static int makePerTrip(Method m, ItemReq input, PlayerState s)
+	private static int makePerTrip(ItemReq input, PlayerState s)
 	{
-		// Leave room for the method's tools
-		int space = 28 - m.getTools().size() - (m.getToolType() != null ? 1 : 0);
-		int slots = 0;
+		List<ItemReq> fill = new ArrayList<>();
+		int toWithdraw = 0;
 		for (ItemReq part : input.getRecipe())
 		{
-			if (part.isWholeStack())
+			if (part.isWholeStack() || part.getPerAction() == 0)
 			{
-				// Coins and other stackables take one slot whatever the amount
-				space--;
-			}
-			else if (part.getPerAction() == 0)
-			{
-				// A tool such as a pestle and mortar
-				space--;
+				// Coins or a tool such as a pestle and mortar: one slot whatever the amount
+				if (s.getInventory().count(part.getIds()) == 0)
+				{
+					toWithdraw++;
+				}
 			}
 			else
 			{
-				slots += part.getPerAction();
+				fill.add(part);
 			}
 		}
-		int want = Math.max(1, input.getQuantity()) - s.owned(input.getIds());
-		return Math.max(1, Math.min(want, space / Math.max(1, slots)));
+		Set<Integer> kept = makeKeptIds(List.of(input));
+		for (ItemReq part : fill)
+		{
+			for (int id : part.getIds())
+			{
+				kept.remove(id);
+			}
+		}
+		int want = Math.max(1, Math.max(1, input.getQuantity()) - s.owned(input.getIds()));
+		return Math.max(1, Loadout.of(fill, kept, toWithdraw, s, want).getActions());
+	}
+
+	/**
+	 * What a trip to make these inputs keeps in the inventory: just the parts (and cash).
+	 */
+	private static Set<Integer> makeKeptIds(List<ItemReq> toMake)
+	{
+		Set<Integer> ids = new HashSet<>();
+		for (ItemReq input : toMake)
+		{
+			for (ItemReq part : input.getRecipe())
+			{
+				addReq(ids, part);
+			}
+		}
+		ids.add(ItemID.COINS);
+		ids.add(ItemID.PLATINUM);
+		return ids;
 	}
 
 	private static List<ItemReq> sourcedItems(Method m)

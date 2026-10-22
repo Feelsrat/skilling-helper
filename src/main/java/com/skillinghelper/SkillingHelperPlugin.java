@@ -1,6 +1,7 @@
 package com.skillinghelper;
 
 import com.google.inject.Provides;
+import com.skillinghelper.bank.BankAmountSwapper;
 import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.data.Method;
@@ -129,6 +130,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private BankFilter bankFilter;
 	@Inject
+	private BankAmountSwapper bankAmountSwapper;
+	@Inject
 	private ShortestPathBridge shortestPath;
 	@Inject
 	private BirdhouseTracker birdhouses;
@@ -201,6 +204,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.register(tracker);
 		bankFilter.startUp();
 		eventBus.register(bankFilter);
+		eventBus.register(bankAmountSwapper);
 		eventBus.register(shortestPath);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(minimapOverlay);
@@ -234,6 +238,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		wikiPrices.clear();
 		eventBus.unregister(tracker);
 		eventBus.unregister(bankFilter);
+		eventBus.unregister(bankAmountSwapper);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(minimapOverlay);
 		overlayManager.remove(itemOverlay);
@@ -697,6 +702,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
 		ItemContainer worn = client.getItemContainer(InventoryID.WORN);
 		int used = 0;
+		Map<Integer, Integer> slots = new HashMap<>();
 		if (inv != null)
 		{
 			for (Item item : inv.getItems())
@@ -704,6 +710,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				if (item.getId() > 0)
 				{
 					used++;
+					slots.merge(item.getId(), 1, Integer::sum);
 				}
 			}
 		}
@@ -712,6 +719,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.levels(levels)
 			.xp(xp)
 			.inventory(counts(inv))
+			.inventorySlots(new ItemCounts(slots))
 			.equipment(counts(worn))
 			.bank(bankCache.get())
 			.freeInventorySlots(28 - used)

@@ -32,6 +32,17 @@ public class GuideStep
 	 */
 	@Singular
 	Map<Integer, ItemHighlight> itemHighlights;
+	/**
+	 * In the bank: how many of each item to take out right now, 0 meaning all of them. Used to put the matching
+	 * Withdraw option on left-click.
+	 */
+	@Singular
+	Map<Integer, Integer> withdrawAmounts;
+	/**
+	 * In the bank: how many of each carried item to put back, 0 meaning all of them.
+	 */
+	@Singular
+	Map<Integer, Integer> depositAmounts;
 
 	public static GuideStep empty(String title, String detail)
 	{

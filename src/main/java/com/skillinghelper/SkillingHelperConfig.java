@@ -242,6 +242,20 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "swapBankAmounts",
+		name = "Left-click the amount needed",
+		description = "In the bank, put the Withdraw/Deposit option for the amount this trip needs on left-click, "
+			+ "like Menu Entry Swapper does. Amounts the game has no option for use Withdraw-X: type it once and the "
+			+ "game remembers it. Hold shift for your normal options",
+		section = highlightSection,
+		position = 7
+	)
+	default boolean swapBankAmounts()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "bankFilterOn",
 		name = "",
 		description = "Whether the bank filter is switched on; it stays on between bank visits until turned off",
