@@ -1,6 +1,7 @@
 package com.skillinghelper.engine;
 
 import lombok.Value;
+import lombok.With;
 
 /**
  * One line of the "what you need" checklist in the panel.
@@ -40,6 +41,7 @@ public class Requirement
 		INFO
 	}
 
+	@With
 	String text;
 	Status status;
 	/**

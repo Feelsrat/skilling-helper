@@ -44,6 +44,45 @@ public class GuideStep
 	@Singular
 	Map<Integer, Integer> depositAmounts;
 
+	public static class GuideStepBuilder
+	{
+		/**
+		 * Points the step along a route and adds its travel hints as lines.
+		 */
+		public GuideStepBuilder travel(Route route)
+		{
+			route(route);
+			for (String hint : route.hints())
+			{
+				line(hint);
+			}
+			return this;
+		}
+
+		/**
+		 * Highlights items to take out of the bank, and how many: 0 for all of them.
+		 */
+		public GuideStepBuilder withdraw(int[] ids, int amount)
+		{
+			for (int id : ids)
+			{
+				itemHighlight(id, ItemHighlight.WITHDRAW);
+				withdrawAmount(id, Math.max(0, amount));
+			}
+			return this;
+		}
+
+		/**
+		 * Highlights a carried item to put back in the bank, and how many: 0 for all of them.
+		 */
+		public GuideStepBuilder deposit(int id, int amount)
+		{
+			itemHighlight(id, ItemHighlight.DEPOSIT);
+			depositAmount(id, amount);
+			return this;
+		}
+	}
+
 	public static GuideStep empty(String title, String detail)
 	{
 		return GuideStep.builder().type(StepType.DONE).title(title).line(detail).build();

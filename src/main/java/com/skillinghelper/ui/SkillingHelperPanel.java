@@ -5,12 +5,12 @@ import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.TrainingPreference;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
-import com.skillinghelper.engine.StepResolver;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -291,7 +291,7 @@ public class SkillingHelperPanel extends PluginPanel
 			long gpHr = option.gpPerHour();
 			if (gpHr != 0)
 			{
-				content.add(text((gpHr > 0 ? "Profit ~" : "Costs ~") + StepResolver.gp(Math.abs(gpHr)) + "/hr ("
+				content.add(text((gpHr > 0 ? "Profit ~" : "Costs ~") + Format.gp(Math.abs(gpHr)) + "/hr ("
 					+ gpPerXp(option) + ")", gpHr > 0 ? GOOD : WARN));
 			}
 			if (!method.getInputs().isEmpty() || !method.getProducts().isEmpty())
@@ -303,17 +303,17 @@ public class SkillingHelperPanel extends PluginPanel
 					.mapToDouble(seg -> -seg.getOption().getGpPerAction() * seg.getOption().getActions()).sum());
 				if (goalCost > 0)
 				{
-					content.add(text("Whole goal costs ~" + StepResolver.gp(goalCost) + " net (after selling products)",
+					content.add(text("Whole goal costs ~" + Format.gp(goalCost) + " net (after selling products)",
 						WARN));
 				}
 				else if (goalCost < 0)
 				{
-					content.add(text("Whole goal earns ~" + StepResolver.gp(-goalCost) + " after GE tax", GOOD));
+					content.add(text("Whole goal earns ~" + Format.gp(-goalCost) + " after GE tax", GOOD));
 				}
 			}
 			if (guide.getPlayer() != null)
 			{
-				content.add(text("Your GP: " + StepResolver.gp(guide.getPlayer().gp())
+				content.add(text("Your GP: " + Format.gp(guide.getPlayer().gp())
 					+ (guide.getPlayer().bankKnown() ? "" : " (open your bank to include it)"), Color.LIGHT_GRAY));
 			}
 			if (guide.getPriceSource() != null && (!method.getInputs().isEmpty() || !method.getProducts().isEmpty()))
@@ -424,7 +424,7 @@ public class SkillingHelperPanel extends PluginPanel
 		long gpHr = o.gpPerHour();
 		if (gpHr != 0)
 		{
-			row.add(text((gpHr > 0 ? "+" : "-") + StepResolver.gp(Math.abs(gpHr)) + "/hr · " + gpPerXp(o),
+			row.add(text((gpHr > 0 ? "+" : "-") + Format.gp(Math.abs(gpHr)) + "/hr · " + gpPerXp(o),
 				gpHr > 0 ? GOOD : WARN));
 		}
 		if (o.isAvailable() && !o.isAffordable())

@@ -1,5 +1,6 @@
 package com.skillinghelper.engine;
 
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Mooring;
 import java.util.Collections;
 import java.util.Map;
@@ -104,6 +105,22 @@ public class PlayerState
 	public int owned(int... ids)
 	{
 		return carried(ids) + bankCount(ids);
+	}
+
+	/**
+	 * Whether the player owns something that replaces this item entirely, e.g. a staff of air for air runes.
+	 */
+	public boolean ownsSubstitute(ItemReq req)
+	{
+		return req.hasSubstitute() && owned(req.getSubstituteIds()) > 0;
+	}
+
+	/**
+	 * Whether the player carries or wears something that replaces this item entirely.
+	 */
+	public boolean carriesSubstitute(ItemReq req)
+	{
+		return req.hasSubstitute() && carried(req.getSubstituteIds()) > 0;
 	}
 
 	/**
