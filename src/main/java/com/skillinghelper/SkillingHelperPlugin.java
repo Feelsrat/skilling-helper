@@ -10,52 +10,31 @@ import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
-import com.skillinghelper.engine.ItemCounts;
 import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.MethodPlanner;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
-import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.engine.Requirement;
-import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.StepResolver;
 import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
 import com.skillinghelper.ui.SkillingHelperPanel;
-import com.skillinghelper.prices.WikiPriceClient;
 import java.awt.image.BufferedImage;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
 import net.runelite.api.GameState;
-import net.runelite.api.Item;
-import net.runelite.api.ItemContainer;
 import net.runelite.api.Player;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
-import net.runelite.api.WorldEntity;
-import net.runelite.api.WorldType;
-import net.runelite.api.WorldView;
-import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -71,19 +50,15 @@ import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.RuneScapeProfileChanged;
-import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
-import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 
-@Slf4j
 @PluginDescriptor(
 	name = "Skilling Helper",
 	description = "Quest Helper-style step-by-step skilling guides with pathing, highlights and a bank filter",
@@ -94,13 +69,8 @@ import net.runelite.client.util.LinkBrowser;
 public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.Listener
 {
 	private static final String WIKI_URL = "https://oldschool.runescape.wiki/w/";
-	private static final String KEY_ACTIVE_SKILL = "activeSkill";
-	private static final String KEY_TARGET = "target.";
-	private static final String KEY_METHOD = "method.";
-	private static final String KEY_PREFERENCE = "preference";
-	private static final String KEY_BOAT_MOORING = "boatMooring";
 	private static final int QUEST_REFRESH_TICKS = 50;
-	private static final Duration PRICE_REFRESH = Duration.ofMinutes(5);
+	private static final int MOORING_RADIUS = 20;
 
 	@Inject
 	private Client client;
@@ -109,21 +79,23 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private SkillingHelperConfig config;
 	@Inject
-	private ConfigManager configManager;
-	@Inject
 	private EventBus eventBus;
 	@Inject
 	private OverlayManager overlayManager;
 	@Inject
 	private ClientToolbar clientToolbar;
 	@Inject
-	private ItemManager itemManager;
-	@Inject
 	private SkillIconManager skillIconManager;
 	@Inject
-	private WorldMapPointManager worldMapPointManager;
-	@Inject
 	private GuideRepository guides;
+	@Inject
+	private GuideSettings settings;
+	@Inject
+	private GuidePrices prices;
+	@Inject
+	private PlayerSnapshot snapshot;
+	@Inject
+	private PathDisplay path;
 	@Inject
 	private TargetTracker tracker;
 	@Inject
@@ -148,10 +120,6 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private MinimapArrowOverlay minimapOverlay;
 	@Inject
 	private ItemHighlightOverlay itemOverlay;
-	@Inject
-	private WikiPriceClient wikiPrices;
-	@Inject
-	private ScheduledExecutorService executor;
 
 	@Getter
 	private volatile ActiveGuide guide = ActiveGuide.NONE;
@@ -161,46 +129,19 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private MethodPlanner planner;
 	private StepResolver resolver;
 
-	private Skill activeSkill;
-	private final Map<Skill, Integer> targets = new EnumMap<>(Skill.class);
-	private final Map<Skill, String> forcedMethods = new EnumMap<>(Skill.class);
-	private TrainingPreference preference;
 	private final Set<Quest> completedQuests = EnumSet.noneOf(Quest.class);
 	private int questRefreshCountdown;
 	private boolean profileLoaded;
-
-	private Route pathRoute;
 	private boolean wasOnBoat;
-	private Mooring boatMooring;
-	private boolean hintArrowSet;
-	private WorldMapPoint mapPoint;
-	private ScheduledFuture<?> priceRefresh;
 
 	@Override
 	protected void startUp()
 	{
-		PriceLookup prices = new PriceLookup()
-		{
-			@Override
-			public int price(int itemId)
-			{
-				WikiPriceClient.Price live = livePrice(itemId);
-				return live != null && live.getHigh() > 0 ? live.getHigh() : guidePrice(itemId);
-			}
-
-			@Override
-			public int sellPrice(int itemId)
-			{
-				WikiPriceClient.Price live = livePrice(itemId);
-				return live != null && live.getLow() > 0 ? live.getLow() : guidePrice(itemId);
-			}
-		};
 		planner = new MethodPlanner(prices);
 		resolver = new StepResolver(prices);
 		tracker.setInterestingTargets(guides.all());
-		preference = config.preference();
-
-		updatePriceRefresh();
+		settings.useDefaultPreference();
+		prices.updateRefresh();
 
 		eventBus.register(tracker);
 		bankFilter.startUp();
@@ -210,16 +151,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(minimapOverlay);
 		overlayManager.add(itemOverlay);
-
-		panel = new SkillingHelperPanel(this, skillIconManager);
-		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
-		navButton = NavigationButton.builder()
-			.tooltip("Skilling Helper")
-			.icon(icon)
-			.priority(7)
-			.panel(panel)
-			.build();
-		clientToolbar.addNavigation(navButton);
+		addPanel();
 
 		clientThread.invokeLater(() ->
 		{
@@ -232,11 +164,23 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		});
 	}
 
+	private void addPanel()
+	{
+		panel = new SkillingHelperPanel(this, skillIconManager);
+		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
+		navButton = NavigationButton.builder()
+			.tooltip("Skilling Helper")
+			.icon(icon)
+			.priority(7)
+			.panel(panel)
+			.build();
+		clientToolbar.addNavigation(navButton);
+	}
+
 	@Override
 	protected void shutDown()
 	{
-		stopPriceRefresh();
-		wikiPrices.clear();
+		prices.shutDown();
 		eventBus.unregister(tracker);
 		eventBus.unregister(bankFilter);
 		eventBus.unregister(bankAmountSwapper);
@@ -248,7 +192,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		clientThread.invoke(() ->
 		{
 			bankCache.save();
-			clearPath();
+			path.clear();
 			tracker.clear();
 			rates.save();
 			resetRuns();
@@ -265,19 +209,20 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		return configManager.getConfig(SkillingHelperConfig.class);
 	}
 
+	// ---- Game events ----
+
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
 	{
-		if (e.getGameState() == GameState.LOGGED_IN && config.livePrices() && pricesStale())
+		if (e.getGameState() == GameState.LOGGED_IN)
 		{
-			// Prices aren't fetched while logged out, so catch up straight away
-			wikiPrices.refresh();
+			prices.onLoggedIn();
 		}
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			profileLoaded = false;
 			resetRuns();
-			clearPath();
+			path.clear();
 		}
 	}
 
@@ -319,69 +264,11 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		refresh();
 	}
 
-	/**
-	 * Reads nearby farming patches and updates the run countdowns.
-	 */
-	private void updateRuns()
-	{
-		if (!profileLoaded)
-		{
-			return;
-		}
-		Player me = client.getLocalPlayer();
-		patches.tick(me == null ? null : worldLocation(me));
-		runTimers.update(this, "Bird houses", ItemID.BIRDHOUSE_OAK, birdhouses.getReadyAt(), config.birdhouseTimer(),
-			config.birdhouseNotification());
-		for (PatchType type : PatchType.values())
-		{
-			runTimers.update(this, type.getLabel(), type.getIcon(), patches.readyAt(type), config.farmingTimers(),
-				config.farmingNotification());
-		}
-	}
-
-	private void resetRuns()
-	{
-		birdhouses.reset();
-		patches.reset();
-		runTimers.clear();
-		rates.reset();
-	}
-
-	private Map<String, Integer> stopWaits()
-	{
-		Map<String, Integer> waits = new HashMap<>(birdhouses.waits());
-		waits.putAll(patches.waits());
-		return waits;
-	}
-
-	/**
-	 * Remembers which dock the player left their boat at, so sailing guides can send them back to it.
-	 */
-	private void trackBoat()
-	{
-		Player me = client.getLocalPlayer();
-		if (me == null || !profileLoaded)
-		{
-			return;
-		}
-		boolean onBoat = isOnBoat(me);
-		if (wasOnBoat && !onBoat)
-		{
-			Mooring docked = Mooring.at(me.getWorldLocation(), 20);
-			if (docked != null && docked != boatMooring)
-			{
-				boatMooring = docked;
-				configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_BOAT_MOORING, docked.name());
-			}
-		}
-		wasOnBoat = onBoat;
-	}
-
 	@Subscribe
 	public void onStatChanged(StatChanged e)
 	{
-		if (activeSkill == null && config.autoSelectSkill() && profileLoaded && guides.hasGuide(e.getSkill())
-			&& e.getXp() > 0)
+		if (settings.getActiveSkill() == null && config.autoSelectSkill() && profileLoaded
+			&& guides.hasGuide(e.getSkill()) && e.getXp() > 0)
 		{
 			selectSkill(e.getSkill());
 		}
@@ -413,13 +300,13 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			return;
 		}
-		if (KEY_PREFERENCE.equals(e.getKey()))
+		if (GuideSettings.KEY_PREFERENCE.equals(e.getKey()))
 		{
-			preference = config.preference();
+			settings.useDefaultPreference();
 		}
 		if ("livePrices".equals(e.getKey()))
 		{
-			updatePriceRefresh();
+			prices.updateRefresh();
 		}
 		if ("bankFilterOn".equals(e.getKey()))
 		{
@@ -428,77 +315,61 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		clientThread.invokeLater(() ->
 		{
-			clearPath();
+			path.clear();
 			refresh();
 		});
 	}
 
-	// ---- Prices ----
+	// ---- Runs and boats ----
 
-	private int guidePrice(int itemId)
+	/**
+	 * Reads nearby farming patches and updates the run countdowns.
+	 */
+	private void updateRuns()
 	{
-		return (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(itemId));
+		if (!profileLoaded)
+		{
+			return;
+		}
+		Player me = client.getLocalPlayer();
+		patches.tick(me == null ? null : PlayerSnapshot.worldLocation(client, me));
+		runTimers.update(this, "Bird houses", ItemID.BIRDHOUSE_OAK, birdhouses.getReadyAt(), config.birdhouseTimer(),
+			config.birdhouseNotification());
+		for (PatchType type : PatchType.values())
+		{
+			runTimers.update(this, type.getLabel(), type.getIcon(), patches.readyAt(type), config.farmingTimers(),
+				config.farmingNotification());
+		}
 	}
 
-	private WikiPriceClient.Price livePrice(int itemId)
+	private void resetRuns()
 	{
-		return config.livePrices() ? wikiPrices.get(itemManager.canonicalize(itemId)) : null;
-	}
-
-	private void updatePriceRefresh()
-	{
-		stopPriceRefresh();
-		if (config.livePrices())
-		{
-			priceRefresh = executor.scheduleWithFixedDelay(this::refreshPricesIfLoggedIn, 0,
-				PRICE_REFRESH.toMinutes(), TimeUnit.MINUTES);
-		}
-		else
-		{
-			wikiPrices.clear();
-		}
+		birdhouses.reset();
+		patches.reset();
+		runTimers.clear();
+		rates.reset();
 	}
 
 	/**
-	 * Prices are only shown in a guide, so don't keep polling the wiki from the login screen.
+	 * Remembers which dock the player left their boat at, so sailing guides can send them back to it.
 	 */
-	private void refreshPricesIfLoggedIn()
+	private void trackBoat()
 	{
-		if (client.getGameState() == GameState.LOGGED_IN)
+		Player me = client.getLocalPlayer();
+		if (me == null || !profileLoaded)
 		{
-			wikiPrices.refresh();
+			return;
 		}
-	}
-
-	private boolean pricesStale()
-	{
-		Instant updated = wikiPrices.getUpdated();
-		return updated == null || Duration.between(updated, Instant.now()).compareTo(PRICE_REFRESH) >= 0;
-	}
-
-	private void stopPriceRefresh()
-	{
-		if (priceRefresh != null)
+		boolean onBoat = PlayerSnapshot.isOnBoat(me);
+		if (wasOnBoat && !onBoat)
 		{
-			priceRefresh.cancel(false);
-			priceRefresh = null;
+			Mooring docked = Mooring.at(me.getWorldLocation(), MOORING_RADIUS);
+			if (docked != null && docked != settings.getBoatMooring())
+			{
+				settings.setBoatMooring(docked);
+			}
 		}
-		wikiPrices.cancel();
-	}
-
-	private String priceSource()
-	{
-		Instant updated = wikiPrices.getUpdated();
-		if (config.livePrices() && wikiPrices.hasPrices() && updated != null)
-		{
-			long minutes = Duration.between(updated, Instant.now()).toMinutes();
-			return "Prices: live OSRS Wiki, instant buy/sell (" + (minutes < 1 ? "just now" : minutes + " min ago") + ")";
-		}
-		if (config.livePrices())
-		{
-			return "Prices: RuneLite GE guide (live wiki prices loading...)";
-		}
-		return "Prices: RuneLite GE guide. Turn on live wiki prices in the plugin settings for real-time prices.";
+		wasOnBoat = onBoat;
 	}
 
 	// ---- Panel callbacks (Swing thread) ----
@@ -512,14 +383,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Override
 	public void onTargetChanged(int target)
 	{
-		clientThread.invokeLater(() ->
-		{
-			if (activeSkill != null)
-			{
-				setTarget(activeSkill, target);
-				refresh();
-			}
-		});
+		clientThread.invokeLater(() -> setTargetAndRefresh(target));
 	}
 
 	@Override
@@ -527,12 +391,22 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	{
 		clientThread.invokeLater(() ->
 		{
-			if (activeSkill != null)
+			Skill skill = settings.getActiveSkill();
+			if (skill != null)
 			{
-				setTarget(activeSkill, defaultTarget(activeSkill));
-				refresh();
+				setTargetAndRefresh(defaultTarget(skill));
 			}
 		});
+	}
+
+	private void setTargetAndRefresh(int target)
+	{
+		Skill skill = settings.getActiveSkill();
+		if (skill != null)
+		{
+			settings.setTarget(skill, target);
+			refresh();
+		}
 	}
 
 	@Override
@@ -540,8 +414,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	{
 		clientThread.invokeLater(() ->
 		{
-			preference = pref;
-			configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_PREFERENCE, pref.name());
+			settings.setPreference(pref);
 			refresh();
 		});
 	}
@@ -551,21 +424,12 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	{
 		clientThread.invokeLater(() ->
 		{
-			if (activeSkill == null)
+			Skill skill = settings.getActiveSkill();
+			if (skill != null)
 			{
-				return;
+				settings.setForcedMethod(skill, methodId);
+				refresh();
 			}
-			if (methodId == null)
-			{
-				forcedMethods.remove(activeSkill);
-				configManager.unsetRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_METHOD + activeSkill.name());
-			}
-			else
-			{
-				forcedMethods.put(activeSkill, methodId);
-				configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_METHOD + activeSkill.name(), methodId);
-			}
-			refresh();
 		});
 	}
 
@@ -594,67 +458,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			return;
 		}
 		bankCache.load();
-		targets.clear();
-		forcedMethods.clear();
-		for (Skill s : Skill.values())
-		{
-			String t = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_TARGET + s.name());
-			if (t != null)
-			{
-				try
-				{
-					targets.put(s, Integer.parseInt(t));
-				}
-				catch (NumberFormatException ignored)
-				{
-					// fall back to the default goal
-				}
-			}
-			String m = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_METHOD + s.name());
-			if (m != null && guides.byId(m) != null)
-			{
-				forcedMethods.put(s, m);
-			}
-		}
-		String pref = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_PREFERENCE);
-		preference = config.preference();
-		if (pref != null)
-		{
-			try
-			{
-				preference = TrainingPreference.valueOf(pref);
-			}
-			catch (IllegalArgumentException ignored)
-			{
-				// keep the config default
-			}
-		}
-		String mooring = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_BOAT_MOORING);
-		boatMooring = null;
-		if (mooring != null)
-		{
-			try
-			{
-				boatMooring = Mooring.valueOf(mooring);
-			}
-			catch (IllegalArgumentException ignored)
-			{
-				// unknown mooring name
-			}
-		}
-		String active = configManager.getRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_ACTIVE_SKILL);
-		activeSkill = null;
-		if (active != null)
-		{
-			try
-			{
-				activeSkill = Skill.valueOf(active);
-			}
-			catch (IllegalArgumentException ignored)
-			{
-				// unknown skill name
-			}
-		}
+		settings.load();
 		refreshQuests();
 		birdhouses.load();
 		patches.load();
@@ -664,18 +468,13 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private void selectSkill(Skill skill)
 	{
-		activeSkill = skill;
-		if (skill == null)
+		settings.setActiveSkill(skill);
+		if (skill != null)
 		{
-			configManager.unsetRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_ACTIVE_SKILL);
-		}
-		else
-		{
-			configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_ACTIVE_SKILL, skill.name());
-			Integer target = targets.get(skill);
+			Integer target = settings.getTarget(skill);
 			if (target == null || target <= client.getRealSkillLevel(skill))
 			{
-				setTarget(skill, defaultTarget(skill));
+				settings.setTarget(skill, defaultTarget(skill));
 			}
 		}
 		refreshQuests();
@@ -687,22 +486,20 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		return Math.min(Experience.MAX_REAL_LEVEL, client.getRealSkillLevel(skill) + config.defaultTargetOffset());
 	}
 
-	private void setTarget(Skill skill, int target)
-	{
-		int clamped = Math.max(2, Math.min(Experience.MAX_REAL_LEVEL, target));
-		targets.put(skill, clamped);
-		configManager.setRSProfileConfiguration(SkillingHelperConfig.GROUP, KEY_TARGET + skill.name(), clamped);
-	}
-
+	/**
+	 * Re-reads which of the open skill's method quests are done. Quest states are scripts, so this runs every
+	 * {@value #QUEST_REFRESH_TICKS} ticks rather than every tick.
+	 */
 	private void refreshQuests()
 	{
 		questRefreshCountdown = QUEST_REFRESH_TICKS;
-		if (client.getGameState() != GameState.LOGGED_IN || activeSkill == null)
+		Skill skill = settings.getActiveSkill();
+		if (client.getGameState() != GameState.LOGGED_IN || skill == null)
 		{
 			return;
 		}
 		completedQuests.clear();
-		for (Method m : guides.methods(activeSkill))
+		for (Method m : guides.methods(skill))
 		{
 			for (Quest q : m.getQuests())
 			{
@@ -714,94 +511,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 	}
 
-	private PlayerState snapshot()
-	{
-		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
-		Map<Skill, Integer> xp = new EnumMap<>(Skill.class);
-		for (Skill s : Skill.values())
-		{
-			levels.put(s, client.getRealSkillLevel(s));
-			xp.put(s, client.getSkillExperience(s));
-		}
-		ItemContainer inv = client.getItemContainer(InventoryID.INV);
-		ItemContainer worn = client.getItemContainer(InventoryID.WORN);
-		int used = 0;
-		Map<Integer, Integer> slots = new HashMap<>();
-		if (inv != null)
-		{
-			for (Item item : inv.getItems())
-			{
-				if (item.getId() > 0)
-				{
-					used++;
-					slots.merge(item.getId(), 1, Integer::sum);
-				}
-			}
-		}
-		Player me = client.getLocalPlayer();
-		return PlayerState.builder()
-			.levels(levels)
-			.xp(xp)
-			.inventory(counts(inv))
-			.inventorySlots(new ItemCounts(slots))
-			.equipment(counts(worn))
-			.bank(bankCache.get())
-			.freeInventorySlots(28 - used)
-			.location(me == null ? null : worldLocation(me))
-			.membersWorld(client.getWorldType().contains(WorldType.MEMBERS))
-			.inInstance(client.getTopLevelWorldView().isInstance())
-			.onBoat(me != null && isOnBoat(me))
-			.boatMooring(boatMooring)
-			.stopWaits(stopWaits())
-			.measuredXpPerHour(rates.rates())
-			.completedQuests(EnumSet.copyOf(completedQuestsOrEmpty()))
-			.build();
-	}
-
-	/**
-	 * The player's position in the main world, also while standing on a boat (which has its own world view).
-	 */
-	private WorldPoint worldLocation(Player me)
-	{
-		LocalPoint local = me.getLocalLocation();
-		if (local != null && local.getWorldView() != WorldView.TOPLEVEL)
-		{
-			WorldEntity boat = client.getTopLevelWorldView().worldEntities().byIndex(local.getWorldView());
-			if (boat != null)
-			{
-				return WorldPoint.fromLocalInstance(client, boat.transformToMainWorld(local));
-			}
-		}
-		return me.getWorldLocation();
-	}
-
-	private static boolean isOnBoat(Player me)
-	{
-		LocalPoint local = me.getLocalLocation();
-		return local != null && local.getWorldView() != WorldView.TOPLEVEL;
-	}
-
-	private Set<Quest> completedQuestsOrEmpty()
-	{
-		return completedQuests.isEmpty() ? EnumSet.noneOf(Quest.class) : completedQuests;
-	}
-
-	private static ItemCounts counts(ItemContainer container)
-	{
-		if (container == null)
-		{
-			return ItemCounts.EMPTY;
-		}
-		Map<Integer, Integer> m = new HashMap<>();
-		for (Item item : container.getItems())
-		{
-			if (item.getId() > 0)
-			{
-				m.merge(item.getId(), item.getQuantity(), Integer::sum);
-			}
-		}
-		return new ItemCounts(m);
-	}
+	// ---- Building the guide ----
 
 	/**
 	 * Rebuilds the guide from the current game state. Runs on the client thread.
@@ -815,105 +525,106 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			return;
 		}
 
-		ActiveGuide next;
-		if (activeSkill == null)
-		{
-			next = ActiveGuide.NONE;
-		}
-		else
-		{
-			next = buildGuide(activeSkill);
-		}
+		Skill skill = settings.getActiveSkill();
+		ActiveGuide next = skill == null ? ActiveGuide.NONE : buildGuide(skill);
+		guide = next;
+		next = showPath(next);
 		guide = next;
 
-		GuideStep step = next.getStep();
-		boolean showPath = step != null && step.getType() != StepType.TRAIN && step.getType() != StepType.DONE;
-		setPath(showPath ? step.getRoute() : null);
-		if (showPath && shortestPath.isUnreachable(step.getRoute()))
-		{
-			next = next.toBuilder().step(step.toBuilder()
-				.line("Shortest Path can't find a full route there with your current unlocks, so it shows how close "
-					+ "it can get. You may need a quest, level or item for a transport, or a teleport closer.")
-				.build()).build();
-			guide = next;
-		}
-
 		final ActiveGuide forPanel = next;
-		final TrainingPreference pref = preference;
+		final TrainingPreference pref = settings.getPreference();
 		final boolean filterOn = bankFilter.isActive();
 		SwingUtilities.invokeLater(() -> p.update(forPanel, pref, filterOn));
 	}
 
+	/**
+	 * Points the arrows and path at the step's destination, and explains when Shortest Path can't get there.
+	 */
+	private ActiveGuide showPath(ActiveGuide current)
+	{
+		GuideStep step = current.getStep();
+		boolean showPath = step != null && step.getType() != StepType.TRAIN && step.getType() != StepType.DONE;
+		path.show(showPath ? step.getRoute() : null);
+		if (!showPath || !path.isUnreachable(step.getRoute()))
+		{
+			return current;
+		}
+		return current.toBuilder().step(step.toBuilder()
+			.line("Shortest Path can't find a full route there with your current unlocks, so it shows how close "
+				+ "it can get. You may need a quest, level or item for a transport, or a teleport closer.")
+			.build()).build();
+	}
+
 	private ActiveGuide buildGuide(Skill skill)
 	{
-		PlayerState state = snapshot();
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests);
 		int level = state.level(skill);
-		int target = targets.getOrDefault(skill, Math.min(Experience.MAX_REAL_LEVEL, level + config.defaultTargetOffset()));
-		long xpRemaining = MethodPlanner.xpBetween(state.xp(skill), target);
-		List<Method> methods = guides.methods(skill);
-
-		if (methods.isEmpty())
-		{
-			return ActiveGuide.builder()
-				.skill(skill)
-				.level(level)
-				.targetLevel(target)
-				.xpRemaining(xpRemaining)
-				.player(state)
-				.hasGuide(false)
-				.priceSource(priceSource())
-				.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()))
-				.build();
-		}
-
-		String forcedId = forcedMethods.get(skill);
-		Method forced = forcedId == null ? null : guides.byId(forcedId);
-		List<MethodOption> options = planner.rank(methods, state, preference, target);
-		List<PlanSegment> plan = planner.plan(methods, state, preference, target, forced);
-
-		MethodOption current = null;
-		if (!plan.isEmpty())
-		{
-			current = plan.get(0).getOption();
-		}
-		else if (!options.isEmpty() && options.get(0).isAvailable())
-		{
-			current = options.get(0);
-		}
-
+		Integer saved = settings.getTarget(skill);
+		int target = saved != null ? saved : Math.min(Experience.MAX_REAL_LEVEL, level + config.defaultTargetOffset());
 		ActiveGuide.ActiveGuideBuilder b = ActiveGuide.builder()
 			.skill(skill)
 			.level(level)
 			.targetLevel(target)
-			.xpRemaining(xpRemaining)
-			.options(options)
-			.plan(plan)
+			.xpRemaining(MethodPlanner.xpBetween(state.xp(skill), target))
 			.player(state)
-			.hasGuide(true)
-			.priceSource(priceSource())
+			.priceSource(prices.sourceText())
 			.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()));
 
-		if (current == null)
+		List<Method> methods = guides.methods(skill);
+		if (methods.isEmpty())
 		{
-			GuideStep step = level >= target
-				? GuideStep.empty("Goal reached: " + skill.getName() + " " + target + "!",
-				"Set a new target level to keep going.")
-				: GuideStep.empty("No method available yet",
-				"None of the built-in methods fit your account right now. Check the method list for what's missing.");
-			return b.step(step).build();
+			return b.hasGuide(false).build();
 		}
 
+		String forcedId = settings.getForcedMethod(skill);
+		Method forced = forcedId == null ? null : guides.byId(forcedId);
+		TrainingPreference pref = settings.getPreference();
+		List<MethodOption> options = planner.rank(methods, state, pref, target);
+		List<PlanSegment> plan = planner.plan(methods, state, pref, target, forced);
+		b.options(options).plan(plan).hasGuide(true);
+
+		MethodOption current = currentOption(plan, options);
+		if (current == null)
+		{
+			return b.step(noMethodStep(skill, level, target)).build();
+		}
 		Method method = current.getMethod();
-		boolean forcedActive = forced != null && forced == method;
 		List<Requirement> reqs = resolver.requirements(method, state, current.getActions());
 		GuideStep step = resolver.resolve(method, state, target, dropProduce(method), reqs);
 		return b.method(method)
-			.forced(forcedActive)
+			.forced(forced != null && forced == method)
 			.option(current)
 			.requirements(reqs)
 			.step(step)
 			.bankItems(StepResolver.bankItems(reqs, step))
 			.build();
+	}
+
+	/**
+	 * The method to train with now: the plan's first leg, or the best available method if there's no plan.
+	 */
+	private static MethodOption currentOption(List<PlanSegment> plan, List<MethodOption> options)
+	{
+		if (!plan.isEmpty())
+		{
+			return plan.get(0).getOption();
+		}
+		if (!options.isEmpty() && options.get(0).isAvailable())
+		{
+			return options.get(0);
+		}
+		return null;
+	}
+
+	private static GuideStep noMethodStep(Skill skill, int level, int target)
+	{
+		if (level >= target)
+		{
+			return GuideStep.empty("Goal reached: " + skill.getName() + " " + target + "!",
+				"Set a new target level to keep going.");
+		}
+		return GuideStep.empty("No method available yet",
+			"None of the built-in methods fit your account right now. Check the method list for what's missing.");
 	}
 
 	private boolean dropProduce(Method m)
@@ -929,60 +640,5 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			default:
 				return m.isDropByDefault() || m.getBank() == null;
 		}
-	}
-
-	// ---- Pathing ----
-
-	private void clearPath()
-	{
-		Route previous = pathRoute;
-		setPath(null);
-		if (previous == null && hintArrowSet)
-		{
-			client.clearHintArrow();
-			hintArrowSet = false;
-		}
-	}
-
-	private void setPath(Route route)
-	{
-		if (Objects.equals(route, pathRoute))
-		{
-			return;
-		}
-		pathRoute = route;
-		WorldPoint destination = route == null ? null : route.getPoint();
-		String name = route == null ? null : route.getStopName();
-
-		if (hintArrowSet)
-		{
-			client.clearHintArrow();
-			hintArrowSet = false;
-		}
-		if (destination != null && config.hintArrow())
-		{
-			client.setHintArrow(destination);
-			hintArrowSet = true;
-		}
-
-		if (mapPoint != null)
-		{
-			worldMapPointManager.remove(mapPoint);
-			mapPoint = null;
-		}
-		if (destination != null && config.worldMapPoint())
-		{
-			mapPoint = WorldMapPoint.builder()
-				.worldPoint(destination)
-				.image(MapArrow.image())
-				.name(name)
-				.tooltip("Skilling Helper: " + name)
-				.snapToEdge(true)
-				.jumpOnClick(true)
-				.build();
-			worldMapPointManager.add(mapPoint);
-		}
-
-		shortestPath.show(config.shortestPath() ? route : null);
 	}
 }
