@@ -95,7 +95,7 @@ public interface SkillingHelperConfig extends Config
 	@ConfigItem(
 		keyName = "livePrices",
 		name = "Live OSRS Wiki prices",
-		description = "Use real-time instant-buy and instant-sell prices from the OSRS Wiki (refreshed every 5 minutes)"
+		description = "Use real-time instant-buy and instant-sell prices from the OSRS Wiki (refreshed every 5 minutes while logged in)"
 			+ " instead of RuneLite's Grand Exchange guide prices when costing materials and products",
 		warning = "This feature submits your IP address to a 3rd-party server not controlled or verified by RuneLite developers",
 		section = pricesSection,

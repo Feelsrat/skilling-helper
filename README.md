@@ -4,7 +4,8 @@ A RuneLite plugin that works like Quest Helper, but for skilling. Pick a skill a
 what to do step by step, draws the way there, and highlights what to click.
 
 It only draws overlays and shows information. It never clicks, types or moves anything for you, so it stays within
-RuneLite's and Jagex's third-party client rules.
+RuneLite's and Jagex's third-party client rules. The one thing it changes is the order of the bank's own
+Withdraw/Deposit options (like Menu Entry Swapper), and that can be turned off with "Left-click the amount needed".
 
 ## Features
 
@@ -58,7 +59,7 @@ RuneLite's and Jagex's third-party client rules.
 
 ## Guides
 
-Built-in step-by-step guides (data from the OSRS wiki training guides):
+Built-in step-by-step guides (based on the OSRS wiki training guides):
 
 | Skill | Methods |
 | --- | --- |
@@ -84,7 +85,14 @@ Built-in step-by-step guides (data from the OSRS wiki training guides):
 | Fletching | Cutting short/longbows, stringing longbows |
 | Sailing | Pandemonium and port tasks, salvaging shipwrecks |
 
-Xp rates are rough averages from the wiki for a typical setup; your own rates will vary.
+Xp rates are rough estimates for a typical setup. After about 10 minutes of training a method, the plugin uses the
+xp rate you actually get instead.
+
+## Network use
+
+The plugin makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
+fetches the wiki's single bulk price list (`prices.runescape.wiki/api/v1/osrs/latest`) at most once every 5 minutes
+while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks.
 
 ## Adding a method
 

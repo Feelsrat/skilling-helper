@@ -100,6 +100,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private static final String KEY_PREFERENCE = "preference";
 	private static final String KEY_BOAT_MOORING = "boatMooring";
 	private static final int QUEST_REFRESH_TICKS = 50;
+	private static final Duration PRICE_REFRESH = Duration.ofMinutes(5);
 
 	@Inject
 	private Client client;
@@ -267,6 +268,11 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
 	{
+		if (e.getGameState() == GameState.LOGGED_IN && config.livePrices() && pricesStale())
+		{
+			// Prices aren't fetched while logged out, so catch up straight away
+			wikiPrices.refresh();
+		}
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			profileLoaded = false;
@@ -444,12 +450,30 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		stopPriceRefresh();
 		if (config.livePrices())
 		{
-			priceRefresh = executor.scheduleWithFixedDelay(wikiPrices::refresh, 0, 5, TimeUnit.MINUTES);
+			priceRefresh = executor.scheduleWithFixedDelay(this::refreshPricesIfLoggedIn, 0,
+				PRICE_REFRESH.toMinutes(), TimeUnit.MINUTES);
 		}
 		else
 		{
 			wikiPrices.clear();
 		}
+	}
+
+	/**
+	 * Prices are only shown in a guide, so don't keep polling the wiki from the login screen.
+	 */
+	private void refreshPricesIfLoggedIn()
+	{
+		if (client.getGameState() == GameState.LOGGED_IN)
+		{
+			wikiPrices.refresh();
+		}
+	}
+
+	private boolean pricesStale()
+	{
+		Instant updated = wikiPrices.getUpdated();
+		return updated == null || Duration.between(updated, Instant.now()).compareTo(PRICE_REFRESH) >= 0;
 	}
 
 	private void stopPriceRefresh()
@@ -784,7 +808,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	 */
 	private void refresh()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN || !profileLoaded || panel == null)
+		// Read once: shutDown clears it from another thread
+		final SkillingHelperPanel p = panel;
+		if (client.getGameState() != GameState.LOGGED_IN || !profileLoaded || p == null)
 		{
 			return;
 		}
@@ -815,7 +841,6 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		final ActiveGuide forPanel = next;
 		final TrainingPreference pref = preference;
 		final boolean filterOn = bankFilter.isActive();
-		final SkillingHelperPanel p = panel;
 		SwingUtilities.invokeLater(() -> p.update(forPanel, pref, filterOn));
 	}
 
