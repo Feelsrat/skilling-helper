@@ -40,7 +40,7 @@ final class BankTrip
 		List<ItemReq> fill = new ArrayList<>();
 		for (ItemReq input : m.getInputs())
 		{
-			if (fillsInventory(input, s))
+			if (fillsInventory(input, s, actionsLeft))
 			{
 				fill.add(input);
 			}
@@ -57,9 +57,9 @@ final class BankTrip
 	 * Whether an input shares out the free inventory slots, rather than being a single stack, made on the way, or
 	 * replaced by a substitute.
 	 */
-	private boolean fillsInventory(ItemReq input, PlayerState s)
+	private boolean fillsInventory(ItemReq input, PlayerState s, long actionsLeft)
 	{
-		return !input.isWholeStack() && input.getPerAction() > 0 && !recipes.making(input, s)
+		return !input.isWholeStack() && input.getPerAction() > 0 && !recipes.making(input, s, actionsLeft)
 			&& !s.ownsSubstitute(input);
 	}
 
@@ -254,11 +254,11 @@ final class BankTrip
 	/**
 	 * Lines for the parts to take out on a trip that makes inputs (sand and soda ash for molten glass...).
 	 */
-	static void withdrawParts(GuideStep.GuideStepBuilder b, List<ItemReq> toMake, PlayerState s)
+	static void withdrawParts(GuideStep.GuideStepBuilder b, List<ItemReq> toMake, PlayerState s, long actionsLeft)
 	{
 		for (ItemReq input : toMake)
 		{
-			int perTrip = Recipes.perTrip(input, s);
+			int perTrip = Recipes.perTrip(input, s, actionsLeft);
 			for (ItemReq part : input.getRecipe())
 			{
 				int amount = part.getPerAction() == 0 ? 1 : perTrip * part.getPerAction();

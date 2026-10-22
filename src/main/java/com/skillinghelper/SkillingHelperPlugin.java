@@ -590,7 +590,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		Method method = current.getMethod();
 		List<Requirement> reqs = resolver.requirements(method, state, current.getActions());
-		GuideStep step = resolver.resolve(method, state, target, dropProduce(method), reqs);
+		// Size trips and batches to this leg of the plan, the same span the requirement amounts cover
+		int legTarget = plan.isEmpty() ? target : plan.get(0).getToLevel();
+		GuideStep step = resolver.resolve(method, state, legTarget, dropProduce(method), reqs);
 		return b.method(method)
 			.forced(forced != null && forced == method)
 			.option(current)

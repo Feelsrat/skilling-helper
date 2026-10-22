@@ -22,14 +22,24 @@ final class Recipes
 	}
 
 	/**
-	 * Whether the player should make this input from its recipe instead of buying it: they don't have enough of it,
-	 * and they already own the parts, making is cheaper, or it's hardly ever sold.
+	 * Whether the player should make this input from its recipe instead of buying it. With less than a trip's worth,
+	 * that's when they own the parts, making is cheaper, or it's hardly ever sold. With a trip's worth but not enough
+	 * for the goal, they keep making only while they own the parts and aren't carrying a load to use, so all their sand
+	 * and soda ash becomes molten glass before they start glassblowing.
+	 *
+	 * @param actionsLeft actions the goal still needs, or {@link Long#MAX_VALUE} when unknown
 	 */
-	boolean making(ItemReq input, PlayerState s)
+	boolean making(ItemReq input, PlayerState s, long actionsLeft)
 	{
-		if (!input.hasRecipe() || s.owned(input.getIds()) >= Math.max(1, input.getQuantity()))
+		int owned = s.owned(input.getIds());
+		if (!input.hasRecipe() || owned >= wanted(input, actionsLeft))
 		{
 			return false;
+		}
+		if (owned >= Math.max(1, input.getQuantity()))
+		{
+			// Finish the trip that's already in the inventory first
+			return ownsParts(input, s) && s.getInventory().count(input.getIds()) < Math.max(1, input.getPerAction());
 		}
 		if (input.isAlwaysMake())
 		{
@@ -40,14 +50,28 @@ final class Recipes
 	}
 
 	/**
+	 * How many of an input to have made before training: enough for the whole goal, so the player makes one big batch
+	 * (all their molten glass) instead of alternating between making and training every trip. Without a known goal
+	 * it's one trip's worth.
+	 */
+	static long wanted(ItemReq input, long actionsLeft)
+	{
+		if (actionsLeft == Long.MAX_VALUE)
+		{
+			return Math.max(1, input.getQuantity());
+		}
+		return Math.max(1, actionsLeft * Math.max(1, input.getPerAction()));
+	}
+
+	/**
 	 * The method's inputs the player should make this trip.
 	 */
-	List<ItemReq> toMake(Method m, PlayerState s)
+	List<ItemReq> toMake(Method m, PlayerState s, long actionsLeft)
 	{
 		List<ItemReq> toMake = new ArrayList<>();
 		for (ItemReq input : m.getInputs())
 		{
-			if (making(input, s))
+			if (making(input, s, actionsLeft))
 			{
 				toMake.add(input);
 			}
@@ -79,9 +103,9 @@ final class Recipes
 
 	/**
 	 * How many to make per bank trip: as many as the parts fit in the inventory (14 buckets of sand + 14 soda ash),
-	 * up to what the method needs.
+	 * up to what the goal still needs.
 	 */
-	static int perTrip(ItemReq input, PlayerState s)
+	static int perTrip(ItemReq input, PlayerState s, long actionsLeft)
 	{
 		List<ItemReq> fill = new ArrayList<>();
 		int toWithdraw = 0;
@@ -104,7 +128,7 @@ final class Recipes
 		{
 			ItemIds.removeAll(kept, part.getIds());
 		}
-		int want = Math.max(1, Math.max(1, input.getQuantity()) - s.owned(input.getIds()));
+		long want = Math.max(1, wanted(input, actionsLeft) - s.owned(input.getIds()));
 		return Math.max(1, Loadout.of(fill, kept, toWithdraw, s, want).getActions());
 	}
 

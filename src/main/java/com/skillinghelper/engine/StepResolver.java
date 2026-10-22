@@ -53,7 +53,8 @@ public final class StepResolver
 	/**
 	 * Picks the next step.
 	 *
-	 * @param drop whether to drop produce when the inventory is full instead of banking
+	 * @param targetLevel where this method stops: the goal, or the end of this leg of the plan
+	 * @param drop        whether to drop produce when the inventory is full instead of banking
 	 */
 	public GuideStep resolve(Method m, PlayerState s, int targetLevel, boolean drop, List<Requirement> reqs)
 	{
@@ -94,7 +95,8 @@ public final class StepResolver
 
 		// Inputs made from parts (baskets of apples, unfinished potions): make them as soon as the parts are carried,
 		// and otherwise fetch only the parts so they fit in the inventory
-		List<ItemReq> toMake = recipes.toMake(m, s);
+		long actionsLeft = actionsLeft(m, s, targetLevel);
+		List<ItemReq> toMake = recipes.toMake(m, s, actionsLeft);
 		for (ItemReq input : toMake)
 		{
 			if (Recipes.partsCarried(input, s))
@@ -107,7 +109,7 @@ public final class StepResolver
 		boolean fullOfProduce = gather && s.inventoryFull() && carriesProduct(m, s);
 		if (!needs.inBank.isEmpty() || needsInputs(m, s, gather, toMake) || (fullOfProduce && !drop))
 		{
-			return bankTripStep(m, s, bank, needs, toMake, gather, targetLevel);
+			return bankTripStep(m, s, bank, needs, toMake, gather, actionsLeft);
 		}
 		if (!needs.wearNow.isEmpty())
 		{
@@ -307,7 +309,7 @@ public final class StepResolver
 	 * optional extras.
 	 */
 	private GuideStep bankTripStep(Method m, PlayerState s, Location bank, Needs needs, List<ItemReq> toMake,
-		boolean gather, int targetLevel)
+		boolean gather, long actionsLeft)
 	{
 		// A trip to make inputs (molten glass, unfinished potions) only needs the parts, so the method's own tools
 		// stay in the bank to make room
@@ -324,11 +326,11 @@ public final class StepResolver
 		GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, needs.optionalInBank, m, kept);
 		if (toMake.isEmpty())
 		{
-			trips.withdrawInputs(b, m, s, gather, actionsLeft(m, s, targetLevel));
+			trips.withdrawInputs(b, m, s, gather, actionsLeft);
 		}
 		else
 		{
-			BankTrip.withdrawParts(b, toMake, s);
+			BankTrip.withdrawParts(b, toMake, s, actionsLeft);
 		}
 		return b.line(BANK_TIP).build();
 	}

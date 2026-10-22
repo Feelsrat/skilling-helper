@@ -29,61 +29,79 @@ public class RecipesTest
 	@Test
 	public void buysWhenBuyingIsCheaperAndPartsArentOwned()
 	{
-		assertFalse(recipes(100, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY)));
+		assertFalse(recipes(100, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void makesWhenPartsAreCheaper()
 	{
-		assertTrue(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY)));
+		assertTrue(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void makesWhenThePartsAreAlreadyOwned()
 	{
 		ItemCounts bank = ItemCounts.of(ItemID.BUCKET_SAND, 10, ItemID.SODA_ASH, 10);
-		assertTrue(recipes(100, 80).making(GLASS, state(ItemCounts.EMPTY, bank)));
+		assertTrue(recipes(100, 80).making(GLASS, state(ItemCounts.EMPTY, bank), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void makesWhenTheItemHasNoPrice()
 	{
-		assertTrue(recipes(0, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY)));
+		assertTrue(recipes(0, 80).making(GLASS, state(ItemCounts.EMPTY, ItemCounts.EMPTY), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void doesntMakeWhatsAlreadyOwned()
 	{
 		ItemCounts bank = ItemCounts.of(ItemID.MOLTEN_GLASS, 27, ItemID.BUCKET_SAND, 10, ItemID.SODA_ASH, 10);
-		assertFalse(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, bank)));
+		assertFalse(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, bank), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void alwaysMakeIgnoresPrices()
 	{
 		ItemReq always = GLASS.madeFrom("Smelt sand and soda ash", true, SAND, SODA);
-		assertTrue(recipes(1, 1_000).making(always, state(ItemCounts.EMPTY, ItemCounts.EMPTY)));
+		assertTrue(recipes(1, 1_000).making(always, state(ItemCounts.EMPTY, ItemCounts.EMPTY), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void itemsWithoutARecipeAreNeverMade()
 	{
 		ItemReq logs = ItemReq.consumed("Logs", 27, 1, ItemID.LOGS);
-		assertFalse(recipes(1_000, 1).making(logs, state(ItemCounts.EMPTY, ItemCounts.EMPTY)));
+		assertFalse(recipes(1_000, 1).making(logs, state(ItemCounts.EMPTY, ItemCounts.EMPTY), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void perTripSplitsAnEmptyInventoryBetweenTheParts()
 	{
 		ItemCounts bank = ItemCounts.of(ItemID.BUCKET_SAND, 100, ItemID.SODA_ASH, 100);
-		assertEquals(14, Recipes.perTrip(GLASS, state(ItemCounts.EMPTY, bank)));
+		assertEquals(14, Recipes.perTrip(GLASS, state(ItemCounts.EMPTY, bank), Long.MAX_VALUE));
 	}
 
 	@Test
 	public void perTripIsCappedByThePartsOwned()
 	{
 		ItemCounts bank = ItemCounts.of(ItemID.BUCKET_SAND, 5, ItemID.SODA_ASH, 100);
-		assertEquals(5, Recipes.perTrip(GLASS, state(ItemCounts.EMPTY, bank)));
+		assertEquals(5, Recipes.perTrip(GLASS, state(ItemCounts.EMPTY, bank), Long.MAX_VALUE));
+	}
+
+	@Test
+	public void keepsMakingUntilTheGoalIsCovered()
+	{
+		// 27 glass is a trip's worth, but the goal needs 200: use up the parts first instead of glassblowing now
+		ItemCounts bank = ItemCounts.of(ItemID.MOLTEN_GLASS, 27, ItemID.BUCKET_SAND, 100, ItemID.SODA_ASH, 100);
+		assertTrue(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, bank), 200));
+		assertFalse(recipes(200, 80).making(GLASS, state(ItemCounts.EMPTY, bank), 20));
+	}
+
+	@Test
+	public void makesOnlyWhatTheGoalNeeds()
+	{
+		ItemCounts bank = ItemCounts.of(ItemID.BUCKET_SAND, 100, ItemID.SODA_ASH, 100);
+		assertEquals(6, Recipes.perTrip(GLASS, state(ItemCounts.EMPTY, bank), 6));
+		assertEquals(6, Recipes.wanted(GLASS, 6));
+		assertEquals(27, Recipes.wanted(GLASS, Long.MAX_VALUE));
 	}
 
 	@Test

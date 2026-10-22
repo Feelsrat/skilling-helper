@@ -158,9 +158,9 @@ final class RequirementChecker
 				continue;
 			}
 			long needed = (long) Math.max(actions, 1) * input.getPerAction();
-			if (recipes.making(input, s))
+			if (recipes.making(input, s, Math.max(actions, 1)))
 			{
-				addRecipe(input, s, needed, reqs);
+				addRecipe(input, s, needed, Math.max(actions, 1), reqs);
 				continue;
 			}
 			int trip = (int) Math.min(input.isWholeStack() ? Integer.MAX_VALUE
@@ -177,10 +177,10 @@ final class RequirementChecker
 	/**
 	 * An input the player makes themselves: how to make it, then one line per part.
 	 */
-	private void addRecipe(ItemReq input, PlayerState s, long needed, List<Requirement> reqs)
+	private void addRecipe(ItemReq input, PlayerState s, long needed, long actions, List<Requirement> reqs)
 	{
 		long toMake = Math.max(1, needed - s.owned(input.getIds()));
-		int perTrip = Recipes.perTrip(input, s);
+		int perTrip = Recipes.perTrip(input, s, actions);
 		reqs.add(info(input.getName() + ": make them yourself. " + input.getRecipeText() + ".",
 			Requirement.Status.INFO));
 		for (ItemReq part : input.getRecipe())
