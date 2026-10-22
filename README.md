@@ -94,6 +94,30 @@ The plugin makes no network requests unless you turn on **Live OSRS Wiki prices*
 fetches the wiki's single bulk price list (`prices.runescape.wiki/api/v1/osrs/latest`) at most once every 5 minutes
 while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks.
 
+## Updating on Steam Deck
+
+Every release includes `skilling-helper-update.sh`. It reads Steam's list of non-Steam shortcuts, works out which
+Skilling Helper jar your RuneLite shortcut runs (a `java -jar skilling-helper-…-all.jar` shortcut, a launch script
+that runs one, or RuneLite with the plugin in `~/.runelite/sideloaded-plugins`), and swaps in the newest release.
+The old jar is kept next to it as `.bak`, and the jar keeps its file name so the shortcut still works.
+
+In Desktop Mode, download the script from the latest release, then in a terminal:
+
+```
+bash ~/Downloads/skilling-helper-update.sh --install
+```
+
+That puts an "Update Skilling Helper" launcher on the Desktop and in the app menu; run it whenever there's a new
+release. While the repo is private, the first run asks for a GitHub token (a fine-grained token with read-only
+Contents access to this repo) and saves it in `~/.config/skilling-helper-updater/token`.
+
+To update every time you start the game, even from Game Mode, put
+`"$HOME/.local/bin/skilling-helper-update" --auto %command%` (with your home folder written out, usually
+`/home/deck`) at the start of the shortcut's launch options, before what's already there. If there's no internet
+or GitHub is slow, the game just starts with the jar it has; what happened is logged to
+`~/.cache/skilling-helper-update.log`. Other options: `--list` shows your shortcuts, `--shortcut NAME` picks one,
+`--force` reinstalls.
+
 ## Adding a method
 
 Methods are plain Java data in `src/main/java/com/skillinghelper/data/guides/`. Each one lists its level, xp rates,

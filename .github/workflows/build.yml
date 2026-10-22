@@ -43,10 +43,12 @@ jobs:
           gh release create "v$VERSION" \
             build/libs/skilling-helper-$VERSION.jar \
             build/libs/skilling-helper-$VERSION-all.jar \
+            steamdeck/skilling-helper-update.sh \
             --target "$GITHUB_SHA" \
             --title "Skilling Helper v$VERSION" \
             --generate-notes \
             --notes "Built from ${GITHUB_SHA::7}.
 
           - \`skilling-helper-$VERSION.jar\`: the plugin on its own, for sideloading into RuneLite.
-          - \`skilling-helper-$VERSION-all.jar\`: standalone dev client with the plugin bundled (\`java -jar skilling-helper-$VERSION-all.jar\`)."
+          - \`skilling-helper-$VERSION-all.jar\`: standalone dev client with the plugin bundled (\`java -jar skilling-helper-$VERSION-all.jar\`).
+          - \`skilling-helper-update.sh\`: Steam Deck updater. It finds your RuneLite Steam shortcut and swaps in the newest jar (see the README)."
