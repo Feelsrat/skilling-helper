@@ -71,28 +71,37 @@ public class BankAmountSwapper
 		{
 			return;
 		}
-		int itemId = w.getItemId();
 		if (w.getId() == InterfaceID.Bankmain.ITEMS)
 		{
-			// Withdrawing as notes would make "all" and the counts below mean something else
-			if (client.getVarbitValue(VarbitID.BANK_WITHDRAWNOTES) == 1 || w.getItemQuantity() <= 0)
-			{
-				return;
-			}
-			Integer amount = amountFor(step.getWithdrawAmounts(), itemId);
-			if (amount != null)
-			{
-				swapTo(menu, entries, withdrawOption(itemId, amount, w.getItemQuantity()));
-			}
+			swapWithdraw(menu, entries, step, w);
 		}
 		else if (w.getId() == InterfaceID.Bankside.ITEMS)
 		{
-			Integer amount = amountFor(step.getDepositAmounts(), itemId);
-			if (amount != null)
-			{
-				int carried = carried(itemId);
-				swapTo(menu, entries, amount == 0 || amount >= carried ? "Deposit-All" : "Deposit-" + amount, "Deposit-X");
-			}
+			swapDeposit(menu, entries, step, w.getItemId());
+		}
+	}
+
+	private void swapWithdraw(Menu menu, MenuEntry[] entries, GuideStep step, Widget w)
+	{
+		// Withdrawing as notes would make "all" and the counts below mean something else
+		if (client.getVarbitValue(VarbitID.BANK_WITHDRAWNOTES) == 1 || w.getItemQuantity() <= 0)
+		{
+			return;
+		}
+		Integer amount = amountFor(step.getWithdrawAmounts(), w.getItemId());
+		if (amount != null)
+		{
+			swapTo(menu, entries, withdrawOption(w.getItemId(), amount, w.getItemQuantity()));
+		}
+	}
+
+	private void swapDeposit(Menu menu, MenuEntry[] entries, GuideStep step, int itemId)
+	{
+		Integer amount = amountFor(step.getDepositAmounts(), itemId);
+		if (amount != null)
+		{
+			int carried = carried(itemId);
+			swapTo(menu, entries, amount == 0 || amount >= carried ? "Deposit-All" : "Deposit-" + amount, "Deposit-X");
 		}
 	}
 

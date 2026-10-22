@@ -107,5 +107,18 @@ variant of e.g. "Willow tree" is covered). The planner and step engine handle th
 ./gradlew run     # start RuneLite with the plugin loaded (developer mode)
 ```
 
+`GuideSnapshotTest` records what the guide shows (checklist, next step, highlights, bank amounts and the planner's
+ranking) for every method in about 20 situations each, so a refactor can't change the guide by accident. When a
+change is meant to alter the guide, run the tests, check the changed cases written to `build/guide-snapshots-actual/`,
+then update the snapshots with `UPDATE_SNAPSHOTS=true ./gradlew test`.
+
+Code layout:
+
+- `data/`: the guides themselves (methods, locations, items, outfits), as plain Java data.
+- `engine/`: pure logic with no client access, so it's unit tested: `MethodPlanner` ranks methods and plans the
+  goal, `StepResolver` picks the next step (with `RequirementChecker`, `BankTrip`, `Recipes` and `Runs`).
+- The plugin package reads the game (`PlayerSnapshot`, trackers), saves choices (`GuideSettings`), and shows the
+  guide (`ui/`, `overlay/`, `bank/`, `PathDisplay`).
+
 To log in to the development client with a Jagex account, follow
 [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts).

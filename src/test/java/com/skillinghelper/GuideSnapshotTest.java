@@ -48,9 +48,9 @@ import org.junit.Test;
  * checklist, the next step (text, route, highlights, bank amounts) and the planner's ranking and plan.
  * <p>
  * It pins today's behaviour so refactoring can't change what players see by accident. Each case is stored as a
- * short hash in {@code guide-snapshots.txt}. When a change is meant to alter the guide, regenerate the file with
- * {@code -Dsnapshots.update=true} and review the cases it reports. The full text of every case that differs is
- * written to {@code build/guide-snapshots-actual/} to compare.
+ * short hash in {@code guide-snapshots.txt}. When a change is meant to alter the guide, first run the tests to see
+ * which cases change and check their text, then regenerate the file with {@code UPDATE_SNAPSHOTS=true ./gradlew test}.
+ * The full text of every case that differs is written to {@code build/guide-snapshots-actual/}.
  */
 public class GuideSnapshotTest
 {
@@ -111,7 +111,7 @@ public class GuideSnapshotTest
 			}
 		}
 
-		if (Boolean.getBoolean("snapshots.update"))
+		if (Boolean.getBoolean("snapshots.update") || "true".equals(System.getenv("UPDATE_SNAPSHOTS")))
 		{
 			writeSnapshots(actual);
 			return;
@@ -545,7 +545,7 @@ public class GuideSnapshotTest
 		{
 			if (in == null)
 			{
-				fail("Missing " + RESOURCE + ": run with -Dsnapshots.update=true to create it");
+				fail("Missing " + RESOURCE + ": run with UPDATE_SNAPSHOTS=true to create it");
 			}
 			for (String line : new String(in.readAllBytes(), StandardCharsets.UTF_8).split("\n"))
 			{

@@ -1,6 +1,5 @@
 package com.skillinghelper.overlay;
 
-import com.skillinghelper.ActiveGuide;
 import com.skillinghelper.SkillingHelperConfig;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.TargetTracker;
@@ -56,61 +55,73 @@ public class SceneHighlightOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D g)
 	{
-		ActiveGuide guide = plugin.getGuide();
-		GuideStep step = guide.getStep();
+		GuideStep step = plugin.getGuide().getStep();
 		Player player = client.getLocalPlayer();
 		if (step == null || player == null)
 		{
 			return null;
 		}
 		WorldPoint me = player.getWorldLocation();
-		List<Target> targets = step.getHighlights();
-		boolean bank = step.isHighlightBank();
-
-		if (!targets.isEmpty() || bank)
+		if (!step.getHighlights().isEmpty() || step.isHighlightBank())
 		{
-			for (TargetTracker.Tracked<TileObject> t : tracker.getObjects())
-			{
-				TileObject obj = t.getEntity();
-				if (!inRange(obj.getWorldLocation(), me))
-				{
-					continue;
-				}
-				Color c = colorFor(Target.Kind.OBJECT, t.getName(), t.getActions(), targets, bank);
-				if (c != null)
-				{
-					drawObject(g, obj, c);
-				}
-			}
-			for (TargetTracker.Tracked<NPC> t : tracker.getNpcs())
-			{
-				NPC npc = t.getEntity();
-				if (!inRange(npc.getWorldLocation(), me))
-				{
-					continue;
-				}
-				Color c = colorFor(Target.Kind.NPC, t.getName(), t.getActions(), targets, bank);
-				if (c != null)
-				{
-					drawNpc(g, npc, c);
-				}
-			}
+			drawObjects(g, step, me);
+			drawNpcs(g, step, me);
 		}
-
-		WorldPoint dest = step.getDestination();
-		if (config.destinationTile() && dest != null && dest.getPlane() == me.getPlane())
+		if (config.destinationTile())
 		{
-			LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), dest);
-			if (lp != null)
-			{
-				Polygon poly = Perspective.getCanvasTilePoly(client, lp);
-				if (poly != null)
-				{
-					OverlayUtil.renderPolygon(g, poly, config.targetColor(), new BasicStroke(2));
-				}
-			}
+			drawDestination(g, step.getDestination(), me);
 		}
 		return null;
+	}
+
+	private void drawObjects(Graphics2D g, GuideStep step, WorldPoint me)
+	{
+		for (TargetTracker.Tracked<TileObject> t : tracker.getObjects())
+		{
+			TileObject obj = t.getEntity();
+			if (!inRange(obj.getWorldLocation(), me))
+			{
+				continue;
+			}
+			Color c = colorFor(Target.Kind.OBJECT, t.getName(), t.getActions(), step.getHighlights(),
+				step.isHighlightBank());
+			if (c != null)
+			{
+				drawObject(g, obj, c);
+			}
+		}
+	}
+
+	private void drawNpcs(Graphics2D g, GuideStep step, WorldPoint me)
+	{
+		for (TargetTracker.Tracked<NPC> t : tracker.getNpcs())
+		{
+			NPC npc = t.getEntity();
+			if (!inRange(npc.getWorldLocation(), me))
+			{
+				continue;
+			}
+			Color c = colorFor(Target.Kind.NPC, t.getName(), t.getActions(), step.getHighlights(),
+				step.isHighlightBank());
+			if (c != null)
+			{
+				drawNpc(g, npc, c);
+			}
+		}
+	}
+
+	private void drawDestination(Graphics2D g, WorldPoint dest, WorldPoint me)
+	{
+		if (dest == null || dest.getPlane() != me.getPlane())
+		{
+			return;
+		}
+		LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), dest);
+		Polygon poly = lp == null ? null : Perspective.getCanvasTilePoly(client, lp);
+		if (poly != null)
+		{
+			OverlayUtil.renderPolygon(g, poly, config.targetColor(), new BasicStroke(2));
+		}
 	}
 
 	private static boolean inRange(WorldPoint wp, WorldPoint me)
