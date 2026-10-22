@@ -84,6 +84,29 @@ public final class MethodPlanner
 	}
 
 	/**
+	 * The xp per hour over a whole climb, for methods that speed up as the player levels: the xp divided by the time
+	 * it takes level by level, so a long climb isn't timed at its slow starting rate.
+	 */
+	static double averageXpPerHour(Method m, int level, long xpNeeded)
+	{
+		double startRate = m.xpPerHour(level);
+		if (xpNeeded <= 0 || startRate <= 0)
+		{
+			return startRate;
+		}
+		double hours = 0;
+		long xpLeft = xpNeeded;
+		for (int l = level; xpLeft > 0; l++)
+		{
+			long xpThisLevel = l >= Experience.MAX_VIRT_LEVEL ? xpLeft
+				: Math.min(xpLeft, Experience.getXpForLevel(l + 1) - Experience.getXpForLevel(l));
+			hours += xpThisLevel / m.xpPerHour(l);
+			xpLeft -= xpThisLevel;
+		}
+		return xpNeeded / hours;
+	}
+
+	/**
 	 * The levels where the plan may switch method: now, each level a new method unlocks, and the goal.
 	 */
 	private static TreeSet<Integer> breakpoints(List<Method> methods, int current, int targetLevel)
@@ -142,7 +165,7 @@ public final class MethodPlanner
 		boolean affordable = inputs.buyCost <= state.gp() || (gpPerAction >= 0 && inputs.tripCost <= state.gp());
 
 		Integer measuredXpHr = state.getMeasuredXpPerHour().get(m.getId());
-		double xpHr = measuredXpHr != null ? measuredXpHr : m.xpPerHour(level);
+		double xpHr = measuredXpHr != null ? measuredXpHr : averageXpPerHour(m, level, xpNeeded);
 		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
 		double gpHr = gpPerAction * actionsPerHour;
 		// Items already in the bank don't need buying, so they only count partially against the method

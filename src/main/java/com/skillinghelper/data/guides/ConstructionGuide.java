@@ -53,7 +53,7 @@ final class ConstructionGuide
 				.name("Mahogany Homes contracts")
 				.minLevel(1)
 				.xpPerAction(300)
-				.xpPerHour(40_000)
+				.xpPerHour(25_000)
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.CHEAP)
 				.location(Location.of("Falador contracts office", 2989, 3363, 8))
@@ -67,6 +67,7 @@ final class ConstructionGuide
 				.notes("Uses fewer planks per xp than building in your house and earns the Carpenter's outfit "
 					+ "(+2.5% Construction xp).")
 				.wikiPage("Mahogany_Homes")
+				.rateAt(20, 40_000).rateAt(50, 60_000).rateAt(70, 85_000)
 				.build()
 		);
 	}

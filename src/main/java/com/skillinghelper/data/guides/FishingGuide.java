@@ -24,15 +24,16 @@ final class FishingGuide
 	static List<Method> methods()
 	{
 		return List.of(
-			fish("fish_shrimp_draynor", "Shrimp & anchovies (Draynor)", 1, 15, 6_000,
+			fish("fish_shrimp_draynor", "Shrimp & anchovies (Draynor)", 1, 15, 5_000,
 				Location.of("Draynor fishing spots", 3086, 3228, 6), Banks.DRAYNOR, "Net", "Fishing spot")
 				.tool(ItemReq.tool("Small fishing net", ItemID.NET))
 				.product(ItemID.RAW_SHRIMP).product(ItemID.RAW_ANCHOVIES)
 				.tag(MethodTag.CHEAP)
 				.notes("Bank the fish and cook them for Cooking xp.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(15, 10_000)
 				.build(),
-			fish("fish_fly_barbarian", "Fly fishing (Barbarian Village)", 20, 55, 25_000,
+			fish("fish_fly_barbarian", "Fly fishing (Barbarian Village)", 20, 55, 15_000,
 				Location.of("Barbarian Village river", 3105, 3430, 7), Banks.EDGEVILLE, "Lure", "Rod Fishing spot")
 				.tool(ItemReq.tool("Fly fishing rod", ItemID.FLY_FISHING_ROD, ItemID.FISHINGROD_PEARL_FLY))
 				.input(FEATHERS)
@@ -40,15 +41,17 @@ final class FishingGuide
 				.tag(MethodTag.POWER).tag(MethodTag.FAST).tag(MethodTag.CHEAP).dropByDefault(true)
 				.notes("Trout from 20, salmon from 30. There's a permanent fire next to the spots if you want to cook.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(30, 25_000).rateAt(40, 33_000).rateAt(50, 40_000).rateAt(70, 50_000)
 				.build(),
-			fish("fish_lobster_catherby", "Lobsters (Catherby)", 40, 90, 18_000,
+			fish("fish_lobster_catherby", "Lobsters (Catherby)", 40, 90, 14_000,
 				Location.of("Catherby beach", 2840, 3431, 8), Banks.CATHERBY, "Cage", "Fishing spot")
 				.tool(ItemReq.tool("Lobster pot", ItemID.LOBSTER_POT))
 				.product(ItemID.RAW_LOBSTER)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.wikiPage(P2P_WIKI)
+				.rateAt(60, 20_000).rateAt(76, 25_000).rateAt(90, 28_000)
 				.build(),
-			fish("fish_barbarian_otto", "Barbarian fishing (Otto's Grotto)", 48, 60, 45_000,
+			fish("fish_barbarian_otto", "Barbarian fishing (Otto's Grotto)", 48, 60, 30_000,
 				Location.of("Otto's Grotto", 2500, 3510, 8), null, "Use-rod", "Fishing spot")
 				.tool(ItemReq.tool("Barbarian rod", ItemID.BRUT_FISHING_ROD, ItemID.FISHINGROD_PEARL_BRUT)
 					.from("Search the bed in Otto's hut at the grotto to get one (talk to Otto first to start the "
@@ -59,14 +62,16 @@ final class FishingGuide
 				.requirementText("Barbarian Training (talk to Otto), 15 Agility and 15 Strength")
 				.notes("Also gives Agility and Strength xp. Drop fish as you go.")
 				.wikiPage("Barbarian_Fishing")
+				.rateAt(58, 42_000).rateAt(70, 55_000).rateAt(80, 62_000).rateAt(90, 70_000)
 				.build(),
-			fish("fish_sharks_catherby", "Sharks (Catherby)", 76, 110, 22_000,
+			fish("fish_sharks_catherby", "Sharks (Catherby)", 76, 110, 20_000,
 				Location.of("Catherby beach", 2840, 3431, 8), Banks.CATHERBY, "Harpoon", "Fishing spot")
 				.toolType(ToolType.HARPOON)
 				.product(ItemID.RAW_SHARK)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.notes("Use the spots that offer Net and Harpoon.")
 				.wikiPage(P2P_WIKI)
+				.rateAt(90, 28_000).rateAt(99, 30_000)
 				.build(),
 			Method.builder()
 				.id("fish_trawler")

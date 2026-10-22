@@ -53,6 +53,7 @@ final class FiremakingGuide
 				+ "Bring food or warm clothing; relight and fix the brazier when needed.")
 			.notes("Supply crates give logs, ores, herbs and the Pyromancer outfit.")
 			.wikiPage("Wintertodt")
+			.rateAt(70, 220_000).rateAt(90, 280_000).rateAt(99, 300_000)
 			.build());
 		return methods;
 	}

@@ -39,9 +39,13 @@ final class CombatGuide
 		final String notes;
 		final String requirement;
 		final boolean afk;
+		/**
+		 * Melee xp per hour at higher levels, as level, xp per hour pairs.
+		 */
+		final int[] meleeRates;
 
 		Monster(String key, String name, String[] npcs, int hitpoints, int level, int meleeXpHr, boolean members,
-			Location location, String notes, String requirement, boolean afk)
+			Location location, String notes, String requirement, boolean afk, int... meleeRates)
 		{
 			this.key = key;
 			this.name = name;
@@ -54,32 +58,33 @@ final class CombatGuide
 			this.notes = notes;
 			this.requirement = requirement;
 			this.afk = afk;
+			this.meleeRates = meleeRates;
 		}
 	}
 
 	private static final List<Monster> MONSTERS = List.of(
-		new Monster("chickens", "Chickens (Lumbridge)", new String[]{"Chicken"}, 3, 1, 4_000, false,
+		new Monster("chickens", "Chickens (Lumbridge)", new String[]{"Chicken"}, 3, 1, 2_500, false,
 			Location.of("Lumbridge chicken pen", 3231, 3297, 8),
-			"Chickens can't really hurt you. Pick up feathers for Fishing if you like.", null, false),
-		new Monster("cows", "Cows (Lumbridge)", new String[]{"Cow", "Cow calf"}, 8, 10, 8_000, false,
+			"Chickens can't really hurt you. Pick up feathers for Fishing if you like.", null, false, 10, 5_000),
+		new Monster("cows", "Cows (Lumbridge)", new String[]{"Cow", "Cow calf"}, 8, 10, 6_000, false,
 			Location.of("Lumbridge cow field", 3257, 3270, 12),
-			"Bank the cowhides for Crafting, or sell them.", null, false),
-		new Monster("al_kharid_warriors", "Al Kharid warriors", new String[]{"Al Kharid warrior"}, 19, 20, 15_000,
+			"Bank the cowhides for Crafting, or sell them.", null, false, 20, 10_000),
+		new Monster("al_kharid_warriors", "Al Kharid warriors", new String[]{"Al Kharid warrior"}, 19, 20, 12_000,
 			false, Location.of("Al Kharid palace", 3293, 3173, 10),
-			"They hit back, so bring some food.", null, false),
-		new Monster("hill_giants", "Hill giants (Edgeville Dungeon)", new String[]{"Hill Giant"}, 35, 30, 25_000, false,
+			"They hit back, so bring some food.", null, false, 30, 18_000, 40, 22_000),
+		new Monster("hill_giants", "Hill giants (Edgeville Dungeon)", new String[]{"Hill Giant"}, 35, 30, 18_000, false,
 			Location.of("Edgeville Dungeon hill giants", 3117, 9845, 12),
 			"Bring food. Big bones are worth burying or selling.",
-			"A brass key opens the hill giant room door", false),
-		new Monster("sand_crabs", "Sand crabs (Hosidius)", new String[]{"Sand Crab"}, 60, 20, 45_000, true,
+			"A brass key opens the hill giant room door", false, 50, 30_000, 70, 40_000),
+		new Monster("sand_crabs", "Sand crabs (Hosidius)", new String[]{"Sand Crab"}, 60, 20, 15_000, true,
 			Location.of("Hosidius sand crab beach", 1740, 3468, 30),
 			"Very AFK: stand next to a few crabs and they wake up. Run away and back every 10 minutes when they "
-				+ "stop attacking you.", null, true),
-		new Monster("nmz", "Nightmare Zone", new String[]{}, 400, 60, 80_000, true,
+				+ "stop attacking you.", null, true, 40, 30_000, 60, 45_000, 80, 60_000, 99, 70_000),
+		new Monster("nmz", "Nightmare Zone", new String[]{}, 400, 60, 55_000, true,
 			Location.of("Nightmare Zone", 2606, 3115, 8),
 			"Customisable rumble with absorption and overload potions is the classic AFK setup.",
 			"Nightmare Zone needs 5 quest bosses unlocked (e.g. The Grand Tree, Fight Arena, Tree Gnome Village, "
-				+ "Waterfall Quest, Witch's House)", true)
+				+ "Waterfall Quest, Witch's House)", true, 80, 85_000, 99, 110_000)
 	);
 
 	static List<Method> methods()
@@ -132,7 +137,7 @@ final class CombatGuide
 
 	private static Method.MethodBuilder melee(Monster mon, Skill skill, String style)
 	{
-		return base(mon, skill, skill.getName().toLowerCase())
+		return withRates(base(mon, skill, skill.getName().toLowerCase()), mon, 1.0)
 			.minLevel(mon.level)
 			.xpPerAction(4.0 * mon.hitpoints)
 			.xpPerHour(mon.meleeXpHr)
@@ -144,7 +149,7 @@ final class CombatGuide
 
 	private static Method.MethodBuilder hitpoints(Monster mon)
 	{
-		return base(mon, Skill.HITPOINTS, "hitpoints")
+		return withRates(base(mon, Skill.HITPOINTS, "hitpoints"), mon, 1 / 3.0)
 			// Hitpoints starts at 10, so the level-1 monster stays level 1 to keep the plan simple
 			.minLevel(mon.level)
 			.xpPerAction(1.33 * mon.hitpoints)
@@ -160,7 +165,7 @@ final class CombatGuide
 		ItemReq ammo = cheapAmmo
 			? ItemReq.stack("Iron arrows", 1, ItemID.IRON_ARROW)
 			: ItemReq.stack("Mithril arrows", 1, ItemID.MITHRIL_ARROW);
-		return base(mon, Skill.RANGED, "ranged")
+		return withRates(base(mon, Skill.RANGED, "ranged"), mon, 1.1)
 			.minLevel(mon.level)
 			.xpPerAction(4.0 * mon.hitpoints)
 			.xpPerHour((int) (mon.meleeXpHr * 1.1))
@@ -169,6 +174,18 @@ final class CombatGuide
 			.gearStyle(CombatStyle.RANGED)
 			.instruction("Equip your best bow with the arrows, set Rapid and attack the " + targetNoun(mon))
 			.wikiPage(RANGED_WIKI);
+	}
+
+	/**
+	 * The monster's melee rates scaled for another skill: Hitpoints gets a third of the xp, Ranged a bit more.
+	 */
+	private static Method.MethodBuilder withRates(Method.MethodBuilder b, Monster mon, double scale)
+	{
+		for (int i = 0; i + 1 < mon.meleeRates.length; i += 2)
+		{
+			b.rateAt(mon.meleeRates[i], (int) (mon.meleeRates[i + 1] * scale));
+		}
+		return b;
 	}
 
 	private static String targetNoun(Monster mon)

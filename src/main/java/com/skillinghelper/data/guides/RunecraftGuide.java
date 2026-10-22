@@ -23,8 +23,8 @@ final class RunecraftGuide
 	private static final String P2P_WIKI = "Pay-to-play_Runecraft_training";
 	private static final ItemReq ESSENCE = ItemReq.consumed("Rune or pure essence", 28, 1, ItemID.BLANKRUNE,
 		ItemID.BLANKRUNE_HIGH);
-	// About 2.5 minutes per trip with 28 essence
-	private static final int ESSENCE_PER_HOUR = 650;
+	// About 1.7 minutes per trip with 28 essence, running between the bank and the altar
+	private static final int ESSENCE_PER_HOUR = 1_000;
 
 	static List<Method> methods()
 	{
@@ -52,7 +52,7 @@ final class RunecraftGuide
 				.name("Guardians of the Rift")
 				.minLevel(27)
 				.xpPerAction(60)
-				.xpPerHour(45_000)
+				.xpPerHour(30_000)
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.FAST)
 				.quest(Quest.TEMPLE_OF_THE_EYE)
@@ -66,6 +66,7 @@ final class RunecraftGuide
 				.notes("Earns the Raiments of the Eye outfit (up to +60% runes) and abyssal pouches. "
 					+ "The best way to start members Runecraft.")
 				.wikiPage("Guardians_of_the_Rift")
+				.rateAt(50, 40_000).rateAt(77, 55_000).rateAt(90, 60_000)
 				.build(),
 			Method.builder()
 				.id("rc_blood_arceuus")

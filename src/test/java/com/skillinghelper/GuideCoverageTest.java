@@ -79,6 +79,31 @@ public class GuideCoverageTest
 	}
 
 	@Test
+	public void levelRatesClimbInLevelOrderAboveTheMinimum()
+	{
+		for (Method m : guides.all())
+		{
+			int lastLevel = m.getMinLevel();
+			for (int[] point : m.getRates())
+			{
+				assertTrue(m.getId() + " rate at " + point[0], point[0] > lastLevel && point[0] <= 99 && point[1] > 0);
+				lastLevel = point[0];
+			}
+		}
+	}
+
+	@Test
+	public void ratesAreInterpolatedBetweenLevels()
+	{
+		Method crabs = guides.byId("attack_sand_crabs");
+		assertEquals(15_000, crabs.xpPerHour(20), 1);
+		assertEquals(22_500, crabs.xpPerHour(30), 1);
+		assertEquals(30_000, crabs.xpPerHour(40), 1);
+		assertEquals(70_000, crabs.xpPerHour(99), 1);
+		assertEquals(10_000, guides.byId("hitpoints_sand_crabs").xpPerHour(40), 1);
+	}
+
+	@Test
 	public void everyOutfitSourceMethodExists()
 	{
 		for (SkillOutfit outfit : SkillOutfit.values())

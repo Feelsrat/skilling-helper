@@ -2276,8 +2276,8 @@ farm_tree_yew weak parts-carried-away	9bfc8349f4f57936
 farm_tree_yew weak parts-in-bank	51f96e50f8c7836a
 farm_tree_yew weak run-all-done	fcbffe964dda3c2b
 farm_tree_yew weak run-half-done	877dc5787436d135
-fish_barbarian_otto strong bank-empty	ba93ca426ad139fd
-fish_barbarian_otto strong bank-empty-rich	ba93ca426ad139fd
+fish_barbarian_otto strong bank-empty	55214b2719c68855
+fish_barbarian_otto strong bank-empty-rich	55214b2719c68855
 fish_barbarian_otto strong bank-unknown	1e6468a57f58c135
 fish_barbarian_otto strong full-of-products	0f7bf58e7ba433cb
 fish_barbarian_otto strong gear-carried	5b2f3dc19659b894
@@ -2291,8 +2291,8 @@ fish_barbarian_otto strong owns-all-in-bank	b2978f7678290a36
 fish_barbarian_otto strong parts-carried	3db218b25fed5477
 fish_barbarian_otto strong parts-carried-away	05d2e9f99e049eda
 fish_barbarian_otto strong parts-in-bank	b2978f7678290a36
-fish_barbarian_otto weak bank-empty	ba93ca426ad139fd
-fish_barbarian_otto weak bank-empty-rich	ba93ca426ad139fd
+fish_barbarian_otto weak bank-empty	55214b2719c68855
+fish_barbarian_otto weak bank-empty-rich	55214b2719c68855
 fish_barbarian_otto weak bank-unknown	1e6468a57f58c135
 fish_barbarian_otto weak full-of-products	679d981ea98bb77b
 fish_barbarian_otto weak gear-carried	5b2f3dc19659b894
@@ -2336,8 +2336,8 @@ fish_fly_barbarian weak owns-all-in-bank	64e220576cc2fe2e
 fish_fly_barbarian weak parts-carried	17fb0a189af653a2
 fish_fly_barbarian weak parts-carried-away	aa81f8e3bb566dd4
 fish_fly_barbarian weak parts-in-bank	743a11e05345b17b
-fish_lobster_catherby strong bank-empty	be11ec971251d45a
-fish_lobster_catherby strong bank-empty-rich	a6a9105998c1b74c
+fish_lobster_catherby strong bank-empty	436514bda8ebc545
+fish_lobster_catherby strong bank-empty-rich	750adea3f04efb95
 fish_lobster_catherby strong bank-unknown	158eb1ae10fadeed
 fish_lobster_catherby strong full-of-products	6c8554c43f274f3f
 fish_lobster_catherby strong gear-carried	6686719da0027d49
@@ -2351,8 +2351,8 @@ fish_lobster_catherby strong owns-all-in-bank	9f0d6cf90035f563
 fish_lobster_catherby strong parts-carried	de0c56934776a16a
 fish_lobster_catherby strong parts-carried-away	cfa35c052b17a02a
 fish_lobster_catherby strong parts-in-bank	713944e0427211cf
-fish_lobster_catherby weak bank-empty	be11ec971251d45a
-fish_lobster_catherby weak bank-empty-rich	a6a9105998c1b74c
+fish_lobster_catherby weak bank-empty	436514bda8ebc545
+fish_lobster_catherby weak bank-empty-rich	750adea3f04efb95
 fish_lobster_catherby weak bank-unknown	158eb1ae10fadeed
 fish_lobster_catherby weak full-of-products	6c8554c43f274f3f
 fish_lobster_catherby weak gear-carried	6686719da0027d49
@@ -2366,8 +2366,8 @@ fish_lobster_catherby weak owns-all-in-bank	9f0d6cf90035f563
 fish_lobster_catherby weak parts-carried	de0c56934776a16a
 fish_lobster_catherby weak parts-carried-away	cfa35c052b17a02a
 fish_lobster_catherby weak parts-in-bank	713944e0427211cf
-fish_sharks_catherby strong bank-empty	371c153f286308e0
-fish_sharks_catherby strong bank-empty-rich	a81ffeee836e2c01
+fish_sharks_catherby strong bank-empty	e7cfce24ea135871
+fish_sharks_catherby strong bank-empty-rich	6823d5eb766227f6
 fish_sharks_catherby strong bank-unknown	f1a85fef4e008c39
 fish_sharks_catherby strong full-of-products	fcbfbaacbd213d57
 fish_sharks_catherby strong gear-carried	7cd8b237e4fe133a
@@ -2381,8 +2381,8 @@ fish_sharks_catherby strong owns-all-in-bank	e7a208812c479338
 fish_sharks_catherby strong parts-carried	8da8aaf3bed30f61
 fish_sharks_catherby strong parts-carried-away	8b99ff3e27f6c645
 fish_sharks_catherby strong parts-in-bank	d532e3d0b2fa5a78
-fish_sharks_catherby weak bank-empty	371c153f286308e0
-fish_sharks_catherby weak bank-empty-rich	a81ffeee836e2c01
+fish_sharks_catherby weak bank-empty	e7cfce24ea135871
+fish_sharks_catherby weak bank-empty-rich	6823d5eb766227f6
 fish_sharks_catherby weak bank-unknown	f1a85fef4e008c39
 fish_sharks_catherby weak full-of-products	fcbfbaacbd213d57
 fish_sharks_catherby weak gear-carried	7cd8b237e4fe133a
@@ -4290,8 +4290,8 @@ mine_iron_varrock weak owns-all-in-bank	d3a9926c7a90a315
 mine_iron_varrock weak parts-carried	04293aff555522f4
 mine_iron_varrock weak parts-carried-away	20e2bde5aa0ab893
 mine_iron_varrock weak parts-in-bank	87f92ce7e689311c
-mine_motherlode strong bank-empty	0f75aad86a31e47b
-mine_motherlode strong bank-empty-rich	c846e8667acb34d3
+mine_motherlode strong bank-empty	542b680cec334ff5
+mine_motherlode strong bank-empty-rich	360c04608048bd08
 mine_motherlode strong bank-unknown	9ea58d86dbe4c0b0
 mine_motherlode strong full-of-products	670984b67248c203
 mine_motherlode strong gear-carried	6fd59905f55dde63
@@ -4305,8 +4305,8 @@ mine_motherlode strong owns-all-in-bank	e3f91a41e1a7cee6
 mine_motherlode strong parts-carried	670984b67248c203
 mine_motherlode strong parts-carried-away	67a94370a697f513
 mine_motherlode strong parts-in-bank	e3f91a41e1a7cee6
-mine_motherlode weak bank-empty	0f75aad86a31e47b
-mine_motherlode weak bank-empty-rich	c846e8667acb34d3
+mine_motherlode weak bank-empty	542b680cec334ff5
+mine_motherlode weak bank-empty-rich	360c04608048bd08
 mine_motherlode weak bank-unknown	9ea58d86dbe4c0b0
 mine_motherlode weak full-of-products	670984b67248c203
 mine_motherlode weak gear-carried	6fd59905f55dde63
@@ -4360,86 +4360,86 @@ plan AGILITY 90 rich Cheapest	edcc258369f8100f
 plan AGILITY 90 rich Fastest	edcc258369f8100f
 plan AGILITY 90 rich Profit	5b4a79ab010b4199
 plan AGILITY 90 rich Recommended	edcc258369f8100f
-plan ATTACK 1 poor AFK	16dc8a52e306009e
-plan ATTACK 1 poor Cheapest	bf3cf2bdb3fef40f
-plan ATTACK 1 poor Fastest	bf3cf2bdb3fef40f
-plan ATTACK 1 poor Profit	2457211864ff84dd
-plan ATTACK 1 poor Recommended	4b64af9613b77708
-plan ATTACK 1 rich AFK	08e06014749c3017
-plan ATTACK 1 rich Cheapest	235239ef3568c7db
-plan ATTACK 1 rich Fastest	235239ef3568c7db
-plan ATTACK 1 rich Profit	7e67dc2cd7796184
-plan ATTACK 1 rich Recommended	6abbf9a088ac7b24
-plan ATTACK 30 poor AFK	134a3b968f629bdb
-plan ATTACK 30 poor Cheapest	f195ea6bab502e4c
-plan ATTACK 30 poor Fastest	f195ea6bab502e4c
-plan ATTACK 30 poor Profit	ede4da415317ff0c
-plan ATTACK 30 poor Recommended	32c01e40b18d1c60
-plan ATTACK 30 rich AFK	816620dc057234cb
-plan ATTACK 30 rich Cheapest	cf30e53e5155da38
-plan ATTACK 30 rich Fastest	cf30e53e5155da38
-plan ATTACK 30 rich Profit	4cb5917937cf74b7
-plan ATTACK 30 rich Recommended	e038dd93b7c1e3d5
-plan ATTACK 60 poor AFK	8e159a512ef8ee39
-plan ATTACK 60 poor Cheapest	7cec256877dbf25d
-plan ATTACK 60 poor Fastest	7cec256877dbf25d
-plan ATTACK 60 poor Profit	8edfa84796642735
-plan ATTACK 60 poor Recommended	fc745bd37f509ef1
-plan ATTACK 60 rich AFK	8c7c71e1b95742bb
-plan ATTACK 60 rich Cheapest	fabc5de8e101997c
-plan ATTACK 60 rich Fastest	fabc5de8e101997c
-plan ATTACK 60 rich Profit	a451c24fe1926043
-plan ATTACK 60 rich Recommended	e3f79d84a71bca22
-plan ATTACK 90 poor AFK	8c6e6679fb148bfc
-plan ATTACK 90 poor Cheapest	6a36d3a99428f71d
-plan ATTACK 90 poor Fastest	6a36d3a99428f71d
-plan ATTACK 90 poor Profit	7521150c3a5ad4b4
-plan ATTACK 90 poor Recommended	1c7a386a28611106
-plan ATTACK 90 rich AFK	e9ce32ed07d14104
-plan ATTACK 90 rich Cheapest	5c3b8ca61fd508ab
-plan ATTACK 90 rich Fastest	5c3b8ca61fd508ab
-plan ATTACK 90 rich Profit	dbcb53de22b6a1f5
-plan ATTACK 90 rich Recommended	f7e913f79aaa4bde
-plan CONSTRUCTION 1 poor AFK	ca49040ca9d0326b
-plan CONSTRUCTION 1 poor Cheapest	3859e313ff2e878d
-plan CONSTRUCTION 1 poor Fastest	a9f0f54e4cdbf812
-plan CONSTRUCTION 1 poor Profit	500adfc86bff68be
-plan CONSTRUCTION 1 poor Recommended	ebb9322fd29f7b6e
-plan CONSTRUCTION 1 rich AFK	148e126b5e675b13
-plan CONSTRUCTION 1 rich Cheapest	b106194fa291b89c
-plan CONSTRUCTION 1 rich Fastest	080bb4a3c0c50ac1
-plan CONSTRUCTION 1 rich Profit	5cb36f8923ff35bb
-plan CONSTRUCTION 1 rich Recommended	58ef897f33148672
-plan CONSTRUCTION 30 poor AFK	f85e632b1fc190cb
-plan CONSTRUCTION 30 poor Cheapest	7e2d35f23c0cbcf1
-plan CONSTRUCTION 30 poor Fastest	3d737633477ace5d
-plan CONSTRUCTION 30 poor Profit	e04f24cf4ebdb517
-plan CONSTRUCTION 30 poor Recommended	65ed101b28b6591c
-plan CONSTRUCTION 30 rich AFK	3825d7453c41c0e2
-plan CONSTRUCTION 30 rich Cheapest	86c3183a36df7cd5
-plan CONSTRUCTION 30 rich Fastest	6ca73bb7115c5142
-plan CONSTRUCTION 30 rich Profit	2f7d698cf78ea34b
-plan CONSTRUCTION 30 rich Recommended	1d12b4c9469bdeb9
-plan CONSTRUCTION 60 poor AFK	e9515cba9754c956
-plan CONSTRUCTION 60 poor Cheapest	91e5a052293474ca
-plan CONSTRUCTION 60 poor Fastest	ed5eeb542a276473
-plan CONSTRUCTION 60 poor Profit	5dc192de4213e512
-plan CONSTRUCTION 60 poor Recommended	d7ccc730d45e1719
-plan CONSTRUCTION 60 rich AFK	e7e9f73d0d4ebcbb
-plan CONSTRUCTION 60 rich Cheapest	d74e6164ae4c3013
-plan CONSTRUCTION 60 rich Fastest	6364c459b9e78353
-plan CONSTRUCTION 60 rich Profit	d2459034a9014e44
-plan CONSTRUCTION 60 rich Recommended	d8de368de0e464ff
-plan CONSTRUCTION 90 poor AFK	42dcd9c95f87db11
-plan CONSTRUCTION 90 poor Cheapest	630cc3a92f9a0274
-plan CONSTRUCTION 90 poor Fastest	72021f3cca6c2fbf
-plan CONSTRUCTION 90 poor Profit	3dbe7d4e074b4a02
-plan CONSTRUCTION 90 poor Recommended	051c5061775d66be
-plan CONSTRUCTION 90 rich AFK	b160680a751a932d
-plan CONSTRUCTION 90 rich Cheapest	e7c8f06a1ea4bc0e
-plan CONSTRUCTION 90 rich Fastest	3f3351fdf34f03d5
-plan CONSTRUCTION 90 rich Profit	025a3ae4466ce2f0
-plan CONSTRUCTION 90 rich Recommended	ca4a156314729c55
+plan ATTACK 1 poor AFK	6a1e4e18446d8e28
+plan ATTACK 1 poor Cheapest	d1eb280184c44866
+plan ATTACK 1 poor Fastest	d1eb280184c44866
+plan ATTACK 1 poor Profit	73d85775e7e9e2bb
+plan ATTACK 1 poor Recommended	92de07a9b345cfdf
+plan ATTACK 1 rich AFK	ec55af4caed43474
+plan ATTACK 1 rich Cheapest	512280f3aaa541f0
+plan ATTACK 1 rich Fastest	512280f3aaa541f0
+plan ATTACK 1 rich Profit	d99ff6a1e5f145d6
+plan ATTACK 1 rich Recommended	b4b27477bce77906
+plan ATTACK 30 poor AFK	0aca25fc7c21d361
+plan ATTACK 30 poor Cheapest	fa317a4560bc297d
+plan ATTACK 30 poor Fastest	fa317a4560bc297d
+plan ATTACK 30 poor Profit	4526823a28c34282
+plan ATTACK 30 poor Recommended	c92a159eb7bc567a
+plan ATTACK 30 rich AFK	e43dcd46924c1771
+plan ATTACK 30 rich Cheapest	e7ca572bc712e918
+plan ATTACK 30 rich Fastest	e7ca572bc712e918
+plan ATTACK 30 rich Profit	aef78e79a68339b8
+plan ATTACK 30 rich Recommended	caef1af4a6b85e35
+plan ATTACK 60 poor AFK	3637660bf25ea94f
+plan ATTACK 60 poor Cheapest	50c00f093f44ed98
+plan ATTACK 60 poor Fastest	50c00f093f44ed98
+plan ATTACK 60 poor Profit	30de8bca7f0c4e6f
+plan ATTACK 60 poor Recommended	664897a10164e8b6
+plan ATTACK 60 rich AFK	04bb3980bb63fc02
+plan ATTACK 60 rich Cheapest	2c3dd52ed5fcbd4a
+plan ATTACK 60 rich Fastest	2c3dd52ed5fcbd4a
+plan ATTACK 60 rich Profit	5f6e17258782977a
+plan ATTACK 60 rich Recommended	59a24b75671b6737
+plan ATTACK 90 poor AFK	29580a068367f014
+plan ATTACK 90 poor Cheapest	feee11dd22e09d33
+plan ATTACK 90 poor Fastest	feee11dd22e09d33
+plan ATTACK 90 poor Profit	7b72d4a3d95c584c
+plan ATTACK 90 poor Recommended	6b7a117bc6efff6a
+plan ATTACK 90 rich AFK	79a15cc52cc62ded
+plan ATTACK 90 rich Cheapest	71be31f5154f86cc
+plan ATTACK 90 rich Fastest	71be31f5154f86cc
+plan ATTACK 90 rich Profit	2ba77308b050f8e7
+plan ATTACK 90 rich Recommended	18b31b8dffd2bebe
+plan CONSTRUCTION 1 poor AFK	7c6620088388dc27
+plan CONSTRUCTION 1 poor Cheapest	47a139d343acb537
+plan CONSTRUCTION 1 poor Fastest	595d41a2a3e94c92
+plan CONSTRUCTION 1 poor Profit	82348c6fc78a790f
+plan CONSTRUCTION 1 poor Recommended	2872ec2ed9a8919b
+plan CONSTRUCTION 1 rich AFK	df86b3ab20163d73
+plan CONSTRUCTION 1 rich Cheapest	5fbd567a9331b5a0
+plan CONSTRUCTION 1 rich Fastest	521c0de6c8675db1
+plan CONSTRUCTION 1 rich Profit	3495ea08ad137067
+plan CONSTRUCTION 1 rich Recommended	01c37abe958202f1
+plan CONSTRUCTION 30 poor AFK	ad2b254bb14a02e4
+plan CONSTRUCTION 30 poor Cheapest	63ff9b0e043e5d8d
+plan CONSTRUCTION 30 poor Fastest	908425c6f0d7b6f2
+plan CONSTRUCTION 30 poor Profit	417a7866849f27e9
+plan CONSTRUCTION 30 poor Recommended	8dd92517548a06f2
+plan CONSTRUCTION 30 rich AFK	48da8d6fdc9244a9
+plan CONSTRUCTION 30 rich Cheapest	2d6e27c12706e423
+plan CONSTRUCTION 30 rich Fastest	f391e754905ea525
+plan CONSTRUCTION 30 rich Profit	52f54455613f32be
+plan CONSTRUCTION 30 rich Recommended	574ed6f0e1a34681
+plan CONSTRUCTION 60 poor AFK	a5c0d67f67484c67
+plan CONSTRUCTION 60 poor Cheapest	1951243db1fae5e0
+plan CONSTRUCTION 60 poor Fastest	f0fc37e7ff1ff157
+plan CONSTRUCTION 60 poor Profit	2a73d7a66ef06c25
+plan CONSTRUCTION 60 poor Recommended	ddace48173dc37e9
+plan CONSTRUCTION 60 rich AFK	78622151dc8e41cd
+plan CONSTRUCTION 60 rich Cheapest	e101dccc0da9bc8d
+plan CONSTRUCTION 60 rich Fastest	5bcd3127f5aa9b9c
+plan CONSTRUCTION 60 rich Profit	968e8ae269666950
+plan CONSTRUCTION 60 rich Recommended	0f0b7980ec341db0
+plan CONSTRUCTION 90 poor AFK	1afa41c8823af494
+plan CONSTRUCTION 90 poor Cheapest	c6db66e67b31a096
+plan CONSTRUCTION 90 poor Fastest	67a0ecb96d878f84
+plan CONSTRUCTION 90 poor Profit	b69107b8f0e5d6d8
+plan CONSTRUCTION 90 poor Recommended	c3f285bf812bbafc
+plan CONSTRUCTION 90 rich AFK	ed2ff04e06a30acf
+plan CONSTRUCTION 90 rich Cheapest	fe6f23f03262a33a
+plan CONSTRUCTION 90 rich Fastest	532130c46f5a9b84
+plan CONSTRUCTION 90 rich Profit	4a23eed962fcc696
+plan CONSTRUCTION 90 rich Recommended	961a30742ddd1409
 plan COOKING 1 poor AFK	8c2c3a218e5ab967
 plan COOKING 1 poor Cheapest	d253fdc7f2e67d4e
 plan COOKING 1 poor Fastest	a98f11037fd3fa6d
@@ -4485,7 +4485,7 @@ plan CRAFTING 1 poor Cheapest	e3e6f4f9c29adadd
 plan CRAFTING 1 poor Fastest	b835526f4458c734
 plan CRAFTING 1 poor Profit	a4e66e2c027d9c88
 plan CRAFTING 1 poor Recommended	409bd512699289d7
-plan CRAFTING 1 rich AFK	7c225ff41b402184
+plan CRAFTING 1 rich AFK	53be2062cb71b665
 plan CRAFTING 1 rich Cheapest	13149c66d8570860
 plan CRAFTING 1 rich Fastest	929bc87a6b7fd7ec
 plan CRAFTING 1 rich Profit	532fe2578a2956ff
@@ -4520,46 +4520,46 @@ plan CRAFTING 90 rich Cheapest	f3676afeae491c88
 plan CRAFTING 90 rich Fastest	e6fa8741bef4e352
 plan CRAFTING 90 rich Profit	8ffa1523d8f9c1dd
 plan CRAFTING 90 rich Recommended	81d1fb663fbf0d82
-plan DEFENCE 1 poor AFK	d96bc46525dfe42d
-plan DEFENCE 1 poor Cheapest	84d1892616ae6ace
-plan DEFENCE 1 poor Fastest	84d1892616ae6ace
-plan DEFENCE 1 poor Profit	f9e1db9c6b412bd2
-plan DEFENCE 1 poor Recommended	14470978ef2ea32f
-plan DEFENCE 1 rich AFK	58cb985964b03151
-plan DEFENCE 1 rich Cheapest	d550b1b31ff0cd36
-plan DEFENCE 1 rich Fastest	d550b1b31ff0cd36
-plan DEFENCE 1 rich Profit	959999cc3647d95c
-plan DEFENCE 1 rich Recommended	6f9b2ce0d69f438e
-plan DEFENCE 30 poor AFK	008cc028c7881f00
-plan DEFENCE 30 poor Cheapest	84f8342db309576e
-plan DEFENCE 30 poor Fastest	84f8342db309576e
-plan DEFENCE 30 poor Profit	40e7674fe3557812
-plan DEFENCE 30 poor Recommended	3e3d4a4167b883b5
-plan DEFENCE 30 rich AFK	48c2d3e76a1456e3
-plan DEFENCE 30 rich Cheapest	f752d33b858644df
-plan DEFENCE 30 rich Fastest	f752d33b858644df
-plan DEFENCE 30 rich Profit	30fea80121134ca2
-plan DEFENCE 30 rich Recommended	6a2077184835a6dc
-plan DEFENCE 60 poor AFK	71e43f786a32027d
-plan DEFENCE 60 poor Cheapest	248a360b1c6c5413
-plan DEFENCE 60 poor Fastest	248a360b1c6c5413
-plan DEFENCE 60 poor Profit	c87832f620221f01
-plan DEFENCE 60 poor Recommended	ad360f4a35fb9e1b
-plan DEFENCE 60 rich AFK	f8a79f9db783da2c
-plan DEFENCE 60 rich Cheapest	31ca16c22aa44f0c
-plan DEFENCE 60 rich Fastest	31ca16c22aa44f0c
-plan DEFENCE 60 rich Profit	f1d193076d94560a
-plan DEFENCE 60 rich Recommended	e61f1262f5ae978d
-plan DEFENCE 90 poor AFK	91b264f46f4f65ad
-plan DEFENCE 90 poor Cheapest	7a46b19369bb5450
-plan DEFENCE 90 poor Fastest	7a46b19369bb5450
-plan DEFENCE 90 poor Profit	c2600bb630dc24c5
-plan DEFENCE 90 poor Recommended	78f645c88fca9c55
-plan DEFENCE 90 rich AFK	419c5869d8393594
-plan DEFENCE 90 rich Cheapest	ddbc4173b588916a
-plan DEFENCE 90 rich Fastest	ddbc4173b588916a
-plan DEFENCE 90 rich Profit	5d700816f96713a1
-plan DEFENCE 90 rich Recommended	3f8b88a25b58408c
+plan DEFENCE 1 poor AFK	ad3484f779a12132
+plan DEFENCE 1 poor Cheapest	a34929cd91dc7a8d
+plan DEFENCE 1 poor Fastest	a34929cd91dc7a8d
+plan DEFENCE 1 poor Profit	7c4c3d39413e3a49
+plan DEFENCE 1 poor Recommended	4543a3d1c3a03ac1
+plan DEFENCE 1 rich AFK	154afb8903dd4e4c
+plan DEFENCE 1 rich Cheapest	d450df867439a74d
+plan DEFENCE 1 rich Fastest	d450df867439a74d
+plan DEFENCE 1 rich Profit	0be917666822e6d6
+plan DEFENCE 1 rich Recommended	c8cb5a12308a8d21
+plan DEFENCE 30 poor AFK	c767240029c3f4cf
+plan DEFENCE 30 poor Cheapest	a07b0fe39e033a3a
+plan DEFENCE 30 poor Fastest	a07b0fe39e033a3a
+plan DEFENCE 30 poor Profit	6a2a3f88f659e402
+plan DEFENCE 30 poor Recommended	ce9d922c4fac9886
+plan DEFENCE 30 rich AFK	ac0c117b61cd5529
+plan DEFENCE 30 rich Cheapest	cffba0c854126f36
+plan DEFENCE 30 rich Fastest	cffba0c854126f36
+plan DEFENCE 30 rich Profit	8f889d56f40b9a7d
+plan DEFENCE 30 rich Recommended	9c2c1871f084d8e2
+plan DEFENCE 60 poor AFK	9ccc2d87d2f2bb6d
+plan DEFENCE 60 poor Cheapest	889578be7420589f
+plan DEFENCE 60 poor Fastest	889578be7420589f
+plan DEFENCE 60 poor Profit	83d740d542b5132b
+plan DEFENCE 60 poor Recommended	3f48660dfd3b689a
+plan DEFENCE 60 rich AFK	2020b39fb501b7ac
+plan DEFENCE 60 rich Cheapest	8dabf9c5099817bf
+plan DEFENCE 60 rich Fastest	8dabf9c5099817bf
+plan DEFENCE 60 rich Profit	b6ec9b2e3bf56a02
+plan DEFENCE 60 rich Recommended	caedb55ebaa266f8
+plan DEFENCE 90 poor AFK	4b9ebf04b4cf0eb9
+plan DEFENCE 90 poor Cheapest	ebe1d416fb32a341
+plan DEFENCE 90 poor Fastest	ebe1d416fb32a341
+plan DEFENCE 90 poor Profit	87d2be99c5f9dcf7
+plan DEFENCE 90 poor Recommended	afbabec4e6e31b90
+plan DEFENCE 90 rich AFK	9c818f7d5487d4ca
+plan DEFENCE 90 rich Cheapest	01c521342a909539
+plan DEFENCE 90 rich Fastest	01c521342a909539
+plan DEFENCE 90 rich Profit	a6929461f2be497c
+plan DEFENCE 90 rich Recommended	b6e1e03c88f06a53
 plan FARMING 1 poor AFK	4148fe535f2f5e71
 plan FARMING 1 poor Cheapest	8b289ed81b44df77
 plan FARMING 1 poor Fastest	781c4d6bde971a59
@@ -4620,66 +4620,66 @@ plan FIREMAKING 30 rich Cheapest	9d6390a6460767a2
 plan FIREMAKING 30 rich Fastest	9890d791d1293f00
 plan FIREMAKING 30 rich Profit	a2b1e15b54120222
 plan FIREMAKING 30 rich Recommended	7c624803579b6caa
-plan FIREMAKING 60 poor AFK	d6e0b8186387d732
-plan FIREMAKING 60 poor Cheapest	76329001d4d6dbfe
-plan FIREMAKING 60 poor Fastest	d59f56874a43c367
-plan FIREMAKING 60 poor Profit	f3b18a105c5d57a5
-plan FIREMAKING 60 poor Recommended	f4e4e213d5054cf3
-plan FIREMAKING 60 rich AFK	0afa4e3c7fb08b31
-plan FIREMAKING 60 rich Cheapest	af17e75440f890c3
-plan FIREMAKING 60 rich Fastest	05f37dc3e9b253e2
-plan FIREMAKING 60 rich Profit	92a2b676038dfe7e
-plan FIREMAKING 60 rich Recommended	c27c155d1db1cffb
-plan FIREMAKING 90 poor AFK	1fd0a0298240a609
-plan FIREMAKING 90 poor Cheapest	339d9907bd20318f
-plan FIREMAKING 90 poor Fastest	938f16027a6d6f2a
-plan FIREMAKING 90 poor Profit	a4aae05188738338
-plan FIREMAKING 90 poor Recommended	7b60cde93de6ea81
-plan FIREMAKING 90 rich AFK	3554b771baef7e5b
-plan FIREMAKING 90 rich Cheapest	ac5ece2f71f3b19d
-plan FIREMAKING 90 rich Fastest	8290935d8c0027ea
-plan FIREMAKING 90 rich Profit	216d875bfe640cf7
-plan FIREMAKING 90 rich Recommended	81e5bf1170299baa
-plan FISHING 1 poor AFK	80aec3dd39db6023
-plan FISHING 1 poor Cheapest	fc7f8ff637c31590
-plan FISHING 1 poor Fastest	189221a52fac87be
-plan FISHING 1 poor Profit	baea2fd217d8aba9
-plan FISHING 1 poor Recommended	9df3f648a4c64344
-plan FISHING 1 rich AFK	ee85606a93714483
-plan FISHING 1 rich Cheapest	4bbe4a02b8356adc
-plan FISHING 1 rich Fastest	bc4afd33fa703dab
-plan FISHING 1 rich Profit	f6ba4ab69b6b1ae1
-plan FISHING 1 rich Recommended	2c8300a7fb722e98
-plan FISHING 30 poor AFK	29bc2f1d3655778e
-plan FISHING 30 poor Cheapest	82f3fab24f4fe6af
-plan FISHING 30 poor Fastest	17c8d0d1ae22ecec
-plan FISHING 30 poor Profit	7e69e92e3d902ee3
-plan FISHING 30 poor Recommended	22c3a2958c3ffda6
-plan FISHING 30 rich AFK	9bd5edac11fb72e7
-plan FISHING 30 rich Cheapest	6db28d96f3dddad0
-plan FISHING 30 rich Fastest	216c3c387c4d01ce
-plan FISHING 30 rich Profit	72ded83a04490cfb
-plan FISHING 30 rich Recommended	57b9eeb1b113e75e
-plan FISHING 60 poor AFK	938a0d217e3e9f49
-plan FISHING 60 poor Cheapest	4e56bdddc7a21119
-plan FISHING 60 poor Fastest	9f8655ba809bd1bd
-plan FISHING 60 poor Profit	218466a4539503f3
-plan FISHING 60 poor Recommended	e06854e00b2d9177
-plan FISHING 60 rich AFK	8ba9693ce0cb6ebd
-plan FISHING 60 rich Cheapest	2773406b0c0d3f0c
-plan FISHING 60 rich Fastest	22c2d0e89fe2ceb3
-plan FISHING 60 rich Profit	ebae04986b075fc0
-plan FISHING 60 rich Recommended	28ddce1731477292
-plan FISHING 90 poor AFK	0c1d0bc59d9ccb1d
-plan FISHING 90 poor Cheapest	8547504590ab746e
-plan FISHING 90 poor Fastest	27ddc5f9ad4778e4
-plan FISHING 90 poor Profit	424be6d4cbcc7610
-plan FISHING 90 poor Recommended	a6421b003ff3eb48
-plan FISHING 90 rich AFK	89cdcf2e96d75c7e
-plan FISHING 90 rich Cheapest	2fff956844f2134d
-plan FISHING 90 rich Fastest	b99f58d6242cde6c
-plan FISHING 90 rich Profit	02657910720d57a0
-plan FISHING 90 rich Recommended	63e8bbac17420fd8
+plan FIREMAKING 60 poor AFK	52e4540a7f26c887
+plan FIREMAKING 60 poor Cheapest	8cae3c4836e93099
+plan FIREMAKING 60 poor Fastest	278c8eba42a811aa
+plan FIREMAKING 60 poor Profit	f4b96de489ddd85c
+plan FIREMAKING 60 poor Recommended	a41465e32a626dd2
+plan FIREMAKING 60 rich AFK	6858548ffb8ea4b6
+plan FIREMAKING 60 rich Cheapest	6e33298172822a44
+plan FIREMAKING 60 rich Fastest	6b420a9a28ad1242
+plan FIREMAKING 60 rich Profit	be8f7e895a644e41
+plan FIREMAKING 60 rich Recommended	643032991a83ba34
+plan FIREMAKING 90 poor AFK	5ef3c4f5e800a47d
+plan FIREMAKING 90 poor Cheapest	e84d43444625a4f5
+plan FIREMAKING 90 poor Fastest	3f8ac471c803d2e8
+plan FIREMAKING 90 poor Profit	fbe022d394a5c4b0
+plan FIREMAKING 90 poor Recommended	6ab668644bc4700a
+plan FIREMAKING 90 rich AFK	a51666d803f91278
+plan FIREMAKING 90 rich Cheapest	77f46821646a5395
+plan FIREMAKING 90 rich Fastest	1bcc2e0b751312d7
+plan FIREMAKING 90 rich Profit	d456e4b4371cfa45
+plan FIREMAKING 90 rich Recommended	3d1fad38e32fa93d
+plan FISHING 1 poor AFK	8df9c84f5b590216
+plan FISHING 1 poor Cheapest	a94a3a8d146b8970
+plan FISHING 1 poor Fastest	fdd3b37adc30b1e9
+plan FISHING 1 poor Profit	1393f98cd2f43d2b
+plan FISHING 1 poor Recommended	a495975f23771f3e
+plan FISHING 1 rich AFK	14d848e26eac3c8a
+plan FISHING 1 rich Cheapest	8053dac2059ab073
+plan FISHING 1 rich Fastest	efbdd9d42afedf97
+plan FISHING 1 rich Profit	93aab116c07d1447
+plan FISHING 1 rich Recommended	9fe5acb87da6f6fc
+plan FISHING 30 poor AFK	404c6daa813b2e14
+plan FISHING 30 poor Cheapest	689a2c217ddf9111
+plan FISHING 30 poor Fastest	46fb852f48589b0b
+plan FISHING 30 poor Profit	17d7828212e4a1bd
+plan FISHING 30 poor Recommended	211641e7fe9d8282
+plan FISHING 30 rich AFK	50f8e4c4895f57a7
+plan FISHING 30 rich Cheapest	692f7b1dca11d22c
+plan FISHING 30 rich Fastest	24da62a89918ff91
+plan FISHING 30 rich Profit	9ae5f55134ae6b5c
+plan FISHING 30 rich Recommended	c974483bc74ce6cb
+plan FISHING 60 poor AFK	72cd330da1584a6f
+plan FISHING 60 poor Cheapest	80fd0e6d296eb075
+plan FISHING 60 poor Fastest	7c4f4f294179d008
+plan FISHING 60 poor Profit	0b15debe37f80a5a
+plan FISHING 60 poor Recommended	ef680faf5c5312b6
+plan FISHING 60 rich AFK	1839982fdbd25a46
+plan FISHING 60 rich Cheapest	fca36644766eef7d
+plan FISHING 60 rich Fastest	6a4f934e710026e2
+plan FISHING 60 rich Profit	c5d3ae0d9ddc70dd
+plan FISHING 60 rich Recommended	25b1609aaa97fae4
+plan FISHING 90 poor AFK	e6b3793083d8886c
+plan FISHING 90 poor Cheapest	13b59c4e2c03622b
+plan FISHING 90 poor Fastest	2dd301a761e5b624
+plan FISHING 90 poor Profit	040936a4850e6263
+plan FISHING 90 poor Recommended	f8ebccfcd27856c2
+plan FISHING 90 rich AFK	90d90d5ea39dbb88
+plan FISHING 90 rich Cheapest	afb6b46a266207c6
+plan FISHING 90 rich Fastest	4a9174db63c9291b
+plan FISHING 90 rich Profit	71a4fbb593bbea16
+plan FISHING 90 rich Recommended	1235d3826acf7ac2
 plan FLETCHING 1 poor AFK	6a130e7ba9dcb54e
 plan FLETCHING 1 poor Cheapest	ad2bb633acfe2a71
 plan FLETCHING 1 poor Fastest	3a24d810d50bfceb
@@ -4760,86 +4760,86 @@ plan HERBLORE 90 rich Cheapest	f101a31c18186351
 plan HERBLORE 90 rich Fastest	6e1a8fc6b336dfee
 plan HERBLORE 90 rich Profit	027d1aaa1a96287a
 plan HERBLORE 90 rich Recommended	d496e55d838a868b
-plan HITPOINTS 1 poor AFK	8ff341f2b296e41b
-plan HITPOINTS 1 poor Cheapest	0a9c40af55849dac
-plan HITPOINTS 1 poor Fastest	0a9c40af55849dac
-plan HITPOINTS 1 poor Profit	990f2ff737ae4887
-plan HITPOINTS 1 poor Recommended	67a23e4799ec969f
-plan HITPOINTS 1 rich AFK	21438cc92e86551b
-plan HITPOINTS 1 rich Cheapest	6ed8935c44fdf540
-plan HITPOINTS 1 rich Fastest	6ed8935c44fdf540
-plan HITPOINTS 1 rich Profit	37b8f23aa229d617
-plan HITPOINTS 1 rich Recommended	81fc4e2f05473159
-plan HITPOINTS 30 poor AFK	e4866d7fcd60ea9f
-plan HITPOINTS 30 poor Cheapest	01f9bd30ff459c61
-plan HITPOINTS 30 poor Fastest	01f9bd30ff459c61
-plan HITPOINTS 30 poor Profit	1aa05aba58e85485
-plan HITPOINTS 30 poor Recommended	26bcdeeddde69ae3
-plan HITPOINTS 30 rich AFK	3b1ec9b14921b6eb
-plan HITPOINTS 30 rich Cheapest	433f7dd3e3432c64
-plan HITPOINTS 30 rich Fastest	433f7dd3e3432c64
-plan HITPOINTS 30 rich Profit	b9fce9b2c9d407d3
-plan HITPOINTS 30 rich Recommended	91aba52617336b32
-plan HITPOINTS 60 poor AFK	1c452e8c4e3868b3
-plan HITPOINTS 60 poor Cheapest	777a50e829bc0bd8
-plan HITPOINTS 60 poor Fastest	777a50e829bc0bd8
-plan HITPOINTS 60 poor Profit	b5bb29b16cf8cfca
-plan HITPOINTS 60 poor Recommended	e9d78104e51bdb85
-plan HITPOINTS 60 rich AFK	74e2a72987a4324c
-plan HITPOINTS 60 rich Cheapest	ee9e5b7ee5bd2229
-plan HITPOINTS 60 rich Fastest	ee9e5b7ee5bd2229
-plan HITPOINTS 60 rich Profit	a0cd9ccaaa0d9edc
-plan HITPOINTS 60 rich Recommended	19c5279edf7cb736
-plan HITPOINTS 90 poor AFK	a5f9e3b9c478b437
-plan HITPOINTS 90 poor Cheapest	39c8c27adf21ac53
-plan HITPOINTS 90 poor Fastest	39c8c27adf21ac53
-plan HITPOINTS 90 poor Profit	d7f853b7142ef3e9
-plan HITPOINTS 90 poor Recommended	88270bc28c598d5f
-plan HITPOINTS 90 rich AFK	669c91a419e2887f
-plan HITPOINTS 90 rich Cheapest	570b26cf118bc68f
-plan HITPOINTS 90 rich Fastest	570b26cf118bc68f
-plan HITPOINTS 90 rich Profit	8bda75025b246084
-plan HITPOINTS 90 rich Recommended	6ce6052e79915a7f
-plan HUNTER 1 poor AFK	2b327df2d080f350
-plan HUNTER 1 poor Cheapest	7e02237e2fd73a2d
-plan HUNTER 1 poor Fastest	db14aac02a5e7d43
-plan HUNTER 1 poor Profit	830c3dfecfcf53e4
-plan HUNTER 1 poor Recommended	303e8ecf699a929a
-plan HUNTER 1 rich AFK	3dc2290810c7b167
-plan HUNTER 1 rich Cheapest	9fe5ec5a44770292
-plan HUNTER 1 rich Fastest	ab6b4b4d725d4437
-plan HUNTER 1 rich Profit	8e52dc3d4c2f34b2
-plan HUNTER 1 rich Recommended	1272ce22ebf61eb4
-plan HUNTER 30 poor AFK	eab2d8a8ef3e524a
-plan HUNTER 30 poor Cheapest	928bd6d24160538a
-plan HUNTER 30 poor Fastest	1ce838705ada2015
-plan HUNTER 30 poor Profit	87b40204348563e0
-plan HUNTER 30 poor Recommended	151c9263d1a6854b
-plan HUNTER 30 rich AFK	10676bc1b4b5c55e
-plan HUNTER 30 rich Cheapest	d34830176142bd1e
-plan HUNTER 30 rich Fastest	dfd2b8e66b938f4b
-plan HUNTER 30 rich Profit	4b66c33410d78fde
-plan HUNTER 30 rich Recommended	677087ae6330e60d
-plan HUNTER 60 poor AFK	dae0464402abdd01
-plan HUNTER 60 poor Cheapest	1146ce5b740fe6a7
-plan HUNTER 60 poor Fastest	87649dcbbe2812ab
-plan HUNTER 60 poor Profit	e62e71fcdb843a3b
-plan HUNTER 60 poor Recommended	f36188508cc66580
-plan HUNTER 60 rich AFK	f7061d2ed70e7a5c
-plan HUNTER 60 rich Cheapest	f66f0df01b3fa3d7
-plan HUNTER 60 rich Fastest	eb251906bf597141
-plan HUNTER 60 rich Profit	09524791553c69e2
-plan HUNTER 60 rich Recommended	0c2e6c927011e99d
-plan HUNTER 90 poor AFK	24f8f3c9ed207a3a
-plan HUNTER 90 poor Cheapest	c09f0e309c240226
-plan HUNTER 90 poor Fastest	f177ad91b80dff8b
-plan HUNTER 90 poor Profit	337dd7b7f20e3791
-plan HUNTER 90 poor Recommended	989c34d4f6ca1723
-plan HUNTER 90 rich AFK	1309daf4944645bb
-plan HUNTER 90 rich Cheapest	6a53d701eaac29f3
-plan HUNTER 90 rich Fastest	057e2325c091db5d
-plan HUNTER 90 rich Profit	d08b9854c64ae000
-plan HUNTER 90 rich Recommended	e0af7c74851775f9
+plan HITPOINTS 1 poor AFK	f387091cd93d6261
+plan HITPOINTS 1 poor Cheapest	13f768568dd29791
+plan HITPOINTS 1 poor Fastest	13f768568dd29791
+plan HITPOINTS 1 poor Profit	856590f5e724daa0
+plan HITPOINTS 1 poor Recommended	0f625c5200a9cf88
+plan HITPOINTS 1 rich AFK	2173c5c2efbb6ed2
+plan HITPOINTS 1 rich Cheapest	60dee90b006ef933
+plan HITPOINTS 1 rich Fastest	60dee90b006ef933
+plan HITPOINTS 1 rich Profit	f8abf46d5d54b2f9
+plan HITPOINTS 1 rich Recommended	9d7acf096344bf1f
+plan HITPOINTS 30 poor AFK	62e54ffa3ee66b92
+plan HITPOINTS 30 poor Cheapest	2bb68f00fa5c9101
+plan HITPOINTS 30 poor Fastest	2bb68f00fa5c9101
+plan HITPOINTS 30 poor Profit	4ca71fd07da6bb59
+plan HITPOINTS 30 poor Recommended	3d5325dd74a4efec
+plan HITPOINTS 30 rich AFK	f77fab8eea24377a
+plan HITPOINTS 30 rich Cheapest	21a1ddcaeab8efc6
+plan HITPOINTS 30 rich Fastest	21a1ddcaeab8efc6
+plan HITPOINTS 30 rich Profit	b35ec58928679bdd
+plan HITPOINTS 30 rich Recommended	47b32f39bcdf4c37
+plan HITPOINTS 60 poor AFK	2e1df09dbad55ee0
+plan HITPOINTS 60 poor Cheapest	02facf8681732acc
+plan HITPOINTS 60 poor Fastest	02facf8681732acc
+plan HITPOINTS 60 poor Profit	55b83273ffb34e46
+plan HITPOINTS 60 poor Recommended	7d81d680ef23dd8b
+plan HITPOINTS 60 rich AFK	339ae6de2e0bbeff
+plan HITPOINTS 60 rich Cheapest	efc22d790a7911ff
+plan HITPOINTS 60 rich Fastest	efc22d790a7911ff
+plan HITPOINTS 60 rich Profit	e5bb3549b647f85e
+plan HITPOINTS 60 rich Recommended	95371471f581c3c6
+plan HITPOINTS 90 poor AFK	b43ce38ca1f78f5a
+plan HITPOINTS 90 poor Cheapest	4548c61deb4053f3
+plan HITPOINTS 90 poor Fastest	4548c61deb4053f3
+plan HITPOINTS 90 poor Profit	4a5b8c46d651608a
+plan HITPOINTS 90 poor Recommended	0827495ec68109fc
+plan HITPOINTS 90 rich AFK	01ab5647586f9066
+plan HITPOINTS 90 rich Cheapest	b3d9d9c6bf26e16c
+plan HITPOINTS 90 rich Fastest	b3d9d9c6bf26e16c
+plan HITPOINTS 90 rich Profit	2f01a54d908e8a4a
+plan HITPOINTS 90 rich Recommended	6d4181c32b931db7
+plan HUNTER 1 poor AFK	43bf1c4ed0a1a30d
+plan HUNTER 1 poor Cheapest	f8dd3ec60c5ba060
+plan HUNTER 1 poor Fastest	b781acc1cc6d20c0
+plan HUNTER 1 poor Profit	c148c3c4af3a2738
+plan HUNTER 1 poor Recommended	8e3eefd33cb0ac76
+plan HUNTER 1 rich AFK	01f7b418f11e48a1
+plan HUNTER 1 rich Cheapest	63575c87abdad9cb
+plan HUNTER 1 rich Fastest	77c48727926d00c5
+plan HUNTER 1 rich Profit	953f61982e9d66b1
+plan HUNTER 1 rich Recommended	cc31197d84645ac4
+plan HUNTER 30 poor AFK	901f95ddd94be3a4
+plan HUNTER 30 poor Cheapest	97b79766f515dccf
+plan HUNTER 30 poor Fastest	a46558d11b6f564b
+plan HUNTER 30 poor Profit	4710ad1a6e0a6524
+plan HUNTER 30 poor Recommended	551e34b0634f50f3
+plan HUNTER 30 rich AFK	5e218718aec3d6fe
+plan HUNTER 30 rich Cheapest	5eb302f54be20c2c
+plan HUNTER 30 rich Fastest	338ea77754b4d7de
+plan HUNTER 30 rich Profit	1dd6e1436fd03d1e
+plan HUNTER 30 rich Recommended	0ead2b1c9a24f632
+plan HUNTER 60 poor AFK	6aaed5364e672af9
+plan HUNTER 60 poor Cheapest	f074c41c16ee90f4
+plan HUNTER 60 poor Fastest	daff1ada0d50e9fc
+plan HUNTER 60 poor Profit	d336c9a13f67af91
+plan HUNTER 60 poor Recommended	cb96b1d148770ee2
+plan HUNTER 60 rich AFK	4391d62aadf8cca4
+plan HUNTER 60 rich Cheapest	d9590665e85b332a
+plan HUNTER 60 rich Fastest	81edd9285d2ee5e5
+plan HUNTER 60 rich Profit	d14a0ba3730c7835
+plan HUNTER 60 rich Recommended	37715e793aa23733
+plan HUNTER 90 poor AFK	ab396ddfca05a944
+plan HUNTER 90 poor Cheapest	5b3f52a84df73a2f
+plan HUNTER 90 poor Fastest	986ba262dd06400c
+plan HUNTER 90 poor Profit	99a639279f8156eb
+plan HUNTER 90 poor Recommended	3de19f7a8ed6cddd
+plan HUNTER 90 rich AFK	4fc0e0e032fabb56
+plan HUNTER 90 rich Cheapest	37397f093fe46d5d
+plan HUNTER 90 rich Fastest	18b95da83334cb38
+plan HUNTER 90 rich Profit	67fae3237837976e
+plan HUNTER 90 rich Recommended	a95e577547144dd0
 plan MAGIC 1 poor AFK	7246d2cea89f92f9
 plan MAGIC 1 poor Cheapest	3978ead7e7146c1d
 plan MAGIC 1 poor Fastest	c163b9797c849d90
@@ -4880,46 +4880,46 @@ plan MAGIC 90 rich Cheapest	2af3811ea05c4d7e
 plan MAGIC 90 rich Fastest	998e860201713ae6
 plan MAGIC 90 rich Profit	acf3f2ad90b16660
 plan MAGIC 90 rich Recommended	801fd8e5920b2ec8
-plan MINING 1 poor AFK	58f16b88ed003b26
-plan MINING 1 poor Cheapest	7c6f3501d94ee6c6
-plan MINING 1 poor Fastest	7c6f3501d94ee6c6
-plan MINING 1 poor Profit	5a48240f3b38dd69
-plan MINING 1 poor Recommended	ada4c36fbbffa74e
-plan MINING 1 rich AFK	49a1eccab19ee6f3
-plan MINING 1 rich Cheapest	12346d4ec7494568
-plan MINING 1 rich Fastest	12346d4ec7494568
-plan MINING 1 rich Profit	d92062865cc4f056
-plan MINING 1 rich Recommended	218447af84726dc5
-plan MINING 30 poor AFK	45ceb29335345fad
-plan MINING 30 poor Cheapest	fa5fe33c11742aec
-plan MINING 30 poor Fastest	fa5fe33c11742aec
-plan MINING 30 poor Profit	4976bbef124a5492
-plan MINING 30 poor Recommended	80b0263d55422840
-plan MINING 30 rich AFK	10668814d25d56fe
-plan MINING 30 rich Cheapest	c72aa6af076ae7ac
-plan MINING 30 rich Fastest	c72aa6af076ae7ac
-plan MINING 30 rich Profit	465d3538d6e6a4fd
-plan MINING 30 rich Recommended	d337d83bb0299fd0
-plan MINING 60 poor AFK	4e117af14d0b0397
-plan MINING 60 poor Cheapest	4e074cce37c01803
-plan MINING 60 poor Fastest	4e074cce37c01803
-plan MINING 60 poor Profit	74bc12cbac97f34f
-plan MINING 60 poor Recommended	119e081ce9a76878
-plan MINING 60 rich AFK	62a48f2c47aa9155
-plan MINING 60 rich Cheapest	caa27d843d64fbbd
-plan MINING 60 rich Fastest	caa27d843d64fbbd
-plan MINING 60 rich Profit	ce85cece9fdd62d9
-plan MINING 60 rich Recommended	116fb5dfdbdae96d
-plan MINING 90 poor AFK	eade51e86426d37f
-plan MINING 90 poor Cheapest	23b3ddccf934dc59
-plan MINING 90 poor Fastest	23b3ddccf934dc59
-plan MINING 90 poor Profit	4c712009f6739874
-plan MINING 90 poor Recommended	3e19537fb095d237
-plan MINING 90 rich AFK	1a366d3b30c5c5af
-plan MINING 90 rich Cheapest	c52a445db2e19e25
-plan MINING 90 rich Fastest	c52a445db2e19e25
-plan MINING 90 rich Profit	e3ad5025e06cc577
-plan MINING 90 rich Recommended	e3f5cd0ec6a795af
+plan MINING 1 poor AFK	84e7329f260d99c2
+plan MINING 1 poor Cheapest	e7d68115f3cb2cac
+plan MINING 1 poor Fastest	e7d68115f3cb2cac
+plan MINING 1 poor Profit	13ea768766f67266
+plan MINING 1 poor Recommended	3d7888c31016eef6
+plan MINING 1 rich AFK	720f625ca0777917
+plan MINING 1 rich Cheapest	ba6d02385af852cb
+plan MINING 1 rich Fastest	ba6d02385af852cb
+plan MINING 1 rich Profit	0ac85f918138d20e
+plan MINING 1 rich Recommended	e2616ac9071a91cd
+plan MINING 30 poor AFK	e9b381df9455be0b
+plan MINING 30 poor Cheapest	25a6141206316af0
+plan MINING 30 poor Fastest	25a6141206316af0
+plan MINING 30 poor Profit	f27bbb0944705806
+plan MINING 30 poor Recommended	33d7b5717df270a5
+plan MINING 30 rich AFK	51b5e1a1f8e85bd0
+plan MINING 30 rich Cheapest	bb2523db978a093b
+plan MINING 30 rich Fastest	bb2523db978a093b
+plan MINING 30 rich Profit	8e3817a378f3d67a
+plan MINING 30 rich Recommended	98c13e6dec5fe21a
+plan MINING 60 poor AFK	000c7eb09f3011b4
+plan MINING 60 poor Cheapest	9b505bc1299cdb2e
+plan MINING 60 poor Fastest	9b505bc1299cdb2e
+plan MINING 60 poor Profit	44f93f8dd4c438c3
+plan MINING 60 poor Recommended	267dd91519a8b88f
+plan MINING 60 rich AFK	0d2c3afe5a150f67
+plan MINING 60 rich Cheapest	f364179e79dc30b6
+plan MINING 60 rich Fastest	f364179e79dc30b6
+plan MINING 60 rich Profit	b887166e34735592
+plan MINING 60 rich Recommended	5bd0febd8f745fb8
+plan MINING 90 poor AFK	9d50566b06016768
+plan MINING 90 poor Cheapest	697e2613d11320b1
+plan MINING 90 poor Fastest	697e2613d11320b1
+plan MINING 90 poor Profit	1d6715af50a531b6
+plan MINING 90 poor Recommended	72dd9aa194a56d00
+plan MINING 90 rich AFK	34be1379989556df
+plan MINING 90 rich Cheapest	25bd14ad78cb226c
+plan MINING 90 rich Fastest	25bd14ad78cb226c
+plan MINING 90 rich Profit	ffd12224380dce5a
+plan MINING 90 rich Recommended	cc9ae91407d1be62
 plan PRAYER 1 poor AFK	4b8f5c04a54acc30
 plan PRAYER 1 poor Cheapest	e26b7084a3e5695f
 plan PRAYER 1 poor Fastest	4b8f5c04a54acc30
@@ -4960,86 +4960,86 @@ plan PRAYER 90 rich Cheapest	40e5509736bdf8b8
 plan PRAYER 90 rich Fastest	37a7e17159959fb5
 plan PRAYER 90 rich Profit	01e00268ca2d3512
 plan PRAYER 90 rich Recommended	1f2e933859d38e33
-plan RANGED 1 poor AFK	94f9cbb2a4f79061
-plan RANGED 1 poor Cheapest	0fe5a4b22a5bebeb
-plan RANGED 1 poor Fastest	06c9247f6f23ae60
-plan RANGED 1 poor Profit	d52e47eebb21854c
-plan RANGED 1 poor Recommended	a61e4db8eba7a879
-plan RANGED 1 rich AFK	72aa43f40fc4739f
-plan RANGED 1 rich Cheapest	94561668ea4d7bd3
-plan RANGED 1 rich Fastest	7e85a66ce7c148aa
-plan RANGED 1 rich Profit	4899d18efe866a43
-plan RANGED 1 rich Recommended	73512b074c68e13f
-plan RANGED 30 poor AFK	6fa2b8f706bd69ea
-plan RANGED 30 poor Cheapest	1391470d1fde7630
-plan RANGED 30 poor Fastest	77eb00d5e826f56a
-plan RANGED 30 poor Profit	dff4bfb818fe3234
-plan RANGED 30 poor Recommended	d8cb5cc8a4261b09
-plan RANGED 30 rich AFK	ff36ac7a33c16581
-plan RANGED 30 rich Cheapest	16210d4e9b1a27e9
-plan RANGED 30 rich Fastest	7031c7553066f911
-plan RANGED 30 rich Profit	cf36826fb66b59fd
-plan RANGED 30 rich Recommended	6f21bc252131bc87
-plan RANGED 60 poor AFK	ff35d76bcc5be399
-plan RANGED 60 poor Cheapest	6b279144b78081ad
-plan RANGED 60 poor Fastest	d6ca475b51f49760
-plan RANGED 60 poor Profit	11282e19b3072827
-plan RANGED 60 poor Recommended	b50d0b4312af590c
-plan RANGED 60 rich AFK	e3eeee16c809e75c
-plan RANGED 60 rich Cheapest	16fcc06738fc153d
-plan RANGED 60 rich Fastest	8ac32adcfa04fe3b
-plan RANGED 60 rich Profit	0e9268fc3e6a76f9
-plan RANGED 60 rich Recommended	039c97a318ae0c0b
-plan RANGED 90 poor AFK	97185e116138c315
-plan RANGED 90 poor Cheapest	4a57ad1c342e6004
-plan RANGED 90 poor Fastest	ff92d38ebf8427e4
-plan RANGED 90 poor Profit	c5ffccf254bce59a
-plan RANGED 90 poor Recommended	8e6b1b37a29a455f
-plan RANGED 90 rich AFK	9876e38d6fa9f6df
-plan RANGED 90 rich Cheapest	fada70af3ffb9878
-plan RANGED 90 rich Fastest	55ef1ba8709038da
-plan RANGED 90 rich Profit	e3162335f6c39810
-plan RANGED 90 rich Recommended	5f6f49bfc8eda823
-plan RUNECRAFT 1 poor AFK	c7168cc232ac0f68
-plan RUNECRAFT 1 poor Cheapest	ac1b3213d1022919
-plan RUNECRAFT 1 poor Fastest	ac1b3213d1022919
-plan RUNECRAFT 1 poor Profit	fb6616261d128360
-plan RUNECRAFT 1 poor Recommended	1271ec062327f5b3
-plan RUNECRAFT 1 rich AFK	ff39da8cbd4b5b88
-plan RUNECRAFT 1 rich Cheapest	536069842fbba042
-plan RUNECRAFT 1 rich Fastest	536069842fbba042
-plan RUNECRAFT 1 rich Profit	ee616272bf0f330c
-plan RUNECRAFT 1 rich Recommended	5b2ce43c3cf5a0c0
-plan RUNECRAFT 30 poor AFK	1fccc7be21d52dce
-plan RUNECRAFT 30 poor Cheapest	27096690336b725e
-plan RUNECRAFT 30 poor Fastest	27096690336b725e
-plan RUNECRAFT 30 poor Profit	a675cce7c22a8755
-plan RUNECRAFT 30 poor Recommended	a9c9cb6771e70898
-plan RUNECRAFT 30 rich AFK	8d0430a2ecedaf3b
-plan RUNECRAFT 30 rich Cheapest	dcd1bd3369344c81
-plan RUNECRAFT 30 rich Fastest	dcd1bd3369344c81
-plan RUNECRAFT 30 rich Profit	c3896d7ea7352a40
-plan RUNECRAFT 30 rich Recommended	483bded97955190c
-plan RUNECRAFT 60 poor AFK	f34911ad924f397f
-plan RUNECRAFT 60 poor Cheapest	2f531ed323ada731
-plan RUNECRAFT 60 poor Fastest	2f531ed323ada731
-plan RUNECRAFT 60 poor Profit	ea23aeb55629b869
-plan RUNECRAFT 60 poor Recommended	293e4cf12ea73d9f
-plan RUNECRAFT 60 rich AFK	4eca1ff3fd236824
-plan RUNECRAFT 60 rich Cheapest	3d32cd9be1ae7d3c
-plan RUNECRAFT 60 rich Fastest	3d32cd9be1ae7d3c
-plan RUNECRAFT 60 rich Profit	fbad1abc4e8aeaf9
-plan RUNECRAFT 60 rich Recommended	b0042b7000d2e96c
-plan RUNECRAFT 90 poor AFK	94dbf3e7a04ad1e3
-plan RUNECRAFT 90 poor Cheapest	9e0aee3a7d922d86
-plan RUNECRAFT 90 poor Fastest	9e0aee3a7d922d86
-plan RUNECRAFT 90 poor Profit	ee12400bb7d604c9
-plan RUNECRAFT 90 poor Recommended	ebb8b24346c5efc7
-plan RUNECRAFT 90 rich AFK	16b644ed91b8abae
-plan RUNECRAFT 90 rich Cheapest	2210717ee6cfed9b
-plan RUNECRAFT 90 rich Fastest	2210717ee6cfed9b
-plan RUNECRAFT 90 rich Profit	63952acc8ca8fab0
-plan RUNECRAFT 90 rich Recommended	3ba13ba9e1788172
+plan RANGED 1 poor AFK	67790da3ac7f3fcb
+plan RANGED 1 poor Cheapest	7fffe609afe11163
+plan RANGED 1 poor Fastest	6a9457e1f3ac7e48
+plan RANGED 1 poor Profit	87c9140018a8ea3b
+plan RANGED 1 poor Recommended	3ddd68a7e3617b0a
+plan RANGED 1 rich AFK	0810e15522d11a3b
+plan RANGED 1 rich Cheapest	c36389f2f94c8cf1
+plan RANGED 1 rich Fastest	260e70ae273e69f5
+plan RANGED 1 rich Profit	869057d7b646f2da
+plan RANGED 1 rich Recommended	0e5218c1521d98da
+plan RANGED 30 poor AFK	4ccd206633f4c208
+plan RANGED 30 poor Cheapest	a7521016561cb0ba
+plan RANGED 30 poor Fastest	6f32c1c03b461ef2
+plan RANGED 30 poor Profit	364222d31e86be50
+plan RANGED 30 poor Recommended	0a4a4fafc3417821
+plan RANGED 30 rich AFK	64bd22cba2643b46
+plan RANGED 30 rich Cheapest	4f31f044bba51ee6
+plan RANGED 30 rich Fastest	985a0ac60c63990e
+plan RANGED 30 rich Profit	3baeb6f7073dc5ae
+plan RANGED 30 rich Recommended	1a012a1dbdba1dbf
+plan RANGED 60 poor AFK	033189711e4aed55
+plan RANGED 60 poor Cheapest	a536da3ac084961a
+plan RANGED 60 poor Fastest	e9ea8805c036840b
+plan RANGED 60 poor Profit	aa871009e48c4c31
+plan RANGED 60 poor Recommended	e12a66cb35b3f064
+plan RANGED 60 rich AFK	53e3bd947359d24e
+plan RANGED 60 rich Cheapest	fb6539e789097414
+plan RANGED 60 rich Fastest	fe2defbb72bdf0ed
+plan RANGED 60 rich Profit	b3b77b1660fedaf6
+plan RANGED 60 rich Recommended	e01fed2d50de4d1f
+plan RANGED 90 poor AFK	94dc6a35ab8f169e
+plan RANGED 90 poor Cheapest	5743419651092bcc
+plan RANGED 90 poor Fastest	13492f3906cd2f06
+plan RANGED 90 poor Profit	3a514d205aee8065
+plan RANGED 90 poor Recommended	7007f3395abddd87
+plan RANGED 90 rich AFK	39ea7404a0377f96
+plan RANGED 90 rich Cheapest	15a8d017c8de349c
+plan RANGED 90 rich Fastest	ec8f0cdf214a6a8d
+plan RANGED 90 rich Profit	68192dc1a56507f8
+plan RANGED 90 rich Recommended	3929ae3dffbc4249
+plan RUNECRAFT 1 poor AFK	93a68bb6f0a75cde
+plan RUNECRAFT 1 poor Cheapest	e7d88d335d4db925
+plan RUNECRAFT 1 poor Fastest	e7d88d335d4db925
+plan RUNECRAFT 1 poor Profit	10762b402b203115
+plan RUNECRAFT 1 poor Recommended	0e977b236ceb5d1d
+plan RUNECRAFT 1 rich AFK	9df8f6fe92784065
+plan RUNECRAFT 1 rich Cheapest	0b7742d28af7851a
+plan RUNECRAFT 1 rich Fastest	0b7742d28af7851a
+plan RUNECRAFT 1 rich Profit	ac8154e8254be06d
+plan RUNECRAFT 1 rich Recommended	11bc482e03be2d59
+plan RUNECRAFT 30 poor AFK	a7fb1fc410809226
+plan RUNECRAFT 30 poor Cheapest	807f353715742781
+plan RUNECRAFT 30 poor Fastest	807f353715742781
+plan RUNECRAFT 30 poor Profit	4e4bb2b00e4ac6d2
+plan RUNECRAFT 30 poor Recommended	fe1e6af33b9addeb
+plan RUNECRAFT 30 rich AFK	1fc4ffd4b6811ab4
+plan RUNECRAFT 30 rich Cheapest	daf8c1c9a7008a82
+plan RUNECRAFT 30 rich Fastest	daf8c1c9a7008a82
+plan RUNECRAFT 30 rich Profit	ba18e9335e7ee206
+plan RUNECRAFT 30 rich Recommended	b9a1148b4dde90d3
+plan RUNECRAFT 60 poor AFK	d71f1891523ae8e1
+plan RUNECRAFT 60 poor Cheapest	f8b56e144df157ac
+plan RUNECRAFT 60 poor Fastest	f8b56e144df157ac
+plan RUNECRAFT 60 poor Profit	448eefec0bb00e93
+plan RUNECRAFT 60 poor Recommended	615461854aeb91c4
+plan RUNECRAFT 60 rich AFK	cab2734151204f63
+plan RUNECRAFT 60 rich Cheapest	7601566e0d9ec0c5
+plan RUNECRAFT 60 rich Fastest	7601566e0d9ec0c5
+plan RUNECRAFT 60 rich Profit	faf437907634f85c
+plan RUNECRAFT 60 rich Recommended	240686d1ccb7f145
+plan RUNECRAFT 90 poor AFK	741d8ed9e729a5e4
+plan RUNECRAFT 90 poor Cheapest	cb2c9de5a0302010
+plan RUNECRAFT 90 poor Fastest	cb2c9de5a0302010
+plan RUNECRAFT 90 poor Profit	d9bb96c7b37e7b80
+plan RUNECRAFT 90 poor Recommended	f88c24b32f1dff0e
+plan RUNECRAFT 90 rich AFK	aa23b95c40aea571
+plan RUNECRAFT 90 rich Cheapest	c12f80137c20343b
+plan RUNECRAFT 90 rich Fastest	c12f80137c20343b
+plan RUNECRAFT 90 rich Profit	7ed886a5d59c23b5
+plan RUNECRAFT 90 rich Recommended	a4327deba3b15ec1
 plan SAILING 1 poor AFK	e60ab64e92a9bf7c
 plan SAILING 1 poor Cheapest	49d2bd550ab1c482
 plan SAILING 1 poor Fastest	49d2bd550ab1c482
@@ -5120,166 +5120,166 @@ plan SLAYER 90 rich Cheapest	7c84f6ddbb00034e
 plan SLAYER 90 rich Fastest	7c84f6ddbb00034e
 plan SLAYER 90 rich Profit	1ecaaf246673f0cc
 plan SLAYER 90 rich Recommended	7c84f6ddbb00034e
-plan SMITHING 1 poor AFK	a6dec92141861018
-plan SMITHING 1 poor Cheapest	755d14f18f9d5e00
-plan SMITHING 1 poor Fastest	89ff2d1ab8eb91d1
-plan SMITHING 1 poor Profit	7220e13cd96cc443
-plan SMITHING 1 poor Recommended	1247f3e5a690ef49
-plan SMITHING 1 rich AFK	eeb7b25e3c3143d3
-plan SMITHING 1 rich Cheapest	32405e55c9c22df6
-plan SMITHING 1 rich Fastest	cc728f21b8f71030
-plan SMITHING 1 rich Profit	34487c3b3692f6d4
-plan SMITHING 1 rich Recommended	82874921de77ff1f
-plan SMITHING 30 poor AFK	6c4b67484dc693c9
-plan SMITHING 30 poor Cheapest	3602629c8f4ba105
-plan SMITHING 30 poor Fastest	6062f838bb641a31
-plan SMITHING 30 poor Profit	076e84c2eb1f0450
-plan SMITHING 30 poor Recommended	76d649996e2bc43b
-plan SMITHING 30 rich AFK	ac5c31364bf3dbd3
-plan SMITHING 30 rich Cheapest	4beb7ec3c476f213
-plan SMITHING 30 rich Fastest	3770f3902ddb7afd
-plan SMITHING 30 rich Profit	31d673e3a75e6982
-plan SMITHING 30 rich Recommended	d45df0520eb2ebc4
-plan SMITHING 60 poor AFK	ec5e0e23af76fb02
-plan SMITHING 60 poor Cheapest	2e4c0bc6b20ceb8e
-plan SMITHING 60 poor Fastest	9c8331c86cf664d8
-plan SMITHING 60 poor Profit	05e8a5bc05cfacfd
-plan SMITHING 60 poor Recommended	fc686492909aca7c
-plan SMITHING 60 rich AFK	5aaeb2ff926522ec
-plan SMITHING 60 rich Cheapest	f1bb5236926e3635
-plan SMITHING 60 rich Fastest	fd957bcbea13ca2e
-plan SMITHING 60 rich Profit	102bd237908a599c
-plan SMITHING 60 rich Recommended	7f74a3d044a0bac1
-plan SMITHING 90 poor AFK	0d697f955b314195
-plan SMITHING 90 poor Cheapest	c9148e303db1a4a9
-plan SMITHING 90 poor Fastest	59df6e065d9827c8
-plan SMITHING 90 poor Profit	2c036a1eb1a24719
-plan SMITHING 90 poor Recommended	e0fef55a0ac1cce7
-plan SMITHING 90 rich AFK	9435026ddc9954de
-plan SMITHING 90 rich Cheapest	f5e427f201361a50
-plan SMITHING 90 rich Fastest	a53c0dff00297a4e
-plan SMITHING 90 rich Profit	8db74826a15c1c06
-plan SMITHING 90 rich Recommended	b0041e8f7500a249
-plan STRENGTH 1 poor AFK	6299d086b51296cb
-plan STRENGTH 1 poor Cheapest	b16d4cc849de08e0
-plan STRENGTH 1 poor Fastest	b16d4cc849de08e0
-plan STRENGTH 1 poor Profit	fd11bd85571cc981
-plan STRENGTH 1 poor Recommended	885ec0f3394777bc
-plan STRENGTH 1 rich AFK	48323afe56745ec5
-plan STRENGTH 1 rich Cheapest	26aebe1a14ab34a3
-plan STRENGTH 1 rich Fastest	26aebe1a14ab34a3
-plan STRENGTH 1 rich Profit	37c0f63d813b9a65
-plan STRENGTH 1 rich Recommended	00daec58832e6046
-plan STRENGTH 30 poor AFK	e791f4b6d9a5607b
-plan STRENGTH 30 poor Cheapest	81f26d26f8eb1c17
-plan STRENGTH 30 poor Fastest	81f26d26f8eb1c17
-plan STRENGTH 30 poor Profit	0eba2833c729294b
-plan STRENGTH 30 poor Recommended	a5a86d4263d3af8a
-plan STRENGTH 30 rich AFK	151744f4342d86f1
-plan STRENGTH 30 rich Cheapest	eeb15ab09adf426f
-plan STRENGTH 30 rich Fastest	eeb15ab09adf426f
-plan STRENGTH 30 rich Profit	be919db20d2cce64
-plan STRENGTH 30 rich Recommended	b42a2a16ddf617e4
-plan STRENGTH 60 poor AFK	cb924dfb74c7fc05
-plan STRENGTH 60 poor Cheapest	119af1803a65f535
-plan STRENGTH 60 poor Fastest	119af1803a65f535
-plan STRENGTH 60 poor Profit	e7ed07e2e86a920a
-plan STRENGTH 60 poor Recommended	bec7fbe084022093
-plan STRENGTH 60 rich AFK	93d1f389d724ebd5
-plan STRENGTH 60 rich Cheapest	a359cbe7b8728cc2
-plan STRENGTH 60 rich Fastest	a359cbe7b8728cc2
-plan STRENGTH 60 rich Profit	d6696f1cc671c315
-plan STRENGTH 60 rich Recommended	36257f17d333e9ee
-plan STRENGTH 90 poor AFK	5acfc61b5338be94
-plan STRENGTH 90 poor Cheapest	fca69bbd4e77b48b
-plan STRENGTH 90 poor Fastest	fca69bbd4e77b48b
-plan STRENGTH 90 poor Profit	1ddbd65dccb6856b
-plan STRENGTH 90 poor Recommended	3a41a9bb545f5e80
-plan STRENGTH 90 rich AFK	44da7a81b400dcd5
-plan STRENGTH 90 rich Cheapest	48efee38e42fe13d
-plan STRENGTH 90 rich Fastest	48efee38e42fe13d
-plan STRENGTH 90 rich Profit	5beb3b536c9d4080
-plan STRENGTH 90 rich Recommended	2165e69be5df8d99
-plan THIEVING 1 poor AFK	5155fb2eb531e9cc
-plan THIEVING 1 poor Cheapest	3f33cb1e1ed567da
-plan THIEVING 1 poor Fastest	3f33cb1e1ed567da
-plan THIEVING 1 poor Profit	48ff6ed075a664c9
-plan THIEVING 1 poor Recommended	907e4e718a4921f4
-plan THIEVING 1 rich AFK	e681a5ea04d7d87e
-plan THIEVING 1 rich Cheapest	f086ee4b63259f41
-plan THIEVING 1 rich Fastest	f086ee4b63259f41
-plan THIEVING 1 rich Profit	ffbdfb76e6847b79
-plan THIEVING 1 rich Recommended	669a2643efd9ec38
-plan THIEVING 30 poor AFK	801f5b2287f614df
-plan THIEVING 30 poor Cheapest	f8277f62ff26e961
-plan THIEVING 30 poor Fastest	f8277f62ff26e961
-plan THIEVING 30 poor Profit	159c0b1f63840665
-plan THIEVING 30 poor Recommended	665fd71baabcfbff
-plan THIEVING 30 rich AFK	a8a67f3ed9017f05
-plan THIEVING 30 rich Cheapest	c6ebacc7bbc1b1eb
-plan THIEVING 30 rich Fastest	c6ebacc7bbc1b1eb
-plan THIEVING 30 rich Profit	a41df8a7faf80ec8
-plan THIEVING 30 rich Recommended	2057ccfc70a4cbe5
-plan THIEVING 60 poor AFK	7c3058ec470322c9
-plan THIEVING 60 poor Cheapest	6b24ecb0b5d79b86
-plan THIEVING 60 poor Fastest	6b24ecb0b5d79b86
-plan THIEVING 60 poor Profit	896225b03d01a591
-plan THIEVING 60 poor Recommended	2764daa640032725
-plan THIEVING 60 rich AFK	1f21bf885107b390
-plan THIEVING 60 rich Cheapest	6c2a2522962415b1
-plan THIEVING 60 rich Fastest	6c2a2522962415b1
-plan THIEVING 60 rich Profit	fce17b7ef1dfe087
-plan THIEVING 60 rich Recommended	432e6a274a0ef9dd
-plan THIEVING 90 poor AFK	2904ce657c0420f9
-plan THIEVING 90 poor Cheapest	de23ac3f330577de
-plan THIEVING 90 poor Fastest	de23ac3f330577de
-plan THIEVING 90 poor Profit	4cafc64780fd4a83
-plan THIEVING 90 poor Recommended	6788ffe152c2dc38
-plan THIEVING 90 rich AFK	013b122f7ed934be
-plan THIEVING 90 rich Cheapest	268668eeba89b7d9
-plan THIEVING 90 rich Fastest	268668eeba89b7d9
-plan THIEVING 90 rich Profit	b831fe8c1b7a22cb
-plan THIEVING 90 rich Recommended	bbc9b7a0000cfcd9
-plan WOODCUTTING 1 poor AFK	0d75bb3cbe67ce3d
-plan WOODCUTTING 1 poor Cheapest	ac19028efff76404
-plan WOODCUTTING 1 poor Fastest	ac19028efff76404
-plan WOODCUTTING 1 poor Profit	fb7f0f0908b3b13b
-plan WOODCUTTING 1 poor Recommended	1ddeb58ed7d47a9f
-plan WOODCUTTING 1 rich AFK	7acbdf20e28e7241
-plan WOODCUTTING 1 rich Cheapest	a95e15f029801667
-plan WOODCUTTING 1 rich Fastest	a95e15f029801667
-plan WOODCUTTING 1 rich Profit	6d1be4832085614c
-plan WOODCUTTING 1 rich Recommended	5034f840e8efe10a
-plan WOODCUTTING 30 poor AFK	e99efc7d90defbfb
-plan WOODCUTTING 30 poor Cheapest	ea0246ad27e6c458
-plan WOODCUTTING 30 poor Fastest	ea0246ad27e6c458
-plan WOODCUTTING 30 poor Profit	d1de7cae002deab9
-plan WOODCUTTING 30 poor Recommended	23a0ebd0e3421534
-plan WOODCUTTING 30 rich AFK	d27d9d32fa072490
-plan WOODCUTTING 30 rich Cheapest	40fd7cbd84e92485
-plan WOODCUTTING 30 rich Fastest	40fd7cbd84e92485
-plan WOODCUTTING 30 rich Profit	284fe9fca2d3381d
-plan WOODCUTTING 30 rich Recommended	943e028f1a28102f
-plan WOODCUTTING 60 poor AFK	4fead9a94730dded
-plan WOODCUTTING 60 poor Cheapest	5cffb19e69972f62
-plan WOODCUTTING 60 poor Fastest	5cffb19e69972f62
-plan WOODCUTTING 60 poor Profit	20fcbbb31030c72a
-plan WOODCUTTING 60 poor Recommended	6145dbfd1849aa06
-plan WOODCUTTING 60 rich AFK	05e602af61ac705b
-plan WOODCUTTING 60 rich Cheapest	79a09429fc60af37
-plan WOODCUTTING 60 rich Fastest	79a09429fc60af37
-plan WOODCUTTING 60 rich Profit	096ae320d67d864b
-plan WOODCUTTING 60 rich Recommended	faf62728a7eafdce
-plan WOODCUTTING 90 poor AFK	1fdf83d42f74c7c7
-plan WOODCUTTING 90 poor Cheapest	861e33da49a600bf
-plan WOODCUTTING 90 poor Fastest	861e33da49a600bf
-plan WOODCUTTING 90 poor Profit	ba8d549500fe2900
-plan WOODCUTTING 90 poor Recommended	7ba4b6198e9a28fe
-plan WOODCUTTING 90 rich AFK	b3d145d4338b6d84
-plan WOODCUTTING 90 rich Cheapest	466cc080fdf8ddea
-plan WOODCUTTING 90 rich Fastest	466cc080fdf8ddea
-plan WOODCUTTING 90 rich Profit	14e5218f908945df
-plan WOODCUTTING 90 rich Recommended	bf82dbaa8902f9fb
+plan SMITHING 1 poor AFK	a92f5b95d65fbe7e
+plan SMITHING 1 poor Cheapest	a6490af677c71907
+plan SMITHING 1 poor Fastest	0803396ed1734860
+plan SMITHING 1 poor Profit	7f3e553394658379
+plan SMITHING 1 poor Recommended	c15c0d4226871d7b
+plan SMITHING 1 rich AFK	1f97c27bd7c55b67
+plan SMITHING 1 rich Cheapest	7f8d098cd9fbf65c
+plan SMITHING 1 rich Fastest	6e243a19d573c55e
+plan SMITHING 1 rich Profit	c2fd2cf3c63f05ff
+plan SMITHING 1 rich Recommended	06e0ffb2833278b9
+plan SMITHING 30 poor AFK	f01e71b69f86c31c
+plan SMITHING 30 poor Cheapest	bec255593f166809
+plan SMITHING 30 poor Fastest	19621718d98d0e3b
+plan SMITHING 30 poor Profit	0c1f827fae9ac4c9
+plan SMITHING 30 poor Recommended	677deb3cce0808a1
+plan SMITHING 30 rich AFK	7bb74e213f808c81
+plan SMITHING 30 rich Cheapest	c82fb0134966841a
+plan SMITHING 30 rich Fastest	c656dc34818d7e03
+plan SMITHING 30 rich Profit	b836ef9c37926502
+plan SMITHING 30 rich Recommended	324fb59c09c317c4
+plan SMITHING 60 poor AFK	50a21cbe0d33db16
+plan SMITHING 60 poor Cheapest	44baa140ab54d66f
+plan SMITHING 60 poor Fastest	8a1814becb35b0fc
+plan SMITHING 60 poor Profit	721f6cdfd15a2e6b
+plan SMITHING 60 poor Recommended	4e97d190a74b4471
+plan SMITHING 60 rich AFK	b0effe15147cd770
+plan SMITHING 60 rich Cheapest	8caa31ed9f0943c6
+plan SMITHING 60 rich Fastest	ecd7575429262038
+plan SMITHING 60 rich Profit	8c07bbb40dbd790e
+plan SMITHING 60 rich Recommended	bdd1a8a1b0b1771d
+plan SMITHING 90 poor AFK	f8c57bd795f1e3a6
+plan SMITHING 90 poor Cheapest	d7f6953d98f83a22
+plan SMITHING 90 poor Fastest	0a8a1cd81e2136ca
+plan SMITHING 90 poor Profit	ed094d424149d7d0
+plan SMITHING 90 poor Recommended	d6c01b9b6d72e09a
+plan SMITHING 90 rich AFK	bfadb46341ff2491
+plan SMITHING 90 rich Cheapest	d57db01cb647ed3c
+plan SMITHING 90 rich Fastest	dbeaf727127f5273
+plan SMITHING 90 rich Profit	edb116179cb800f0
+plan SMITHING 90 rich Recommended	845279d3554bb5f8
+plan STRENGTH 1 poor AFK	1f4d0fecce81f518
+plan STRENGTH 1 poor Cheapest	00f2ed52fee95120
+plan STRENGTH 1 poor Fastest	00f2ed52fee95120
+plan STRENGTH 1 poor Profit	9865f822e64393da
+plan STRENGTH 1 poor Recommended	9f9b5eb8435ff5ef
+plan STRENGTH 1 rich AFK	362fff47c9a43768
+plan STRENGTH 1 rich Cheapest	4d0ae24c79459d59
+plan STRENGTH 1 rich Fastest	4d0ae24c79459d59
+plan STRENGTH 1 rich Profit	5ce9c36d2d8596d5
+plan STRENGTH 1 rich Recommended	34f1dd6c7da90bd3
+plan STRENGTH 30 poor AFK	7f43e7621ff73c15
+plan STRENGTH 30 poor Cheapest	5b158581c6f95cd2
+plan STRENGTH 30 poor Fastest	5b158581c6f95cd2
+plan STRENGTH 30 poor Profit	d5afebe1a447d3d6
+plan STRENGTH 30 poor Recommended	55bd99f1bafda6b4
+plan STRENGTH 30 rich AFK	cf6a71636f12e7d9
+plan STRENGTH 30 rich Cheapest	e989aece65238bc0
+plan STRENGTH 30 rich Fastest	e989aece65238bc0
+plan STRENGTH 30 rich Profit	904238753926dd6e
+plan STRENGTH 30 rich Recommended	628ed99a16748b21
+plan STRENGTH 60 poor AFK	d760496b86fe113a
+plan STRENGTH 60 poor Cheapest	83a7de4922df1a12
+plan STRENGTH 60 poor Fastest	83a7de4922df1a12
+plan STRENGTH 60 poor Profit	6ff709202d5fcd47
+plan STRENGTH 60 poor Recommended	76efda9148baca73
+plan STRENGTH 60 rich AFK	a322611b357dc2d2
+plan STRENGTH 60 rich Cheapest	ca07d45c6803d0af
+plan STRENGTH 60 rich Fastest	ca07d45c6803d0af
+plan STRENGTH 60 rich Profit	de8a7308bd26c2c1
+plan STRENGTH 60 rich Recommended	b182feebf5360ef2
+plan STRENGTH 90 poor AFK	50ae5d1b747d4545
+plan STRENGTH 90 poor Cheapest	a0959545457e64e9
+plan STRENGTH 90 poor Fastest	a0959545457e64e9
+plan STRENGTH 90 poor Profit	22e35c0151a3b1d0
+plan STRENGTH 90 poor Recommended	dbac5c9f2c67ddd8
+plan STRENGTH 90 rich AFK	e1631292e1cfbcc6
+plan STRENGTH 90 rich Cheapest	74a2cd1c3f2919dd
+plan STRENGTH 90 rich Fastest	74a2cd1c3f2919dd
+plan STRENGTH 90 rich Profit	dbbf61342d2e5e2b
+plan STRENGTH 90 rich Recommended	e6adc15e0b4d647f
+plan THIEVING 1 poor AFK	f30163999a0d33bc
+plan THIEVING 1 poor Cheapest	45964ff221c4ab31
+plan THIEVING 1 poor Fastest	45964ff221c4ab31
+plan THIEVING 1 poor Profit	b6cbbf85b4617dc1
+plan THIEVING 1 poor Recommended	015b7e8408368de3
+plan THIEVING 1 rich AFK	0676f68df6091a20
+plan THIEVING 1 rich Cheapest	3a651da973aed368
+plan THIEVING 1 rich Fastest	3a651da973aed368
+plan THIEVING 1 rich Profit	bacf1a364d28c2d9
+plan THIEVING 1 rich Recommended	dfa48348488f934b
+plan THIEVING 30 poor AFK	1a64b9c2e17daae5
+plan THIEVING 30 poor Cheapest	c203a3fa70e921ff
+plan THIEVING 30 poor Fastest	c203a3fa70e921ff
+plan THIEVING 30 poor Profit	2532a1c174dd8596
+plan THIEVING 30 poor Recommended	eb32185f4ea58c96
+plan THIEVING 30 rich AFK	cd3164b89d927c94
+plan THIEVING 30 rich Cheapest	feb664ddfc65f0ea
+plan THIEVING 30 rich Fastest	feb664ddfc65f0ea
+plan THIEVING 30 rich Profit	501122e28dd5d4c0
+plan THIEVING 30 rich Recommended	90b3bf274ab5cc0e
+plan THIEVING 60 poor AFK	e78f03edc05277f2
+plan THIEVING 60 poor Cheapest	c987a3e9bc8af7df
+plan THIEVING 60 poor Fastest	c987a3e9bc8af7df
+plan THIEVING 60 poor Profit	8a97f87bf3bbe0b1
+plan THIEVING 60 poor Recommended	58ca98f7adb50388
+plan THIEVING 60 rich AFK	0bc3f2f52c149ee9
+plan THIEVING 60 rich Cheapest	6a94115b8f6b7bd8
+plan THIEVING 60 rich Fastest	6a94115b8f6b7bd8
+plan THIEVING 60 rich Profit	e0fee2024d67365c
+plan THIEVING 60 rich Recommended	12d1d9a026c21db2
+plan THIEVING 90 poor AFK	43a253744d5d27cf
+plan THIEVING 90 poor Cheapest	1b308830e330928b
+plan THIEVING 90 poor Fastest	1b308830e330928b
+plan THIEVING 90 poor Profit	5dee189356d8aac7
+plan THIEVING 90 poor Recommended	7447210e24506d24
+plan THIEVING 90 rich AFK	d0fa392e8e3d75a0
+plan THIEVING 90 rich Cheapest	7b5ab43cb5e16da7
+plan THIEVING 90 rich Fastest	7b5ab43cb5e16da7
+plan THIEVING 90 rich Profit	d5063fc335feeb87
+plan THIEVING 90 rich Recommended	f1d52b51a7c2ea56
+plan WOODCUTTING 1 poor AFK	abbe8e8e0bceca58
+plan WOODCUTTING 1 poor Cheapest	23fd6e46679fad57
+plan WOODCUTTING 1 poor Fastest	23fd6e46679fad57
+plan WOODCUTTING 1 poor Profit	053eb1dfd93283d9
+plan WOODCUTTING 1 poor Recommended	039e37be88c0d335
+plan WOODCUTTING 1 rich AFK	3611b2e213c45dde
+plan WOODCUTTING 1 rich Cheapest	05cf003c57198633
+plan WOODCUTTING 1 rich Fastest	05cf003c57198633
+plan WOODCUTTING 1 rich Profit	5f4e0653a76e9933
+plan WOODCUTTING 1 rich Recommended	a0572f4a34f6ed87
+plan WOODCUTTING 30 poor AFK	0c04bac8c9b7010d
+plan WOODCUTTING 30 poor Cheapest	2338e26c85e05977
+plan WOODCUTTING 30 poor Fastest	2338e26c85e05977
+plan WOODCUTTING 30 poor Profit	0bbcb30edbe443ad
+plan WOODCUTTING 30 poor Recommended	500535a5cf557230
+plan WOODCUTTING 30 rich AFK	93aed539148b2e1f
+plan WOODCUTTING 30 rich Cheapest	f1f7dbc0d6752fab
+plan WOODCUTTING 30 rich Fastest	f1f7dbc0d6752fab
+plan WOODCUTTING 30 rich Profit	3c457667918b9ee4
+plan WOODCUTTING 30 rich Recommended	9bcbad787b3905cd
+plan WOODCUTTING 60 poor AFK	42c17e8ccf9d488c
+plan WOODCUTTING 60 poor Cheapest	2c0da33a2f640fab
+plan WOODCUTTING 60 poor Fastest	2c0da33a2f640fab
+plan WOODCUTTING 60 poor Profit	e2f5c045467fd631
+plan WOODCUTTING 60 poor Recommended	7f3d16cefcbbb7b0
+plan WOODCUTTING 60 rich AFK	49b794202fdede50
+plan WOODCUTTING 60 rich Cheapest	74dd9d31534d30d9
+plan WOODCUTTING 60 rich Fastest	74dd9d31534d30d9
+plan WOODCUTTING 60 rich Profit	b373df3bbe923f70
+plan WOODCUTTING 60 rich Recommended	c1c1d052d1cbd5eb
+plan WOODCUTTING 90 poor AFK	24a25085738f2af6
+plan WOODCUTTING 90 poor Cheapest	70b72ac4e3fafb05
+plan WOODCUTTING 90 poor Fastest	70b72ac4e3fafb05
+plan WOODCUTTING 90 poor Profit	d91731d1c5bbb0bc
+plan WOODCUTTING 90 poor Recommended	585631819ae30eeb
+plan WOODCUTTING 90 rich AFK	7220c586ec6a9b13
+plan WOODCUTTING 90 rich Cheapest	9f29ab552515b699
+plan WOODCUTTING 90 rich Fastest	9f29ab552515b699
+plan WOODCUTTING 90 rich Profit	ca73b4c4bfd1444a
+plan WOODCUTTING 90 rich Recommended	684ea74f39b575e6
 prayer_bury_big_bones strong bank-empty	1b187dc047485e86
 prayer_bury_big_bones strong bank-empty-rich	4cccfee63df29564
 prayer_bury_big_bones strong bank-unknown	f41977cd82540366
@@ -6840,8 +6840,8 @@ thieve_tea_stall weak owns-all-in-bank	2c45975ff9379365
 thieve_tea_stall weak parts-carried	0a5e4dae49f5779a
 thieve_tea_stall weak parts-carried-away	2c45975ff9379365
 thieve_tea_stall weak parts-in-bank	2c45975ff9379365
-wc_magic_guild strong bank-empty	438e04640ad14dd9
-wc_magic_guild strong bank-empty-rich	cd3563f6970538c3
+wc_magic_guild strong bank-empty	ca9393b877886fce
+wc_magic_guild strong bank-empty-rich	01e6024626ab125f
 wc_magic_guild strong bank-unknown	a0cf1e8624f3bb3a
 wc_magic_guild strong full-of-products	5a87e24b5d247e39
 wc_magic_guild strong gear-carried	6da2da839a1579a5
@@ -6855,8 +6855,8 @@ wc_magic_guild strong owns-all-in-bank	fc45db23b0b3ce30
 wc_magic_guild strong parts-carried	3f4ef4923a518147
 wc_magic_guild strong parts-carried-away	a17c59bae0e13171
 wc_magic_guild strong parts-in-bank	f2b28e086a28afda
-wc_magic_guild weak bank-empty	438e04640ad14dd9
-wc_magic_guild weak bank-empty-rich	cd3563f6970538c3
+wc_magic_guild weak bank-empty	ca9393b877886fce
+wc_magic_guild weak bank-empty-rich	01e6024626ab125f
 wc_magic_guild weak bank-unknown	a0cf1e8624f3bb3a
 wc_magic_guild weak full-of-products	5a87e24b5d247e39
 wc_magic_guild weak gear-carried	6da2da839a1579a5
@@ -6870,8 +6870,8 @@ wc_magic_guild weak owns-all-in-bank	fc45db23b0b3ce30
 wc_magic_guild weak parts-carried	3f4ef4923a518147
 wc_magic_guild weak parts-carried-away	a17c59bae0e13171
 wc_magic_guild weak parts-in-bank	f2b28e086a28afda
-wc_maples_seers strong bank-empty	b0729bf2e26bf586
-wc_maples_seers strong bank-empty-rich	4d5aca4729395223
+wc_maples_seers strong bank-empty	19298e505cd4ec71
+wc_maples_seers strong bank-empty-rich	7367378404a3578e
 wc_maples_seers strong bank-unknown	1afc6ce7c0b30632
 wc_maples_seers strong full-of-products	f3c49454481ed2a9
 wc_maples_seers strong gear-carried	df1bb0e7f9e1632c
@@ -6885,8 +6885,8 @@ wc_maples_seers strong owns-all-in-bank	8c0850d3b5eada62
 wc_maples_seers strong parts-carried	7a6d3997642602e8
 wc_maples_seers strong parts-carried-away	a1861b34dabda4db
 wc_maples_seers strong parts-in-bank	b88c7a24d2fcd431
-wc_maples_seers weak bank-empty	b0729bf2e26bf586
-wc_maples_seers weak bank-empty-rich	4d5aca4729395223
+wc_maples_seers weak bank-empty	19298e505cd4ec71
+wc_maples_seers weak bank-empty-rich	7367378404a3578e
 wc_maples_seers weak bank-unknown	1afc6ce7c0b30632
 wc_maples_seers weak full-of-products	f3c49454481ed2a9
 wc_maples_seers weak gear-carried	df1bb0e7f9e1632c
@@ -6990,8 +6990,8 @@ wc_willows_draynor weak owns-all-in-bank	06b0edcc107b97ad
 wc_willows_draynor weak parts-carried	e4d2ee0f12ab9480
 wc_willows_draynor weak parts-carried-away	d0dcc57701f0143b
 wc_willows_draynor weak parts-in-bank	ff62cd9808e2906f
-wc_yews_edgeville strong bank-empty	789859f358612b03
-wc_yews_edgeville strong bank-empty-rich	6b79b6817fa92c06
+wc_yews_edgeville strong bank-empty	d6063dcc99c2bbc8
+wc_yews_edgeville strong bank-empty-rich	6dd61d72ff10f476
 wc_yews_edgeville strong bank-unknown	1afc6ce7c0b30632
 wc_yews_edgeville strong full-of-products	fe5c4cfa3bebf17f
 wc_yews_edgeville strong gear-carried	df1bb0e7f9e1632c
@@ -7005,8 +7005,8 @@ wc_yews_edgeville strong owns-all-in-bank	8c0850d3b5eada62
 wc_yews_edgeville strong parts-carried	495a3ed00e62371f
 wc_yews_edgeville strong parts-carried-away	bf626400e89fa698
 wc_yews_edgeville strong parts-in-bank	b88c7a24d2fcd431
-wc_yews_edgeville weak bank-empty	789859f358612b03
-wc_yews_edgeville weak bank-empty-rich	6b79b6817fa92c06
+wc_yews_edgeville weak bank-empty	d6063dcc99c2bbc8
+wc_yews_edgeville weak bank-empty-rich	6dd61d72ff10f476
 wc_yews_edgeville weak bank-unknown	1afc6ce7c0b30632
 wc_yews_edgeville weak full-of-products	fe5c4cfa3bebf17f
 wc_yews_edgeville weak gear-carried	df1bb0e7f9e1632c
@@ -7020,8 +7020,8 @@ wc_yews_edgeville weak owns-all-in-bank	8c0850d3b5eada62
 wc_yews_edgeville weak parts-carried	495a3ed00e62371f
 wc_yews_edgeville weak parts-carried-away	bf626400e89fa698
 wc_yews_edgeville weak parts-in-bank	b88c7a24d2fcd431
-wc_yews_guild strong bank-empty	b67ed770535d8a4e
-wc_yews_guild strong bank-empty-rich	5f10659feb81adbb
+wc_yews_guild strong bank-empty	4da2a3ac190f9298
+wc_yews_guild strong bank-empty-rich	e62785774a322bf9
 wc_yews_guild strong bank-unknown	b5f5f9dfaded77ab
 wc_yews_guild strong full-of-products	b632a78b4b5720b5
 wc_yews_guild strong gear-carried	20e05c01870a0a9f
@@ -7035,8 +7035,8 @@ wc_yews_guild strong owns-all-in-bank	4cd77dc54bbcfa92
 wc_yews_guild strong parts-carried	703078ae83a8d8df
 wc_yews_guild strong parts-carried-away	a8e2b32c0556f373
 wc_yews_guild strong parts-in-bank	17e71c03ad9b9ed3
-wc_yews_guild weak bank-empty	b67ed770535d8a4e
-wc_yews_guild weak bank-empty-rich	5f10659feb81adbb
+wc_yews_guild weak bank-empty	4da2a3ac190f9298
+wc_yews_guild weak bank-empty-rich	e62785774a322bf9
 wc_yews_guild weak bank-unknown	b5f5f9dfaded77ab
 wc_yews_guild weak full-of-products	b632a78b4b5720b5
 wc_yews_guild weak gear-carried	20e05c01870a0a9f

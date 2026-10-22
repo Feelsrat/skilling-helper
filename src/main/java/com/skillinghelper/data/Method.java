@@ -46,6 +46,13 @@ public class Method
 	 */
 	@Singular("xpAt")
 	List<int[]> xpAt;
+	/**
+	 * Xp per hour at higher levels, as {level, xp per hour} pairs in level order, for methods that speed up as the
+	 * player levels (more successful catches, faster chopping). Rates in between are interpolated from
+	 * {@link #xpPerHour} at {@link #minLevel}. Empty when the rate only changes with {@link #xpAt}.
+	 */
+	@Singular("rate")
+	List<int[]> rates;
 	boolean members;
 	@Singular
 	Set<MethodTag> tags;
@@ -182,7 +189,28 @@ public class Method
 	 */
 	public double xpPerHour(int level)
 	{
+		if (!rates.isEmpty())
+		{
+			return interpolatedRate(level);
+		}
 		return xpPerAction <= 0 ? xpPerHour : xpPerHour * xpPerAction(level) / xpPerAction;
+	}
+
+	private double interpolatedRate(int level)
+	{
+		int fromLevel = minLevel;
+		double fromRate = xpPerHour;
+		for (int[] point : rates)
+		{
+			if (level < point[0])
+			{
+				double progress = Math.max(0, (double) (level - fromLevel) / (point[0] - fromLevel));
+				return fromRate + progress * (point[1] - fromRate);
+			}
+			fromLevel = point[0];
+			fromRate = point[1];
+		}
+		return fromRate;
 	}
 
 	public boolean hasTag(MethodTag tag)
@@ -193,5 +221,16 @@ public class Method
 	public Set<MethodTag> tagSet()
 	{
 		return tags.isEmpty() ? EnumSet.noneOf(MethodTag.class) : EnumSet.copyOf(tags);
+	}
+
+	public static class MethodBuilder
+	{
+		/**
+		 * Adds a point to {@link Method#rates}: the xp per hour at this level.
+		 */
+		public MethodBuilder rateAt(int level, int xpPerHour)
+		{
+			return rate(new int[]{level, xpPerHour});
+		}
 	}
 }

@@ -29,7 +29,7 @@ final class ThievingGuide
 				.name("Pickpocket men (Lumbridge)")
 				.minLevel(1)
 				.xpPerAction(8)
-				.xpPerHour(6_000)
+				.xpPerHour(3_000)
 				.coinsPerAction(3)
 				.members(true)
 				.tag(MethodTag.CHEAP)
@@ -83,7 +83,7 @@ final class ThievingGuide
 				.name("Pyramid Plunder")
 				.minLevel(21)
 				.xpPerAction(200)
-				.xpPerHour(60_000)
+				.xpPerHour(30_000)
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.FAST)
 				.quest(Quest.ICTHLARINS_LITTLE_HELPER)
@@ -96,6 +96,7 @@ final class ThievingGuide
 					+ "find the right tomb door")
 				.notes("Xp per hour rises a lot as you unlock deeper rooms every 10 levels.")
 				.wikiPage("Pyramid_Plunder")
+				.rateAt(51, 80_000).rateAt(71, 150_000).rateAt(91, 220_000)
 				.build(),
 			Method.builder()
 				.id("thieve_rogues_den")
@@ -141,7 +142,7 @@ final class ThievingGuide
 				.name("Pickpocket knights of Ardougne")
 				.minLevel(55)
 				.xpPerAction(84.3)
-				.xpPerHour(70_000)
+				.xpPerHour(60_000)
 				.coinsPerAction(50)
 				.members(true)
 				.tag(MethodTag.FAST).tag(MethodTag.PROFIT)
@@ -152,6 +153,7 @@ final class ThievingGuide
 				.instruction("Pickpocket a knight of Ardougne over and over")
 				.notes("Bring food. The Ardougne diary and a dodgy necklace raise success a lot. " + POUCHES)
 				.wikiPage(WIKI)
+				.rateAt(70, 90_000).rateAt(85, 130_000).rateAt(99, 150_000)
 				.build()
 		);
 	}

@@ -24,23 +24,26 @@ final class MiningGuide
 	static List<Method> methods()
 	{
 		return List.of(
-			rock("mine_copper_tin_varrock", "Copper & tin (Varrock south-east)", 1, 17.5, 12_000, VARROCK_SE,
+			rock("mine_copper_tin_varrock", "Copper & tin (Varrock south-east)", 1, 17.5, 5_000, VARROCK_SE,
 				Banks.VARROCK_EAST, new String[]{"Copper rocks", "Tin rocks"}, ItemID.COPPER_ORE, ItemID.TIN_ORE)
 				.tag(MethodTag.POWER).tag(MethodTag.CHEAP).dropByDefault(true)
 				.notes("Bank the ore instead of dropping it if you want to smelt bronze bars for Smithing.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(10, 9_000).rateAt(15, 12_000)
 				.build(),
-			rock("mine_iron_varrock", "Iron rocks (Varrock south-east)", 15, 35, 30_000, VARROCK_SE,
+			rock("mine_iron_varrock", "Iron rocks (Varrock south-east)", 15, 35, 15_000, VARROCK_SE,
 				Banks.VARROCK_EAST, new String[]{"Iron rocks"}, ItemID.IRON_ORE)
 				.tag(MethodTag.POWER).tag(MethodTag.FAST).tag(MethodTag.CHEAP).dropByDefault(true)
 				.notes("Stand where you can reach several iron rocks without moving and drop ore as you go.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(30, 28_000).rateAt(45, 38_000).rateAt(60, 45_000).rateAt(75, 50_000)
 				.build(),
-			rock("mine_iron_al_kharid", "Iron rocks (Al Kharid)", 15, 35, 35_000,
+			rock("mine_iron_al_kharid", "Iron rocks (Al Kharid)", 15, 35, 18_000,
 				Location.of("Al Kharid mine (north iron)", 3298, 3310, 8), Banks.AL_KHARID,
 				new String[]{"Iron rocks"}, ItemID.IRON_ORE)
 				.tag(MethodTag.POWER).tag(MethodTag.FAST).dropByDefault(true)
 				.wikiPage(F2P_WIKI)
+				.rateAt(30, 32_000).rateAt(45, 42_000).rateAt(60, 50_000).rateAt(75, 55_000)
 				.build(),
 			Method.builder()
 				.id("mine_motherlode")
@@ -49,7 +52,7 @@ final class MiningGuide
 				.name("Motherlode Mine")
 				.minLevel(30)
 				.xpPerAction(60)
-				.xpPerHour(30_000)
+				.xpPerHour(20_000)
 				.members(true)
 				.tag(MethodTag.AFK).tag(MethodTag.PROFIT).tag(MethodTag.MINIGAME)
 				.location(Location.of("Motherlode Mine", 3757, 5666, 12))
@@ -63,6 +66,7 @@ final class MiningGuide
 					+ "and search the sack when it fills up. Fix broken struts with a hammer for bonus ore.")
 				.notes("Very AFK, earns golden nuggets for the Prospector kit (+2.5% Mining xp).")
 				.wikiPage("Motherlode_Mine")
+				.rateAt(45, 28_000).rateAt(60, 35_000).rateAt(72, 45_000).rateAt(85, 55_000)
 				.build()
 		);
 	}

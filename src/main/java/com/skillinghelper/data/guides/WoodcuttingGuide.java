@@ -23,45 +23,52 @@ final class WoodcuttingGuide
 	static List<Method> methods()
 	{
 		return List.of(
-			tree("wc_trees_varrock", "Trees (Varrock West)", 1, 25, 8_000, "Tree",
+			tree("wc_trees_varrock", "Trees (Varrock West)", 1, 25, 4_000, "Tree",
 				Location.of("Trees near Varrock West bank", 3165, 3415, 10), Banks.VARROCK_WEST, ItemID.LOGS)
 				.tag(MethodTag.POWER).tag(MethodTag.CHEAP).dropByDefault(true)
 				.wikiPage(F2P_WIKI)
+				.rateAt(15, 8_000)
 				.build(),
-			tree("wc_oaks_varrock", "Oak trees (Varrock West)", 15, 37.5, 18_000, "Oak tree",
+			tree("wc_oaks_varrock", "Oak trees (Varrock West)", 15, 37.5, 12_000, "Oak tree",
 				Location.of("Oaks near Varrock West bank", 3165, 3415, 10), Banks.VARROCK_WEST, ItemID.OAK_LOGS)
 				.tag(MethodTag.POWER).tag(MethodTag.CHEAP).dropByDefault(true)
 				.wikiPage(F2P_WIKI)
+				.rateAt(30, 22_000).rateAt(45, 28_000)
 				.build(),
-			tree("wc_willows_draynor", "Willow trees (Draynor)", 30, 67.5, 35_000, "Willow tree",
+			tree("wc_willows_draynor", "Willow trees (Draynor)", 30, 67.5, 25_000, "Willow tree",
 				Location.of("Draynor willows", 3087, 3235, 7), Banks.DRAYNOR, ItemID.WILLOW_LOGS)
 				.tag(MethodTag.POWER).tag(MethodTag.FAST).tag(MethodTag.CHEAP).dropByDefault(true)
 				.notes("The bank is only a few steps north, so banking willows for a little profit costs very little xp.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(45, 38_000).rateAt(60, 48_000).rateAt(75, 55_000)
 				.build(),
-			tree("wc_maples_seers", "Maple trees (Seers' Village)", 45, 100, 45_000, "Maple tree",
+			tree("wc_maples_seers", "Maple trees (Seers' Village)", 45, 100, 28_000, "Maple tree",
 				Location.of("Seers' Village maples", 2727, 3499, 6), Banks.SEERS, ItemID.MAPLE_LOGS)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.CHEAP)
 				.notes("Maples sit right next to Seers' bank. Bank the logs for Fletching or Firemaking later.")
 				.wikiPage(P2P_WIKI)
+				.rateAt(60, 38_000).rateAt(75, 45_000).rateAt(90, 50_000)
 				.build(),
-			tree("wc_yews_edgeville", "Yew trees (Edgeville)", 60, 175, 35_000, "Yew tree",
+			tree("wc_yews_edgeville", "Yew trees (Edgeville)", 60, 175, 20_000, "Yew tree",
 				Location.of("Edgeville yews", 3087, 3475, 7), Banks.EDGEVILLE, ItemID.YEW_LOGS)
 				.tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.notes("Three yews south of Edgeville bank. Very AFK and the logs sell well.")
 				.wikiPage(F2P_WIKI)
+				.rateAt(75, 27_000).rateAt(90, 34_000).rateAt(99, 37_000)
 				.build(),
-			tree("wc_yews_guild", "Yew trees (Woodcutting Guild)", 60, 175, 45_000, "Yew tree",
+			tree("wc_yews_guild", "Yew trees (Woodcutting Guild)", 60, 175, 24_000, "Yew tree",
 				Location.of("Woodcutting Guild yews", 1590, 3494, 8), WC_GUILD_BANK, ItemID.YEW_LOGS)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.requirementText("60 Woodcutting to enter the guild (gives an invisible +7 boost)")
 				.wikiPage(P2P_WIKI)
+				.rateAt(75, 31_000).rateAt(90, 38_000).rateAt(99, 41_000)
 				.build(),
-			tree("wc_magic_guild", "Magic trees (Woodcutting Guild)", 75, 250, 40_000, "Magic tree",
+			tree("wc_magic_guild", "Magic trees (Woodcutting Guild)", 75, 250, 20_000, "Magic tree",
 				Location.of("Woodcutting Guild magic trees", 1578, 3488, 6), WC_GUILD_BANK, ItemID.MAGIC_LOGS)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.requirementText("60 Woodcutting to enter the guild")
 				.wikiPage(P2P_WIKI)
+				.rateAt(90, 28_000).rateAt(99, 32_000)
 				.build()
 		);
 	}

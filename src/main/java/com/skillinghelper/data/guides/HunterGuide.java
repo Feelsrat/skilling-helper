@@ -111,7 +111,7 @@ final class HunterGuide
 				.name("Red chinchompas (Feldip Hills)")
 				.minLevel(63)
 				.xpPerAction(265)
-				.xpPerHour(100_000)
+				.xpPerHour(75_000)
 				.members(true)
 				.tag(MethodTag.PROFIT).tag(MethodTag.FAST)
 				.location(Location.of("Feldip hunter area", 2557, 2912, 25))
@@ -122,6 +122,7 @@ final class HunterGuide
 				.instruction("Lay box traps in a square around a chinchompa spot and reset them as they catch")
 				.notes("Chinchompas sell well on the GE. " + TRAPS)
 				.wikiPage(WIKI)
+				.rateAt(80, 105_000).rateAt(90, 130_000)
 				.build()
 		);
 	}

@@ -95,7 +95,7 @@ final class SmithingGuide
 				.name("Giants' Foundry")
 				.minLevel(15)
 				.xpPerAction(1_000)
-				.xpPerHour(60_000)
+				.xpPerHour(35_000)
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.AFK)
 				.quest(Quest.SLEEPING_GIANTS)
@@ -109,6 +109,7 @@ final class SmithingGuide
 					+ "grindstone and polishing wheel while keeping the heat in range")
 				.notes("Uses bars you already have. Earns the Smiths' uniform, which makes smithing faster.")
 				.wikiPage("Giants%27_Foundry")
+				.rateAt(50, 60_000).rateAt(70, 80_000).rateAt(90, 100_000)
 				.build()
 		);
 	}
