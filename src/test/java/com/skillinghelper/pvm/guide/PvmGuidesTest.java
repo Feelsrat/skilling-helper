@@ -230,4 +230,29 @@ public class PvmGuidesTest
 		}
 		return b;
 	}
+
+	@Test
+	public void missingPotionsStopTheGuideBeforeSettingOff()
+	{
+		GuideState.GuideStateBuilder b = ready("fight_caves", player(75).bank(Map.of()));
+		b.inv(ItemID._4DOSEPOTIONOFSARADOMIN, 4);
+		PvmStep step = step("fight_caves", b.build());
+		assertEquals(PvmStep.Kind.BUY, step.getKind());
+		assertTrue(step.getLines().toString(), step.getLines().stream().anyMatch(l -> l.startsWith("• 4 x Saradomin brews")));
+
+		// Once the trip is under way, drinking some isn't a reason to go back
+		PvmStep underWay = step("fight_caves", b.tripStocked(true).build());
+		assertEquals(underWay.getTitle(), PvmStep.Kind.STAGE, underWay.getKind());
+	}
+
+	@Test
+	public void missingPotionsInTheBankAreWithdrawn()
+	{
+		GuideState.GuideStateBuilder b = ready("fight_caves", player(75)
+			.bank(Map.of(ItemID._4DOSEPOTIONOFSARADOMIN, 10)));
+		b.inv(ItemID._4DOSEPOTIONOFSARADOMIN, 4);
+		PvmStep step = step("fight_caves", b.build());
+		assertEquals(PvmStep.Kind.BANK, step.getKind());
+		assertTrue(step.getLines().toString(), step.getLines().contains("• 4 x Saradomin brews"));
+	}
 }

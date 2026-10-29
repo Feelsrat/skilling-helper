@@ -72,7 +72,7 @@ public final class GuideResolver
 		{
 			return buy;
 		}
-		if (needsBank(plan))
+		if (needsBank(plan, s))
 		{
 			Location bank = Banks.nearest(s.getLocation(), s.isMembers());
 			return bankStep(plan, s, bank);
@@ -178,7 +178,7 @@ public final class GuideResolver
 
 	// ---- Loadout ----
 
-	private static boolean needsBank(LoadoutPlan plan)
+	private static boolean needsBank(LoadoutPlan plan, GuideState s)
 	{
 		for (LoadoutPlan.GearLine g : plan.getGear())
 		{
@@ -189,7 +189,7 @@ public final class GuideResolver
 		}
 		for (LoadoutPlan.SupplyLine l : plan.getSupplies())
 		{
-			if (l.isLow() && !l.getWithdraw().isEmpty())
+			if (l.isShort(s.isTripStocked()) && !l.getWithdraw().isEmpty())
 			{
 				return true;
 			}
@@ -205,7 +205,8 @@ public final class GuideResolver
 	{
 		List<String> lines = new ArrayList<>();
 		long total = 0;
-		// Only a missing weapon, tool or food is worth stopping for; the rest is bought on the same trip
+		// Before setting off everything has to be there in full. Once under way, only a missing weapon, tool or food
+		// is worth a trip; the rest is bought on the next one
 		boolean blocking = false;
 		for (LoadoutPlan.GearLine g : plan.getGear())
 		{
@@ -218,11 +219,11 @@ public final class GuideResolver
 		}
 		for (LoadoutPlan.SupplyLine l : plan.getSupplies())
 		{
-			if (l.isLow() && l.getWithdraw().isEmpty() && l.getToBuy() > 0)
+			if (l.isShort(s.isTripStocked()) && l.getToBuy() > 0)
 			{
 				lines.add("• " + l.getToBuy() + " x " + l.buyName() + gp((long) l.getPrice() * l.getToBuy()));
 				total += (long) l.getPrice() * l.getToBuy();
-				blocking |= l.getSupply().isRequired() || l.getSupply().getAmount() == Supply.FILL;
+				blocking |= !s.isTripStocked() || l.getSupply().isRequired() || l.getSupply().getAmount() == Supply.FILL;
 			}
 		}
 		if (!blocking)
@@ -295,6 +296,10 @@ public final class GuideResolver
 		if (bank != null && !s.in(bank) && !s.isBankOpen())
 		{
 			b.destination(bank);
+		}
+		if (s.isBankOpen())
+		{
+			b.line("The attack icon at the top of the bank shows only your loadout.");
 		}
 		if (slotsNeeded > s.freeSlots())
 		{

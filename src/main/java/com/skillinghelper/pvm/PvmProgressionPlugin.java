@@ -128,6 +128,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private PvmItemOverlay itemOverlay;
 	@Inject
 	private HiscoreClient hiscoreClient;
+	@Inject
+	private PvmBankFilter bankFilter;
 
 	/**
 	 * Hiscore boss entries per ladder entry, to find kills from before the plugin was installed.
@@ -189,6 +191,15 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	 */
 	@Getter
 	private volatile PvmStep step;
+	/**
+	 * Canonical ids of the running guide's loadout, for the bank filter. Empty when no guide is running.
+	 */
+	@Getter
+	private volatile Set<Integer> bankItems = Set.of();
+	/**
+	 * Left the bank with the full loadout this trip; cleared once a supply runs low.
+	 */
+	private boolean tripStocked;
 	private Location routed;
 	private boolean hintArrowSet;
 	private int lastKillTick = -100;
@@ -241,6 +252,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			.build();
 		clientToolbar.addNavigation(navButton);
 		eventBus.register(targets);
+		bankFilter.startUp();
+		eventBus.register(bankFilter);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 
@@ -262,6 +275,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		eventBus.unregister(targets);
+		eventBus.unregister(bankFilter);
+		bankFilter.shutDown();
 		clientThread.invoke(() ->
 		{
 			stopGuide();
@@ -584,6 +599,13 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 
 	private void stopGuide()
 	{
+		boolean filtered = !bankItems.isEmpty();
+		bankItems = Set.of();
+		tripStocked = false;
+		if (filtered)
+		{
+			bankFilter.relayout();
+		}
 		guide = null;
 		guideContent = null;
 		step = null;
@@ -610,8 +632,23 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			guideFlags.removeIf(f -> f.startsWith(FightCaveWaves.WAVE_FLAG));
 		}
 		LoadoutPlan plan = LoadoutPlan.of(guide, state, prices);
+		if (plan.isStocked())
+		{
+			tripStocked = true;
+		}
+		else if (plan.isAnyLow())
+		{
+			tripStocked = false;
+		}
+		state = state.toBuilder().tripStocked(tripStocked).build();
 		PvmStep next = GuideResolver.resolve(guide, guideContent.getName(), state, plan);
 		showRoute(next.getDestination());
+		Set<Integer> items = plan.bankItems();
+		if (!items.equals(bankItems))
+		{
+			bankItems = items;
+			bankFilter.relayout();
+		}
 		if (next.equals(step))
 		{
 			return false;

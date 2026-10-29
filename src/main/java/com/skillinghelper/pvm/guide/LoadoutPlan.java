@@ -77,6 +77,24 @@ public class LoadoutPlan
 			return carried < restockBelow;
 		}
 
+		/**
+		 * Whether the player can get the rest from the bank or the GE. Keys and other drops have to be earned in game,
+		 * which the guide's steps handle.
+		 */
+		public boolean isObtainable()
+		{
+			return supply.isBuyable() || !withdraw.isEmpty();
+		}
+
+		/**
+		 * Short of the loadout: below the full amount before setting off, or below the restock point once the trip is
+		 * under way.
+		 */
+		public boolean isShort(boolean tripStocked)
+		{
+			return tripStocked ? isLow() : carried < amount && isObtainable();
+		}
+
 		public int missing()
 		{
 			return Math.max(0, amount - carried);
@@ -256,6 +274,56 @@ public class LoadoutPlan
 		return (g.getSkill() == null || s.level(g.getSkill()) >= g.getLevel())
 			&& s.level(Skill.DEFENCE) >= g.getDefence()
 			&& (!g.isMembers() || s.isMembers());
+	}
+
+	/**
+	 * Whether every supply that can be fetched or bought is carried in full.
+	 */
+	public boolean isStocked()
+	{
+		for (SupplyLine l : supplies)
+		{
+			if (l.getCarried() < l.getAmount() && l.isObtainable())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Whether any supply has run low enough to go back to the bank.
+	 */
+	public boolean isAnyLow()
+	{
+		for (SupplyLine l : supplies)
+		{
+			if (l.isLow() && l.isObtainable())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * The items to show in the bank: the gear picked for each slot and every option of each supply.
+	 */
+	public java.util.Set<Integer> bankItems()
+	{
+		java.util.Set<Integer> ids = new java.util.HashSet<>();
+		for (GearLine g : gear)
+		{
+			ids.add(g.getItemId());
+		}
+		for (SupplyLine l : supplies)
+		{
+			for (int id : l.getSupply().allIds())
+			{
+				ids.add(id);
+			}
+		}
+		return ids;
 	}
 
 	/**

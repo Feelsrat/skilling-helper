@@ -13,7 +13,7 @@ import net.runelite.api.coords.WorldPoint;
  * What a guide needs to know about the player and their surroundings right now. Built on the client thread each tick.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class GuideState
 {
 	@Singular
@@ -57,6 +57,11 @@ public class GuideState
 	 * A kill or chest of this content was counted in the last few ticks.
 	 */
 	boolean justKilled;
+	/**
+	 * The player left the bank with the full loadout this trip, so supplies only need restocking once they run
+	 * low. Until then every supply has to be there in full.
+	 */
+	boolean tripStocked;
 	/**
 	 * Guide-specific things the plugin remembers, e.g. which Barrows brother has the tunnel.
 	 */
