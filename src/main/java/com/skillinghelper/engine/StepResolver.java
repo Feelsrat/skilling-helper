@@ -18,9 +18,9 @@ import static com.skillinghelper.engine.Format.gp;
  * Turns a method and the player's current state into the single next step, Quest Helper style. Steps are
  * recomputed every tick from scratch, so the guide adapts as soon as the inventory, bank or position changes.
  * <p>
- * The step is the first of these that applies: goal reached, wait for the next run, a requirement banking can't fix,
- * fetch an item the GE doesn't sell, buy what's missing, make an input, bank, wear gear, drop produce, walk to the
- * spot, and finally train.
+ * The step is the first of these that applies: goal reached, do the current Slayer task, wait for the next run, a
+ * requirement banking can't fix, fetch an item the GE doesn't sell, buy what's missing, make an input, bank, wear
+ * gear, drop produce, walk to the spot, and finally train.
  */
 public final class StepResolver
 {
@@ -61,6 +61,12 @@ public final class StepResolver
 		if (s.level(m.getSkill()) >= targetLevel)
 		{
 			return goalReachedStep(m, targetLevel);
+		}
+
+		// With a Slayer task, the task is the training: the master is only needed again once it's done
+		if (SlayerTaskStep.applies(m, s))
+		{
+			return SlayerTaskStep.step(s);
 		}
 
 		// On a run, once every stop is done there's nothing to fetch or do until the next one is ready

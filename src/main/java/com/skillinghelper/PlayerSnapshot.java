@@ -37,24 +37,27 @@ class PlayerSnapshot
 	private final RateTracker rates;
 	private final BirdhouseTracker birdhouses;
 	private final PatchTracker patches;
+	private final SlayerTaskReader slayerTask;
 
 	@Inject
 	PlayerSnapshot(Client client, BankCache bankCache, RateTracker rates, BirdhouseTracker birdhouses,
-		PatchTracker patches)
+		PatchTracker patches, SlayerTaskReader slayerTask)
 	{
 		this.client = client;
 		this.bankCache = bankCache;
 		this.rates = rates;
 		this.birdhouses = birdhouses;
 		this.patches = patches;
+		this.slayerTask = slayerTask;
 	}
 
-	PlayerState take(Mooring boatMooring, Set<Quest> completedQuests)
+	PlayerState take(Mooring boatMooring, Set<Quest> completedQuests, Set<Quest> startedQuests)
 	{
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
 		Map<Integer, Integer> slots = slotsUsed(inv);
 		int used = slots.values().stream().mapToInt(Integer::intValue).sum();
 		Player me = client.getLocalPlayer();
+		WorldPoint location = me == null ? null : worldLocation(client, me);
 		return PlayerState.builder()
 			.levels(levels())
 			.xp(xp())
@@ -63,15 +66,22 @@ class PlayerSnapshot
 			.equipment(counts(client.getItemContainer(InventoryID.WORN)))
 			.bank(bankCache.get())
 			.freeInventorySlots(INVENTORY_SIZE - used)
-			.location(me == null ? null : worldLocation(client, me))
+			.location(location)
 			.membersWorld(client.getWorldType().contains(WorldType.MEMBERS))
 			.inInstance(client.getTopLevelWorldView().isInstance())
 			.onBoat(me != null && isOnBoat(me))
 			.boatMooring(boatMooring)
 			.stopWaits(stopWaits())
 			.measuredXpPerHour(rates.rates())
-			.completedQuests(completedQuests.isEmpty() ? EnumSet.noneOf(Quest.class) : EnumSet.copyOf(completedQuests))
+			.completedQuests(copy(completedQuests))
+			.startedQuests(copy(startedQuests))
+			.slayerTask(slayerTask.read(location))
 			.build();
+	}
+
+	private static Set<Quest> copy(Set<Quest> quests)
+	{
+		return quests.isEmpty() ? EnumSet.noneOf(Quest.class) : EnumSet.copyOf(quests);
 	}
 
 	private Map<Skill, Integer> levels()

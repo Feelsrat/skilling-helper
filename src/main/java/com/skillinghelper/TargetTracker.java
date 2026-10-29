@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +25,7 @@ import net.runelite.api.ObjectComposition;
 import net.runelite.api.Tile;
 import net.runelite.api.TileObject;
 import net.runelite.api.WorldView;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.DecorativeObjectDespawned;
 import net.runelite.api.events.DecorativeObjectSpawned;
 import net.runelite.api.events.GameObjectDespawned;
@@ -65,6 +67,10 @@ public class TargetTracker
 	private final Set<String> npcNames = new HashSet<>();
 	private final Map<TileObject, Tracked<TileObject>> objects = new HashMap<>();
 	private final Map<NPC, Tracked<NPC>> npcs = new HashMap<>();
+	/**
+	 * The current Slayer task's monsters, matched by words in their name rather than exact names. Null if no task.
+	 */
+	private Target taskTarget;
 	/**
 	 * Which guide name each object with several states (by base object id) answers to, if any.
 	 */
@@ -126,6 +132,48 @@ public class TargetTracker
 		{
 			(t.getKind() == Target.Kind.OBJECT ? objectNames : npcNames).addAll(t.getNames());
 		}
+	}
+
+	/**
+	 * Also tracks the current Slayer task's monsters, or stops when null. Rescans the NPCs in view when it changes.
+	 */
+	public void setTaskTarget(Target target)
+	{
+		if (Objects.equals(target, taskTarget))
+		{
+			return;
+		}
+		taskTarget = target;
+		npcs.clear();
+		WorldView wv = client.getTopLevelWorldView();
+		if (wv != null)
+		{
+			for (NPC npc : wv.npcs())
+			{
+				addNpc(npc);
+			}
+		}
+	}
+
+	/**
+	 * Whether a tracked NPC matching the target is within this many tiles.
+	 */
+	public boolean hasNpcNear(Target target, WorldPoint me, int distance)
+	{
+		if (me == null)
+		{
+			return false;
+		}
+		for (Tracked<NPC> t : npcs.values())
+		{
+			WorldPoint wp = t.getEntity().getWorldLocation();
+			if (wp != null && wp.getPlane() == me.getPlane() && wp.distanceTo2D(me) <= distance
+				&& target.matches(t.getName(), t.getActions()))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Collection<Tracked<TileObject>> getObjects()
@@ -330,7 +378,8 @@ public class TargetTracker
 		{
 			return;
 		}
-		if (npcNames.contains(def.getName().toLowerCase(Locale.ROOT)))
+		if (npcNames.contains(def.getName().toLowerCase(Locale.ROOT))
+			|| (taskTarget != null && taskTarget.matchesName(def.getName())))
 		{
 			npcs.put(npc, new Tracked<>(npc, def.getName(), def.getActions()));
 		}

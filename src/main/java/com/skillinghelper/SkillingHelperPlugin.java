@@ -7,6 +7,7 @@ import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Mooring;
 import com.skillinghelper.data.PatchType;
+import com.skillinghelper.data.SlayerPlaces;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
@@ -130,6 +131,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private StepResolver resolver;
 
 	private final Set<Quest> completedQuests = EnumSet.noneOf(Quest.class);
+	private final Set<Quest> startedQuests = EnumSet.noneOf(Quest.class);
 	private int questRefreshCountdown;
 	private boolean profileLoaded;
 	private boolean wasOnBoat;
@@ -499,14 +501,27 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			return;
 		}
 		completedQuests.clear();
+		startedQuests.clear();
+		Set<Quest> quests = EnumSet.noneOf(Quest.class);
 		for (Method m : guides.methods(skill))
 		{
-			for (Quest q : m.getQuests())
+			quests.addAll(m.getQuests());
+		}
+		if (skill == Skill.SLAYER)
+		{
+			// Quests that open up places to do Slayer tasks
+			quests.addAll(SlayerPlaces.get().quests());
+		}
+		for (Quest q : quests)
+		{
+			QuestState state = q.getState(client);
+			if (state == QuestState.FINISHED)
 			{
-				if (q.getState(client) == QuestState.FINISHED)
-				{
-					completedQuests.add(q);
-				}
+				completedQuests.add(q);
+			}
+			if (state != QuestState.NOT_STARTED)
+			{
+				startedQuests.add(q);
 			}
 		}
 	}
@@ -557,7 +572,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private ActiveGuide buildGuide(Skill skill)
 	{
-		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
 		int level = state.level(skill);
 		Integer saved = settings.getTarget(skill);
 		int target = saved != null ? saved : Math.min(Experience.MAX_REAL_LEVEL, level + config.defaultTargetOffset());

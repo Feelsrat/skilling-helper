@@ -38,6 +38,11 @@ Withdraw/Deposit options (like Menu Entry Swapper), and that can be turned off w
   bank visits until you switch it off.
 - **Combat gear**: combat and Slayer guides suggest the best weapon and armour you can wear for melee or ranged:
   wear it if it's in your bank, or buy the upgrade (price shown). Always optional.
+- **Slayer tasks**: once you have a task, the Slayer guide reads it from the game (monster, kills left, Konar's
+  area, your points) and paths you to a place the monsters spawn that your quests and levels let you into, then
+  highlights them. Krystilia's tasks stay in the Wilderness and other masters' tasks stay out of it. Cancelling is
+  only suggested when you have the 30 points for it. Task locations come from the OSRS Wiki via
+  [slayer-sensei](https://github.com/rRexhepi/slayer-sensei)'s BSD-licensed data (see `tools/slayer/`).
 - **Time to goal**: the panel shows the estimated time to your target level for the whole plan, and for each method.
 - **Skilling outfits**: if you own Lumberjack, Prospector, Angler, Pyromancer, Farmer's, Carpenter's, Raiments of
   the Eye, Smiths' uniform, Rogue or cooking gauntlets, the guide tells you to wear them and highlights them. If
@@ -73,7 +78,7 @@ Built-in step-by-step guides (based on the OSRS wiki training guides):
 | Herblore | Druidic Ritual, attack potions to Saradomin brews |
 | Agility | Gnome course and every rooftop course from Draynor to Ardougne |
 | Thieving | Men, tea and cake stalls, Pyramid Plunder, Rogues' Den, master farmers, Ardougne knights |
-| Slayer | Turael to Duradel (with combat level checks) |
+| Slayer | Turael to Duradel (with combat level checks); with a task, leads you to its monsters and highlights them |
 | Hunter | Bird snaring, swamp lizards, birdhouse runs, red chinchompas |
 | Farming | Allotments, Tithe Farm, tree runs, herb runs |
 | Construction | Chairs and bookcases to mahogany tables, Mahogany Homes |

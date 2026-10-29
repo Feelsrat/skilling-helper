@@ -67,6 +67,15 @@ public class PlayerState
 	Map<String, Integer> measuredXpPerHour = Collections.emptyMap();
 	@Builder.Default
 	Set<Quest> completedQuests = Collections.emptySet();
+	/**
+	 * Quests that are started or finished. Only the quests some guide checks are known.
+	 */
+	@Builder.Default
+	Set<Quest> startedQuests = Collections.emptySet();
+	/**
+	 * The current Slayer task, or null when the player has none.
+	 */
+	SlayerTask slayerTask;
 
 	public int level(Skill skill)
 	{
