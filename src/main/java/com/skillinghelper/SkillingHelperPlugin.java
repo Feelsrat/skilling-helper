@@ -378,6 +378,19 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		wasOnBoat = onBoat;
 	}
 
+	/**
+	 * Another plugin in this jar (PvM Progression) asked to train a skill to a level: open that guide.
+	 */
+	@Subscribe
+	public void onTrainSkillRequest(TrainSkillRequest e)
+	{
+		Skill skill = e.getSkill();
+		selectSkill(skill);
+		int target = Math.max(e.getTargetLevel(), client.getRealSkillLevel(skill) + 1);
+		setTargetAndRefresh(Math.min(Experience.MAX_REAL_LEVEL, target));
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
+	}
+
 	// ---- Panel callbacks (Swing thread) ----
 
 	@Override

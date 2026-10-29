@@ -1,0 +1,328 @@
+package com.skillinghelper.pvm.data;
+
+import static com.skillinghelper.pvm.data.ItemNeed.bring;
+import static com.skillinghelper.pvm.data.ItemNeed.need;
+import static com.skillinghelper.pvm.data.StatReq.rec;
+import java.util.List;
+import net.runelite.api.Quest;
+import net.runelite.api.Skill;
+import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
+
+/**
+ * The bosses, raids and other combat content most players work through, easiest first. Levels are the comfortable levels commonly
+ * suggested in OSRS Wiki guides, not hard limits; only quests and {@link StatReq#isRequired() required} levels
+ * actually keep you out.
+ */
+public final class PvmLadder
+{
+	private static final ItemNeed FOOD = bring("Food (e.g. tuna, lobsters, sharks)");
+	private static final ItemNeed PRAYER_POTIONS = bring("Prayer potions");
+	private static final ItemNeed ANTI_DRAGON = need("Anti-dragon shield or dragonfire shield",
+		ItemID.ANTIDRAGONBREATHSHIELD, ItemID.DRAGONFIRE_SHIELD, ItemID.DRAGONFIRE_WARD);
+	private static final ItemNeed SPADE = need("Spade", ItemID.SPADE);
+	private static final ItemNeed LIGHT = need("Light source (lit candle or lantern)", ItemID.LIT_CANDLE,
+		ItemID.CANDLE_LANTERN_LIT, ItemID.CANDLE_LANTERN_BLACK_LIT, ItemID.OIL_LANTERN_LIT,
+		ItemID.BULLSEYE_LANTERN_LIT);
+
+	// Varrock east sewer manhole, the way down to Bryophyta and Scurrius
+	private static final WorldPoint VARROCK_SEWERS = new WorldPoint(3237, 3458, 0);
+
+	public static final List<PvmContent> ALL = List.of(
+		PvmContent.builder()
+			.id("obor")
+			.name("Obor")
+			.tier(Tier.FIRST_BOSSES)
+			.why("A free-to-play hill giant boss: a gentle first boss fight to learn eating and gear swaps on.")
+			.wikiPage("Obor")
+			.stat(rec(Skill.ATTACK, 40)).stat(rec(Skill.STRENGTH, 40)).stat(rec(Skill.DEFENCE, 40))
+			.stat(rec(Skill.HITPOINTS, 40))
+			.item(need("Giant key (dropped by hill giants)", ItemID.HILLGIANT_BOSS_KEY))
+			.item(FOOD)
+			.travel("Edgeville Dungeon, through the gate in the hill giant area. Go down the trapdoor in Edgeville.")
+			.location(new WorldPoint(3097, 3468, 0))
+			.kcName("Obor")
+			.build(),
+		PvmContent.builder()
+			.id("bryophyta")
+			.name("Bryophyta")
+			.tier(Tier.FIRST_BOSSES)
+			.why("The moss giant boss in the Varrock Sewers, another easy free-to-play boss.")
+			.wikiPage("Bryophyta")
+			.stat(rec(Skill.ATTACK, 40)).stat(rec(Skill.STRENGTH, 40)).stat(rec(Skill.DEFENCE, 40))
+			.stat(rec(Skill.HITPOINTS, 40))
+			.item(need("Mossy key (dropped by moss giants)", ItemID.MOSSY_KEY))
+			.item(FOOD)
+			.travel("Varrock Sewers, through the gate past the moss giants. Climb down the manhole east of Varrock.")
+			.location(VARROCK_SEWERS)
+			.kcName("Bryophyta")
+			.build(),
+		PvmContent.builder()
+			.id("scurrius")
+			.name("Scurrius")
+			.tier(Tier.FIRST_BOSSES)
+			.why("A boss built to teach boss mechanics: you learn to move away from attacks and use protection prayers.")
+			.wikiPage("Scurrius")
+			.stat(rec(Skill.ATTACK, 50)).stat(rec(Skill.STRENGTH, 50)).stat(rec(Skill.DEFENCE, 45))
+			.stat(rec(Skill.HITPOINTS, 50)).stat(rec(Skill.PRAYER, 43))
+			.item(FOOD)
+			.travel("Varrock Sewers. Climb down the manhole east of Varrock and follow the sewers to the rat boss.")
+			.location(VARROCK_SEWERS)
+			.kcName("Scurrius")
+			.build(),
+		PvmContent.builder()
+			.id("pest_control")
+			.name("Pest Control")
+			.tier(Tier.FIRST_BOSSES)
+			.why("A team minigame: defend the Void Knight from waves of pests. Earns the Void Knight armour set, a "
+				+ "strong early ranged and magic set. Needs combat level 40 for the novice boat.")
+			.wikiPage("Pest_Control")
+			.stat(rec(Skill.ATTACK, 40)).stat(rec(Skill.STRENGTH, 40)).stat(rec(Skill.DEFENCE, 40))
+			.stat(rec(Skill.HITPOINTS, 40))
+			.item(FOOD)
+			.travel("Take the boat from the Port Sarim docks to the Void Knights' Outpost.")
+			.location(new WorldPoint(3041, 3202, 0))
+			.build(),
+		PvmContent.builder()
+			.id("giant_mole")
+			.name("Giant Mole")
+			.tier(Tier.EARLY)
+			.why("An easy, safe boss under Falador Park. Good practice at tracking a boss that runs away.")
+			.wikiPage("Giant_Mole")
+			.stat(rec(Skill.ATTACK, 60)).stat(rec(Skill.STRENGTH, 60)).stat(rec(Skill.DEFENCE, 60))
+			.stat(rec(Skill.HITPOINTS, 60)).stat(rec(Skill.PRAYER, 43))
+			.item(SPADE).item(LIGHT).item(FOOD)
+			.travel("Dig with a spade on a mole hill in Falador Park.")
+			.location(new WorldPoint(2989, 3378, 0))
+			.kcName("Giant Mole")
+			.build(),
+		PvmContent.builder()
+			.id("warriors_guild")
+			.name("Warriors' Guild defenders")
+			.tier(Tier.EARLY)
+			.why("Kill cyclopes for the bronze to dragon defenders, the best melee off-hands for a long time. "
+				+ "Entry needs Attack + Strength of 130 combined (or 99 in either).")
+			.wikiPage("Defender")
+			.stat(rec(Skill.ATTACK, 65)).stat(rec(Skill.STRENGTH, 65)).stat(rec(Skill.DEFENCE, 40))
+			.item(bring("A piece of armour to animate for tokens (e.g. a bronze full helm, platebody and platelegs)"))
+			.item(FOOD)
+			.travel("The Warriors' Guild in Burthorpe (combat bracelet or games necklace to Burthorpe).")
+			.location(new WorldPoint(2877, 3546, 0))
+			.build(),
+		PvmContent.builder()
+			.id("barrows")
+			.name("Barrows")
+			.tier(Tier.EARLY)
+			.why("Six brothers with strong armour drops. The classic first step into using different combat styles.")
+			.wikiPage("Barrows/Strategies")
+			.quest(QuestReq.done(Quest.PRIEST_IN_PERIL))
+			.stat(rec(Skill.ATTACK, 70)).stat(rec(Skill.STRENGTH, 70)).stat(rec(Skill.DEFENCE, 70))
+			.stat(rec(Skill.MAGIC, 50)).stat(rec(Skill.HITPOINTS, 70)).stat(rec(Skill.PRAYER, 43))
+			.item(SPADE).item(FOOD).item(PRAYER_POTIONS)
+			.travel("The Barrows mounds east of Mort'ton, Morytania (Barrows teleport tablet, or walk from Canifis).")
+			.location(new WorldPoint(3565, 3289, 0))
+			.kcName("Barrows chest")
+			.build(),
+		PvmContent.builder()
+			.id("barbarian_assault")
+			.name("Barbarian Assault")
+			.tier(Tier.EARLY)
+			.why("A team wave minigame with four roles. Earns the fighter torso, a free and strong melee body.")
+			.wikiPage("Barbarian_Assault")
+			.stat(rec(Skill.ATTACK, 60)).stat(rec(Skill.STRENGTH, 60)).stat(rec(Skill.DEFENCE, 50))
+			.stat(rec(Skill.HITPOINTS, 60))
+			.travel("The Barbarian Outpost, north of the Baxtorian Falls (games necklace).")
+			.location(new WorldPoint(2531, 3577, 0))
+			.build(),
+		PvmContent.builder()
+			.id("sarachnis")
+			.name("Sarachnis")
+			.tier(Tier.EARLY)
+			.why("A mid-level melee boss with no special requirements. Drops the Sarachnis cudgel.")
+			.wikiPage("Sarachnis/Strategies")
+			.stat(rec(Skill.ATTACK, 70)).stat(rec(Skill.STRENGTH, 70)).stat(rec(Skill.DEFENCE, 65))
+			.stat(rec(Skill.HITPOINTS, 70)).stat(rec(Skill.PRAYER, 43))
+			.item(FOOD).item(PRAYER_POTIONS)
+			.travel("Forthos Dungeon, south of Hosidius in Great Kourend.")
+			.kcName("Sarachnis")
+			.build(),
+		PvmContent.builder()
+			.id("king_black_dragon")
+			.name("King Black Dragon")
+			.tier(Tier.EARLY)
+			.why("A three-headed dragon boss. Teaches dragonfire protection; its lair is in the Wilderness.")
+			.wikiPage("King_Black_Dragon/Strategies")
+			.stat(rec(Skill.ATTACK, 70)).stat(rec(Skill.STRENGTH, 70)).stat(rec(Skill.DEFENCE, 70))
+			.stat(rec(Skill.HITPOINTS, 70)).stat(rec(Skill.PRAYER, 43))
+			.item(ANTI_DRAGON).item(FOOD)
+			.travel("The Wilderness lever in Edgeville takes you to the lair entrance (deep Wilderness: only bring "
+				+ "what you can lose).")
+			.location(new WorldPoint(3016, 3849, 0))
+			.wilderness(true)
+			.kcName("King Black Dragon")
+			.build(),
+		PvmContent.builder()
+			.id("moons_of_peril")
+			.name("Moons of Peril")
+			.tier(Tier.MID)
+			.why("Three moon bosses that drop the Blood moon, Blue moon and Eclipse moon gear sets. Great mid-game "
+				+ "upgrades.")
+			.wikiPage("Moons_of_Peril/Strategies")
+			.quest(QuestReq.done(Quest.PERILOUS_MOONS))
+			.stat(rec(Skill.ATTACK, 70)).stat(rec(Skill.STRENGTH, 70)).stat(rec(Skill.DEFENCE, 70))
+			.stat(rec(Skill.HITPOINTS, 70)).stat(rec(Skill.PRAYER, 43))
+			.item(FOOD)
+			.travel("Neypotzli, under Cam Torum in Varlamore.")
+			.kcName("Lunar Chest")
+			.build(),
+		PvmContent.builder()
+			.id("kalphite_queen")
+			.name("Kalphite Queen")
+			.tier(Tier.MID)
+			.why("A two-phase boss that tests your gear and supplies. A big step up from the early bosses.")
+			.wikiPage("Kalphite_Queen/Strategies")
+			.stat(rec(Skill.ATTACK, 80)).stat(rec(Skill.STRENGTH, 80)).stat(rec(Skill.DEFENCE, 75))
+			.stat(rec(Skill.HITPOINTS, 80)).stat(rec(Skill.PRAYER, 43))
+			.item(need("Rope (for the tunnel entrances, the first time)", ItemID.ROPE))
+			.item(FOOD).item(PRAYER_POTIONS)
+			.travel("The Kalphite Lair tunnel in the Kharidian Desert, west of the Shantay Pass road.")
+			.location(new WorldPoint(3226, 3108, 0))
+			.kcName("Kalphite Queen")
+			.build(),
+		PvmContent.builder()
+			.id("zulrah")
+			.name("Zulrah")
+			.tier(Tier.MID)
+			.why("A snake boss with a set rotation of forms. Needs ranged and magic, and pays very well once learned.")
+			.wikiPage("Zulrah/Strategies")
+			.quest(QuestReq.started(Quest.REGICIDE))
+			.stat(rec(Skill.RANGED, 80)).stat(rec(Skill.MAGIC, 80)).stat(rec(Skill.DEFENCE, 70))
+			.stat(rec(Skill.HITPOINTS, 80)).stat(rec(Skill.PRAYER, 43))
+			.item(FOOD).item(PRAYER_POTIONS).item(bring("Antivenom or antidote++"))
+			.travel("Zul-Andra, south of Tirannwn (fairy ring BJS or a Zul-andra teleport scroll).")
+			.kcName("Zulrah")
+			.build(),
+		PvmContent.builder()
+			.id("fight_caves")
+			.name("TzHaar Fight Cave (fire cape)")
+			.tier(Tier.MID)
+			.why("63 waves ending with TzTok-Jad. The fire cape is the best melee cape until the infernal cape.")
+			.wikiPage("TzHaar_Fight_Cave/Strategies")
+			.stat(rec(Skill.RANGED, 70)).stat(rec(Skill.DEFENCE, 70)).stat(rec(Skill.HITPOINTS, 70))
+			.stat(rec(Skill.PRAYER, 43))
+			.item(PRAYER_POTIONS).item(bring("Saradomin brews and super restores"))
+			.travel("Mor Ul Rek's outer city, inside the Karamja volcano (TzHaar). Enter the cave in the north-west.")
+			.location(new WorldPoint(2438, 5168, 0))
+			.kcName("TzTok-Jad")
+			.build(),
+		PvmContent.builder()
+			.id("vorkath")
+			.name("Vorkath")
+			.tier(Tier.LATE)
+			.why("An undead dragon after Dragon Slayer II. One of the most popular money makers once you learn it.")
+			.wikiPage("Vorkath/Strategies")
+			.quest(QuestReq.done(Quest.DRAGON_SLAYER_II))
+			.stat(rec(Skill.RANGED, 85)).stat(rec(Skill.DEFENCE, 75)).stat(rec(Skill.HITPOINTS, 85))
+			.stat(rec(Skill.PRAYER, 43))
+			.item(ANTI_DRAGON).item(bring("Extended super antifire potion")).item(FOOD).item(PRAYER_POTIONS)
+			.travel("Talk to Torfinn on the pier north of Rellekka to sail to Ungael.")
+			.kcName("Vorkath")
+			.build(),
+		PvmContent.builder()
+			.id("god_wars")
+			.name("God Wars Dungeon")
+			.tier(Tier.LATE)
+			.why("Four generals with some of the best gear in the game. Each boss room needs 40 kills from its army.")
+			.wikiPage("God_Wars_Dungeon")
+			.quest(QuestReq.done(Quest.DEATH_PLATEAU))
+			.stat(rec(Skill.ATTACK, 85)).stat(rec(Skill.STRENGTH, 85)).stat(rec(Skill.DEFENCE, 80))
+			.stat(rec(Skill.HITPOINTS, 85)).stat(rec(Skill.PRAYER, 70))
+			.item(need("Rope (to enter the dungeon the first time)", ItemID.ROPE))
+			.item(FOOD).item(PRAYER_POTIONS)
+			.travel("North of Trollheim (Trollheim teleport, or a ghommal's hilt).")
+			.kcName("General Graardor").kcName("Commander Zilyana").kcName("K'ril Tsutsaroth").kcName("Kree'arra")
+			.build(),
+		PvmContent.builder()
+			.id("gauntlet")
+			.name("The Gauntlet")
+			.tier(Tier.LATE)
+			.why("A solo challenge where you craft your own gear inside, so your bank doesn't matter. Drops the "
+				+ "enhanced crystal weapon seed (Bow of Faerdhinen) in its Corrupted version.")
+			.wikiPage("The_Gauntlet/Strategies")
+			.quest(QuestReq.done(Quest.SONG_OF_THE_ELVES))
+			.stat(rec(Skill.ATTACK, 80)).stat(rec(Skill.STRENGTH, 80)).stat(rec(Skill.DEFENCE, 75))
+			.stat(rec(Skill.RANGED, 80)).stat(rec(Skill.MAGIC, 80)).stat(rec(Skill.HITPOINTS, 80))
+			.stat(rec(Skill.PRAYER, 77))
+			.travel("Prifddinas, in the north-east of the city (crystal teleport seed).")
+			.kcName("Gauntlet").kcName("Corrupted Gauntlet")
+			.build(),
+		PvmContent.builder()
+			.id("tombs_of_amascut")
+			.name("Tombs of Amascut")
+			.tier(Tier.RAIDS)
+			.why("The most beginner-friendly raid: you pick the difficulty yourself, and Entry Mode is made for "
+				+ "learning.")
+			.wikiPage("Tombs_of_Amascut/Strategies")
+			.stat(rec(Skill.ATTACK, 75)).stat(rec(Skill.STRENGTH, 75)).stat(rec(Skill.DEFENCE, 70))
+			.stat(rec(Skill.RANGED, 75)).stat(rec(Skill.MAGIC, 75)).stat(rec(Skill.HITPOINTS, 75))
+			.stat(rec(Skill.PRAYER, 43))
+			.travel("Necropolis, south of the Kharidian Desert (fairy ring AKP or the Pharaoh's sceptre).")
+			.kcName("Tombs of Amascut: Entry Mode").kcName("Tombs of Amascut").kcName("Tombs of Amascut: Expert Mode")
+			.build(),
+		PvmContent.builder()
+			.id("chambers_of_xeric")
+			.name("Chambers of Xeric")
+			.tier(Tier.RAIDS)
+			.why("The first raid, with the twisted bow and other top-end drops. Best learned in a learner team.")
+			.wikiPage("Chambers_of_Xeric/Strategies")
+			.stat(rec(Skill.ATTACK, 80)).stat(rec(Skill.STRENGTH, 80)).stat(rec(Skill.DEFENCE, 80))
+			.stat(rec(Skill.RANGED, 80)).stat(rec(Skill.MAGIC, 80)).stat(rec(Skill.HITPOINTS, 80))
+			.stat(rec(Skill.PRAYER, 70))
+			.travel("Mount Quidamortem in Great Kourend (Xeric's talisman or fairy ring CIR).")
+			.kcName("Chambers of Xeric").kcName("Chambers of Xeric Challenge Mode")
+			.build(),
+		PvmContent.builder()
+			.id("theatre_of_blood")
+			.name("Theatre of Blood")
+			.tier(Tier.RAIDS)
+			.why("The hardest of the three raids. Start in Entry Mode with a team.")
+			.wikiPage("Theatre_of_Blood/Strategies")
+			.quest(QuestReq.done(Quest.PRIEST_IN_PERIL))
+			.stat(rec(Skill.ATTACK, 90)).stat(rec(Skill.STRENGTH, 90)).stat(rec(Skill.DEFENCE, 85))
+			.stat(rec(Skill.RANGED, 90)).stat(rec(Skill.MAGIC, 90)).stat(rec(Skill.HITPOINTS, 90))
+			.stat(rec(Skill.PRAYER, 74))
+			.travel("Ver Sinhaza in Morytania (Drakan's medallion).")
+			.kcName("Theatre of Blood: Entry Mode").kcName("Theatre of Blood").kcName("Theatre of Blood: Hard Mode")
+			.build(),
+		PvmContent.builder()
+			.id("fortis_colosseum")
+			.name("Fortis Colosseum")
+			.tier(Tier.ENDGAME)
+			.why("Twelve waves with modifiers you choose, ending with Sol Heredit. Drops the Dizana's quiver.")
+			.wikiPage("Fortis_Colosseum/Strategies")
+			.quest(QuestReq.done(Quest.CHILDREN_OF_THE_SUN))
+			.stat(rec(Skill.ATTACK, 90)).stat(rec(Skill.STRENGTH, 90)).stat(rec(Skill.DEFENCE, 90))
+			.stat(rec(Skill.RANGED, 90)).stat(rec(Skill.MAGIC, 90)).stat(rec(Skill.HITPOINTS, 90))
+			.stat(rec(Skill.PRAYER, 77))
+			.travel("Civitas illa Fortis in Varlamore (quetzal or the Civitas illa Fortis teleport).")
+			.kcName("Sol Heredit")
+			.build(),
+		PvmContent.builder()
+			.id("inferno")
+			.name("The Inferno")
+			.tier(Tier.ENDGAME)
+			.why("The hardest wave challenge, ending with TzKal-Zuk. You sacrifice a fire cape to enter, and win "
+				+ "the infernal cape.")
+			.wikiPage("The_Inferno/Strategies")
+			.stat(rec(Skill.RANGED, 90)).stat(rec(Skill.MAGIC, 90)).stat(rec(Skill.DEFENCE, 85))
+			.stat(rec(Skill.HITPOINTS, 90)).stat(rec(Skill.PRAYER, 77))
+			.item(need("Fire cape", ItemID.TZHAAR_CAPE_FIRE))
+			.travel("Mor Ul Rek, the inner TzHaar city under the Karamja volcano.")
+			.kcName("TzKal-Zuk")
+			.build()
+	);
+
+	private PvmLadder()
+	{
+	}
+}

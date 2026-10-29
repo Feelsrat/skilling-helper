@@ -93,11 +93,32 @@ Built-in step-by-step guides (based on the OSRS wiki training guides):
 Xp rates are rough estimates for a typical setup. After about 10 minutes of training a method, the plugin uses the
 xp rate you actually get instead.
 
+## PvM Progression (second plugin)
+
+The same jar also contains **PvM Progression**, a separate plugin you can switch on or off by itself. It works out
+which combat content to work towards next from your levels, quests, kill counts and what you own, from the first
+bosses (Obor, Scurrius, Giant Mole) through Pest Control, Barrows, Barbarian Assault and the Fight Cave, to God Wars,
+the raids, the Colosseum and the Inferno.
+
+- **Next step**: the first thing on the ladder you haven't done yet, with a checklist: quests, levels (green when you
+  have them, with a **Train** button that opens the Skilling Helper guide for that skill and level), what to bring
+  (ticked off from your inventory, gear and bank), how to get there (with a **Show path** button that uses Shortest
+  Path), and a link to the wiki strategy guide.
+- **Done automatically**: your first kill (read from the game's "kill count" messages) marks it done and moves you
+  on. Minigames without a kill count can be marked done by hand.
+- **The whole ladder**: every entry shows whether you're ready, almost ready, need to train, or are locked out by
+  a quest. Click one to see its checklist.
+
+Recommended levels are the comfortable levels commonly suggested in wiki guides, not hard limits. The plugin only
+shows information before you go in: it has no in-fight helpers (no attack, prayer or mechanic indicators), which
+RuneLite doesn't allow for bosses.
+
 ## Network use
 
-The plugin makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
+Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
 fetches the wiki's single bulk price list (`prices.runescape.wiki/api/v1/osrs/latest`) at most once every 5 minutes
-while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks.
+while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks. PvM Progression makes no
+network requests.
 
 ## Updating on Steam Deck
 
