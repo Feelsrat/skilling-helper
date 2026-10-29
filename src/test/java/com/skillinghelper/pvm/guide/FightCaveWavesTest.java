@@ -45,7 +45,7 @@ public class FightCaveWavesTest
 	}
 
 	@Test
-	public void panelShowsWaveNextWaveAndDoses()
+	public void panelShowsOnlyTheCurrentWaveAndDoses()
 	{
 		GuideState s = GuideState.builder()
 			.location(new WorldPoint(2400, 5080, 0))
@@ -56,8 +56,8 @@ public class FightCaveWavesTest
 			.build();
 		List<String> lines = PvmGuides.FightCave.lines(s);
 		assertEquals("Wave 14 of 63: Tok-Xil x2 (90)", lines.get(0));
-		assertEquals("Next, wave 15: Yt-MejKot (180)", lines.get(1));
-		assertTrue(lines.get(2).startsWith("• Tok-Xil: ranged"));
+		assertTrue(lines.get(1).startsWith("• Tok-Xil: ranged"));
+		assertTrue(lines.stream().noneMatch(l -> l.contains("Yt-MejKot")));
 		assertEquals("Left: 11 prayer doses", lines.get(lines.size() - 1));
 	}
 }

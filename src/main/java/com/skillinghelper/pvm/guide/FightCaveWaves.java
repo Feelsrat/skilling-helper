@@ -148,7 +148,7 @@ public final class FightCaveWaves
 	}
 
 	/**
-	 * Panel lines while working through the waves: this wave, the next one, and how each monster on screen attacks.
+	 * Panel lines while working through the waves: this wave and how each of its monsters attacks.
 	 */
 	public static List<String> lines(GuideState s)
 	{
@@ -156,15 +156,12 @@ public final class FightCaveWaves
 		int n = currentWave(s);
 		if (n < 0)
 		{
-			lines.add("The wave list shows up when the next wave starts (the cave says \"Wave: N\" in chat).");
+			lines.add("This wave's monsters show up once the next wave starts (the cave says \"Wave: N\" in chat).");
 			return lines;
 		}
 		List<Monster> now = wave(n);
+		// Only the wave that's already up: warning about future waves counts as advance warning of a hazard
 		lines.add("Wave " + n + " of " + JAD_WAVE + ": " + describe(now));
-		if (n < JAD_WAVE)
-		{
-			lines.add("Next, wave " + (n + 1) + ": " + describe(wave(n + 1)));
-		}
 		List<Monster> seen = new ArrayList<>();
 		for (Monster m : now)
 		{
