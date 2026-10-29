@@ -3,7 +3,9 @@ package com.skillinghelper.pvm.data;
 import static com.skillinghelper.pvm.data.ItemNeed.bring;
 import static com.skillinghelper.pvm.data.ItemNeed.need;
 import static com.skillinghelper.pvm.data.StatReq.rec;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
@@ -321,6 +323,13 @@ public final class PvmLadder
 			.kcName("TzKal-Zuk")
 			.build()
 	);
+
+	/**
+	 * {@link #ALL} from the lowest recommended level to the highest; ties keep the ladder order.
+	 */
+	public static final List<PvmContent> BY_LEVEL = ALL.stream()
+		.sorted(Comparator.comparingInt(PvmContent::getLevel).thenComparingInt(PvmContent::levelTotal))
+		.collect(Collectors.toUnmodifiableList());
 
 	private PvmLadder()
 	{

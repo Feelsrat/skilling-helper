@@ -62,6 +62,17 @@ public class ReadinessTest
 	}
 
 	@Test
+	public void byLevelIsSortedAndComplete()
+	{
+		assertEquals(PvmLadder.ALL.size(), PvmLadder.BY_LEVEL.size());
+		for (int i = 1; i < PvmLadder.BY_LEVEL.size(); i++)
+		{
+			assertTrue(PvmLadder.BY_LEVEL.get(i - 1).getLevel() <= PvmLadder.BY_LEVEL.get(i).getLevel());
+		}
+		assertEquals("obor", PvmLadder.BY_LEVEL.get(0).getId());
+	}
+
+	@Test
 	public void missingQuestLocks()
 	{
 		Readiness r = Readiness.of(content("barrows"), allAt(99).build());

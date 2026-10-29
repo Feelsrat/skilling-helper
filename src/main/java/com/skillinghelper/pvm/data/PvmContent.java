@@ -41,4 +41,17 @@ public class PvmContent
 	 */
 	@Singular
 	List<String> kcNames;
+
+	/**
+	 * The highest recommended level, used to sort content from easiest to hardest.
+	 */
+	public int getLevel()
+	{
+		return stats.stream().mapToInt(StatReq::getLevel).max().orElse(1);
+	}
+
+	int levelTotal()
+	{
+		return stats.stream().mapToInt(StatReq::getLevel).sum();
+	}
 }

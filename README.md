@@ -100,14 +100,15 @@ which combat content to work towards next from your levels, quests, kill counts 
 bosses (Obor, Scurrius, Giant Mole) through Pest Control, Barrows, Barbarian Assault and the Fight Cave, to God Wars,
 the raids, the Colosseum and the Inferno.
 
-- **Next step**: the first thing on the ladder you haven't done yet, with a checklist: quests, levels (green when you
-  have them, with a **Train** button that opens the Skilling Helper guide for that skill and level), what to bring
-  (ticked off from your inventory, gear and bank), how to get there (with a **Show path** button that uses Shortest
-  Path), and a link to the wiki strategy guide.
-- **Done automatically**: your first kill (read from the game's "kill count" messages) marks it done and moves you
-  on. Minigames without a kill count can be marked done by hand.
-- **The whole ladder**: every entry shows whether you're ready, almost ready, need to train, or are locked out by
-  a quest. Click one to see its checklist.
+- **Dropdown sorted by level**: every entry is listed from the lowest recommended level to the highest, coloured
+  by whether you're ready, almost ready, need to train, or are locked out by a quest. It starts on the lowest one
+  you haven't done yet.
+- **Checklist** for the one you pick: quests, levels (green when you have them, with a **Train** button that opens
+  the Skilling Helper guide for that skill and level), what to bring (ticked off from your inventory, gear and
+  bank), how to get there (with a **Show path** button that uses Shortest Path), and a link to the wiki strategy
+  guide.
+- **Done automatically**: your first kill (read from the game's "kill count" messages) marks it done. Minigames
+  without a kill count can be marked done by hand.
 
 Recommended levels are the comfortable levels commonly suggested in wiki guides, not hard limits. The plugin only
 shows information before you go in: it has no in-fight helpers (no attack, prayer or mechanic indicators), which

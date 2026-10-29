@@ -333,7 +333,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		PlayerView player = view.build();
 
 		List<Readiness> ladder = new ArrayList<>();
-		for (PvmContent c : PvmLadder.ALL)
+		for (PvmContent c : PvmLadder.BY_LEVEL)
 		{
 			ladder.add(Readiness.of(c, player));
 		}

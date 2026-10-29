@@ -6,21 +6,19 @@ import com.skillinghelper.pvm.data.ItemNeed;
 import com.skillinghelper.pvm.data.PvmContent;
 import com.skillinghelper.pvm.data.QuestReq;
 import com.skillinghelper.pvm.data.StatReq;
-import com.skillinghelper.pvm.data.Tier;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -31,7 +29,7 @@ import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
- * Side panel: the next boss, raid or minigame to work towards, a checklist of what it needs, and the whole ladder.
+ * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked.
  */
 public class PvmProgressionPanel extends PluginPanel
 {
@@ -57,10 +55,12 @@ public class PvmProgressionPanel extends PluginPanel
 
 	private final Listener listener;
 	private final JPanel content = new JPanel();
+	private final JComboBox<Readiness> picker = new JComboBox<>();
 	/**
-	 * The content the player clicked on in the ladder, or null to follow the next step.
+	 * The content the player picked in the dropdown, or null for the lowest-level one not done yet.
 	 */
 	private String pickedId;
+	private boolean updating;
 	private List<Readiness> ladder;
 	private PlayerView view;
 	private String pathId;
@@ -76,8 +76,30 @@ public class PvmProgressionPanel extends PluginPanel
 		JLabel title = new JLabel("PvM Progression");
 		title.setFont(FontManager.getRunescapeBoldFont());
 		title.setForeground(Color.WHITE);
-		title.setBorder(new EmptyBorder(0, 0, 8, 0));
-		add(title, BorderLayout.NORTH);
+		title.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JPanel header = new JPanel();
+		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+		header.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		header.setBorder(new EmptyBorder(0, 0, 8, 0));
+		header.add(title);
+		header.add(Box.createVerticalStrut(6));
+		header.add(text("Sorted by the level each one needs:", MUTED));
+		header.add(Box.createVerticalStrut(2));
+		picker.setRenderer(new PickerRenderer());
+		picker.setMaximumRowCount(20);
+		picker.addActionListener(e ->
+		{
+			Readiness r = (Readiness) picker.getSelectedItem();
+			if (!updating && r != null)
+			{
+				Readiness first = Readiness.next(ladder);
+				pickedId = first != null && first.getContent().getId().equals(r.getContent().getId())
+					? null : r.getContent().getId();
+				showDetail();
+			}
+		});
+		header.add(full(picker));
+		add(header, BorderLayout.NORTH);
 
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		content.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -108,34 +130,36 @@ public class PvmProgressionPanel extends PluginPanel
 
 	private void rebuild()
 	{
-		content.removeAll();
-		Readiness next = Readiness.next(ladder);
-		Readiness shown = pickedId == null ? next : find(pickedId);
+		updating = true;
+		picker.removeAllItems();
+		for (Readiness r : ladder)
+		{
+			picker.addItem(r);
+		}
+		Readiness shown = pickedId == null ? null : find(pickedId);
 		if (shown == null)
 		{
-			content.add(text("You've done everything on the ladder. Nice work!", GOOD));
+			pickedId = null;
+			shown = Readiness.next(ladder);
 		}
-		else
+		picker.setSelectedItem(shown);
+		updating = false;
+		showDetail();
+	}
+
+	private void showDetail()
+	{
+		content.removeAll();
+		Readiness shown = (Readiness) picker.getSelectedItem();
+		if (Readiness.next(ladder) == null)
 		{
-			if (shown == next)
-			{
-				content.add(header("Next step"));
-			}
-			else
-			{
-				content.add(header("Looking at"));
-				content.add(Box.createVerticalStrut(2));
-				content.add(button("Back to my next step", () ->
-				{
-					pickedId = null;
-					rebuild();
-				}));
-			}
-			content.add(Box.createVerticalStrut(4));
+			content.add(text("You've done everything on the list. Nice work!", GOOD));
+			content.add(Box.createVerticalStrut(8));
+		}
+		if (shown != null)
+		{
 			detail(shown);
 		}
-		content.add(Box.createVerticalStrut(12));
-		ladderList(shown);
 		content.revalidate();
 		content.repaint();
 	}
@@ -154,7 +178,8 @@ public class PvmProgressionPanel extends PluginPanel
 		name.setFont(FontManager.getRunescapeBoldFont());
 		name.setForeground(Color.WHITE);
 		content.add(left(name));
-		content.add(text(r.getStatus().getLabel() + " · " + c.getTier().getLabel(), statusColor(r.getStatus())));
+		content.add(text(r.getStatus().getLabel() + " · needs about level " + c.getLevel() + " · "
+			+ c.getTier().getLabel(), statusColor(r.getStatus())));
 		content.add(Box.createVerticalStrut(4));
 		content.add(text(c.getWhy(), Color.LIGHT_GRAY));
 
@@ -215,7 +240,7 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 		else
 		{
-			content.add(text("Your first kill marks this done and moves you on to the next step.", Color.LIGHT_GRAY));
+			content.add(text("Your first kill marks this done and moves the list on to the next one.", Color.LIGHT_GRAY));
 		}
 		boolean marked = view.getMarkedDone().contains(c.getId());
 		if (r.getKillCount() == 0 || marked)
@@ -261,40 +286,28 @@ public class PvmProgressionPanel extends PluginPanel
 		return text("✘ " + i.getName() + (i.isRequired() ? "" : " (optional)"), i.isRequired() ? BAD : WARN);
 	}
 
-	// ---- The whole ladder ----
-
-	private void ladderList(Readiness shown)
+	/**
+	 * Dropdown rows: "70  Barrows (ready)", coloured by status.
+	 */
+	private static class PickerRenderer extends DefaultListCellRenderer
 	{
-		content.add(header("All combat content"));
-		content.add(text("Click one to see what it needs.", MUTED));
-		Tier tier = null;
-		for (Readiness r : ladder)
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean selected,
+			boolean focused)
 		{
-			if (r.getContent().getTier() != tier)
+			super.getListCellRendererComponent(list, value, index, selected, focused);
+			if (value instanceof Readiness)
 			{
-				tier = r.getContent().getTier();
-				content.add(section(tier.getLabel()));
-			}
-			String mark = r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
-			JLabel line = text(mark + r.getContent().getName() + " (" + r.getStatus().getLabel().toLowerCase() + ")",
-				statusColor(r.getStatus()));
-			if (r == shown)
-			{
-				line.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, Color.WHITE));
-			}
-			line.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			String id = r.getContent().getId();
-			line.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
+				Readiness r = (Readiness) value;
+				String mark = r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
+				setText(mark + r.getContent().getLevel() + "  " + r.getContent().getName() + " ("
+					+ r.getStatus().getLabel().toLowerCase() + ")");
+				if (!selected)
 				{
-					Readiness next = Readiness.next(ladder);
-					pickedId = next != null && next.getContent().getId().equals(id) ? null : id;
-					rebuild();
+					setForeground(statusColor(r.getStatus()));
 				}
-			});
-			content.add(line);
+			}
+			return this;
 		}
 	}
 
@@ -314,14 +327,6 @@ public class PvmProgressionPanel extends PluginPanel
 			default:
 				return BAD;
 		}
-	}
-
-	private static JLabel header(String s)
-	{
-		JLabel l = new JLabel(s);
-		l.setFont(FontManager.getRunescapeBoldFont());
-		l.setForeground(HINT);
-		return left(l);
 	}
 
 	private static JLabel section(String s)
