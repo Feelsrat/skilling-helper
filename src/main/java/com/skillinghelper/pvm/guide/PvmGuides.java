@@ -516,9 +516,18 @@ public final class PvmGuides
 			.stage(Stage.builder()
 				.title("Work through the waves")
 				.committed(true)
-				.line("Stand in a safe spot behind the rocks so melee monsters can't reach you, and kill the "
-					+ "ranged and magic ones first.")
+				.line("Usual kill order: Ket-Zek, then Tok-Xil (they hit from range), then Yt-MejKot before it heals "
+					+ "the rest, then the Tz-Kek and Tz-Kih. Kill a Tz-Kih fast if it reaches you.")
+				.line("Safespots: stand so a rock pillar is between you and the melee monsters, so they get stuck "
+					+ "behind it while you shoot over. The wiki strategy page has pictures of the usual ones; mark "
+					+ "yours once with Ground Markers (shift + right-click a tile).")
 				.line("Logging out between waves saves your progress. Wave 63 is TzTok-Jad.")
+				.highlight(Target.npc(null, "Ket-Zek"))
+				.highlight(Target.npc(null, "Tok-Xil"))
+				.highlight(Target.npc(null, "Yt-MejKot"))
+				.highlight(Target.npc(null, "Tz-Kek"))
+				.highlight(Target.npc(null, "Tz-Kih"))
+				.live(FightCave::lines)
 				.build())
 			.fight(Fight.builder()
 				.boss("TzTok-Jad")
@@ -526,6 +535,7 @@ public final class PvmGuides
 				.note("TzTok-Jad", "Jad switches between a magic and a ranged attack; you have to read his animation "
 					+ "yourself.")
 				.tip("Pray against what's hitting you; Jad's prayer switches are up to you (no helpers allowed).")
+				.live(FightCave::supplyLine)
 				.build())
 			.profit(Profit.reward("The fire cape, and Tokkul"))
 			.build(),
@@ -868,7 +878,7 @@ public final class PvmGuides
 		return p != null && p.getX() >= 2240 && p.getX() <= 2303 && p.getY() >= 4672 && p.getY() <= 4735;
 	}
 
-	static boolean inFightCave(GuideState s)
+	public static boolean inFightCave(GuideState s)
 	{
 		return s.getLocation() != null && s.getLocation().getRegionID() == 9551;
 	}
@@ -923,6 +933,51 @@ public final class PvmGuides
 	{
 		WorldPoint p = s.getLocation();
 		return p != null && p.getX() >= 2816 && p.getX() <= 2943 && p.getY() >= 5248 && p.getY() <= 5375;
+	}
+
+	/**
+	 * The Fight Cave wave list plus how many doses of each potion the player has left.
+	 */
+	static final class FightCave
+	{
+		private static final Option[] POTIONS = {
+			Option.of("prayer", ItemID._4DOSEPRAYERRESTORE, ItemID._3DOSEPRAYERRESTORE, ItemID._2DOSEPRAYERRESTORE,
+				ItemID._1DOSEPRAYERRESTORE),
+			Option.of("restore", ItemID._4DOSE2RESTORE, ItemID._3DOSE2RESTORE, ItemID._2DOSE2RESTORE,
+				ItemID._1DOSE2RESTORE),
+			Option.of("brew", ItemID._4DOSEPOTIONOFSARADOMIN, ItemID._3DOSEPOTIONOFSARADOMIN,
+				ItemID._2DOSEPOTIONOFSARADOMIN, ItemID._1DOSEPOTIONOFSARADOMIN),
+		};
+
+		static List<String> lines(GuideState s)
+		{
+			List<String> lines = new ArrayList<>(FightCaveWaves.lines(s));
+			lines.addAll(supplyLine(s));
+			return lines;
+		}
+
+		/**
+		 * e.g. "Left: 31 prayer doses, 8 restore doses, 20 brew doses". Ids are listed 4-dose first.
+		 */
+		static List<String> supplyLine(GuideState s)
+		{
+			List<String> parts = new ArrayList<>();
+			for (Option potion : POTIONS)
+			{
+				int doses = 0;
+				int[] ids = potion.getIds();
+				for (int i = 0; i < ids.length; i++)
+				{
+					doses += s.inventory(ids[i]) * (4 - i);
+				}
+				if (doses > 0)
+				{
+					parts.add(doses + " " + potion.getName() + " doses");
+				}
+			}
+			return parts.isEmpty() ? List.of("No prayer, restore or brew doses left.")
+				: List.of("Left: " + String.join(", ", parts));
+		}
 	}
 
 	/**

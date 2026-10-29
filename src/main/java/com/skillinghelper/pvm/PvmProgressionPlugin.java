@@ -8,6 +8,7 @@ import com.skillinghelper.pvm.data.ItemNeed;
 import com.skillinghelper.pvm.data.PvmContent;
 import com.skillinghelper.pvm.data.PvmLadder;
 import com.skillinghelper.pvm.data.QuestReq;
+import com.skillinghelper.pvm.guide.FightCaveWaves;
 import com.skillinghelper.pvm.guide.Gear;
 import com.skillinghelper.pvm.guide.GuideResolver;
 import com.skillinghelper.pvm.guide.GuideState;
@@ -72,6 +73,7 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
+import net.runelite.client.util.Text;
 
 /**
  * Recommends the next boss or raid to work towards from your stats, quests and kill counts, and guides you through
@@ -298,7 +300,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			hiscoresChecked = false;
-			guideFlags.clear();
+			// Logging out between Fight Cave waves keeps the player's place, so keep the wave too
+			guideFlags.removeIf(f -> !f.startsWith(FightCaveWaves.WAVE_FLAG));
 			bankOpen = false;
 			showRoute(null);
 		}
@@ -402,6 +405,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	{
 		if (e.getType() != ChatMessageType.GAMEMESSAGE && e.getType() != ChatMessageType.SPAM)
 		{
+			return;
+		}
+		int wave = FightCaveWaves.parseWave(Text.removeTags(e.getMessage()));
+		if (wave > 0)
+		{
+			guideFlags.removeIf(f -> f.startsWith(FightCaveWaves.WAVE_FLAG));
+			guideFlags.add(FightCaveWaves.WAVE_FLAG + wave);
+			dirty = true;
 			return;
 		}
 		KillCountParser.Kill kill = KillCountParser.parse(e.getMessage(), PvmLadder.ALL);
@@ -594,6 +605,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		}
 		GuideState state = guideState();
 		trackBarrows(state);
+		if (!PvmGuides.inFightCave(state))
+		{
+			guideFlags.removeIf(f -> f.startsWith(FightCaveWaves.WAVE_FLAG));
+		}
 		LoadoutPlan plan = LoadoutPlan.of(guide, state, prices);
 		PvmStep next = GuideResolver.resolve(guide, guideContent.getName(), state, plan);
 		showRoute(next.getDestination());
