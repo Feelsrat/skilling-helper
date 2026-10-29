@@ -511,6 +511,8 @@ public final class PvmGuides
 				.place(FIGHT_CAVE_ENTRANCE)
 				.line("Get to the TzHaar city (fairy ring B-L-P, or the Karamja volcano) and enter the cave in "
 					+ "the north-west.")
+				.line("There's no bank inside, so check the loadout above is complete before you go in. The cave is a "
+					+ "safe minigame: if you die you keep your items.")
 				.highlight(Target.object("Enter", "Cave entrance"))
 				.build())
 			.stage(Stage.builder()
@@ -537,6 +539,13 @@ public final class PvmGuides
 					+ "yourself.")
 				.tip("Pray against what's hitting you; Jad's prayer switches are up to you (no helpers allowed).")
 				.tip("Before Jad: top up your prayer and drink a ranging potion so the boost lasts the fight.")
+				.tip("Learn Jad's two tells from the wiki videos before you go: he rears up and breathes fire for "
+					+ "magic, and slams the ground for ranged.")
+				.tip("Stay out of melee range: next to you he can also stomp.")
+				.tip("At half health four Yt-HurKot heal him. Hit each one once so they follow you instead, then go "
+					+ "back to Jad.")
+				.tip("Mark your safespots once with Ground Markers (shift + right-click a tile); they stay for every "
+					+ "trip.")
 				.live(FightCave::fightLines)
 				.build())
 			.profit(Profit.reward("The fire cape, and Tokkul"))
