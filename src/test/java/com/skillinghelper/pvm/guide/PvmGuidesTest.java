@@ -174,4 +174,60 @@ public class PvmGuidesTest
 		}
 		return b;
 	}
+
+	@Test
+	public void everyGuideHasStepsBeyondTravel()
+	{
+		for (PvmGuide g : PvmGuides.ALL)
+		{
+			assertFalse(g.getContentId(), g.getStages().isEmpty());
+		}
+	}
+
+	@Test
+	public void moonsGoThroughEachMoonThenTheChest()
+	{
+		GuideState.GuideStateBuilder b = player(75).bank(Map.of()).location(new WorldPoint(1440, 9600, 0))
+			.inv(ItemID._4DOSEMOONLIGHTPOTION, 4);
+		assertEquals("Kill the Blood Moon", step("moons_of_peril", ready("moons_of_peril", b).build()).getTitle());
+		b.varbit(VarbitID.PMOON_BOSS_BLOOD_DEAD, 1).varbit(VarbitID.PMOON_BOSS_BLUE_DEAD, 1)
+			.varbit(VarbitID.PMOON_BOSS_ECLIPSE_DEAD, 1);
+		assertEquals("Open the Lunar Chest", step("moons_of_peril", ready("moons_of_peril", b).build()).getTitle());
+	}
+
+	@Test
+	public void gauntletCountsResourcesInside()
+	{
+		GuideState s = player(80).bank(Map.of()).location(new WorldPoint(1900, 5700, 1))
+			.inv(ItemID.GAUNTLET_CRYSTAL_SHARD, 120).npc("crystalline bat", 2).build();
+		PvmStep step = step("gauntlet", s);
+		assertEquals("Gather resources", step.getTitle());
+		assertTrue(step.getLines().contains("• Shards: 120/400"));
+	}
+
+	@Test
+	public void zulrahStartsWithTheTripThere()
+	{
+		GuideState.GuideStateBuilder b = player(85).bank(Map.of()).location(VARROCK_SQUARE);
+		PvmStep step = step("zulrah", ready("zulrah", b).build());
+		assertEquals("Go to Zul-Andra", step.getTitle());
+		assertNotNull(step.getDestination());
+	}
+
+	/**
+	 * Carries and wears the whole loadout, as if the player had just banked.
+	 */
+	private static GuideState.GuideStateBuilder ready(String id, GuideState.GuideStateBuilder b)
+	{
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent(id), b.build(), PRICES);
+		for (LoadoutPlan.GearLine g : plan.getGear())
+		{
+			b.wearing(g.getItemId(), 1);
+		}
+		for (LoadoutPlan.SupplyLine l : plan.getSupplies())
+		{
+			b.inv(l.getSupply().getOptions().get(0).getIds()[0], l.getAmount());
+		}
+		return b;
+	}
 }

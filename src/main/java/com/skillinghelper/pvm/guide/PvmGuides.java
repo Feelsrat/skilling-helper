@@ -31,6 +31,24 @@ public final class PvmGuides
 	private static final Location VARROCK_SEWERS = Location.of("the Varrock Sewers manhole", 3237, 3458, 3);
 	private static final Location FALADOR_PARK = Location.of("Falador Park", 2989, 3378, 10);
 
+	private static final Location PORT_SARIM_PC_DOCK = Location.of("the Pest Control boat in Port Sarim", 3041,
+		3202, 4);
+	private static final Location NOVICE_GANGPLANK = Location.of("the novice lander", 2657, 2639, 2);
+	private static final Location NOVICE_LANDER = Location.of("the novice lander deck", 2661, 2640, 2);
+	private static final Location EDGEVILLE_LEVER = Location.of("the Edgeville lever", 3090, 3475, 3);
+	private static final Location KALPHITE_LAIR_ENTRANCE = Location.of("the Kalphite Lair entrance", 3226, 3108, 4);
+	private static final Location ZUL_ANDRA = Location.of("Zul-Andra", 2199, 3056, 20);
+	private static final Location FIGHT_CAVE_ENTRANCE = Location.of("the Fight Cave entrance", 2438, 5168, 4);
+	private static final Location RELLEKKA_PIER = Location.of("Torfinn on the Rellekka pier", 2640, 3696, 4);
+	private static final Location NECROPOLIS = Location.of("the Necropolis", 3355, 2725, 25);
+	private static final Location QUIDAMORTEM = Location.of("Mount Quidamortem", 1233, 3565, 15);
+	private static final Location VER_SINHAZA = Location.of("Ver Sinhaza", 3650, 3219, 15);
+	private static final Location BARBARIAN_OUTPOST = Location.of("the Barbarian Outpost", 2531, 3577, 12);
+	private static final int[] MOONLIGHT_POTIONS = {
+		ItemID._4DOSEMOONLIGHTPOTION, ItemID._3DOSEMOONLIGHTPOTION, ItemID._2DOSEMOONLIGHTPOTION,
+		ItemID._1DOSEMOONLIGHTPOTION,
+	};
+
 	private static final GearSlot ANTI_DRAGON_SHIELD = GearSlot.of("shield",
 		buy("Dragonfire shield", Skill.DEFENCE, 75, 0, true, ItemID.DRAGONFIRE_SHIELD),
 		buy("Dragonfire ward", Skill.DEFENCE, 75, 0, true, ItemID.DRAGONFIRE_WARD),
@@ -135,9 +153,34 @@ public final class PvmGuides
 			.gear(GearSets.melee())
 			.budget(500_000)
 			.supply(Supplies.food(Supplies.LOBSTERS, 10))
-			.arrival("Cross the gangplank onto the novice boat (combat 40+) and wait for a game.")
-			.arrival("In the game: kill the pests near the portals and the portals once their shields drop.")
-			.enter(Target.object("Cross", "Gangplank"))
+			.inside(PvmGuides::inPestControlGame)
+			.stage(Stage.builder()
+				.title("Take the boat to the Void Knights' Outpost")
+				.when(s -> !atVoidOutpost(s) && !inPestControlGame(s))
+				.place(PORT_SARIM_PC_DOCK)
+				.line("Talk to the squire on the Port Sarim docks and travel to the outpost.")
+				.highlight(Target.npc("Travel", "Squire"))
+				.build())
+			.stage(Stage.builder()
+				.title("Board the novice lander")
+				.when(s -> atVoidOutpost(s) && !NOVICE_LANDER.contains(s.getLocation()))
+				.place(NOVICE_GANGPLANK)
+				.line("Cross the gangplank of the novice lander (combat 40+). Higher landers give more points but "
+					+ "need combat 70 and 100.")
+				.highlight(Target.object("Cross", "Gangplank"))
+				.build())
+			.stage(Stage.builder()
+				.title("Wait for the game")
+				.when(s -> NOVICE_LANDER.contains(s.getLocation()))
+				.line("The game starts once enough players are on board. Stay on the boat.")
+				.build())
+			.stage(Stage.builder()
+				.title("Defend the Void Knight")
+				.committed(true)
+				.line("Go to a portal with the group. Kill pests near it; once its shield drops, kill the portal.")
+				.line("Deal at least 50 damage in the game or you get no points.")
+				.highlight(Target.npc("Attack", "Portal"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Portal")
 				.add(new Fight.Add("Spinner", "Spinners are up: they heal the portal, kill them first."))
@@ -234,9 +277,29 @@ public final class PvmGuides
 			.contentId("barbarian_assault")
 			.gear(GearSets.melee())
 			.budget(2_000_000)
-			.arrival("Head down the ladder in the Barbarian Outpost and join a team of five in the lobby.")
-			.arrival("Most players find teams in the official BA clan chat or on world 306.")
-			.enter(Target.object(null, "Ladder"))
+			.stage(Stage.builder()
+				.title("Go to the Barbarian Outpost")
+				.when(s -> !BARBARIAN_OUTPOST.contains(s.getLocation()) && PvmGuides.surface(s))
+				.place(BARBARIAN_OUTPOST)
+				.line("A games necklace teleports you to the Barbarian Outpost.")
+				.build())
+			.stage(Stage.builder()
+				.title("Go down to the lobby")
+				.when(PvmGuides::surface)
+				.line("Talk to Captain Cain the first time for the tutorial, then climb down the ladder.")
+				.highlight(Target.npc(null, "Captain Cain"))
+				.highlight(Target.object("Climb-down", "Ladder"))
+				.build())
+			.stage(Stage.builder()
+				.title("Play the waves")
+				.line("Join a team of five (the official BA clan chat or world 306) and pick a role: attacker, "
+					+ "defender, collector or healer. Your team leader calls what each role does.")
+				.line("Ten waves end with the Penance Queen. Points per role buy the fighter torso and other gear.")
+				.build())
+			.fight(Fight.builder()
+				.boss("Penance Queen")
+				.note("Penance Queen", "Penance Queen: the collector's eggs from the cannon are what hurts her.")
+				.build())
 			.profit(Profit.reward("Fighter torso and the Penance gear from honour points"))
 			.build(),
 
@@ -246,13 +309,27 @@ public final class PvmGuides
 			.budget(10_000_000)
 			.supply(Supplies.prayerPotions(4))
 			.supply(Supplies.meleeBoost(1))
+			.supply(Supplies.teleport("House teleports", 1, Option.of("Teleport to house tablets",
+				ItemID.POH_TABLET_TELEPORTTOHOUSE)).note("To bank after"))
 			.supply(Supplies.food(Supplies.MONKFISH))
-			.arrival("Go through the thick web in Forthos Dungeon to reach Sarachnis' lair.")
-			.enter(Target.object(null, "Thick Web"))
+			.stage(Stage.builder()
+				.title("Go to Forthos Dungeon")
+				.when(PvmGuides::surface)
+				.line("Forthos Dungeon is under the ruins south of Hosidius in Great Kourend. Kharedst's memoirs "
+					+ "or the Hosidius house portal get you close.")
+				.line("Climb down into the ruins, then follow the dungeon east to the thick web.")
+				.highlight(Target.object(null, "Stairs"))
+				.build())
+			.stage(Stage.builder()
+				.title("Go through the thick web")
+				.line("Slash or walk through the thick web into Sarachnis' lair.")
+				.highlight(Target.object(null, "Thick Web"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Sarachnis")
 				.add(new Fight.Add("Spawn of Sarachnis", "Her spawn are up: kill them so they don't add damage."))
-				.tip("Pray Protect from Melee; she switches to ranged when you're not next to her.")
+				.note("Sarachnis", "She uses melee when you're next to her and ranged when you're not.")
+				.tip("Pray Protect from Melee and stay next to her.")
 				.tip("She calls her spawn at two-thirds and one-third of her health.")
 				.build())
 			.profit(Profit.gp(900_000, "Sarachnis cudgel, jar and steady herb and rune drops"))
@@ -265,13 +342,28 @@ public final class PvmGuides
 			.supply(Supplies.cheapAntifire(1).note("With the shield, this blocks his dragonfire fully"))
 			.supply(Supplies.prayerPotions(2))
 			.supply(Supplies.food(Supplies.SWORDFISH))
-			.arrival("Pull the lever in Edgeville to reach the Deserted Keep, then pull the lever there to enter "
-				+ "the lair. It's deep Wilderness: only bring what you can lose.")
-			.enter(Target.object("Pull", "Lever"))
+			.stage(Stage.builder()
+				.title("Pull the Edgeville lever")
+				.when(s -> !inWilderness(s) && !inKbdLair(s))
+				.place(EDGEVILLE_LEVER)
+				.line("The lever in the ruined house north of Edgeville bank takes you to the Deserted Keep "
+					+ "(level 54 Wilderness). Only bring what you can lose.")
+				.highlight(Target.object("Pull", "Lever"))
+				.build())
+			.stage(Stage.builder()
+				.title("Pull the lever to the lair")
+				.when(s -> inWilderness(s))
+				.line("Pull the lever inside the Deserted Keep to drop into the King Black Dragon's lair. Drink "
+					+ "your antifire first.")
+				.line("Watch for player killers: if someone attacks, teleport out.")
+				.highlight(Target.object("Pull", "Lever"))
+				.build())
 			.fight(Fight.builder()
 				.boss("King Black Dragon")
+				.note("King Black Dragon", "His dragonfire can poison, freeze or shock you; the shield and "
+					+ "antifire cover the fire damage.")
 				.tip("Wear the anti-dragon shield and drink the antifire before going in.")
-				.tip("Pray Protect from Melee; his breath attacks are covered by the shield and potion.")
+				.tip("Pray Protect from Melee.")
 				.build())
 			.profit(Profit.gp(500_000, "Dragon bones, black dragonhides and the KBD heads for Slayer"))
 			.build(),
@@ -281,11 +373,56 @@ public final class PvmGuides
 			.gear(GearSets.melee())
 			.budget(10_000_000)
 			.supply(Supplies.prayerPotions(4))
-			.supply(Supplies.food(Supplies.SHARKS, 10))
-			.arrival("In Neypotzli, use the supply area to catch and cook bream and make moonlight potions.")
-			.arrival("Each moon has its own room; kill all three, then loot the Lunar Chest.")
+			.supply(Supplies.food(Supplies.SHARKS, 8))
+			.watch(VarbitID.PMOON_BOSS_BLOOD_DEAD).watch(VarbitID.PMOON_BOSS_BLUE_DEAD)
+			.watch(VarbitID.PMOON_BOSS_ECLIPSE_DEAD)
+			.stage(Stage.builder()
+				.title("Go to Neypotzli")
+				.when(PvmGuides::surface)
+				.line("Take the quetzal to Cam Torum, then go down into Neypotzli, the moons' temple.")
+				.build())
+			.stage(Stage.builder()
+				.title("Make supplies at the camp")
+				.when(s -> s.carried(MOONLIGHT_POTIONS) == 0 && s.carried(ItemID.BREAM_FISH_COOKED) == 0
+					&& moonsDone(s) == 0)
+				.line("In the supply area: catch bream with a big fishing net and cook it on the fire.")
+				.line("Grind moonlight grubs into paste with a pestle and mortar and add it to vials of water for "
+					+ "moonlight potions. Aim for about 4 potions and 10 bream.")
+				.live(PvmGuides::moonSupplies)
+				.build())
+			.stage(Stage.builder()
+				.title("Kill the Blood Moon")
+				.when(s -> s.varbit(VarbitID.PMOON_BOSS_BLOOD_DEAD) == 0)
+				.line("Go through the Blood Moon's statue room door and fight her.")
+				.highlight(Target.object(null, "Statue"))
+				.live(PvmGuides::moonProgress)
+				.build())
+			.stage(Stage.builder()
+				.title("Kill the Blue Moon")
+				.when(s -> s.varbit(VarbitID.PMOON_BOSS_BLUE_DEAD) == 0)
+				.line("Go to the Blue Moon's room and fight her.")
+				.highlight(Target.object(null, "Statue"))
+				.live(PvmGuides::moonProgress)
+				.build())
+			.stage(Stage.builder()
+				.title("Kill the Eclipse Moon")
+				.when(s -> s.varbit(VarbitID.PMOON_BOSS_ECLIPSE_DEAD) == 0)
+				.line("Go to the Eclipse Moon's room and fight her.")
+				.highlight(Target.object(null, "Statue"))
+				.live(PvmGuides::moonProgress)
+				.build())
+			.stage(Stage.builder()
+				.title("Open the Lunar Chest")
+				.line("All three are down: loot the Lunar Chest in the middle of the temple.")
+				.highlight(Target.object(null, "Lunar Chest"))
+				.live(PvmGuides::moonProgress)
+				.build())
 			.fight(Fight.builder()
 				.boss("Blood Moon").boss("Blue Moon").boss("Eclipse Moon")
+				.live(PvmGuides::moonProgress)
+				.note("Blood Moon", "Blood Moon: she drains you and spawns blood pools around the room.")
+				.note("Blue Moon", "Blue Moon: she freezes the room and sends icicles; the braziers stop the freeze.")
+				.note("Eclipse Moon", "Eclipse Moon: she spins clones and a shield around the arena.")
 				.tip("Melee all three. Each moon has one special attack you learn to walk around.")
 				.build())
 			.profit(Profit.gp(1_600_000, "Moon armour pieces and supplies from the Lunar Chest"))
@@ -300,10 +437,25 @@ public final class PvmGuides
 			.supply(Supplies.meleeBoost(1))
 			.supply(Supplies.antidote(1))
 			.supply(Supplies.food(Supplies.SHARKS))
-			.arrival("Climb down the tunnel to the Kalphite Lair and head for the Queen's room.")
-			.enter(Target.object(null, "Tunnel"))
+			.stage(Stage.builder()
+				.title("Go to the Kalphite Lair")
+				.when(PvmGuides::surface)
+				.place(KALPHITE_LAIR_ENTRANCE)
+				.line("Fairy ring B-I-Q lands right next to the entrance in the desert.")
+				.line("Climb down the tunnel (the first time, use a rope on it).")
+				.highlight(Target.object(null, "Tunnel"))
+				.use(ItemID.ROPE)
+				.build())
+			.stage(Stage.builder()
+				.title("Go down to the Queen's chamber")
+				.line("Head through the lair to the second entrance and climb down to the Queen (rope it the first "
+					+ "time). Kalphite guards on the way are aggressive.")
+				.highlight(Target.object(null, "Tunnel"))
+				.highlight(Target.object(null, "Crevice"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Kalphite Queen")
+				.note("Kalphite Queen", "Two forms: when the first dies she transforms and heals to full.")
 				.tip("A Verac's flail or a keris works well on both of her forms.")
 				.tip("Protect from Magic is the usual prayer; her magic hits everyone nearby.")
 				.build())
@@ -317,16 +469,28 @@ public final class PvmGuides
 			.supply(Supplies.antiVenom(2))
 			.supply(Supplies.prayerPotions(4))
 			.supply(Supplies.rangingPotions(1))
-			.supply(Supplies.teleport("Zul-andra teleports", 1, Option.of("Zul-andra teleport scrolls",
-				ItemID.TELEPORTSCROLL_ZULANDRA)))
+			.supply(Supplies.teleport("Zul-andra teleports", 2, Option.of("Zul-andra teleport scrolls",
+				ItemID.TELEPORTSCROLL_ZULANDRA)).note("One to get there, one for next time"))
 			.supply(Supplies.food(Supplies.SHARKS))
-			.arrival("Take the boat from the jetty in Zul-Andra to Zulrah's shrine.")
-			.enter(Target.object(null, "Sacrificial boat"))
+			.stage(Stage.builder()
+				.title("Go to Zul-Andra")
+				.when(s -> !ZUL_ANDRA.contains(s.getLocation()))
+				.place(ZUL_ANDRA)
+				.line("Read a Zul-andra teleport scroll, or take fairy ring B-J-S and walk west.")
+				.use(ItemID.TELEPORTSCROLL_ZULANDRA)
+				.build())
+			.stage(Stage.builder()
+				.title("Board the sacrificial boat")
+				.line("Drink an anti-venom, then take the sacrificial boat at the jetty to Zulrah's shrine.")
+				.highlight(Target.object(null, "Sacrificial boat"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Zulrah")
 				.add(new Fight.Add("Snakeling", "Snakelings are up: they're weak, kill them if they get in your way."))
+				.note("Zulrah", "Zulrah changes form and spot as she dives; her clouds poison the tiles they land on.")
 				.tip("Learn the rotations from the wiki before you go; this plugin won't call them out (Jagex rules).")
 				.tip("Ranged works on every form; most players add a magic weapon for the green form.")
+				.tip("If you die, Priestess Zul-Gwenwynig in Zul-Andra keeps your items for a fee.")
 				.build())
 			.profit(Profit.gp(2_500_000, "Zulrah's scales, uniques and steady drops"))
 			.build(),
@@ -340,14 +504,28 @@ public final class PvmGuides
 			.supply(Supplies.brews(8))
 			.supply(Supplies.superRestores(4))
 			.supply(Supplies.food(Supplies.SHARKS))
-			.arrival("Enter the cave in the north-west of Mor Ul Rek's outer city.")
-			.enter(Target.object("Enter", "Cave entrance"))
+			.inside(PvmGuides::inFightCave)
+			.stage(Stage.builder()
+				.title("Enter the Fight Cave")
+				.when(s -> !inFightCave(s))
+				.place(FIGHT_CAVE_ENTRANCE)
+				.line("Get to the TzHaar city (fairy ring B-L-P, or the Karamja volcano) and enter the cave in "
+					+ "the north-west.")
+				.highlight(Target.object("Enter", "Cave entrance"))
+				.build())
+			.stage(Stage.builder()
+				.title("Work through the waves")
+				.committed(true)
+				.line("Stand in a safe spot behind the rocks so melee monsters can't reach you, and kill the "
+					+ "ranged and magic ones first.")
+				.line("Logging out between waves saves your progress. Wave 63 is TzTok-Jad.")
+				.build())
 			.fight(Fight.builder()
 				.boss("TzTok-Jad")
 				.add(new Fight.Add("Yt-HurKot", "Jad's healers are up: hit each one once so they follow you."))
-				.tip("63 waves. Pray against what's hitting you; Jad's prayer switches are up to you (no helpers "
-					+ "allowed).")
-				.tip("Logging out after a wave saves your progress at the next wave.")
+				.note("TzTok-Jad", "Jad switches between a magic and a ranged attack; you have to read his animation "
+					+ "yourself.")
+				.tip("Pray against what's hitting you; Jad's prayer switches are up to you (no helpers allowed).")
 				.build())
 			.profit(Profit.reward("The fire cape, and Tokkul"))
 			.build(),
@@ -363,12 +541,24 @@ public final class PvmGuides
 			.supply(Supplies.teleport("House teleports", 1, Option.of("Teleport to house tablets",
 				ItemID.POH_TABLET_TELEPORTTOHOUSE)))
 			.supply(Supplies.food(Supplies.SHARKS))
-			.arrival("Talk to Torfinn on the Rellekka pier to sail to Ungael, then climb over the ice chunks.")
-			.enter(Target.npc("Travel", "Torfinn"))
+			.stage(Stage.builder()
+				.title("Sail to Ungael")
+				.when(s -> !onUngael(s))
+				.place(RELLEKKA_PIER)
+				.line("Talk to Torfinn on the pier north of Rellekka and travel to Ungael.")
+				.highlight(Target.npc("Travel", "Torfinn"))
+				.build())
+			.stage(Stage.builder()
+				.title("Climb over the ice")
+				.line("Drink your antifire and anti-venom, then climb over the ice chunks to wake Vorkath.")
+				.highlight(Target.object(null, "Ice chunks"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Vorkath")
 				.add(new Fight.Add("Zombified Spawn", "The zombified spawn is up: kill it before it reaches you "
 					+ "(Crumble Undead does it in one cast)."))
+				.note("Vorkath", "Between normal attacks he does an acid phase (keep walking) and a freeze with the "
+					+ "zombified spawn.")
 				.tip("Bring runes for Crumble Undead (or a rune pouch) for the spawn.")
 				.tip("Keep moving during the acid phase; this plugin won't mark tiles for you (Jagex rules).")
 				.build())
@@ -411,10 +601,43 @@ public final class PvmGuides
 		PvmGuide.builder()
 			.contentId("gauntlet")
 			.gear(List.of())
-			.arrival("Bring nothing: you gather and craft all your gear and food inside.")
-			.arrival("Enter the Gauntlet in north-east Prifddinas and pick the normal or corrupted version.")
+			.tracked(List.of(Gauntlet.MONSTERS))
+			.inside(PvmGuides::inGauntlet)
+			.stage(Stage.builder()
+				.title("Enter the Gauntlet")
+				.when(s -> !inGauntlet(s))
+				.line("Bank everything: you can't bring items in. Use a crystal teleport seed or walk to the "
+					+ "north-east of Prifddinas.")
+				.line("Enter the Gauntlet and pick the normal or corrupted version.")
+				.highlight(Target.object(null, "The Gauntlet"))
+				.build())
+			.stage(Stage.builder()
+				.title("Gather resources")
+				.when(s -> !Gauntlet.prepped(s))
+				.committed(true)
+				.line("Kill the small monsters for shards and the three demi-bosses for weapon frames. Mine, chop, "
+					+ "pick and fish the resource spots. A common target (from memory):")
+				.live(Gauntlet::progress)
+				.highlight(Target.npc("Attack", "Crystalline Bear", "Crystalline Dark Beast", "Crystalline Dragon",
+					"Corrupted Bear", "Corrupted Dark Beast", "Corrupted Dragon"))
+				.build())
+			.stage(Stage.builder()
+				.title("Make your gear and supplies")
+				.committed(true)
+				.line("Back at the start room: use the singing bowl to make your armour, staff and bow. Cook the "
+					+ "paddlefish on the range and make egniol potions.")
+				.line("Then go through the barrier to the boss room.")
+				.highlight(Target.object(null, "Singing bowl"))
+				.highlight(Target.object(null, "Range"))
+				.highlight(Target.object(null, "Barrier"))
+				.live(Gauntlet::progress)
+				.build())
 			.fight(Fight.builder()
 				.boss("Crystalline Hunllef").boss("Corrupted Hunllef")
+				.note("Crystalline Hunllef", "The Hunllef changes its protection prayer and its attack style; "
+					+ "you have to count yourself.")
+				.note("Corrupted Hunllef", "The Hunllef changes its protection prayer and its attack style; "
+					+ "you have to count yourself.")
 				.tip("Hunllef switches its protection prayer every 6 hits you land and its attack style every 4 "
 					+ "attacks. Count them yourself; plugins can't help here (Jagex rules).")
 				.build())
@@ -429,7 +652,36 @@ public final class PvmGuides
 			.supply(Supplies.brews(4))
 			.supply(Supplies.superRestores(4))
 			.supply(Supplies.food(Supplies.SHARKS, 8))
-			.arrival("Start at the raid entrance in the Necropolis. Pick Entry Mode for your first runs.")
+			.stage(Stage.builder()
+				.title("Go to the Necropolis")
+				.when(s -> !NECROPOLIS.contains(s.getLocation()) && PvmGuides.surface(s))
+				.place(NECROPOLIS)
+				.line("Fairy ring A-K-P or the Pharaoh's sceptre takes you to the Necropolis.")
+				.build())
+			.stage(Stage.builder()
+				.title("Start a raid")
+				.when(PvmGuides::surface)
+				.line("Join or make a party at the raid entrance, set the raid level (Entry Mode to learn), "
+					+ "then enter.")
+				.highlight(Target.object(null, "Entry"))
+				.build())
+			.stage(Stage.builder()
+				.title("Pick a path")
+				.line("Four paths, each a puzzle room then a boss: Scabaras (Kephri), Het (Akkha), Crondis (Zebak) "
+					+ "and Apmeken (Ba-Ba). Finish all four, then the Wardens.")
+				.line("Grab supplies from the chests between rooms.")
+				.build())
+			.fight(Fight.builder()
+				.boss("Akkha").boss("Ba-Ba").boss("Kephri").boss("Zebak").boss("Tumeken's Warden")
+				.boss("Elidinis' Warden")
+				.note("Akkha", "Akkha: changes style, and spawns shadows at each quarter of health.")
+				.note("Ba-Ba", "Ba-Ba: slams, rolling boulders and baboons; stay out of the falling rocks.")
+				.note("Kephri", "Kephri: her shield must break first; kill the scarab swarms that heal her.")
+				.note("Zebak", "Zebak: push the blood clouds and jugs; waves come across the room.")
+				.note("Tumeken's Warden", "Wardens: damage the core when it's exposed, then fight the Warden.")
+				.note("Elidinis' Warden", "Wardens: damage the core when it's exposed, then fight the Warden.")
+				.tip("Entry Mode has no loot but no pressure either: learn every room there first.")
+				.build())
 			.profit(Profit.gp(3_500_000, "Uniques like the Osmumten's fang and lightbearer"))
 			.build(),
 
@@ -439,7 +691,34 @@ public final class PvmGuides
 			.budget(50_000_000)
 			.supply(Supplies.stamina(1))
 			.supply(Supplies.food(Supplies.SHARKS, 10))
-			.arrival("Go up Mount Quidamortem and join a learner team at the entrance; potions are made inside.")
+			.stage(Stage.builder()
+				.title("Go to Mount Quidamortem")
+				.when(s -> !QUIDAMORTEM.contains(s.getLocation()) && PvmGuides.surface(s))
+				.place(QUIDAMORTEM)
+				.line("Xeric's talisman (Xeric's Honour) or fairy ring C-I-R takes you there.")
+				.build())
+			.stage(Stage.builder()
+				.title("Start a raid")
+				.when(PvmGuides::surface)
+				.line("Join a learner team from the raids clan chat, then go down the steps at the chambers.")
+				.highlight(Target.object(null, "Chambers of Xeric"))
+				.build())
+			.stage(Stage.builder()
+				.title("Clear the rooms")
+				.line("Rooms come in a random order: combat rooms (bosses) and puzzle rooms. At the end is the "
+					+ "Great Olm.")
+				.line("Your team makes potions inside: someone farms and picks herbs, someone brews.")
+				.build())
+			.fight(Fight.builder()
+				.boss("Tekton").boss("Vasa Nistirio").boss("Vanguard").boss("Vespula").boss("Muttadile")
+				.boss("Great Olm")
+				.note("Tekton", "Tekton: big melee hits; he walks back to his anvil when out of combat.")
+				.note("Vasa Nistirio", "Vasa: kill the crystals he heals from, then hit him.")
+				.note("Vanguard", "Vanguards: three of them, keep their health close so none resets.")
+				.note("Vespula", "Vespula: kill the portal while she flies above.")
+				.note("Muttadile", "Muttadiles: the big one eats from the meat tree to heal.")
+				.note("Great Olm", "Olm: kill both hands, then the head. The hands come back if one dies alone.")
+				.build())
 			.profit(Profit.gp(4_000_000, "Points-based uniques, including the twisted bow"))
 			.build(),
 
@@ -451,21 +730,60 @@ public final class PvmGuides
 			.supply(Supplies.brews(6))
 			.supply(Supplies.superRestores(6))
 			.supply(Supplies.food(Supplies.SHARKS, 6))
-			.arrival("Start at Ver Sinhaza. Do Entry Mode with a team first.")
+			.stage(Stage.builder()
+				.title("Go to Ver Sinhaza")
+				.when(s -> !VER_SINHAZA.contains(s.getLocation()) && PvmGuides.surface(s))
+				.place(VER_SINHAZA)
+				.line("Drakan's medallion has a teleport straight there.")
+				.build())
+			.stage(Stage.builder()
+				.title("Start a raid")
+				.when(PvmGuides::surface)
+				.line("Form or join a party at the noticeboard and enter the theatre. Entry Mode to learn.")
+				.highlight(Target.object(null, "Theatre of Blood"))
+				.build())
+			.stage(Stage.builder()
+				.title("Clear the rooms")
+				.line("Six rooms in order: Maiden, Bloat, Nylocas, Sotetseg, Xarpus, then Verzik.")
+				.build())
+			.fight(Fight.builder()
+				.boss("The Maiden of Sugadinti").boss("Pestilent Bloat").boss("Nylocas Vasilias").boss("Sotetseg")
+				.boss("Xarpus").boss("Verzik Vitur")
+				.note("The Maiden of Sugadinti", "Maiden: freeze or kill the blood spawn before they reach her.")
+				.note("Pestilent Bloat", "Bloat: hit him while he walks, stay under him when he stops.")
+				.note("Nylocas Vasilias", "Nylocas: kill the waves with the matching style, then the boss.")
+				.note("Sotetseg", "Sotetseg: walk the hidden maze when the floor goes red.")
+				.note("Xarpus", "Xarpus: avoid the poison pools; don't attack while he faces you in the last phase.")
+				.note("Verzik Vitur", "Verzik: three phases, ending with her spider form.")
+				.build())
 			.profit(Profit.gp(4_500_000, "Scythe, rapier, sanguinesti staff and other uniques"))
 			.build(),
 
 		PvmGuide.builder()
 			.contentId("fortis_colosseum")
+			.track("Minimus")
 			.gear(GearSets.melee())
 			.budget(80_000_000)
 			.supply(Supplies.meleeBoost(1))
 			.supply(Supplies.brews(8))
 			.supply(Supplies.superRestores(8))
 			.supply(Supplies.food(Supplies.SHARKS))
-			.arrival("Enter the Fortis Colosseum in Civitas illa Fortis and pick a modifier before each wave.")
+			.stage(Stage.builder()
+				.title("Go to the Colosseum")
+				.when(s -> s.npc("Minimus") == 0)
+				.line("Take a quetzal or the Civitas illa Fortis teleport, then enter the Colosseum.")
+				.highlight(Target.object(null, "Colosseum entrance"))
+				.build())
+			.stage(Stage.builder()
+				.title("Start the waves")
+				.line("Talk to Minimus to start. Before each wave, pick one of the offered modifiers.")
+				.line("You can leave between waves and keep the rewards so far.")
+				.highlight(Target.npc(null, "Minimus"))
+				.build())
 			.fight(Fight.builder()
 				.boss("Sol Heredit")
+				.note("Sol Heredit", "Sol Heredit: spear and shield combos and growing lasers; stay calm and "
+					+ "move off the marked lines.")
 				.tip("Pick easy modifiers on your first runs; you can cash out between waves.")
 				.build())
 			.profit(Profit.gp(2_000_000, "Sunfire splinters, the Dizana's quiver and wave rewards"))
@@ -481,9 +799,20 @@ public final class PvmGuides
 			.supply(Supplies.brews(8))
 			.supply(Supplies.superRestores(12))
 			.supply(Supplies.food(Supplies.ANGLERFISH))
-			.arrival("Enter the Inferno in Mor Ul Rek, the inner TzHaar city.")
+			.stage(Stage.builder()
+				.title("Get into Mor Ul Rek")
+				.when(PvmGuides::surface)
+				.line("Go to the TzHaar city (fairy ring B-L-P) and into the inner city, Mor Ul Rek. You need a "
+					+ "fire cape on you to be let in.")
+				.build())
+			.stage(Stage.builder()
+				.title("Enter the Inferno")
+				.line("Jump into the Inferno in Mor Ul Rek and sacrifice your fire cape the first time.")
+				.highlight(Target.object(null, "The Inferno"))
+				.build())
 			.fight(Fight.builder()
 				.boss("TzKal-Zuk")
+				.note("TzKal-Zuk", "Zuk: keep the shield between you and him; healers and Jad come at set points.")
 				.tip("Practise the waves with the wiki's guide; no wave or prayer helpers are allowed.")
 				.build())
 			.profit(Profit.reward("The infernal cape"))
@@ -507,6 +836,74 @@ public final class PvmGuides
 	}
 
 	// ---- Places ----
+
+	/**
+	 * Above ground (not in a dungeon, cave city or instance far off the main map).
+	 */
+	static boolean surface(GuideState s)
+	{
+		return s.getLocation() != null && s.getLocation().getY() < 4500;
+	}
+
+	static boolean atVoidOutpost(GuideState s)
+	{
+		WorldPoint p = s.getLocation();
+		return p != null && p.getX() >= 2624 && p.getX() <= 2690 && p.getY() >= 2624 && p.getY() <= 2690;
+	}
+
+	static boolean inPestControlGame(GuideState s)
+	{
+		return s.getLocation() != null && s.getLocation().getRegionID() == 10536;
+	}
+
+	static boolean inWilderness(GuideState s)
+	{
+		WorldPoint p = s.getLocation();
+		return p != null && p.getX() >= 2944 && p.getX() <= 3391 && p.getY() >= 3520 && p.getY() <= 3967;
+	}
+
+	static boolean inKbdLair(GuideState s)
+	{
+		WorldPoint p = s.getLocation();
+		return p != null && p.getX() >= 2240 && p.getX() <= 2303 && p.getY() >= 4672 && p.getY() <= 4735;
+	}
+
+	static boolean inFightCave(GuideState s)
+	{
+		return s.getLocation() != null && s.getLocation().getRegionID() == 9551;
+	}
+
+	static boolean onUngael(GuideState s)
+	{
+		WorldPoint p = s.getLocation();
+		return p != null && p.getX() >= 2240 && p.getX() <= 2320 && p.getY() >= 3990 && p.getY() <= 4100;
+	}
+
+	static boolean inGauntlet(GuideState s)
+	{
+		return Gauntlet.inside(s);
+	}
+
+	static int moonsDone(GuideState s)
+	{
+		return s.varbit(VarbitID.PMOON_BOSS_BLOOD_DEAD) + s.varbit(VarbitID.PMOON_BOSS_BLUE_DEAD)
+			+ s.varbit(VarbitID.PMOON_BOSS_ECLIPSE_DEAD);
+	}
+
+	static List<String> moonProgress(GuideState s)
+	{
+		return List.of(
+			(s.varbit(VarbitID.PMOON_BOSS_BLOOD_DEAD) > 0 ? "✔ " : "✘ ") + "Blood Moon",
+			(s.varbit(VarbitID.PMOON_BOSS_BLUE_DEAD) > 0 ? "✔ " : "✘ ") + "Blue Moon",
+			(s.varbit(VarbitID.PMOON_BOSS_ECLIPSE_DEAD) > 0 ? "✔ " : "✘ ") + "Eclipse Moon");
+	}
+
+	static List<String> moonSupplies(GuideState s)
+	{
+		return List.of(
+			"Moonlight potions: " + s.carried(MOONLIGHT_POTIONS) + "/4",
+			"Cooked bream: " + s.carried(ItemID.BREAM_FISH_COOKED) + "/10");
+	}
 
 	static boolean inMoleLair(GuideState s)
 	{
@@ -671,6 +1068,73 @@ public final class PvmGuides
 		}
 
 		private Barrows()
+		{
+		}
+	}
+
+	/**
+	 * Preparation inside the Gauntlet, counted from the inventory. Normal and corrupted items share one target.
+	 */
+	static final class Gauntlet
+	{
+		private static final String[] MONSTERS = {
+			"Crystalline Bat", "Crystalline Bear", "Crystalline Dark Beast", "Crystalline Dragon", "Corrupted Bat",
+			"Corrupted Bear", "Corrupted Dark Beast", "Corrupted Dragon", "Crystalline Hunllef", "Corrupted Hunllef",
+		};
+
+		private static final Object[][] TARGETS = {
+			{"Shards", 400, new int[]{ItemID.GAUNTLET_CRYSTAL_SHARD, ItemID.GAUNTLET_CRYSTAL_SHARD_HM}},
+			{"Ore", 3, new int[]{ItemID.GAUNTLET_ORE, ItemID.GAUNTLET_ORE_HM}},
+			{"Phren bark", 3, new int[]{ItemID.GAUNTLET_BARK, ItemID.GAUNTLET_BARK_HM}},
+			{"Linum tirinum", 3, new int[]{ItemID.GAUNTLET_FIBRE, ItemID.GAUNTLET_FIBRE_HM}},
+			{"Weapon frames", 2, new int[]{ItemID.GAUNTLET_GENERIC_COMPONENT, ItemID.GAUNTLET_GENERIC_COMPONENT_HM}},
+			{"Grym leaves", 2, new int[]{ItemID.GAUNTLET_HERB, ItemID.GAUNTLET_HERB_HM}},
+			{"Raw paddlefish", 20, new int[]{ItemID.GAUNTLET_RAW_FOOD, ItemID.GAUNTLET_FOOD}},
+		};
+
+		static boolean inside(GuideState s)
+		{
+			for (String m : MONSTERS)
+			{
+				if (s.npc(m) > 0)
+				{
+					return true;
+				}
+			}
+			for (Object[] t : TARGETS)
+			{
+				if (s.carried((int[]) t[2]) > 0)
+				{
+					return true;
+				}
+			}
+			return s.carried(ItemID.GAUNTLET_TELEPORT_CRYSTAL, ItemID.GAUNTLET_TELEPORT_CRYSTAL_HM) > 0;
+		}
+
+		static boolean prepped(GuideState s)
+		{
+			for (Object[] t : TARGETS)
+			{
+				if (s.carried((int[]) t[2]) < (int) t[1])
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		static List<String> progress(GuideState s)
+		{
+			List<String> out = new ArrayList<>();
+			for (Object[] t : TARGETS)
+			{
+				int have = s.carried((int[]) t[2]);
+				out.add((have >= (int) t[1] ? "✔ " : "• ") + t[0] + ": " + have + "/" + t[1]);
+			}
+			return out;
+		}
+
+		private Gauntlet()
 		{
 		}
 	}

@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm.guide;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import lombok.Builder;
 import lombok.Singular;
@@ -30,6 +31,12 @@ public class Fight
 	 */
 	@Singular
 	List<String> tips;
+	/**
+	 * What a boss does, by NPC name, shown while it's in view (raids have one per room). Descriptions only: nothing
+	 * about when it attacks next or what to pray.
+	 */
+	@Singular
+	Map<String, String> notes;
 	/**
 	 * Progress lines during the fight, e.g. how many brothers are down. Never about what the boss does next.
 	 */

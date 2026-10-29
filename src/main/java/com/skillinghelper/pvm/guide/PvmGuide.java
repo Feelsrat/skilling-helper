@@ -57,6 +57,16 @@ public class PvmGuide
 	 */
 	@Builder.Default
 	Predicate<GuideState> inside = s -> false;
+	/**
+	 * Varbits the guide's stages read, e.g. which moons are dead.
+	 */
+	@Singular("watch")
+	List<Integer> watched;
+	/**
+	 * NPC names the stages check for besides the ones they highlight.
+	 */
+	@Singular("track")
+	List<String> tracked;
 
 	public List<Gear> allGear()
 	{

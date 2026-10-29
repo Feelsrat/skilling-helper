@@ -125,6 +125,13 @@ public final class GuideResolver
 				b.line(add.getText() + (alive > 1 ? " (" + alive + " up)" : ""));
 			}
 		}
+		for (Map.Entry<String, String> note : fight.getNotes().entrySet())
+		{
+			if (s.npc(note.getKey()) > 0)
+			{
+				b.line(note.getValue());
+			}
+		}
 		for (String line : fight.getLive().apply(s))
 		{
 			b.line(line);
@@ -400,6 +407,10 @@ public final class GuideResolver
 		for (Target t : all)
 		{
 			(t.getKind() == Target.Kind.NPC ? npcs : objects).addAll(t.getNames());
+		}
+		for (String name : guide.getTracked())
+		{
+			npcs.add(name.toLowerCase(java.util.Locale.ROOT));
 		}
 		if (guide.getFight() != null)
 		{

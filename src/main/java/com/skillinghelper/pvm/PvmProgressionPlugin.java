@@ -704,6 +704,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			{
 				varbits.put(v, client.getVarbitValue(v));
 			}
+			for (int v : guide.getWatched())
+			{
+				varbits.put(v, client.getVarbitValue(v));
+			}
 			b.varbits(varbits);
 			Map<String, Integer> npcs = new HashMap<>();
 			WorldPoint mine = me == null ? null : me.getWorldLocation();
