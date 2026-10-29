@@ -9,6 +9,7 @@ import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import java.util.ArrayList;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -22,6 +23,15 @@ final class CombatGuide
 	private static final String MELEE_F2P_WIKI = "Free-to-play_melee_training";
 	private static final String MELEE_P2P_WIKI = "Pay-to-play_melee_training";
 	private static final String RANGED_WIKI = "Ranged_training";
+	private static final String GEMSTONE_CRAB = "gemstone_crab";
+	/**
+	 * The Gemstone Crab burrows every 10 minutes and pops up at the next of these three spots, from the wiki.
+	 */
+	private static final Location[] GEMSTONE_CRAB_SPOTS = {
+		Location.of("Gemstone Crab (north)", 1275, 3160, 12),
+		Location.of("Gemstone Crab (east)", 1351, 3110, 12),
+		Location.of("Gemstone Crab (south)", 1237, 3042, 12),
+	};
 
 	/**
 	 * A monster worth training on.
@@ -80,6 +90,13 @@ final class CombatGuide
 			Location.of("Hosidius sand crab beach", 1740, 3468, 30),
 			"Very AFK: stand next to a few crabs and they wake up. Run away and back every 10 minutes when they "
 				+ "stop attacking you.", null, true, 40, 30_000, 60, 45_000, 80, 60_000, 99, 70_000),
+		// The crab can't die and takes any damage, so a "kill" here is ~100 damage at the reduced 3.5 xp per damage
+		new Monster(GEMSTONE_CRAB, "Gemstone Crab (Varlamore)", new String[]{"Gemstone Crab"}, 88, 1, 5_000, true,
+			GEMSTONE_CRAB_SPOTS[0],
+			"Very AFK and it never hits back. Every 10 minutes it burrows and moves to one of the other two spots: "
+				+ "crawl through the cave next to the old spot to come out at the new one. The top 16 damage dealers "
+				+ "can mine the shell afterwards for gems (bring any pickaxe).", null, true,
+			20, 18_000, 40, 35_000, 60, 52_000, 80, 70_000, 99, 85_000),
 		new Monster("nmz", "Nightmare Zone", new String[]{}, 400, 60, 55_000, true,
 			Location.of("Nightmare Zone", 2606, 3115, 8),
 			"Customisable rumble with absorption and overload potions is the classic AFK setup.",
@@ -124,13 +141,21 @@ final class CombatGuide
 		{
 			b.tag(MethodTag.AFK);
 		}
-		if (mon.hitpoints > 3)
+		if (mon.hitpoints > 3 && !GEMSTONE_CRAB.equals(mon.key))
 		{
 			b.supply(Supplies.food(mon.hitpoints >= 60 ? 20 : 10));
 		}
 		if ("nmz".equals(mon.key))
 		{
 			b.tag(MethodTag.MINIGAME).target(Target.object(null, "Potion")).target(Target.npc(null, "Dominic Onion"));
+		}
+		if (GEMSTONE_CRAB.equals(mon.key))
+		{
+			for (int i = 1; i < GEMSTONE_CRAB_SPOTS.length; i++)
+			{
+				b.alsoAt(GEMSTONE_CRAB_SPOTS[i]);
+			}
+			b.quest(Quest.CHILDREN_OF_THE_SUN).target(Target.npc("Mine", "Gemstone Crab Shell"));
 		}
 		return b;
 	}

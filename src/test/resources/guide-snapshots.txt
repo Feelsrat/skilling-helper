@@ -388,6 +388,36 @@ attack_cows weak owns-all-in-bank	4f0513d2e8ceebd7
 attack_cows weak parts-carried	63e6e665759a7f35
 attack_cows weak parts-carried-away	4f0513d2e8ceebd7
 attack_cows weak parts-in-bank	4f0513d2e8ceebd7
+attack_gemstone_crab strong bank-empty	d0d4297b1ab7a8e4
+attack_gemstone_crab strong bank-empty-rich	d0d4297b1ab7a8e4
+attack_gemstone_crab strong bank-unknown	27608c75355a3e41
+attack_gemstone_crab strong full-of-products	2262b98be9c67026
+attack_gemstone_crab strong gear-carried	db5f054f46cb262b
+attack_gemstone_crab strong goal-reached	771e38b290eb03f5
+attack_gemstone_crab strong in-instance	2262b98be9c67026
+attack_gemstone_crab strong kit-at-spot	2262b98be9c67026
+attack_gemstone_crab strong kit-away	c0be22411009f6e2
+attack_gemstone_crab strong kit-worn-at-spot	2262b98be9c67026
+attack_gemstone_crab strong owns-all-at-bank	c0be22411009f6e2
+attack_gemstone_crab strong owns-all-in-bank	c0be22411009f6e2
+attack_gemstone_crab strong parts-carried	2262b98be9c67026
+attack_gemstone_crab strong parts-carried-away	c0be22411009f6e2
+attack_gemstone_crab strong parts-in-bank	c0be22411009f6e2
+attack_gemstone_crab weak bank-empty	c21e164b63c442ef
+attack_gemstone_crab weak bank-empty-rich	c21e164b63c442ef
+attack_gemstone_crab weak bank-unknown	273f0ae5b2f3d598
+attack_gemstone_crab weak full-of-products	777a05e758051a3b
+attack_gemstone_crab weak gear-carried	aa7a38e2ec2a122e
+attack_gemstone_crab weak goal-reached	3378f9740d6209c7
+attack_gemstone_crab weak in-instance	777a05e758051a3b
+attack_gemstone_crab weak kit-at-spot	777a05e758051a3b
+attack_gemstone_crab weak kit-away	777a05e758051a3b
+attack_gemstone_crab weak kit-worn-at-spot	777a05e758051a3b
+attack_gemstone_crab weak owns-all-at-bank	777a05e758051a3b
+attack_gemstone_crab weak owns-all-in-bank	777a05e758051a3b
+attack_gemstone_crab weak parts-carried	777a05e758051a3b
+attack_gemstone_crab weak parts-carried-away	777a05e758051a3b
+attack_gemstone_crab weak parts-in-bank	777a05e758051a3b
 attack_hill_giants strong bank-empty	a401425b7cbdab9b
 attack_hill_giants strong bank-empty-rich	a401425b7cbdab9b
 attack_hill_giants strong bank-unknown	ae16e3824fcdb1ef
@@ -1918,6 +1948,36 @@ defence_cows weak owns-all-in-bank	db6182b2b9d9dd5e
 defence_cows weak parts-carried	4dbaa457e336083d
 defence_cows weak parts-carried-away	db6182b2b9d9dd5e
 defence_cows weak parts-in-bank	db6182b2b9d9dd5e
+defence_gemstone_crab strong bank-empty	2e20adb66419d7f2
+defence_gemstone_crab strong bank-empty-rich	2e20adb66419d7f2
+defence_gemstone_crab strong bank-unknown	84899fe69e7205b0
+defence_gemstone_crab strong full-of-products	7c0206113cf41885
+defence_gemstone_crab strong gear-carried	a355edb50da4fd10
+defence_gemstone_crab strong goal-reached	88a51c99a7de25b7
+defence_gemstone_crab strong in-instance	7c0206113cf41885
+defence_gemstone_crab strong kit-at-spot	7c0206113cf41885
+defence_gemstone_crab strong kit-away	b27b5c01d73079c5
+defence_gemstone_crab strong kit-worn-at-spot	7c0206113cf41885
+defence_gemstone_crab strong owns-all-at-bank	b27b5c01d73079c5
+defence_gemstone_crab strong owns-all-in-bank	b27b5c01d73079c5
+defence_gemstone_crab strong parts-carried	7c0206113cf41885
+defence_gemstone_crab strong parts-carried-away	b27b5c01d73079c5
+defence_gemstone_crab strong parts-in-bank	b27b5c01d73079c5
+defence_gemstone_crab weak bank-empty	c21e164b63c442ef
+defence_gemstone_crab weak bank-empty-rich	c21e164b63c442ef
+defence_gemstone_crab weak bank-unknown	273f0ae5b2f3d598
+defence_gemstone_crab weak full-of-products	777a05e758051a3b
+defence_gemstone_crab weak gear-carried	aa7a38e2ec2a122e
+defence_gemstone_crab weak goal-reached	639670aeb6dde86f
+defence_gemstone_crab weak in-instance	777a05e758051a3b
+defence_gemstone_crab weak kit-at-spot	777a05e758051a3b
+defence_gemstone_crab weak kit-away	777a05e758051a3b
+defence_gemstone_crab weak kit-worn-at-spot	777a05e758051a3b
+defence_gemstone_crab weak owns-all-at-bank	777a05e758051a3b
+defence_gemstone_crab weak owns-all-in-bank	777a05e758051a3b
+defence_gemstone_crab weak parts-carried	777a05e758051a3b
+defence_gemstone_crab weak parts-carried-away	777a05e758051a3b
+defence_gemstone_crab weak parts-in-bank	777a05e758051a3b
 defence_hill_giants strong bank-empty	cc129f40fd8e2ce8
 defence_hill_giants strong bank-empty-rich	cc129f40fd8e2ce8
 defence_hill_giants strong bank-unknown	7aa4aa94c82174d9
@@ -3656,6 +3716,36 @@ hitpoints_cows weak owns-all-in-bank	ba4244d70a2a9d3e
 hitpoints_cows weak parts-carried	443cf55b7ceb5689
 hitpoints_cows weak parts-carried-away	ba4244d70a2a9d3e
 hitpoints_cows weak parts-in-bank	ba4244d70a2a9d3e
+hitpoints_gemstone_crab strong bank-empty	a224e9670988e556
+hitpoints_gemstone_crab strong bank-empty-rich	a224e9670988e556
+hitpoints_gemstone_crab strong bank-unknown	6a790e32a99c34b8
+hitpoints_gemstone_crab strong full-of-products	43570a0778bd4f91
+hitpoints_gemstone_crab strong gear-carried	32d31a3d53ccccc0
+hitpoints_gemstone_crab strong goal-reached	719aa62af6766fa6
+hitpoints_gemstone_crab strong in-instance	43570a0778bd4f91
+hitpoints_gemstone_crab strong kit-at-spot	43570a0778bd4f91
+hitpoints_gemstone_crab strong kit-away	b7554f23bb740ebc
+hitpoints_gemstone_crab strong kit-worn-at-spot	43570a0778bd4f91
+hitpoints_gemstone_crab strong owns-all-at-bank	b7554f23bb740ebc
+hitpoints_gemstone_crab strong owns-all-in-bank	b7554f23bb740ebc
+hitpoints_gemstone_crab strong parts-carried	43570a0778bd4f91
+hitpoints_gemstone_crab strong parts-carried-away	b7554f23bb740ebc
+hitpoints_gemstone_crab strong parts-in-bank	b7554f23bb740ebc
+hitpoints_gemstone_crab weak bank-empty	c21e164b63c442ef
+hitpoints_gemstone_crab weak bank-empty-rich	c21e164b63c442ef
+hitpoints_gemstone_crab weak bank-unknown	273f0ae5b2f3d598
+hitpoints_gemstone_crab weak full-of-products	777a05e758051a3b
+hitpoints_gemstone_crab weak gear-carried	aa7a38e2ec2a122e
+hitpoints_gemstone_crab weak goal-reached	bcd9cdef52f5c2aa
+hitpoints_gemstone_crab weak in-instance	777a05e758051a3b
+hitpoints_gemstone_crab weak kit-at-spot	777a05e758051a3b
+hitpoints_gemstone_crab weak kit-away	777a05e758051a3b
+hitpoints_gemstone_crab weak kit-worn-at-spot	777a05e758051a3b
+hitpoints_gemstone_crab weak owns-all-at-bank	777a05e758051a3b
+hitpoints_gemstone_crab weak owns-all-in-bank	777a05e758051a3b
+hitpoints_gemstone_crab weak parts-carried	777a05e758051a3b
+hitpoints_gemstone_crab weak parts-carried-away	777a05e758051a3b
+hitpoints_gemstone_crab weak parts-in-bank	777a05e758051a3b
 hitpoints_hill_giants strong bank-empty	94013e03d376d287
 hitpoints_hill_giants strong bank-empty-rich	94013e03d376d287
 hitpoints_hill_giants strong bank-unknown	461ee24ca2aac030
@@ -4360,46 +4450,46 @@ plan AGILITY 90 rich Cheapest	0086031098e3959d
 plan AGILITY 90 rich Fastest	0086031098e3959d
 plan AGILITY 90 rich Profit	61f3752cc3a05c30
 plan AGILITY 90 rich Recommended	0086031098e3959d
-plan ATTACK 1 poor AFK	d20517d5daa02eb8
-plan ATTACK 1 poor Cheapest	b59cd03a4ce7723a
-plan ATTACK 1 poor Fastest	b59cd03a4ce7723a
-plan ATTACK 1 poor Profit	8f69a56f334f3843
-plan ATTACK 1 poor Recommended	a959e93cc52a5bfb
-plan ATTACK 1 rich AFK	29963be85ffdd967
-plan ATTACK 1 rich Cheapest	f77162b8914c7b8f
-plan ATTACK 1 rich Fastest	f77162b8914c7b8f
-plan ATTACK 1 rich Profit	cd8bb8ee1a630b89
-plan ATTACK 1 rich Recommended	5c30b0ed02fa962f
-plan ATTACK 30 poor AFK	e7e4cf8b881396e6
-plan ATTACK 30 poor Cheapest	46e4b7e9d3e55df5
-plan ATTACK 30 poor Fastest	46e4b7e9d3e55df5
-plan ATTACK 30 poor Profit	ff22a1bf6805c232
-plan ATTACK 30 poor Recommended	6ceb168cf9986c62
-plan ATTACK 30 rich AFK	d1af9eda9f47e189
-plan ATTACK 30 rich Cheapest	18921eeeeba0d2e9
-plan ATTACK 30 rich Fastest	18921eeeeba0d2e9
-plan ATTACK 30 rich Profit	1e25ce641190095f
-plan ATTACK 30 rich Recommended	09a3aeb29293a6f4
-plan ATTACK 60 poor AFK	31d1ad98209d4103
-plan ATTACK 60 poor Cheapest	6e49edfa1c0a07b0
-plan ATTACK 60 poor Fastest	6e49edfa1c0a07b0
-plan ATTACK 60 poor Profit	284400e3014154b3
-plan ATTACK 60 poor Recommended	ae54b82117f8af11
-plan ATTACK 60 rich AFK	1265e5b5b10cd4cd
-plan ATTACK 60 rich Cheapest	f10fbaf54afe556b
-plan ATTACK 60 rich Fastest	f10fbaf54afe556b
-plan ATTACK 60 rich Profit	eb24aea4a722f4a8
-plan ATTACK 60 rich Recommended	769c1bd947faba0c
-plan ATTACK 90 poor AFK	d9ecfc69a8c10e12
-plan ATTACK 90 poor Cheapest	271477719c4a9c86
-plan ATTACK 90 poor Fastest	271477719c4a9c86
-plan ATTACK 90 poor Profit	7f9bcdad51cf0d1b
-plan ATTACK 90 poor Recommended	a1c1a2c1c0f12f06
-plan ATTACK 90 rich AFK	789b0502f810d4f8
-plan ATTACK 90 rich Cheapest	3f57ac3d6a433cfd
-plan ATTACK 90 rich Fastest	3f57ac3d6a433cfd
-plan ATTACK 90 rich Profit	ce174be2cdce1815
-plan ATTACK 90 rich Recommended	67b34ac1c6c57b2f
+plan ATTACK 1 poor AFK	64acc2333ac8860f
+plan ATTACK 1 poor Cheapest	38078ec52cbfe491
+plan ATTACK 1 poor Fastest	38078ec52cbfe491
+plan ATTACK 1 poor Profit	20e83538fda923d6
+plan ATTACK 1 poor Recommended	5e7c24a052c0bc75
+plan ATTACK 1 rich AFK	47baf805b2f10200
+plan ATTACK 1 rich Cheapest	662f639447b10787
+plan ATTACK 1 rich Fastest	662f639447b10787
+plan ATTACK 1 rich Profit	01ea48ef4a1e2689
+plan ATTACK 1 rich Recommended	3371222a6e27e000
+plan ATTACK 30 poor AFK	9ae18ad58998d4b9
+plan ATTACK 30 poor Cheapest	9814d8d157503920
+plan ATTACK 30 poor Fastest	9814d8d157503920
+plan ATTACK 30 poor Profit	a7071f67cd2ef56f
+plan ATTACK 30 poor Recommended	55640015bab81c5d
+plan ATTACK 30 rich AFK	a125e1427cf3a145
+plan ATTACK 30 rich Cheapest	9c0a75193921a0af
+plan ATTACK 30 rich Fastest	9c0a75193921a0af
+plan ATTACK 30 rich Profit	5c110556ebcbbb43
+plan ATTACK 30 rich Recommended	610abbac17603c04
+plan ATTACK 60 poor AFK	74d7a7614540042f
+plan ATTACK 60 poor Cheapest	cb4f59178a33483d
+plan ATTACK 60 poor Fastest	cb4f59178a33483d
+plan ATTACK 60 poor Profit	e9e98591c6746c82
+plan ATTACK 60 poor Recommended	bfd1c80c8741e11f
+plan ATTACK 60 rich AFK	1e7a92febff81af3
+plan ATTACK 60 rich Cheapest	e55163644073d513
+plan ATTACK 60 rich Fastest	e55163644073d513
+plan ATTACK 60 rich Profit	d58035e48ad84a45
+plan ATTACK 60 rich Recommended	c61e7034ed90c834
+plan ATTACK 90 poor AFK	e2a9b255e3c1f824
+plan ATTACK 90 poor Cheapest	04acf1e4f51de388
+plan ATTACK 90 poor Fastest	04acf1e4f51de388
+plan ATTACK 90 poor Profit	639174234370ec16
+plan ATTACK 90 poor Recommended	c106245efc34f42c
+plan ATTACK 90 rich AFK	a34f5df57684f96a
+plan ATTACK 90 rich Cheapest	8f62adc5cb4b2253
+plan ATTACK 90 rich Fastest	8f62adc5cb4b2253
+plan ATTACK 90 rich Profit	a8e6f9ce34f053b4
+plan ATTACK 90 rich Recommended	eb496eb14b804b74
 plan CONSTRUCTION 1 poor AFK	aa62db7c6d35da95
 plan CONSTRUCTION 1 poor Cheapest	6ac8548a78e77bd1
 plan CONSTRUCTION 1 poor Fastest	b5d9614dd7a0fb34
@@ -4520,46 +4610,46 @@ plan CRAFTING 90 rich Cheapest	2863c6fd5b1d2f83
 plan CRAFTING 90 rich Fastest	74a1cb34dae13681
 plan CRAFTING 90 rich Profit	ce9c8214cf197a0c
 plan CRAFTING 90 rich Recommended	c40a76e950ac20c6
-plan DEFENCE 1 poor AFK	0f57798c46b7b718
-plan DEFENCE 1 poor Cheapest	ff6f9c65319f26e0
-plan DEFENCE 1 poor Fastest	ff6f9c65319f26e0
-plan DEFENCE 1 poor Profit	ecde51c4ef9f8dbc
-plan DEFENCE 1 poor Recommended	4b4278c2ea4fcefa
-plan DEFENCE 1 rich AFK	ab0600659a507075
-plan DEFENCE 1 rich Cheapest	6b7da8d1b470a99f
-plan DEFENCE 1 rich Fastest	6b7da8d1b470a99f
-plan DEFENCE 1 rich Profit	d80b7cf3e9b9afed
-plan DEFENCE 1 rich Recommended	99f1e6fdf3fba1d2
-plan DEFENCE 30 poor AFK	c13a581f88a73dc1
-plan DEFENCE 30 poor Cheapest	ec72795f8e76d0c7
-plan DEFENCE 30 poor Fastest	ec72795f8e76d0c7
-plan DEFENCE 30 poor Profit	64580a4b0de45891
-plan DEFENCE 30 poor Recommended	f39860be1ef363a4
-plan DEFENCE 30 rich AFK	66d650d0c055112f
-plan DEFENCE 30 rich Cheapest	70464d56f3e7326d
-plan DEFENCE 30 rich Fastest	70464d56f3e7326d
-plan DEFENCE 30 rich Profit	73a37654eb24b77d
-plan DEFENCE 30 rich Recommended	7b9f686ee28c6e47
-plan DEFENCE 60 poor AFK	bc81e264db428f2f
-plan DEFENCE 60 poor Cheapest	8869b89576775a6d
-plan DEFENCE 60 poor Fastest	8869b89576775a6d
-plan DEFENCE 60 poor Profit	f5c8e23cdf5ec526
-plan DEFENCE 60 poor Recommended	6b5cf64a9beb237f
-plan DEFENCE 60 rich AFK	ed629fda04f2e086
-plan DEFENCE 60 rich Cheapest	45b745717c5fde0d
-plan DEFENCE 60 rich Fastest	45b745717c5fde0d
-plan DEFENCE 60 rich Profit	1781eb3aa31190ce
-plan DEFENCE 60 rich Recommended	286acde97c03c42b
-plan DEFENCE 90 poor AFK	393eeaa5fe1e42c5
-plan DEFENCE 90 poor Cheapest	1a0f3e8c47bdb95c
-plan DEFENCE 90 poor Fastest	1a0f3e8c47bdb95c
-plan DEFENCE 90 poor Profit	a708970201497a1f
-plan DEFENCE 90 poor Recommended	c7f9e7b0e9201091
-plan DEFENCE 90 rich AFK	6d484bb00ba5779d
-plan DEFENCE 90 rich Cheapest	bd90df0997f9a122
-plan DEFENCE 90 rich Fastest	bd90df0997f9a122
-plan DEFENCE 90 rich Profit	57792c978cb64682
-plan DEFENCE 90 rich Recommended	7c3209d0ec179a4b
+plan DEFENCE 1 poor AFK	9a0941ae8ed82de6
+plan DEFENCE 1 poor Cheapest	b047855271f1f7ea
+plan DEFENCE 1 poor Fastest	b047855271f1f7ea
+plan DEFENCE 1 poor Profit	33c74405b8154837
+plan DEFENCE 1 poor Recommended	52cb6a4b78bf21f0
+plan DEFENCE 1 rich AFK	51c6b5b71c53fa62
+plan DEFENCE 1 rich Cheapest	7b4ca3522d28d9a0
+plan DEFENCE 1 rich Fastest	7b4ca3522d28d9a0
+plan DEFENCE 1 rich Profit	8042ee344d98922d
+plan DEFENCE 1 rich Recommended	dde5f283d8d48662
+plan DEFENCE 30 poor AFK	077656d9d4734ee0
+plan DEFENCE 30 poor Cheapest	50c857005288ecf9
+plan DEFENCE 30 poor Fastest	50c857005288ecf9
+plan DEFENCE 30 poor Profit	291eff7d20512d8d
+plan DEFENCE 30 poor Recommended	012e55ccb1f57211
+plan DEFENCE 30 rich AFK	c6b3ddbd2dbe5606
+plan DEFENCE 30 rich Cheapest	4794fd800f639a16
+plan DEFENCE 30 rich Fastest	4794fd800f639a16
+plan DEFENCE 30 rich Profit	f97e8e10567105c5
+plan DEFENCE 30 rich Recommended	df9e2382eb2c4e67
+plan DEFENCE 60 poor AFK	f644d51c99a7259e
+plan DEFENCE 60 poor Cheapest	f824964cf9b3a58c
+plan DEFENCE 60 poor Fastest	f824964cf9b3a58c
+plan DEFENCE 60 poor Profit	5bc000ce64a5f1e3
+plan DEFENCE 60 poor Recommended	c3010c5a902a64e2
+plan DEFENCE 60 rich AFK	4d4fef8f520a8ca2
+plan DEFENCE 60 rich Cheapest	607c8911e49e86d0
+plan DEFENCE 60 rich Fastest	607c8911e49e86d0
+plan DEFENCE 60 rich Profit	5b115e1f98b2e82a
+plan DEFENCE 60 rich Recommended	1fa2c93a8a9390b2
+plan DEFENCE 90 poor AFK	b3e45e4e6fdeb84b
+plan DEFENCE 90 poor Cheapest	c12d8bbb00473584
+plan DEFENCE 90 poor Fastest	c12d8bbb00473584
+plan DEFENCE 90 poor Profit	c830b80d75976ac5
+plan DEFENCE 90 poor Recommended	b9df0ed8a33b01fe
+plan DEFENCE 90 rich AFK	b5291b63daf180fc
+plan DEFENCE 90 rich Cheapest	fd682b069affcf3b
+plan DEFENCE 90 rich Fastest	fd682b069affcf3b
+plan DEFENCE 90 rich Profit	dbec39d3d7013d6c
+plan DEFENCE 90 rich Recommended	4197bffa2f7cf244
 plan FARMING 1 poor AFK	a7864d15380e8880
 plan FARMING 1 poor Cheapest	eb479b1726d57e2b
 plan FARMING 1 poor Fastest	e9f5a1ad343bc2de
@@ -4760,46 +4850,46 @@ plan HERBLORE 90 rich Cheapest	f7c74d56857038df
 plan HERBLORE 90 rich Fastest	d3d0c586be2814e1
 plan HERBLORE 90 rich Profit	d5db875f7de0a607
 plan HERBLORE 90 rich Recommended	98dd5b59556df031
-plan HITPOINTS 1 poor AFK	86b4908ebdf022af
-plan HITPOINTS 1 poor Cheapest	272635e64e340e62
-plan HITPOINTS 1 poor Fastest	272635e64e340e62
-plan HITPOINTS 1 poor Profit	aa9d9797252c3c03
-plan HITPOINTS 1 poor Recommended	32b12ec7b3c575cd
-plan HITPOINTS 1 rich AFK	11b9bc0626d1acfb
-plan HITPOINTS 1 rich Cheapest	37015adb095c7b03
-plan HITPOINTS 1 rich Fastest	37015adb095c7b03
-plan HITPOINTS 1 rich Profit	71e51c3d9b069b55
-plan HITPOINTS 1 rich Recommended	3bafd01ad05e42fa
-plan HITPOINTS 30 poor AFK	4668c5ebb0831b93
-plan HITPOINTS 30 poor Cheapest	16044f7aff9653f7
-plan HITPOINTS 30 poor Fastest	16044f7aff9653f7
-plan HITPOINTS 30 poor Profit	94fd1362dcbadc58
-plan HITPOINTS 30 poor Recommended	dd690507bb71a8f6
-plan HITPOINTS 30 rich AFK	6b2fe0435cd82af1
-plan HITPOINTS 30 rich Cheapest	6a739195938c7cb9
-plan HITPOINTS 30 rich Fastest	6a739195938c7cb9
-plan HITPOINTS 30 rich Profit	6a30114dfa7bc9e0
-plan HITPOINTS 30 rich Recommended	32107d9b1e55c244
-plan HITPOINTS 60 poor AFK	8c474542006aaeab
-plan HITPOINTS 60 poor Cheapest	f221d15483b02bd2
-plan HITPOINTS 60 poor Fastest	f221d15483b02bd2
-plan HITPOINTS 60 poor Profit	fb5b0294b75b00f0
-plan HITPOINTS 60 poor Recommended	367251870104eeaa
-plan HITPOINTS 60 rich AFK	6ab333fc8ddae8fb
-plan HITPOINTS 60 rich Cheapest	366fc20868073cb4
-plan HITPOINTS 60 rich Fastest	366fc20868073cb4
-plan HITPOINTS 60 rich Profit	2dfd8b96d1e196f2
-plan HITPOINTS 60 rich Recommended	bae529349bbce6c1
-plan HITPOINTS 90 poor AFK	570ae58a43e1db66
-plan HITPOINTS 90 poor Cheapest	5fe8350ee88d7d03
-plan HITPOINTS 90 poor Fastest	5fe8350ee88d7d03
-plan HITPOINTS 90 poor Profit	fc7c444ccb4d3b11
-plan HITPOINTS 90 poor Recommended	34dfdeb5f1d05a34
-plan HITPOINTS 90 rich AFK	cea5f89088e64b68
-plan HITPOINTS 90 rich Cheapest	73f80cbfcf92c827
-plan HITPOINTS 90 rich Fastest	73f80cbfcf92c827
-plan HITPOINTS 90 rich Profit	1db99c01beea9397
-plan HITPOINTS 90 rich Recommended	c26485e47134eea2
+plan HITPOINTS 1 poor AFK	10ff123d0f873a23
+plan HITPOINTS 1 poor Cheapest	139bbc0306ab16eb
+plan HITPOINTS 1 poor Fastest	139bbc0306ab16eb
+plan HITPOINTS 1 poor Profit	4cc0d1166b89a0c3
+plan HITPOINTS 1 poor Recommended	3b9fcefe3f5e9cf3
+plan HITPOINTS 1 rich AFK	3e91cd4e7fa98248
+plan HITPOINTS 1 rich Cheapest	7bbd75a1a6882e2c
+plan HITPOINTS 1 rich Fastest	7bbd75a1a6882e2c
+plan HITPOINTS 1 rich Profit	fb247c9e5f8b43fe
+plan HITPOINTS 1 rich Recommended	6bd843b32f99f032
+plan HITPOINTS 30 poor AFK	485849ac61af778c
+plan HITPOINTS 30 poor Cheapest	ed040897d7c0bf9d
+plan HITPOINTS 30 poor Fastest	ed040897d7c0bf9d
+plan HITPOINTS 30 poor Profit	0f347cb6744425ef
+plan HITPOINTS 30 poor Recommended	a323b5752a196176
+plan HITPOINTS 30 rich AFK	b01dcbb9bc1261a9
+plan HITPOINTS 30 rich Cheapest	137524d3b006b1da
+plan HITPOINTS 30 rich Fastest	137524d3b006b1da
+plan HITPOINTS 30 rich Profit	0d4f91a8f3797400
+plan HITPOINTS 30 rich Recommended	92aed5df5ee0d897
+plan HITPOINTS 60 poor AFK	5d98a5095b352117
+plan HITPOINTS 60 poor Cheapest	06857bddb34e76e3
+plan HITPOINTS 60 poor Fastest	06857bddb34e76e3
+plan HITPOINTS 60 poor Profit	b30cbdfe2600cec4
+plan HITPOINTS 60 poor Recommended	162aa4d8244196d2
+plan HITPOINTS 60 rich AFK	fb6c4fff404e198b
+plan HITPOINTS 60 rich Cheapest	d0ef2ab559a8c2ca
+plan HITPOINTS 60 rich Fastest	d0ef2ab559a8c2ca
+plan HITPOINTS 60 rich Profit	0ab4e61813835a48
+plan HITPOINTS 60 rich Recommended	f1fb00756be73e42
+plan HITPOINTS 90 poor AFK	550eeade7a277c8e
+plan HITPOINTS 90 poor Cheapest	f26812fba6d1a744
+plan HITPOINTS 90 poor Fastest	f26812fba6d1a744
+plan HITPOINTS 90 poor Profit	6e8d58af92c7af05
+plan HITPOINTS 90 poor Recommended	31ab96fea1346ced
+plan HITPOINTS 90 rich AFK	272c10e854d390b6
+plan HITPOINTS 90 rich Cheapest	ae831bf916045114
+plan HITPOINTS 90 rich Fastest	ae831bf916045114
+plan HITPOINTS 90 rich Profit	cd34dd06dbe776b8
+plan HITPOINTS 90 rich Recommended	f30f938a8ecd77db
 plan HUNTER 1 poor AFK	5a00c4112f1fe5a5
 plan HUNTER 1 poor Cheapest	74710410135a7d7e
 plan HUNTER 1 poor Fastest	c758f2a96e8a3018
@@ -4960,46 +5050,46 @@ plan PRAYER 90 rich Cheapest	58d06c7383154298
 plan PRAYER 90 rich Fastest	35f68988ee06f92e
 plan PRAYER 90 rich Profit	9732dbe5751294a1
 plan PRAYER 90 rich Recommended	e6a3e266d5fb9cb6
-plan RANGED 1 poor AFK	f1366a1de14a692a
-plan RANGED 1 poor Cheapest	9fa53000b2d252a2
-plan RANGED 1 poor Fastest	281a3e0cc2909d67
-plan RANGED 1 poor Profit	ee98da26ed188313
-plan RANGED 1 poor Recommended	1f4bda4f529aabbe
-plan RANGED 1 rich AFK	05f7144538d6aa7b
-plan RANGED 1 rich Cheapest	641087854776d93d
-plan RANGED 1 rich Fastest	daa515e3314edce6
-plan RANGED 1 rich Profit	391448ec5ab9e5dd
-plan RANGED 1 rich Recommended	5fe5cab7deadf66b
-plan RANGED 30 poor AFK	f0ba5c7cb51d22a2
-plan RANGED 30 poor Cheapest	0ea7048ab763b9fd
-plan RANGED 30 poor Fastest	5433c68fa694abc7
-plan RANGED 30 poor Profit	2b14806b4ac755c6
-plan RANGED 30 poor Recommended	bfb3fbc6e11185bf
-plan RANGED 30 rich AFK	9972f8bcbd88003c
-plan RANGED 30 rich Cheapest	ef68740142a98719
-plan RANGED 30 rich Fastest	be539773533f8791
-plan RANGED 30 rich Profit	958199a03b3ae5aa
-plan RANGED 30 rich Recommended	a99d9542b9d23f06
-plan RANGED 60 poor AFK	c614264b372ef00d
-plan RANGED 60 poor Cheapest	93aa3df2af395769
-plan RANGED 60 poor Fastest	944e53e7cf084736
-plan RANGED 60 poor Profit	ab4ac225388454b3
-plan RANGED 60 poor Recommended	f90490b4dc6732a6
-plan RANGED 60 rich AFK	8758bd42012e2902
-plan RANGED 60 rich Cheapest	2bee461a25a65330
-plan RANGED 60 rich Fastest	eb07c582e15d206a
-plan RANGED 60 rich Profit	7a0d446286dcfa8e
-plan RANGED 60 rich Recommended	5fde7dcd6b6bbbc2
-plan RANGED 90 poor AFK	959e255d79b7602d
-plan RANGED 90 poor Cheapest	970f64abfe9ac224
-plan RANGED 90 poor Fastest	4350039c8412d73c
-plan RANGED 90 poor Profit	2c1d9e01e51fee8a
-plan RANGED 90 poor Recommended	0abd9d32d02b851e
-plan RANGED 90 rich AFK	5ae08160be0e2fd7
-plan RANGED 90 rich Cheapest	0b684595ad9670bd
-plan RANGED 90 rich Fastest	964a403ff012372a
-plan RANGED 90 rich Profit	4bb1b3ecdb2972e1
-plan RANGED 90 rich Recommended	9183fa8ecc786a06
+plan RANGED 1 poor AFK	d2f1416cdf518bcc
+plan RANGED 1 poor Cheapest	d377839e5ba2f930
+plan RANGED 1 poor Fastest	5ab89888030f4860
+plan RANGED 1 poor Profit	de7507861bf4b238
+plan RANGED 1 poor Recommended	d481f7afef9bebb8
+plan RANGED 1 rich AFK	1c8f1cccee6eabe8
+plan RANGED 1 rich Cheapest	01282f1d281abfb0
+plan RANGED 1 rich Fastest	8e39c056eb796eb1
+plan RANGED 1 rich Profit	0fd84f1676a2b812
+plan RANGED 1 rich Recommended	2689ab750ce809df
+plan RANGED 30 poor AFK	ea2a4c542722e6b5
+plan RANGED 30 poor Cheapest	c168f15ec9a3eebb
+plan RANGED 30 poor Fastest	3f36d8728217cb88
+plan RANGED 30 poor Profit	01d56bb574d4cc3a
+plan RANGED 30 poor Recommended	d57b59b84ceea223
+plan RANGED 30 rich AFK	d2ab61af02fa8e31
+plan RANGED 30 rich Cheapest	3b0c60290e89a444
+plan RANGED 30 rich Fastest	a73585a1e52178f9
+plan RANGED 30 rich Profit	39b91686060744c6
+plan RANGED 30 rich Recommended	a7af9da0c1179f43
+plan RANGED 60 poor AFK	f609d788448f2a1e
+plan RANGED 60 poor Cheapest	55ab77c7480caf04
+plan RANGED 60 poor Fastest	2fa5482a443b0af2
+plan RANGED 60 poor Profit	0ec381c6b2e63f95
+plan RANGED 60 poor Recommended	b63794a8b2d805dd
+plan RANGED 60 rich AFK	f92325ed01057165
+plan RANGED 60 rich Cheapest	dc8e1db0fb435f4b
+plan RANGED 60 rich Fastest	47315357d13ab8e4
+plan RANGED 60 rich Profit	7c9178a171bd5dc4
+plan RANGED 60 rich Recommended	1deb3e1c7be2787b
+plan RANGED 90 poor AFK	5d54381b014549cf
+plan RANGED 90 poor Cheapest	012fdfa673fe9ab1
+plan RANGED 90 poor Fastest	575a5d5177da910a
+plan RANGED 90 poor Profit	76cdc1eab39f73ef
+plan RANGED 90 poor Recommended	1f9fa855826d0f5f
+plan RANGED 90 rich AFK	32aa8ecdc137655c
+plan RANGED 90 rich Cheapest	e971b4aaf89da71e
+plan RANGED 90 rich Fastest	660910788a94124f
+plan RANGED 90 rich Profit	e7d116e4108ad61c
+plan RANGED 90 rich Recommended	1959a2fde3468a76
 plan RUNECRAFT 1 poor AFK	2adfa4373a415e98
 plan RUNECRAFT 1 poor Cheapest	b6bc6a1184ef8aae
 plan RUNECRAFT 1 poor Fastest	b6bc6a1184ef8aae
@@ -5160,46 +5250,46 @@ plan SMITHING 90 rich Cheapest	d257716dbbba6b2f
 plan SMITHING 90 rich Fastest	42e353c44d63fe7e
 plan SMITHING 90 rich Profit	10af9eb6a2e24120
 plan SMITHING 90 rich Recommended	3072938e8caca252
-plan STRENGTH 1 poor AFK	07b9d51e38bd50df
-plan STRENGTH 1 poor Cheapest	56f2924eba1a2a67
-plan STRENGTH 1 poor Fastest	56f2924eba1a2a67
-plan STRENGTH 1 poor Profit	7e767a42f00d9be9
-plan STRENGTH 1 poor Recommended	79adb5bcdee2cf76
-plan STRENGTH 1 rich AFK	e760ff225245bd0b
-plan STRENGTH 1 rich Cheapest	d597fab0c65e67e8
-plan STRENGTH 1 rich Fastest	d597fab0c65e67e8
-plan STRENGTH 1 rich Profit	9c997a5959f8a079
-plan STRENGTH 1 rich Recommended	4e82a42b39d6ba83
-plan STRENGTH 30 poor AFK	ee097713f2f98968
-plan STRENGTH 30 poor Cheapest	2fe9986e22d8f1ec
-plan STRENGTH 30 poor Fastest	2fe9986e22d8f1ec
-plan STRENGTH 30 poor Profit	60543f5014288c8c
-plan STRENGTH 30 poor Recommended	69a937121de1d7bd
-plan STRENGTH 30 rich AFK	d3b9ed74e36b4726
-plan STRENGTH 30 rich Cheapest	a86cbc5e28fb62a7
-plan STRENGTH 30 rich Fastest	a86cbc5e28fb62a7
-plan STRENGTH 30 rich Profit	07378ae756dc5bee
-plan STRENGTH 30 rich Recommended	6a9aa08a17da2f5b
-plan STRENGTH 60 poor AFK	6b995179dc34243a
-plan STRENGTH 60 poor Cheapest	3439fdd1fe502231
-plan STRENGTH 60 poor Fastest	3439fdd1fe502231
-plan STRENGTH 60 poor Profit	d10e4c33e56a9b5e
-plan STRENGTH 60 poor Recommended	6cfaa22237b5eb02
-plan STRENGTH 60 rich AFK	f838b10ae4053b03
-plan STRENGTH 60 rich Cheapest	c699efb407f7d4b3
-plan STRENGTH 60 rich Fastest	c699efb407f7d4b3
-plan STRENGTH 60 rich Profit	c57bbc7f149a2683
-plan STRENGTH 60 rich Recommended	a47f97117963ae13
-plan STRENGTH 90 poor AFK	c542a90e872bc3b8
-plan STRENGTH 90 poor Cheapest	7ca27248339b59b8
-plan STRENGTH 90 poor Fastest	7ca27248339b59b8
-plan STRENGTH 90 poor Profit	41aa1aff874e4209
-plan STRENGTH 90 poor Recommended	bae3c99314e32ff9
-plan STRENGTH 90 rich AFK	d0ba05f8023140ca
-plan STRENGTH 90 rich Cheapest	febb9139deafec43
-plan STRENGTH 90 rich Fastest	febb9139deafec43
-plan STRENGTH 90 rich Profit	eed3a71e9653e588
-plan STRENGTH 90 rich Recommended	9602ef53a4338b75
+plan STRENGTH 1 poor AFK	101f11cee83e5eb1
+plan STRENGTH 1 poor Cheapest	a7379a16bf05f19c
+plan STRENGTH 1 poor Fastest	a7379a16bf05f19c
+plan STRENGTH 1 poor Profit	8d68ac1798dc8398
+plan STRENGTH 1 poor Recommended	40698eb1c13bc680
+plan STRENGTH 1 rich AFK	b612bfbb7d93bee7
+plan STRENGTH 1 rich Cheapest	9d44aaa3d82f5b93
+plan STRENGTH 1 rich Fastest	9d44aaa3d82f5b93
+plan STRENGTH 1 rich Profit	411970b8eb6444ec
+plan STRENGTH 1 rich Recommended	bfff12d7a95c8611
+plan STRENGTH 30 poor AFK	7229541271de3fa6
+plan STRENGTH 30 poor Cheapest	23f038935a88e2e9
+plan STRENGTH 30 poor Fastest	23f038935a88e2e9
+plan STRENGTH 30 poor Profit	545c6ee075e88939
+plan STRENGTH 30 poor Recommended	c59b2f2cabfea0bb
+plan STRENGTH 30 rich AFK	a1b6b2acbae64b7f
+plan STRENGTH 30 rich Cheapest	ed098052f0cb330e
+plan STRENGTH 30 rich Fastest	ed098052f0cb330e
+plan STRENGTH 30 rich Profit	ed7cb81c80e68fd2
+plan STRENGTH 30 rich Recommended	bdb9e1fd3e7fcf20
+plan STRENGTH 60 poor AFK	8c51aaac7a6ac6ba
+plan STRENGTH 60 poor Cheapest	38d29ce30a79d3b7
+plan STRENGTH 60 poor Fastest	38d29ce30a79d3b7
+plan STRENGTH 60 poor Profit	fab3f70d804be130
+plan STRENGTH 60 poor Recommended	819a8df23efba29d
+plan STRENGTH 60 rich AFK	46f51b6a3f0aad8e
+plan STRENGTH 60 rich Cheapest	d9e64f90d6b172cf
+plan STRENGTH 60 rich Fastest	d9e64f90d6b172cf
+plan STRENGTH 60 rich Profit	36386785b1b074a7
+plan STRENGTH 60 rich Recommended	38d70dd0dbae12bb
+plan STRENGTH 90 poor AFK	8ef3c75ca85a897a
+plan STRENGTH 90 poor Cheapest	46fcdbae5853fc16
+plan STRENGTH 90 poor Fastest	46fcdbae5853fc16
+plan STRENGTH 90 poor Profit	1d59424f4344f845
+plan STRENGTH 90 poor Recommended	da7856eb3dd582f3
+plan STRENGTH 90 rich AFK	734a50f1846800a5
+plan STRENGTH 90 rich Cheapest	f47dd916043881b2
+plan STRENGTH 90 rich Fastest	f47dd916043881b2
+plan STRENGTH 90 rich Profit	0b56fc0081620d58
+plan STRENGTH 90 rich Recommended	9d5914cbc078c69b
 plan THIEVING 1 poor AFK	ca9e21d22033e37c
 plan THIEVING 1 poor Cheapest	48272806c9043f23
 plan THIEVING 1 poor Fastest	48272806c9043f23
@@ -5520,6 +5610,36 @@ ranged_cows weak owns-all-in-bank	14483ea190744b3c
 ranged_cows weak parts-carried	d3a867834e935683
 ranged_cows weak parts-carried-away	9d94e4cbe5a81b06
 ranged_cows weak parts-in-bank	14483ea190744b3c
+ranged_gemstone_crab strong bank-empty	90409de62c7c2e9a
+ranged_gemstone_crab strong bank-empty-rich	a9b23d49bac9079d
+ranged_gemstone_crab strong bank-unknown	b9768fd6084d42a6
+ranged_gemstone_crab strong full-of-products	2add5b43b4ebe223
+ranged_gemstone_crab strong gear-carried	da2bffba63d48cfa
+ranged_gemstone_crab strong goal-reached	eedc2cd43d419747
+ranged_gemstone_crab strong in-instance	2add5b43b4ebe223
+ranged_gemstone_crab strong kit-at-spot	2add5b43b4ebe223
+ranged_gemstone_crab strong kit-away	76ba8342b26ad178
+ranged_gemstone_crab strong kit-worn-at-spot	a94a9db55a1d93d9
+ranged_gemstone_crab strong owns-all-at-bank	66aac11a62643c8a
+ranged_gemstone_crab strong owns-all-in-bank	66aac11a62643c8a
+ranged_gemstone_crab strong parts-carried	2add5b43b4ebe223
+ranged_gemstone_crab strong parts-carried-away	76ba8342b26ad178
+ranged_gemstone_crab strong parts-in-bank	66aac11a62643c8a
+ranged_gemstone_crab weak bank-empty	d0f3503f6bb968d9
+ranged_gemstone_crab weak bank-empty-rich	d0f3503f6bb968d9
+ranged_gemstone_crab weak bank-unknown	51b05d9dd2afeeef
+ranged_gemstone_crab weak full-of-products	80397b81c1eae08f
+ranged_gemstone_crab weak gear-carried	5e5d3a3437f79eaa
+ranged_gemstone_crab weak goal-reached	6851701a09e0a33a
+ranged_gemstone_crab weak in-instance	80397b81c1eae08f
+ranged_gemstone_crab weak kit-at-spot	80397b81c1eae08f
+ranged_gemstone_crab weak kit-away	80397b81c1eae08f
+ranged_gemstone_crab weak kit-worn-at-spot	184f8749e2fa1617
+ranged_gemstone_crab weak owns-all-at-bank	97a894e2595743b6
+ranged_gemstone_crab weak owns-all-in-bank	97a894e2595743b6
+ranged_gemstone_crab weak parts-carried	80397b81c1eae08f
+ranged_gemstone_crab weak parts-carried-away	80397b81c1eae08f
+ranged_gemstone_crab weak parts-in-bank	97a894e2595743b6
 ranged_hill_giants strong bank-empty	0ff4df88068f0f01
 ranged_hill_giants strong bank-empty-rich	f69eaea21c452ce4
 ranged_hill_giants strong bank-unknown	1bc62dc0202c60b7
@@ -6540,6 +6660,36 @@ strength_cows weak owns-all-in-bank	c8fee384e828a40f
 strength_cows weak parts-carried	e1b6399f74f8c4c1
 strength_cows weak parts-carried-away	c8fee384e828a40f
 strength_cows weak parts-in-bank	c8fee384e828a40f
+strength_gemstone_crab strong bank-empty	3465911d2625d287
+strength_gemstone_crab strong bank-empty-rich	3465911d2625d287
+strength_gemstone_crab strong bank-unknown	81a5134a73d596e5
+strength_gemstone_crab strong full-of-products	3fded352c3dc733b
+strength_gemstone_crab strong gear-carried	32d31a3d53ccccc0
+strength_gemstone_crab strong goal-reached	0b0ede1894fa02d7
+strength_gemstone_crab strong in-instance	3fded352c3dc733b
+strength_gemstone_crab strong kit-at-spot	3fded352c3dc733b
+strength_gemstone_crab strong kit-away	ba5e8ec4244e3750
+strength_gemstone_crab strong kit-worn-at-spot	3fded352c3dc733b
+strength_gemstone_crab strong owns-all-at-bank	ba5e8ec4244e3750
+strength_gemstone_crab strong owns-all-in-bank	ba5e8ec4244e3750
+strength_gemstone_crab strong parts-carried	3fded352c3dc733b
+strength_gemstone_crab strong parts-carried-away	ba5e8ec4244e3750
+strength_gemstone_crab strong parts-in-bank	ba5e8ec4244e3750
+strength_gemstone_crab weak bank-empty	c21e164b63c442ef
+strength_gemstone_crab weak bank-empty-rich	c21e164b63c442ef
+strength_gemstone_crab weak bank-unknown	273f0ae5b2f3d598
+strength_gemstone_crab weak full-of-products	777a05e758051a3b
+strength_gemstone_crab weak gear-carried	aa7a38e2ec2a122e
+strength_gemstone_crab weak goal-reached	7925d523817a07d2
+strength_gemstone_crab weak in-instance	777a05e758051a3b
+strength_gemstone_crab weak kit-at-spot	777a05e758051a3b
+strength_gemstone_crab weak kit-away	777a05e758051a3b
+strength_gemstone_crab weak kit-worn-at-spot	777a05e758051a3b
+strength_gemstone_crab weak owns-all-at-bank	777a05e758051a3b
+strength_gemstone_crab weak owns-all-in-bank	777a05e758051a3b
+strength_gemstone_crab weak parts-carried	777a05e758051a3b
+strength_gemstone_crab weak parts-carried-away	777a05e758051a3b
+strength_gemstone_crab weak parts-in-bank	777a05e758051a3b
 strength_hill_giants strong bank-empty	10d9bcbf222857d7
 strength_hill_giants strong bank-empty-rich	10d9bcbf222857d7
 strength_hill_giants strong bank-unknown	b9074348c8d99b37
