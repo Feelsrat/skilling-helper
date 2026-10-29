@@ -250,8 +250,9 @@ public final class MethodPlanner
 		InputCosts costs = new InputCosts();
 		long neededTotal = 0;
 		long ownedTotal = 0;
-		for (ItemReq input : m.getInputs())
+		for (ItemReq listed : m.getInputs())
 		{
+			ItemReq input = CombatGearAdvisor.resolve(listed, state);
 			long needed = (long) actions * input.getPerAction();
 			neededTotal += needed;
 			if (state.ownsSubstitute(input))

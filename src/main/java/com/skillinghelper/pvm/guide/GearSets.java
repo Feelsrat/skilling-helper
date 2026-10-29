@@ -9,7 +9,8 @@ import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
 /**
- * Melee and ranged gear per slot, best first, from end-game down to bronze. Level requirements are the commonly known
+ * Melee and ranged gear per slot, best first, from end-game down to iron. A bow's level is also the best arrow it fires
+ * (see {@link Supplies#ammoFor}). Level requirements are the commonly known
  * ones (from memory; the wiki can't be reached from where this was written). Each guide caps what it suggests buying
  * with its budget, so a first boss doesn't suggest a 100m weapon.
  */
@@ -26,6 +27,8 @@ public final class GearSets
 		buy("Abyssal whip", ATT, 70, 0, true, ItemID.ABYSSAL_WHIP),
 		earn("Dragon scimitar", ATT, 60, 0, true, ItemID.DRAGON_SCIMITAR),
 		earn("Dragon longsword", ATT, 60, 0, true, ItemID.DRAGON_LONGSWORD),
+		// No quest needed, and about as strong as the dragon scimitar
+		buy("Dragon sword", ATT, 60, 0, true, ItemID.DRAGON_SHORTSWORD),
 		buy("Rune scimitar", ATT, 40, 0, false, ItemID.RUNE_SCIMITAR),
 		buy("Adamant scimitar", ATT, 30, 0, false, ItemID.ADAMANT_SCIMITAR),
 		buy("Mithril scimitar", ATT, 20, 0, false, ItemID.MITHRIL_SCIMITAR),
@@ -50,6 +53,7 @@ public final class GearSets
 		buy("Bandos chestplate", DEF, 65, 0, true, ItemID.BANDOS_CHESTPLATE),
 		earn("Fighter torso", DEF, 40, 0, true, ItemID.BARBASSAULT_PENANCE_FIGHTER_TORSO),
 		buy("Obsidian platebody", DEF, 60, 0, true, ItemID.OBSIDIAN_PLATEBODY),
+		buy("Dragon chainbody", DEF, 60, 0, true, ItemID.DRAGON_CHAINBODY),
 		earn("Rune platebody", DEF, 40, 0, false, ItemID.RUNE_PLATEBODY),
 		buy("Rune chainbody", DEF, 40, 0, false, ItemID.RUNE_CHAINBODY),
 		buy("Adamant platebody", DEF, 30, 0, false, ItemID.ADAMANT_PLATEBODY),
@@ -72,6 +76,7 @@ public final class GearSets
 		earn("Avernic defender", DEF, 70, 0, true, ItemID.INFERNAL_DEFENDER),
 		earn("Dragon defender", DEF, 60, 0, true, ItemID.DRAGON_PARRYINGDAGGER),
 		earn("Rune defender", DEF, 40, 0, true, ItemID.RUNE_PARRYINGDAGGER),
+		buy("Dragon sq shield", DEF, 60, 0, true, ItemID.DRAGON_SQ_SHIELD),
 		buy("Rune kiteshield", DEF, 40, 0, false, ItemID.RUNE_KITESHIELD),
 		buy("Adamant kiteshield", DEF, 30, 0, false, ItemID.ADAMANT_KITESHIELD),
 		buy("Mithril kiteshield", DEF, 20, 0, false, ItemID.MITHRIL_KITESHIELD),
@@ -121,12 +126,14 @@ public final class GearSets
 		buy("Toxic blowpipe", RNG, 75, 0, true, ItemID.TOXIC_BLOWPIPE_LOADED, ItemID.TOXIC_BLOWPIPE)
 			.firing(Ammo.DARTS),
 		buy("Armadyl crossbow", RNG, 70, 0, true, ItemID.ACB).firing(Ammo.BOLTS),
+		buy("Dragon crossbow", RNG, 64, 0, true, ItemID.XBOWS_CROSSBOW_DRAGON).firing(Ammo.BOLTS),
 		buy("Rune crossbow", RNG, 61, 0, true, ItemID.XBOWS_CROSSBOW_RUNITE).firing(Ammo.BOLTS),
 		buy("Magic shortbow", RNG, 50, 0, true, ItemID.MAGIC_SHORTBOW).firing(Ammo.ARROWS),
 		buy("Yew shortbow", RNG, 40, 0, false, ItemID.YEW_SHORTBOW).firing(Ammo.ARROWS),
 		buy("Maple shortbow", RNG, 30, 0, false, ItemID.MAPLE_SHORTBOW).firing(Ammo.ARROWS),
 		buy("Willow shortbow", RNG, 20, 0, false, ItemID.WILLOW_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Oak shortbow", RNG, 5, 0, false, ItemID.OAK_SHORTBOW).firing(Ammo.ARROWS));
+		buy("Oak shortbow", RNG, 5, 0, false, ItemID.OAK_SHORTBOW).firing(Ammo.ARROWS),
+		buy("Shortbow", RNG, 1, 0, false, ItemID.SHORTBOW).firing(Ammo.ARROWS));
 
 	public static final GearSlot RANGED_HELM = GearSlot.of("helmet",
 		buy("Masori mask (f)", RNG, 80, 30, true, ItemID.MASORI_MASK_FORTIFIED),

@@ -175,6 +175,32 @@ public class PvmGuidesTest
 		return b;
 	}
 
+	private static LoadoutPlan.SupplyLine ammoLine(LoadoutPlan plan)
+	{
+		return plan.getSupplies().stream()
+			.filter(l -> l.getSupply().getName().equals("Arrows") || l.getSupply().getName().equals("Bolts"))
+			.findFirst().orElse(null);
+	}
+
+	@Test
+	public void arrowsMatchTheBowAndRangedLevel()
+	{
+		// A willow shortbow fires mithril arrows at best, whatever the Ranged level
+		GuideState willow = player(75).bank(Map.of(ItemID.WILLOW_SHORTBOW, 1)).build();
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent("zulrah"), willow, id -> 100_000_000);
+		assertEquals("Mithril arrows", ammoLine(plan).buyName());
+
+		// The magic shortbow fires amethyst arrows
+		GuideState msb = player(55).bank(Map.of(ItemID.MAGIC_SHORTBOW, 1)).build();
+		plan = LoadoutPlan.of(PvmGuides.forContent("zulrah"), msb, id -> 100_000_000);
+		assertEquals("Amethyst arrows", ammoLine(plan).buyName());
+
+		// A rune crossbow can't fire dragon bolts, and diamond bolts (e) wait for 65 Ranged
+		GuideState rcb = player(62).bank(Map.of(ItemID.XBOWS_CROSSBOW_RUNITE, 1)).build();
+		plan = LoadoutPlan.of(PvmGuides.forContent("zulrah"), rcb, id -> 100_000_000);
+		assertEquals("Ruby bolts (e)", ammoLine(plan).buyName());
+	}
+
 	@Test
 	public void everyGuideHasStepsBeyondTravel()
 	{

@@ -1,6 +1,9 @@
 package com.skillinghelper.pvm.guide;
 
 import com.skillinghelper.pvm.guide.Supply.Option;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Value;
 import net.runelite.api.gameval.ItemID;
 
 /**
@@ -177,33 +180,92 @@ public final class Supplies
 	}
 
 	/**
-	 * Ammo for a ranged weapon that fires this kind, or null for none.
+	 * One kind of ammo. {@code ranged} is the Ranged level to use it; {@code weapon} is the level of the weakest weapon
+	 * that fires it (a bow fires arrows up to its own level, only dragon-tier crossbows fire dragon bolts).
+	 */
+	@Value
+	private static class AmmoType
+	{
+		Gear.Ammo kind;
+		String name;
+		int ranged;
+		int weapon;
+		int id;
+	}
+
+	/**
+	 * Best first within each kind. Gem bolt levels are on the high side of what's commonly quoted, so a bolt is never
+	 * suggested before it can be used.
+	 */
+	private static final List<AmmoType> AMMO = List.of(
+		new AmmoType(Gear.Ammo.ARROWS, "Dragon arrows", 60, 60, ItemID.DRAGON_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Amethyst arrows", 50, 50, ItemID.AMETHYST_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Rune arrows", 40, 40, ItemID.RUNE_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Adamant arrows", 30, 30, ItemID.ADAMANT_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Mithril arrows", 20, 20, ItemID.MITHRIL_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Steel arrows", 5, 5, ItemID.STEEL_ARROW),
+		new AmmoType(Gear.Ammo.ARROWS, "Iron arrows", 1, 1, ItemID.IRON_ARROW),
+		new AmmoType(Gear.Ammo.BOLTS, "Diamond dragon bolts (e)", 64, 64, ItemID.DRAGON_BOLTS_ENCHANTED_DIAMOND),
+		new AmmoType(Gear.Ammo.BOLTS, "Ruby dragon bolts (e)", 64, 64, ItemID.DRAGON_BOLTS_ENCHANTED_RUBY),
+		new AmmoType(Gear.Ammo.BOLTS, "Diamond bolts (e)", 65, 61,
+			ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_TIPPED_DIAMOND_ENCHANTED),
+		new AmmoType(Gear.Ammo.BOLTS, "Ruby bolts (e)", 61, 61,
+			ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_TIPPED_RUBY_ENCHANTED),
+		new AmmoType(Gear.Ammo.BOLTS, "Runite bolts", 61, 61, ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE),
+		new AmmoType(Gear.Ammo.DARTS, "Dragon darts", 60, 0, ItemID.DRAGON_DART),
+		new AmmoType(Gear.Ammo.DARTS, "Amethyst darts", 50, 0, ItemID.AMETHYST_DART),
+		new AmmoType(Gear.Ammo.DARTS, "Rune darts", 40, 0, ItemID.RUNE_DART),
+		new AmmoType(Gear.Ammo.DARTS, "Adamant darts", 30, 0, ItemID.ADAMANT_DART));
+
+	/**
+	 * Every ammo item of this kind, best first, or null for none. Used to recognise ammo, not to pick it.
 	 */
 	public static Supply ammo(Gear.Ammo kind)
 	{
-		switch (kind)
+		return ammo(kind, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * The ammo to bring for this weapon: only what it fires and the player's Ranged level allows, best first, so the
+	 * first option is the one to buy. Null if the weapon doesn't use ammo.
+	 */
+	public static Supply ammoFor(Gear weapon, int rangedLevel)
+	{
+		return ammo(weapon.getAmmo(), weapon.getLevel(), rangedLevel);
+	}
+
+	private static Supply ammo(Gear.Ammo kind, int weaponLevel, int rangedLevel)
+	{
+		if (kind == Gear.Ammo.DARTS)
 		{
-			case ARROWS:
-				return Supply.stack("Arrows", 500, Option.of("Rune arrows", ItemID.RUNE_ARROW),
-					Option.of("Amethyst arrows", ItemID.AMETHYST_ARROW), Option.of("Dragon arrows", ItemID.DRAGON_ARROW),
-					Option.of("Adamant arrows", ItemID.ADAMANT_ARROW), Option.of("Mithril arrows", ItemID.MITHRIL_ARROW),
-					Option.of("Iron arrows", ItemID.IRON_ARROW)).withRestockBelow(50)
-					.note("Wear them in the ammo slot; use the best your bow can fire");
-			case BOLTS:
-				return Supply.stack("Bolts", 300, Option.of("Diamond bolts (e)",
-						ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_TIPPED_DIAMOND_ENCHANTED),
-					Option.of("Diamond dragon bolts (e)", ItemID.DRAGON_BOLTS_ENCHANTED_DIAMOND),
-					Option.of("Ruby dragon bolts (e)", ItemID.DRAGON_BOLTS_ENCHANTED_RUBY),
-					Option.of("Ruby bolts (e)", ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_TIPPED_RUBY_ENCHANTED),
-					Option.of("Runite bolts", ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE)).withRestockBelow(50)
-					.note("Wear them in the ammo slot");
-			case DARTS:
-				return Supply.stack("Darts and scales", 1_000, Option.of("Zulrah's scales", ItemID.SNAKEBOSS_SCALE))
-					.withRestockBelow(200)
-					.note("Load the blowpipe with these and 300+ dragon, amethyst or adamant darts");
-			default:
-				return null;
+			String dart = "adamant";
+			for (AmmoType t : AMMO)
+			{
+				if (t.kind == kind && t.ranged <= rangedLevel)
+				{
+					dart = t.name.toLowerCase().replace(" darts", "");
+					break;
+				}
+			}
+			return Supply.stack("Darts and scales", 1_000, Option.of("Zulrah's scales", ItemID.SNAKEBOSS_SCALE))
+				.withRestockBelow(200)
+				.note("Load the blowpipe with these and 300+ " + dart + " darts (or the best darts you have)");
 		}
+		List<Option> options = new ArrayList<>();
+		for (AmmoType t : AMMO)
+		{
+			if (t.kind == kind && t.weapon <= weaponLevel && t.ranged <= rangedLevel)
+			{
+				options.add(Option.of(t.name, t.id));
+			}
+		}
+		if (options.isEmpty())
+		{
+			return null;
+		}
+		boolean arrows = kind == Gear.Ammo.ARROWS;
+		return new Supply(arrows ? "Arrows" : "Bolts", options, arrows ? 500 : 300, 50, true, false, true, true,
+			"Wear them in the ammo slot");
 	}
 
 	private Supplies()

@@ -536,7 +536,7 @@ public final class StepResolver
 		}
 		for (ItemReq input : m.getInputs())
 		{
-			if (BankTrip.needsWithdraw(input, s, gather))
+			if (BankTrip.needsWithdraw(CombatGearAdvisor.resolve(input, s), s, gather))
 			{
 				return true;
 			}
@@ -608,8 +608,9 @@ public final class StepResolver
 	private double inputCostPerAction(Method m, PlayerState s)
 	{
 		double cost = 0;
-		for (ItemReq input : m.getInputs())
+		for (ItemReq listed : m.getInputs())
 		{
+			ItemReq input = CombatGearAdvisor.resolve(listed, s);
 			if (!s.ownsSubstitute(input))
 			{
 				cost += (double) prices.price(input.primaryId()) * input.getPerAction();

@@ -1,7 +1,7 @@
 package com.skillinghelper.data.guides;
 
+import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.CombatStyle;
-import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
-import net.runelite.api.gameval.ItemID;
 
 /**
  * Melee, Ranged and Hitpoints training, based on the OSRS wiki "Free-to-play melee training", "Pay-to-play melee
@@ -186,18 +185,15 @@ final class CombatGuide
 
 	private static Method.MethodBuilder ranged(Monster mon)
 	{
-		boolean cheapAmmo = mon.level < 20;
-		ItemReq ammo = cheapAmmo
-			? ItemReq.stack("Iron arrows", 1, ItemID.IRON_ARROW)
-			: ItemReq.stack("Mithril arrows", 1, ItemID.MITHRIL_ARROW);
 		return withRates(base(mon, Skill.RANGED, "ranged"), mon, 1.1)
 			.minLevel(mon.level)
 			.xpPerAction(4.0 * mon.hitpoints)
 			.xpPerHour((int) (mon.meleeXpHr * 1.1))
-			// Roughly one arrow lost per kill once you pick arrows back up (or wear Ava's device)
-			.input(ammo)
+			// Roughly one arrow lost per kill once you pick arrows back up (or wear Ava's device). Which ammo depends
+			// on the player's weapon and Ranged level, not the monster, so the guide picks it at runtime
+			.input(CombatGear.AMMO_INPUT)
 			.gearStyle(CombatStyle.RANGED)
-			.instruction("Equip your best bow with the arrows, set Rapid and attack the " + targetNoun(mon))
+			.instruction("Equip your best ranged weapon and ammo, set Rapid and attack the " + targetNoun(mon))
 			.wikiPage(RANGED_WIKI);
 	}
 

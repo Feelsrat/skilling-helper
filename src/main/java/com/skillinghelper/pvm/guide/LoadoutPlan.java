@@ -141,7 +141,7 @@ public class LoadoutPlan
 		}
 
 		List<Supply> wanted = new ArrayList<>();
-		Supply ammo = weapon == null ? null : Supplies.ammo(weapon.getAmmo());
+		Supply ammo = weapon == null ? null : Supplies.ammoFor(weapon, s.level(Skill.RANGED));
 		if (ammo != null)
 		{
 			wanted.add(ammo);

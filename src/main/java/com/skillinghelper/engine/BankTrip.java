@@ -189,8 +189,9 @@ final class BankTrip
 	{
 		Map<ItemReq, Integer> trip = tripAmounts(m, s, actionsLeft);
 		List<String> plan = new ArrayList<>();
-		for (ItemReq input : m.getInputs())
+		for (ItemReq listed : m.getInputs())
 		{
+			ItemReq input = CombatGearAdvisor.resolve(listed, s);
 			if (s.carriesSubstitute(input))
 			{
 				continue;

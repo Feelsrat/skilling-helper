@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import static com.skillinghelper.engine.Format.gp;
@@ -151,8 +152,9 @@ final class RequirementChecker
 	private void addInputs(Method m, PlayerState s, int actions, List<Requirement> reqs, Set<String> substitutesListed)
 	{
 		Map<ItemReq, Integer> tripAmounts = trips.tripAmounts(m, s, actions);
-		for (ItemReq input : m.getInputs())
+		for (ItemReq listed : m.getInputs())
 		{
+			ItemReq input = CombatGearAdvisor.resolve(listed, s);
 			if (addSubstitute(input, s, reqs, substitutesListed))
 			{
 				continue;
@@ -361,7 +363,8 @@ final class RequirementChecker
 	}
 
 	/**
-	 * Suggests the best weapon and armour per slot: wear what you own, or buy an upgrade from the GE.
+	 * Suggests the best weapon and armour per slot: wear what you own, or buy an upgrade from the GE. Ammo is only
+	 * suggested for the weapon the player will be using.
 	 */
 	private void addCombatGear(Method m, PlayerState s, List<Requirement> reqs)
 	{
@@ -371,17 +374,30 @@ final class RequirementChecker
 		}
 		for (CombatGear slot : CombatGear.values())
 		{
-			if (slot.getStyle() == m.getGearStyle())
+			if (slot.getStyle() != m.getGearStyle())
 			{
-				addGearSlot(slot, s, reqs);
+				continue;
+			}
+			if (slot == CombatGear.RANGED_AMMO)
+			{
+				CombatGear.Tier weapon = CombatGearAdvisor.rangedWeapon(s);
+				if (weapon != null)
+				{
+					addGearSlot(slot, s, reqs, t -> t.firedFrom(weapon));
+				}
+			}
+			else
+			{
+				addGearSlot(slot, s, reqs, t -> true);
 			}
 		}
 	}
 
 	/**
-	 * One gear slot. Tiers are listed best first, so a lower index is better gear.
+	 * One gear slot. Tiers are listed best first, so a lower index is better gear. Only tiers that pass
+	 * {@code allowed} are considered.
 	 */
-	private void addGearSlot(CombatGear slot, PlayerState s, List<Requirement> reqs)
+	private void addGearSlot(CombatGear slot, PlayerState s, List<Requirement> reqs, Predicate<CombatGear.Tier> allowed)
 	{
 		List<CombatGear.Tier> tiers = slot.getTiers();
 		int bestUsable = -1;
@@ -391,7 +407,7 @@ final class RequirementChecker
 		for (int i = 0; i < tiers.size(); i++)
 		{
 			CombatGear.Tier t = tiers.get(i);
-			if (!canWear(t, s))
+			if (!allowed.test(t) || !CombatGearAdvisor.canWear(t, s))
 			{
 				continue;
 			}
@@ -422,16 +438,11 @@ final class RequirementChecker
 		if (s.bankKnown() && (have == -1 || bestUsable < have))
 		{
 			CombatGear.Tier best = tiers.get(bestUsable);
+			String darts = best.getAmmo() == CombatGear.Ammo.DARTS && slot == CombatGear.RANGED_AMMO
+				? ", loaded into the blowpipe with Zulrah's scales" : "";
 			reqs.add(info("Gear upgrade (" + slot.getSlotName() + "): " + best.getName() + " (~"
-				+ gp(prices.price(best.getIds()[0])) + " on the GE)", Requirement.Status.SUGGESTED));
+				+ gp(prices.price(best.getIds()[0])) + " on the GE" + darts + ")", Requirement.Status.SUGGESTED));
 		}
-	}
-
-	private static boolean canWear(CombatGear.Tier t, PlayerState s)
-	{
-		return s.level(t.getSkill()) >= t.getLevel()
-			&& s.level(Skill.DEFENCE) >= t.getDefenceLevel()
-			&& (!t.isMembers() || s.isMembersWorld());
 	}
 
 	// ---- Building lines ----
