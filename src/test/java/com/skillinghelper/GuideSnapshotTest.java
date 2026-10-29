@@ -220,7 +220,6 @@ public class GuideSnapshotTest
 			.membersWorld(strong)
 			.completedQuests(strong && !m.getQuests().isEmpty() ? EnumSet.copyOf(m.getQuests())
 				: EnumSet.noneOf(Quest.class))
-			.measuredXpPerHour(strong ? Map.of(m.getId(), 12_345) : Map.of())
 			.build();
 	}
 
@@ -511,9 +510,9 @@ public class GuideSnapshotTest
 	private static void option(StringBuilder sb, MethodOption o)
 	{
 		sb.append(o.getMethod().getId()).append(" blockers=").append(o.getBlockers())
-			.append(String.format(" gp=%.3f actions=%d buy=%d afford=%b owned=%.3f buyPer=%.3f xph=%.1f measured=%b"
+			.append(String.format(" gp=%.3f actions=%d buy=%d afford=%b owned=%.3f buyPer=%.3f xph=%.1f"
 					+ " xpa=%.3f score=%.4f", o.getGpPerAction(), o.getActions(), o.getBuyCost(), o.isAffordable(),
-				o.getOwnedInputFraction(), o.getBuyCostPerAction(), o.getXpPerHour(), o.isMeasured(), o.getXpPerAction(),
+				o.getOwnedInputFraction(), o.getBuyCostPerAction(), o.getXpPerHour(), o.getXpPerAction(),
 				o.getScore()))
 			.append('\n');
 	}

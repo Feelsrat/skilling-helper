@@ -37,10 +37,9 @@ public class MethodOption
 	 */
 	double buyCostPerAction;
 	/**
-	 * Xp per hour of play: the player's own measured rate if there is one, otherwise the guide's estimate.
+	 * Xp per hour of play, from the guide's estimate.
 	 */
 	double xpPerHour;
-	boolean measured;
 	/**
 	 * Xp per action at the player's level.
 	 */

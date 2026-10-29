@@ -405,18 +405,15 @@ public class GuideCoverageTest
 	}
 
 	@Test
-	public void ownRateReplacesTheGuideEstimate()
+	public void birdhouseRunsCountRunsNeeded()
 	{
 		MethodPlanner planner = new MethodPlanner(id -> 0);
 		Method willows = guides.byId("farm_tree_willow");
 		Method birdhouses = guides.byId("hunter_birdhouses");
 		PlayerState s = player(Skill.HUNTER, 30, new ItemCounts(Map.of()))
-			.measuredXpPerHour(Map.of(birdhouses.getId(), 12_345))
 			.completedQuests(Set.of(Quest.BONE_VOYAGE))
 			.build();
 		MethodOption o = planner.rank(List.of(birdhouses), s, TrainingPreference.RECOMMENDED, 35).get(0);
-		assertTrue(o.isMeasured());
-		assertEquals(12_345, o.getXpPerHour(), 0.1);
 		// Willow bird houses (level 24+) give 560 xp each, so 4 per run
 		assertEquals(560, o.getXpPerAction(), 0.1);
 		assertTrue(o.isRun());

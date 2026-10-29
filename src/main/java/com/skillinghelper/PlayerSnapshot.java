@@ -34,18 +34,16 @@ class PlayerSnapshot
 
 	private final Client client;
 	private final BankCache bankCache;
-	private final RateTracker rates;
 	private final BirdhouseTracker birdhouses;
 	private final PatchTracker patches;
 	private final SlayerTaskReader slayerTask;
 
 	@Inject
-	PlayerSnapshot(Client client, BankCache bankCache, RateTracker rates, BirdhouseTracker birdhouses,
-		PatchTracker patches, SlayerTaskReader slayerTask)
+	PlayerSnapshot(Client client, BankCache bankCache, BirdhouseTracker birdhouses, PatchTracker patches,
+		 SlayerTaskReader slayerTask)
 	{
 		this.client = client;
 		this.bankCache = bankCache;
-		this.rates = rates;
 		this.birdhouses = birdhouses;
 		this.patches = patches;
 		this.slayerTask = slayerTask;
@@ -72,7 +70,6 @@ class PlayerSnapshot
 			.onBoat(me != null && isOnBoat(me))
 			.boatMooring(boatMooring)
 			.stopWaits(stopWaits())
-			.measuredXpPerHour(rates.rates())
 			.completedQuests(copy(completedQuests))
 			.startedQuests(copy(startedQuests))
 			.slayerTask(slayerTask.read(location))

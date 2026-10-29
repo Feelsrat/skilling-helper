@@ -164,8 +164,7 @@ public final class MethodPlanner
 		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
 		boolean affordable = inputs.buyCost <= state.gp() || (gpPerAction >= 0 && inputs.tripCost <= state.gp());
 
-		Integer measuredXpHr = state.getMeasuredXpPerHour().get(m.getId());
-		double xpHr = measuredXpHr != null ? measuredXpHr : averageXpPerHour(m, level, xpNeeded);
+		double xpHr = averageXpPerHour(m, level, xpNeeded);
 		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
 		double gpHr = gpPerAction * actionsPerHour;
 		// Items already in the bank don't need buying, so they only count partially against the method
@@ -178,7 +177,7 @@ public final class MethodPlanner
 		}
 
 		return new MethodOption(m, blockers(m, state, level), gpPerAction, actions, inputs.buyCost, affordable,
-			inputs.ownedFraction, inputs.unownedCostPerAction, xpHr, measuredXpHr != null, xpPerAction, score);
+			inputs.ownedFraction, inputs.unownedCostPerAction, xpHr, xpPerAction, score);
 	}
 
 	/**

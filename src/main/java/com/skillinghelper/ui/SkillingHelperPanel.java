@@ -386,10 +386,7 @@ public class SkillingHelperPanel extends PluginPanel
 			content.add(text(String.format("~%,d runs, one every %s while they grow", option.runs(
 				guide.getXpRemaining()), duration(guide.getMethod().getCycleMinutes() / 60.0)), Color.LIGHT_GRAY));
 		}
-		content.add(text(option.isMeasured()
-			? String.format("Based on your own rate: ~%,d xp/hr", Math.round(option.getXpPerHour()))
-			: String.format("Guide estimate ~%,d xp/hr; switches to your own rate after 10 minutes of training",
-				Math.round(option.getXpPerHour())), HINT));
+		content.add(text(String.format("Guide estimate ~%,d xp/hr", Math.round(option.getXpPerHour())), HINT));
 	}
 
 	/**
@@ -545,8 +542,7 @@ public class SkillingHelperPanel extends PluginPanel
 	{
 		Method m = o.getMethod();
 		String tags = m.getTags().stream().map(MethodTag::getLabel).collect(Collectors.joining(", "));
-		return String.format("Lvl %d · ~%dk xp/hr%s%s%s", m.getMinLevel(), Math.round(o.getXpPerHour() / 1000),
-			o.isMeasured() ? " (yours)" : "",
+		return String.format("Lvl %d · ~%dk xp/hr%s%s", m.getMinLevel(), Math.round(o.getXpPerHour() / 1000),
 			m.isMembers() ? " · Members" : "", tags.isEmpty() ? "" : " · " + tags);
 	}
 
