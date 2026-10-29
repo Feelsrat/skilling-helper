@@ -6,11 +6,20 @@ import com.skillinghelper.pvm.data.ItemNeed;
 import com.skillinghelper.pvm.data.PvmContent;
 import com.skillinghelper.pvm.data.QuestReq;
 import com.skillinghelper.pvm.data.StatReq;
+import com.skillinghelper.pvm.guide.Fight;
+import com.skillinghelper.pvm.guide.LoadoutPlan;
+import com.skillinghelper.pvm.guide.Profit;
+import com.skillinghelper.pvm.guide.PvmGuide;
+import com.skillinghelper.pvm.guide.PvmGuides;
+import com.skillinghelper.pvm.guide.PvmStep;
+import com.skillinghelper.pvm.guide.Supply;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -22,14 +31,18 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import lombok.Value;
 import net.runelite.api.Skill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
- * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked.
+ * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked with
+ * its exact loadout. A running guide shows its current step at the top of the checklist.
  */
 public class PvmProgressionPanel extends PluginPanel
 {
@@ -51,6 +64,27 @@ public class PvmProgressionPanel extends PluginPanel
 		void onOpenWiki(String page);
 
 		void onToggleDone(PvmContent content);
+
+		void onStartGuide(PvmContent content);
+
+		void onStopGuide();
+	}
+
+	/**
+	 * The running guide (if any) and every guide's loadout for the player.
+	 */
+	@Value
+	public static class GuideView
+	{
+		public static final GuideView NONE = new GuideView(null, null, Collections.emptyMap(), false);
+
+		/**
+		 * Content id of the running guide, or null.
+		 */
+		String activeId;
+		PvmStep step;
+		Map<String, LoadoutPlan> plans;
+		boolean bankKnown;
 	}
 
 	private final Listener listener;
@@ -64,6 +98,11 @@ public class PvmProgressionPanel extends PluginPanel
 	private List<Readiness> ladder;
 	private PlayerView view;
 	private String pathId;
+	private GuideView guides = GuideView.NONE;
+	/**
+	 * Holds the running guide's current step, so it can change every tick without rebuilding the panel.
+	 */
+	private final JPanel stepBox = new JPanel();
 
 	public PvmProgressionPanel(Listener listener)
 	{
@@ -113,6 +152,11 @@ public class PvmProgressionPanel extends PluginPanel
 		add(scroll, BorderLayout.CENTER);
 
 		content.add(text("Log in to see which boss to work towards next.", MUTED));
+
+		stepBox.setLayout(new BoxLayout(stepBox, BoxLayout.Y_AXIS));
+		stepBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		stepBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 6, 6)));
+		stepBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 	}
 
 	/**
@@ -120,12 +164,48 @@ public class PvmProgressionPanel extends PluginPanel
 	 *
 	 * @param pathId id of the content Shortest Path is showing the way to, or null
 	 */
-	public void update(List<Readiness> ladder, PlayerView view, String pathId)
+	public void update(List<Readiness> ladder, PlayerView view, String pathId, GuideView guides)
 	{
 		this.ladder = ladder;
 		this.view = view;
 		this.pathId = pathId;
+		this.guides = guides;
+		if (guides.getActiveId() != null)
+		{
+			// Keep showing the guide that's running
+			Readiness first = Readiness.next(ladder);
+			pickedId = first != null && first.getContent().getId().equals(guides.getActiveId())
+				? null : guides.getActiveId();
+		}
 		rebuild();
+	}
+
+	/**
+	 * Shows the running guide's new step. Runs on the Swing thread.
+	 */
+	public void updateStep(PvmStep step)
+	{
+		guides = new GuideView(guides.getActiveId(), step, guides.getPlans(), guides.isBankKnown());
+		fillStep(step);
+	}
+
+	private void fillStep(PvmStep step)
+	{
+		stepBox.removeAll();
+		if (step != null)
+		{
+			JLabel title = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>" + escape(step.getTitle())
+				+ "</body></html>");
+			title.setFont(FontManager.getRunescapeBoldFont());
+			title.setForeground(Color.WHITE);
+			stepBox.add(left(title));
+			for (String line : step.getLines())
+			{
+				stepBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+			}
+		}
+		stepBox.revalidate();
+		stepBox.repaint();
 	}
 
 	private void rebuild()
@@ -183,6 +263,25 @@ public class PvmProgressionPanel extends PluginPanel
 		content.add(Box.createVerticalStrut(4));
 		content.add(text(c.getWhy(), Color.LIGHT_GRAY));
 
+		PvmGuide guide = PvmGuides.forContent(c.getId());
+		LoadoutPlan plan = guides.getPlans().get(c.getId());
+		if (guide != null)
+		{
+			money(guide, plan);
+			content.add(Box.createVerticalStrut(6));
+			if (c.getId().equals(guides.getActiveId()))
+			{
+				fillStep(guides.getStep());
+				content.add(stepBox);
+				content.add(Box.createVerticalStrut(4));
+				content.add(button("Stop guide", listener::onStopGuide));
+			}
+			else
+			{
+				content.add(button("Start guide", () -> listener.onStartGuide(c)));
+			}
+		}
+
 		int step = 1;
 		if (!c.getQuests().isEmpty())
 		{
@@ -204,7 +303,12 @@ public class PvmProgressionPanel extends PluginPanel
 			}
 		}
 
-		if (!c.getItems().isEmpty())
+		if (plan != null)
+		{
+			content.add(section(step++ + ". Loadout"));
+			loadout(plan);
+		}
+		else if (!c.getItems().isEmpty())
 		{
 			content.add(section(step++ + ". Bring"));
 			for (ItemNeed i : c.getItems())
@@ -229,6 +333,15 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 
 		content.add(section(step++ + ". Learn the fight"));
+		Fight fight = guide == null ? null : guide.getFight();
+		if (fight != null)
+		{
+			for (String tip : fight.getTips())
+			{
+				content.add(text("• " + tip, Color.LIGHT_GRAY));
+			}
+			content.add(Box.createVerticalStrut(2));
+		}
 		content.add(text("Read the strategy guide before your first try.", Color.LIGHT_GRAY));
 		content.add(Box.createVerticalStrut(4));
 		content.add(button("Open wiki strategy guide", () -> listener.onOpenWiki(c.getWikiPage())));
@@ -248,6 +361,138 @@ public class PvmProgressionPanel extends PluginPanel
 			content.add(Box.createVerticalStrut(4));
 			content.add(button(marked ? "Mark as not done" : "Mark as done", () -> listener.onToggleDone(c)));
 		}
+	}
+
+	private void money(PvmGuide guide, LoadoutPlan plan)
+	{
+		Profit profit = guide.getProfit();
+		if (profit == null)
+		{
+			return;
+		}
+		Profit.Verdict verdict = profit.verdict();
+		Color color = verdict == Profit.Verdict.GOOD ? GOOD : verdict == Profit.Verdict.SOME ? WARN : MUTED;
+		String line = "Money: " + verdict.getLabel()
+			+ (profit.getGpPerHour() > 0 ? " · ~" + gp(profit.getGpPerHour()) + "/hr" : "");
+		content.add(Box.createVerticalStrut(4));
+		content.add(text(line, color));
+		content.add(text(profit.getNote(), MUTED));
+		if (plan != null && plan.getTripCost() > 0)
+		{
+			content.add(text("Supplies cost ~" + gp(plan.getTripCost()) + " a trip.", MUTED));
+		}
+	}
+
+	private void loadout(LoadoutPlan plan)
+	{
+		if (plan.getGear().isEmpty() && plan.getSupplies().isEmpty())
+		{
+			content.add(text("Nothing to bring.", Color.LIGHT_GRAY));
+			return;
+		}
+		if (!guides.isBankKnown())
+		{
+			content.add(text("Open your bank once so this can count what you own.", WARN));
+		}
+		if (!plan.getGear().isEmpty())
+		{
+			content.add(text("Wear:", Color.WHITE));
+			for (LoadoutPlan.GearLine g : plan.getGear())
+			{
+				content.add(gearLine(g));
+				if (g.getUpgrade() != null && guides.isBankKnown())
+				{
+					content.add(text("   ↑ Upgrade: " + g.getUpgrade().getName() + priceNote(g.getUpgradePrice()), HINT));
+				}
+			}
+		}
+		if (!plan.getSupplies().isEmpty())
+		{
+			content.add(Box.createVerticalStrut(4));
+			content.add(text("Inventory:", Color.WHITE));
+			for (LoadoutPlan.SupplyLine l : plan.getSupplies())
+			{
+				content.add(supplyLine(l));
+				if (l.getSupply().getNote() != null)
+				{
+					content.add(text("   " + l.getSupply().getNote(), MUTED));
+				}
+			}
+		}
+		if (plan.getBuyCost() > 0 && guides.isBankKnown())
+		{
+			content.add(text("To buy: ~" + gp(plan.getBuyCost()) + " in total.", WARN));
+		}
+	}
+
+	private JLabel gearLine(LoadoutPlan.GearLine g)
+	{
+		String name = g.getGear().getName();
+		switch (g.getHave())
+		{
+			case WORN:
+				return text("✔ " + name, GOOD);
+			case CARRIED:
+				return text("➜ Wear your " + name, WARN);
+			case IN_BANK:
+				return text("• " + name + " (in bank)", Color.LIGHT_GRAY);
+			case BUY:
+			default:
+				return guides.isBankKnown()
+					? text("✘ " + name + ": buy" + priceNote(g.getPrice()) + " (" + g.getSlot() + ")", BAD)
+					: text("? " + name + " (" + g.getSlot() + ")", MUTED);
+		}
+	}
+
+	private JLabel supplyLine(LoadoutPlan.SupplyLine l)
+	{
+		Supply sup = l.getSupply();
+		String what = l.getAmount() + " x " + (sup.getOptions().size() == 1 ? l.buyName()
+			: sup.getName() + " (" + l.buyName().toLowerCase() + " or better)");
+		if (l.getCarried() >= l.getAmount())
+		{
+			return text("✔ " + what, GOOD);
+		}
+		int inBank = l.getWithdraw().values().stream().mapToInt(Integer::intValue).sum();
+		StringBuilder status = new StringBuilder();
+		if (l.getCarried() > 0)
+		{
+			status.append(l.getCarried()).append(" carried");
+		}
+		if (inBank > 0)
+		{
+			status.append(status.length() > 0 ? ", " : "").append(inBank).append(" from bank");
+		}
+		if (l.getToBuy() > 0 && guides.isBankKnown())
+		{
+			status.append(status.length() > 0 ? ", " : "").append("buy ").append(l.getToBuy())
+				.append(priceNote((long) l.getToBuy() * l.getPrice()));
+		}
+		else if (!sup.isBuyable() && l.getCarried() + inBank < l.getAmount())
+		{
+			status.append(status.length() > 0 ? ", " : "").append("get it in game");
+		}
+		boolean missing = l.getToBuy() > 0 || (!sup.isBuyable() && l.getCarried() + inBank < l.getAmount());
+		return text((missing ? "✘ " : "• ") + what + (status.length() > 0 ? ": " + status : ""),
+			missing && guides.isBankKnown() ? (sup.isRequired() ? BAD : WARN) : Color.LIGHT_GRAY);
+	}
+
+	private static String priceNote(long price)
+	{
+		return price > 0 ? " (~" + gp(price) + ")" : "";
+	}
+
+	private static String gp(long gp)
+	{
+		if (gp >= 1_000_000)
+		{
+			return String.format("%.1fm", gp / 1_000_000.0);
+		}
+		if (gp >= 10_000)
+		{
+			return (gp / 1000) + "k";
+		}
+		return String.format("%,d gp", gp);
 	}
 
 	private JComponent levelRow(StatReq s)
