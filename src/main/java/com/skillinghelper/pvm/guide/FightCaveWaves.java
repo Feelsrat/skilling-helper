@@ -3,7 +3,9 @@ package com.skillinghelper.pvm.guide;
 import com.skillinghelper.data.Target;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Getter;
@@ -24,18 +26,18 @@ public final class FightCaveWaves
 	private static final Pattern WAVE_MESSAGE = Pattern.compile("^Wave: (\\d+)$");
 
 	/**
-	 * Listed in the usual kill order, which is also the order wave lines show them in.
+	 * Listed in the wiki's kill order, which is also the order wave lines show them in.
 	 */
 	@Getter
 	@RequiredArgsConstructor
 	public enum Monster
 	{
-		KET_ZEK("Ket-Zek", 360, "magic from range, melee up close"),
-		TOK_XIL("Tok-Xil", 90, "ranged from range, melee up close"),
-		YT_MEJKOT("Yt-MejKot", 180, "melee, and heals monsters near it"),
-		TZ_KEK("Tz-Kek", 45, "melee; splits into two small Tz-Kek when it dies"),
 		TZ_KIH("Tz-Kih", 22, "melee; every hit drains your prayer"),
-		JAD("TzTok-Jad", 702, "magic, ranged and melee; summons healers at half health");
+		TOK_XIL("Tok-Xil", 90, "accurate ranged that hits hard; weaker melee up close"),
+		KET_ZEK("Ket-Zek", 360, "magic from range, magic and a very hard melee up close"),
+		YT_MEJKOT("Yt-MejKot", 180, "slow melee that hits high; heals itself and monsters near it"),
+		TZ_KEK("Tz-Kek", 45, "weak melee; 1 recoil damage when you melee it; splits into two small Tz-Kek"),
+		JAD("TzTok-Jad", 702, "magic and ranged from range, melee only next to you");
 
 		private final String npcName;
 		private final int level;
@@ -50,8 +52,52 @@ public final class FightCaveWaves
 	};
 
 	private static final Monster[] BUILDING_KILL_ORDER = {
-		Monster.KET_ZEK, Monster.TOK_XIL, Monster.YT_MEJKOT, Monster.TZ_KEK, Monster.TZ_KIH,
+		Monster.TZ_KIH, Monster.TOK_XIL, Monster.KET_ZEK, Monster.YT_MEJKOT, Monster.TZ_KEK,
 	};
+
+	private static final String HIT_AND_RUN = "Kill the Tz-Kih first, hit-and-run so it can't drain your prayer.";
+	private static final String BLOCK_MEJKOT = "Block the Yt-MejKot behind a rock (Italy or Dragon rock) or other "
+		+ "monsters.";
+	private static final String BLOCK_WITH_KET_ZEK = "Use the Ket-Zek and other monsters to block the Yt-MejKot.";
+
+	/**
+	 * The OSRS Wiki's per-wave notes (Template:TzHaar Fight Cave Waves), for the wave that's up only. Left out on
+	 * purpose: the wiki's prayer advice (combat prayer recommendations are banned) and its notes about where later
+	 * waves and Jad will spawn (advance warning of future hazards is banned).
+	 */
+	private static final Map<Integer, String> NOTES = notes();
+
+	private static Map<Integer, String> notes()
+	{
+		Map<Integer, String> n = new HashMap<>();
+		n.put(1, "Hit-and-run the Tz-Kih so it can't drain your prayer.");
+		n.put(2, "Again, hit and run.");
+		for (int w : new int[]{4, 5, 8, 9, 11, 16, 19, 23, 26, 27, 32, 35, 39, 42, 47, 50, 54, 57})
+		{
+			n.put(w, HIT_AND_RUN);
+		}
+		n.put(15, BLOCK_MEJKOT + " Guthan's can heal off it.");
+		for (int w : new int[]{18, 21, 28})
+		{
+			n.put(w, BLOCK_MEJKOT);
+		}
+		n.put(31, "Keep your distance: the Ket-Zek's melee hits very hard. Hit-and-run works but isn't for beginners.");
+		n.put(43, "Halfway: wave 43 is the midpoint of the damage from waves 1 to 62.");
+		n.put(45, "Take out the rangers first.");
+		n.put(46, "Block the Yt-MejKot with the Ket-Zek, Italy rock, Dragon rock or other monsters.");
+		for (int w : new int[]{49, 52, 56, 59})
+		{
+			n.put(w, BLOCK_WITH_KET_ZEK);
+		}
+		n.put(53, "The Tok-Xil can block the Yt-MejKot if needed. " + BLOCK_WITH_KET_ZEK);
+		n.put(60, "Kill the rangers first.");
+		n.put(61, "Last wave to heal with Guthan's, or to regenerate in a safespot once the Ket-Zek is dead. To take a "
+			+ "break before Jad, log out at the end of this wave, not the next one.");
+		n.put(62, "Before you kill the last Ket-Zek, top up your hitpoints and prayer.");
+		n.put(63, "Stay out of his melee range. At half health four healers appear: hit each from long range to drag "
+			+ "them off him. They don't have to die; if they heal him to full and you kill them, they come back.");
+		return Collections.unmodifiableMap(n);
+	}
 
 	private static final List<List<Monster>> WAVES = build();
 
@@ -100,7 +146,15 @@ public final class FightCaveWaves
 	}
 
 	/**
-	 * e.g. "Tok-Xil (90), Tz-Kih x2 (22)".
+	 * The wiki's tip for wave {@code n}, or null.
+	 */
+	public static String note(int n)
+	{
+		return NOTES.get(n);
+	}
+
+	/**
+	 * e.g. "Tz-Kih x2 (22), Tok-Xil (90)".
 	 */
 	public static String describe(List<Monster> wave)
 	{
@@ -183,6 +237,11 @@ public final class FightCaveWaves
 		List<Monster> now = wave(n);
 		// Only the wave that's already up: warning about future waves counts as advance warning of a hazard
 		lines.add("Wave " + n + " of " + JAD_WAVE + ": " + describe(now));
+		String note = NOTES.get(n);
+		if (note != null)
+		{
+			lines.add("Wiki tip: " + note);
+		}
 		List<Monster> seen = new ArrayList<>();
 		for (Monster m : now)
 		{

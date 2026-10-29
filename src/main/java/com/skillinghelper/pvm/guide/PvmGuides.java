@@ -518,12 +518,13 @@ public final class PvmGuides
 			.stage(Stage.builder()
 				.title("Work through the waves")
 				.committed(true)
-				.line("Usual kill order: Ket-Zek, then Tok-Xil (they hit from range), then Yt-MejKot before it heals "
-					+ "the rest, then the Tz-Kek and Tz-Kih. Kill a Tz-Kih fast if it reaches you.")
+				.line("Kill order (from the wiki): Tz-Kih, Tok-Xil, Ket-Zek, Yt-MejKot, then Tz-Kek. If one is stuck "
+					+ "behind a rock, stay put and kill the ones you can reach first.")
 				.line("Safespots: stand so a rock pillar is between you and the melee monsters, so they get stuck "
 					+ "behind it while you shoot over. The wiki strategy page has pictures of the usual ones; mark "
 					+ "yours once with Ground Markers (shift + right-click a tile).")
-				.line("Logging out between waves saves your progress. Wave 63 is TzTok-Jad.")
+				.line("Click log out once and you're logged out when the wave ends, with your progress saved. Wave 63 "
+					+ "is TzTok-Jad.")
 				.highlight(Target.npc(null, "Ket-Zek"))
 				.highlight(Target.npc(null, "Tok-Xil"))
 				.highlight(Target.npc(null, "Yt-MejKot"))
@@ -972,7 +973,9 @@ public final class PvmGuides
 
 		static List<String> fightLines(GuideState s)
 		{
-			List<String> lines = new ArrayList<>(potionLines(s));
+			List<String> lines = new ArrayList<>();
+			lines.add("Wiki tip: " + FightCaveWaves.note(FightCaveWaves.JAD_WAVE));
+			lines.addAll(potionLines(s));
 			lines.addAll(supplyLine(s));
 			return lines;
 		}

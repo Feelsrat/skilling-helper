@@ -35,7 +35,7 @@ public class FightCaveWavesTest
 	public void killOrderPutsRangedAndMagicFirst()
 	{
 		// Wave 12 is Tok-Xil, Tz-Kek and two Tz-Kih
-		assertEquals("Tok-Xil (90), Tz-Kek (45), Tz-Kih x2 (22)", FightCaveWaves.describe(FightCaveWaves.wave(12)));
+		assertEquals("Tz-Kih x2 (22), Tok-Xil (90), Tz-Kek (45)", FightCaveWaves.describe(FightCaveWaves.wave(12)));
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class FightCaveWavesTest
 			.build();
 		List<String> lines = PvmGuides.FightCave.lines(s);
 		assertEquals("Wave 14 of 63: Tok-Xil x2 (90)", lines.get(0));
-		assertTrue(lines.get(1).startsWith("• Tok-Xil: ranged"));
+		assertTrue(lines.get(1).startsWith("• Tok-Xil: accurate ranged"));
 		assertTrue(lines.stream().noneMatch(l -> l.contains("Yt-MejKot")));
 		assertEquals("Left: 11 prayer doses", lines.get(lines.size() - 1));
 	}
@@ -67,7 +67,9 @@ public class FightCaveWavesTest
 	public void firstTargetFollowsTheKillOrder()
 	{
 		GuideState s = GuideState.builder().npc("tz-kih", 2).npc("tok-xil", 1).build();
-		assertEquals(List.of(Target.npc(null, "Tok-Xil")), FightCaveWaves.firstTarget(s));
+		assertEquals(List.of(Target.npc(null, "Tz-Kih")), FightCaveWaves.firstTarget(s));
+		GuideState noBats = GuideState.builder().npc("yt-mejkot", 1).npc("ket-zek", 1).build();
+		assertEquals(List.of(Target.npc(null, "Ket-Zek")), FightCaveWaves.firstTarget(noBats));
 		assertTrue(FightCaveWaves.firstTarget(GuideState.builder().build()).isEmpty());
 	}
 
@@ -100,5 +102,21 @@ public class FightCaveWavesTest
 			.build();
 		assertEquals(List.of("Brews have drained your Ranged (72/80): sip a super restore."),
 			PvmGuides.FightCave.potionLines(drained));
+	}
+
+	@Test
+	public void wikiNotesLeaveOutPrayerAndSpawnAdvice()
+	{
+		for (int n = 1; n <= FightCaveWaves.JAD_WAVE; n++)
+		{
+			String note = FightCaveWaves.note(n);
+			if (note != null)
+			{
+				String lower = note.toLowerCase();
+				assertTrue(n + ": " + note, !lower.contains("protect from") && !lower.contains("spawn"));
+			}
+		}
+		assertEquals(null, FightCaveWaves.note(3));
+		assertTrue(FightCaveWaves.note(1).startsWith("Hit-and-run"));
 	}
 }
