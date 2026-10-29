@@ -349,7 +349,7 @@ public class PvmProgressionPanel extends PluginPanel
 		content.add(section(step + ". Get the kill"));
 		if (r.getKillCount() > 0)
 		{
-			content.add(text("✔ Kill count: " + r.getKillCount(), GOOD));
+			content.add(text("★ Kill count: " + r.getKillCount(), GOOD));
 		}
 		else
 		{
@@ -544,7 +544,8 @@ public class PvmProgressionPanel extends PluginPanel
 			if (value instanceof Readiness)
 			{
 				Readiness r = (Readiness) value;
-				String mark = r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
+				// A star for anything killed at least once, a tick for things only marked done by hand
+				String mark = r.getKillCount() > 0 ? "★ " : r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
 				setText(mark + r.getContent().getLevel() + "  " + r.getContent().getName() + " ("
 					+ r.getStatus().getLabel().toLowerCase() + ")");
 				if (!selected)

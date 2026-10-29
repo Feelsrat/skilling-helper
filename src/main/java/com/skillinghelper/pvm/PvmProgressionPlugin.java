@@ -61,6 +61,10 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.PluginMessage;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.hiscore.HiscoreClient;
+import net.runelite.client.hiscore.HiscoreEndpoint;
+import net.runelite.client.hiscore.HiscoreResult;
+import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -120,6 +124,39 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private PvmSceneOverlay sceneOverlay;
 	@Inject
 	private PvmItemOverlay itemOverlay;
+	@Inject
+	private HiscoreClient hiscoreClient;
+
+	/**
+	 * Hiscore boss entries per ladder entry, to find kills from before the plugin was installed.
+	 */
+	private static final Map<String, List<HiscoreSkill>> HISCORES = Map.ofEntries(
+		Map.entry("obor", List.of(HiscoreSkill.OBOR)),
+		Map.entry("bryophyta", List.of(HiscoreSkill.BRYOPHYTA)),
+		Map.entry("scurrius", List.of(HiscoreSkill.SCURRIUS)),
+		Map.entry("giant_mole", List.of(HiscoreSkill.GIANT_MOLE)),
+		Map.entry("barrows", List.of(HiscoreSkill.BARROWS_CHESTS)),
+		Map.entry("sarachnis", List.of(HiscoreSkill.SARACHNIS)),
+		Map.entry("king_black_dragon", List.of(HiscoreSkill.KING_BLACK_DRAGON)),
+		Map.entry("moons_of_peril", List.of(HiscoreSkill.LUNAR_CHESTS)),
+		Map.entry("kalphite_queen", List.of(HiscoreSkill.KALPHITE_QUEEN)),
+		Map.entry("zulrah", List.of(HiscoreSkill.ZULRAH)),
+		Map.entry("fight_caves", List.of(HiscoreSkill.TZTOK_JAD)),
+		Map.entry("vorkath", List.of(HiscoreSkill.VORKATH)),
+		Map.entry("god_wars", List.of(HiscoreSkill.GENERAL_GRAARDOR, HiscoreSkill.COMMANDER_ZILYANA,
+			HiscoreSkill.KRIL_TSUTSAROTH, HiscoreSkill.KREEARRA)),
+		Map.entry("gauntlet", List.of(HiscoreSkill.THE_GAUNTLET, HiscoreSkill.THE_CORRUPTED_GAUNTLET)),
+		Map.entry("tombs_of_amascut", List.of(HiscoreSkill.TOMBS_OF_AMASCUT, HiscoreSkill.TOMBS_OF_AMASCUT_EXPERT)),
+		Map.entry("chambers_of_xeric", List.of(HiscoreSkill.CHAMBERS_OF_XERIC,
+			HiscoreSkill.CHAMBERS_OF_XERIC_CHALLENGE_MODE)),
+		Map.entry("theatre_of_blood", List.of(HiscoreSkill.THEATRE_OF_BLOOD, HiscoreSkill.THEATRE_OF_BLOOD_HARD_MODE)),
+		Map.entry("fortis_colosseum", List.of(HiscoreSkill.SOL_HEREDIT)),
+		Map.entry("inferno", List.of(HiscoreSkill.TZKAL_ZUK)));
+
+	/**
+	 * Whether this session already asked the hiscores for past kills.
+	 */
+	private boolean hiscoresChecked;
 
 	private PvmProgressionPanel panel;
 	private NavigationButton navButton;
@@ -260,6 +297,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		}
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
+			hiscoresChecked = false;
 			guideFlags.clear();
 			bankOpen = false;
 			showRoute(null);
@@ -281,6 +319,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			refreshQuests();
 			dirty = true;
+		}
+		if (!hiscoresChecked)
+		{
+			checkHiscores();
 		}
 		if (dirty)
 		{
@@ -370,9 +412,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		String id = kill.getContent().getId();
 		// God Wars has a count per general: any of them counts
 		killCounts.merge(id, kill.getCount(), Math::max);
-		configManager.setRSProfileConfiguration(GROUP, KEY_KILL_COUNTS, killCounts.entrySet().stream()
-			.map(en -> en.getKey() + ":" + en.getValue())
-			.collect(Collectors.joining(",")));
+		saveKillCounts();
 		if (guideContent != null && guideContent.getId().equals(id))
 		{
 			lastKillTick = client.getTickCount();
@@ -383,6 +423,63 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			}
 		}
 		dirty = true;
+	}
+
+	/**
+	 * Looks up the player's boss kill counts on the official hiscores once per login, so bosses killed before the
+	 * plugin was installed count too. The hiscores only list a boss from about 5 kills.
+	 */
+	private void checkHiscores()
+	{
+		Player me = client.getLocalPlayer();
+		if (me == null || me.getName() == null)
+		{
+			return;
+		}
+		hiscoresChecked = true;
+		hiscoreClient.lookupAsync(me.getName(), HiscoreEndpoint.NORMAL).whenComplete((result, ex) ->
+		{
+			if (ex != null || result == null)
+			{
+				log.debug("Hiscore lookup failed", ex);
+				return;
+			}
+			clientThread.invokeLater(() -> mergeHiscores(result));
+		});
+	}
+
+	private void mergeHiscores(HiscoreResult result)
+	{
+		boolean changed = false;
+		for (Map.Entry<String, List<HiscoreSkill>> e : HISCORES.entrySet())
+		{
+			int total = 0;
+			for (HiscoreSkill skill : e.getValue())
+			{
+				net.runelite.client.hiscore.Skill entry = result.getSkill(skill);
+				if (entry != null && entry.getLevel() > 0)
+				{
+					total += entry.getLevel();
+				}
+			}
+			if (total > killCounts.getOrDefault(e.getKey(), 0))
+			{
+				killCounts.put(e.getKey(), total);
+				changed = true;
+			}
+		}
+		if (changed)
+		{
+			saveKillCounts();
+			dirty = true;
+		}
+	}
+
+	private void saveKillCounts()
+	{
+		configManager.setRSProfileConfiguration(GROUP, KEY_KILL_COUNTS, killCounts.entrySet().stream()
+			.map(en -> en.getKey() + ":" + en.getValue())
+			.collect(Collectors.joining(",")));
 	}
 
 	// ---- Panel callbacks (Swing thread) ----
