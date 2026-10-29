@@ -4,6 +4,7 @@ import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
+import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,10 +20,19 @@ import net.runelite.api.Skill;
 public final class MethodPlanner
 {
 	private final PriceLookup prices;
+	private RatePace pace = RatePace.EFFICIENT;
 
 	public MethodPlanner(PriceLookup prices)
 	{
 		this.prices = prices;
+	}
+
+	/**
+	 * How fast the player plays, which scales every guide rate.
+	 */
+	public void setPace(RatePace pace)
+	{
+		this.pace = pace == null ? RatePace.EFFICIENT : pace;
 	}
 
 	/**
@@ -164,7 +174,7 @@ public final class MethodPlanner
 		// A method that makes money pays for itself after the first batch, so it only needs one trip's worth of gold
 		boolean affordable = inputs.buyCost <= state.gp() || (gpPerAction >= 0 && inputs.tripCost <= state.gp());
 
-		double xpHr = averageXpPerHour(m, level, xpNeeded);
+		double xpHr = averageXpPerHour(m, level, xpNeeded) * pace.factor(m);
 		double actionsPerHour = xpPerAction <= 0 ? 0 : xpHr / xpPerAction;
 		double gpHr = gpPerAction * actionsPerHour;
 		// Items already in the bank don't need buying, so they only count partially against the method

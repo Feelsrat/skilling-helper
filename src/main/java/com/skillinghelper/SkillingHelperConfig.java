@@ -1,5 +1,6 @@
 package com.skillinghelper;
 
+import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
 import java.awt.Color;
 import net.runelite.client.config.Alpha;
@@ -118,13 +119,26 @@ public interface SkillingHelperConfig extends Config
 		return TrainingPreference.RECOMMENDED;
 	}
 
+	@ConfigItem(
+		keyName = "ratePace",
+		name = "Your pace",
+		description = "Scales xp/hr, gp/hr and time estimates. Wiki rates assume efficient play with the best tools;"
+			+ " Relaxed is about half of that for click-heavy methods.",
+		section = guideSection,
+		position = 1
+	)
+	default RatePace ratePace()
+	{
+		return RatePace.RELAXED;
+	}
+
 	@Range(min = 1, max = 98)
 	@ConfigItem(
 		keyName = "defaultTargetOffset",
 		name = "Default goal (levels)",
 		description = "New goals are this many levels above your current level",
 		section = guideSection,
-		position = 1
+		position = 2
 	)
 	default int defaultTargetOffset()
 	{
@@ -136,7 +150,7 @@ public interface SkillingHelperConfig extends Config
 		name = "Full inventory",
 		description = "When gathering, whether to bank or drop when the inventory is full",
 		section = guideSection,
-		position = 2
+		position = 3
 	)
 	default InventoryFullAction inventoryFullAction()
 	{
@@ -148,7 +162,7 @@ public interface SkillingHelperConfig extends Config
 		name = "Auto-select skill",
 		description = "When no guide is open, open the guide for a skill as soon as you gain xp in it",
 		section = guideSection,
-		position = 3
+		position = 4
 	)
 	default boolean autoSelectSkill()
 	{

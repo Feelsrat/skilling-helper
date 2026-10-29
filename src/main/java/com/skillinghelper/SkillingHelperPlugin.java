@@ -612,6 +612,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		String forcedId = settings.getForcedMethod(skill);
 		Method forced = forcedId == null ? null : guides.byId(forcedId);
 		TrainingPreference pref = settings.getPreference();
+		planner.setPace(config.ratePace());
 		List<MethodOption> options = planner.rank(methods, state, pref, target);
 		List<PlanSegment> plan = planner.plan(methods, state, pref, target, forced);
 		b.options(options).plan(plan).hasGuide(true);

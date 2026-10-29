@@ -33,7 +33,8 @@ public class Method
 	 */
 	int combatLevel;
 	/**
-	 * Approximate xp per hour at {@link #minLevel} with a typical setup.
+	 * Approximate xp per hour at {@link #minLevel} for efficient play, as the wiki gives it. The planner scales it down
+	 * by the player's {@link RatePace}.
 	 */
 	int xpPerHour;
 	/**
