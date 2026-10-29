@@ -191,19 +191,22 @@ public final class GuideResolver
 	}
 
 	/**
-	 * Supplies the player is out of and has none of in the bank. Gear only gets bought if it's the best they can
-	 * use and they have nothing at all for the slot... which the plan already decided.
+	 * What to buy when the player is out of something they need and has none in the bank. Other missing gear and
+	 * supplies only show as buys in the panel's loadout.
 	 */
 	private static PvmStep buyStep(LoadoutPlan plan, GuideState s)
 	{
 		List<String> lines = new ArrayList<>();
 		long total = 0;
+		// Only a missing weapon, tool or food is worth stopping for; the rest is bought on the same trip
+		boolean blocking = false;
 		for (LoadoutPlan.GearLine g : plan.getGear())
 		{
 			if (g.getHave() == LoadoutPlan.Have.BUY && required(g))
 			{
 				lines.add("• 1 x " + g.getGear().getName() + gp(g.getPrice()));
 				total += g.getPrice();
+				blocking = true;
 			}
 		}
 		for (LoadoutPlan.SupplyLine l : plan.getSupplies())
@@ -212,9 +215,10 @@ public final class GuideResolver
 			{
 				lines.add("• " + l.getToBuy() + " x " + l.buyName() + gp((long) l.getPrice() * l.getToBuy()));
 				total += (long) l.getPrice() * l.getToBuy();
+				blocking |= l.getSupply().isRequired() || l.getSupply().getAmount() == Supply.FILL;
 			}
 		}
-		if (lines.isEmpty())
+		if (!blocking)
 		{
 			return null;
 		}

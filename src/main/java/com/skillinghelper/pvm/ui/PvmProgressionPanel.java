@@ -169,10 +169,11 @@ public class PvmProgressionPanel extends PluginPanel
 		this.ladder = ladder;
 		this.view = view;
 		this.pathId = pathId;
+		String shownGuideId = this.guides.getActiveId();
 		this.guides = guides;
-		if (guides.getActiveId() != null)
+		if (guides.getActiveId() != null && !guides.getActiveId().equals(shownGuideId))
 		{
-			// Keep showing the guide that's running
+			// Jump to a guide when it starts
 			Readiness first = Readiness.next(ladder);
 			pickedId = first != null && first.getContent().getId().equals(guides.getActiveId())
 				? null : guides.getActiveId();
