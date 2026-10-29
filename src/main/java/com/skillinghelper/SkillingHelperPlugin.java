@@ -135,6 +135,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private int questRefreshCountdown;
 	private boolean profileLoaded;
 	private boolean wasOnBoat;
+	/**
+	 * The player stopped the guide with the Stop button, so gaining xp shouldn't open one again.
+	 */
+	private boolean autoSelectPaused;
 
 	@Override
 	protected void startUp()
@@ -269,7 +273,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Subscribe
 	public void onStatChanged(StatChanged e)
 	{
-		if (settings.getActiveSkill() == null && config.autoSelectSkill() && profileLoaded
+		if (settings.getActiveSkill() == null && config.autoSelectSkill() && !autoSelectPaused && profileLoaded
 			&& guides.hasGuide(e.getSkill()) && e.getXp() > 0)
 		{
 			selectSkill(e.getSkill());
@@ -383,6 +387,17 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	}
 
 	@Override
+	public void onStopGuide()
+	{
+		clientThread.invokeLater(() ->
+		{
+			selectSkill(null);
+			// Stay off until a skill is picked again, even with auto-select on
+			autoSelectPaused = true;
+		});
+	}
+
+	@Override
 	public void onTargetChanged(int target)
 	{
 		clientThread.invokeLater(() -> setTargetAndRefresh(target));
@@ -470,6 +485,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private void selectSkill(Skill skill)
 	{
+		autoSelectPaused = false;
 		settings.setActiveSkill(skill);
 		if (skill != null)
 		{

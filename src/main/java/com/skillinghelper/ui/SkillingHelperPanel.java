@@ -59,6 +59,11 @@ public class SkillingHelperPanel extends PluginPanel
 	{
 		void onSkillSelected(Skill skill);
 
+		/**
+		 * Turn the guide off: no steps, paths or highlights until a skill is picked again.
+		 */
+		void onStopGuide();
+
 		void onTargetChanged(int target);
 
 		void onTargetReset();
@@ -75,6 +80,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private final Listener listener;
 	private final SkillIconManager skillIcons;
 	private final JComboBox<Skill> skillBox = new JComboBox<>();
+	private final JButton stopButton = new JButton("Stop");
 	private final SpinnerNumberModel targetModel = new SpinnerNumberModel(2, 2, Experience.MAX_REAL_LEVEL, 1);
 	private final JSpinner targetSpinner = new JSpinner(targetModel);
 	private final JComboBox<TrainingPreference> prefBox = new JComboBox<>(TrainingPreference.values());
@@ -109,13 +115,25 @@ public class SkillingHelperPanel extends PluginPanel
 		title.setForeground(Color.WHITE);
 		header.add(left(title));
 		header.add(Box.createVerticalStrut(6));
-		header.add(full(skillPicker()));
+		header.add(full(skillRow()));
 		header.add(Box.createVerticalStrut(6));
 		header.add(full(goalRow()));
 		header.add(Box.createVerticalStrut(6));
 		header.add(full(styleRow()));
 		header.add(Box.createVerticalStrut(8));
 		return header;
+	}
+
+	private JPanel skillRow()
+	{
+		JPanel row = new JPanel(new BorderLayout(4, 0));
+		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.add(skillPicker(), BorderLayout.CENTER);
+		stopButton.setToolTipText("Turn the guide off: hides its steps, path and highlights");
+		stopButton.setEnabled(false);
+		stopButton.addActionListener(e -> listener.onStopGuide());
+		row.add(stopButton, BorderLayout.EAST);
+		return row;
 	}
 
 	private JComboBox<Skill> skillPicker()
@@ -259,6 +277,7 @@ public class SkillingHelperPanel extends PluginPanel
 			{
 				skillBox.setSelectedItem(guide.getSkill());
 			}
+			stopButton.setEnabled(guide.getSkill() != null);
 			if (prefBox.getSelectedItem() != preference)
 			{
 				prefBox.setSelectedItem(preference);
