@@ -365,6 +365,10 @@ public final class GuideResolver
 		{
 			b.highlight(t);
 		}
+		for (Target t : stage.getPriority().apply(s))
+		{
+			b.priorityHighlight(t);
+		}
 		for (int id : stage.getUseItems())
 		{
 			b.itemHighlight(id, ItemHighlight.USE);

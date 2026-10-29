@@ -117,4 +117,17 @@ public interface PvmProgressionConfig extends Config
 	{
 		return new Color(255, 0, 255, 220);
 	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "priorityColor",
+		name = "Attack first",
+		description = "Colour of the monster to attack first by the guide's usual kill order (Fight Cave waves)",
+		section = colourSection,
+		position = 5
+	)
+	default Color priorityColor()
+	{
+		return new Color(255, 40, 40, 230);
+	}
 }

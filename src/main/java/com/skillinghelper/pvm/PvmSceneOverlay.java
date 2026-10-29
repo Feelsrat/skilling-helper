@@ -86,6 +86,10 @@ class PvmSceneOverlay extends Overlay
 
 	private Color colorFor(Target.Kind kind, String name, String[] actions, PvmStep step)
 	{
+		if (matches(step.getPriorityHighlights(), kind, name, actions))
+		{
+			return config.priorityColor();
+		}
 		if (matches(step.getHighlights(), kind, name, actions))
 		{
 			return config.targetColor();

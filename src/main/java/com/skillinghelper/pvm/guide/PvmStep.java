@@ -42,6 +42,11 @@ public class PvmStep
 	 */
 	@Singular("addHighlight")
 	List<Target> addHighlights;
+	/**
+	 * The monster to attack first by the guide's fixed kill order, in its own colour.
+	 */
+	@Singular("priorityHighlight")
+	List<Target> priorityHighlights;
 	boolean highlightBank;
 	/**
 	 * Inventory and bank items to outline and why.

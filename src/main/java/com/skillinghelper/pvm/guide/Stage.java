@@ -45,4 +45,9 @@ public class Stage
 	 */
 	@Builder.Default
 	Function<GuideState, List<String>> live = s -> List.of();
+	/**
+	 * Which of the monsters on screen to attack first, by a fixed kill order (never by what they're doing).
+	 */
+	@Builder.Default
+	Function<GuideState, List<Target>> priority = s -> List.of();
 }

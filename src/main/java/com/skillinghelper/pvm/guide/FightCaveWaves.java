@@ -1,5 +1,6 @@
 package com.skillinghelper.pvm.guide;
 
+import com.skillinghelper.data.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +47,10 @@ public final class FightCaveWaves
 	 */
 	private static final Monster[] BUILDING = {
 		Monster.TZ_KIH, Monster.TZ_KEK, Monster.TOK_XIL, Monster.YT_MEJKOT, Monster.KET_ZEK,
+	};
+
+	private static final Monster[] BUILDING_KILL_ORDER = {
+		Monster.KET_ZEK, Monster.TOK_XIL, Monster.YT_MEJKOT, Monster.TZ_KEK, Monster.TZ_KIH,
 	};
 
 	private static final List<List<Monster>> WAVES = build();
@@ -145,6 +150,22 @@ public final class FightCaveWaves
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * The first monster in the usual kill order that's on screen. A fixed order by monster type, the same for every
+	 * player and wave; it never looks at what a monster is doing or who it's attacking.
+	 */
+	public static List<Target> firstTarget(GuideState s)
+	{
+		for (Monster m : BUILDING_KILL_ORDER)
+		{
+			if (s.npc(m.getNpcName()) > 0)
+			{
+				return List.of(Target.npc(null, m.getNpcName()));
+			}
+		}
+		return List.of();
 	}
 
 	/**

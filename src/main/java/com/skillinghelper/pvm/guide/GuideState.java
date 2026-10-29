@@ -19,6 +19,11 @@ public class GuideState
 	@Singular
 	Map<Skill, Integer> levels;
 	/**
+	 * Current levels including potion boosts and drains, when they differ from {@link #levels}.
+	 */
+	@Singular("boosted")
+	Map<Skill, Integer> boostedLevels;
+	/**
 	 * Inventory item counts by id.
 	 */
 	@Singular("inv")
@@ -71,6 +76,11 @@ public class GuideState
 	public int level(Skill skill)
 	{
 		return levels.getOrDefault(skill, 1);
+	}
+
+	public int boosted(Skill skill)
+	{
+		return boostedLevels.getOrDefault(skill, level(skill));
 	}
 
 	public int inventory(int... ids)

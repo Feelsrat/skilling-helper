@@ -707,6 +707,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		for (Skill skill : Skill.values())
 		{
 			b.level(skill, client.getRealSkillLevel(skill));
+			b.boosted(skill, client.getBoostedSkillLevel(skill));
 		}
 		int used = 0;
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);

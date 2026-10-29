@@ -2,8 +2,10 @@ package com.skillinghelper.pvm.guide;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import com.skillinghelper.data.Target;
 import com.skillinghelper.pvm.guide.FightCaveWaves.Monster;
 import java.util.List;
+import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.gameval.ItemID;
 import org.junit.Test;
@@ -59,5 +61,44 @@ public class FightCaveWavesTest
 		assertTrue(lines.get(1).startsWith("• Tok-Xil: ranged"));
 		assertTrue(lines.stream().noneMatch(l -> l.contains("Yt-MejKot")));
 		assertEquals("Left: 11 prayer doses", lines.get(lines.size() - 1));
+	}
+
+	@Test
+	public void firstTargetFollowsTheKillOrder()
+	{
+		GuideState s = GuideState.builder().npc("tz-kih", 2).npc("tok-xil", 1).build();
+		assertEquals(List.of(Target.npc(null, "Tok-Xil")), FightCaveWaves.firstTarget(s));
+		assertTrue(FightCaveWaves.firstTarget(GuideState.builder().build()).isEmpty());
+	}
+
+	@Test
+	public void potionRemindersComeFromYourOwnStats()
+	{
+		GuideState s = GuideState.builder()
+			.level(Skill.PRAYER, 70)
+			.level(Skill.RANGED, 80)
+			.boosted(Skill.RANGED, 80)
+			.prayer(12)
+			.hitpoints(30)
+			.maxHitpoints(80)
+			.inv(ItemID._4DOSEPRAYERRESTORE, 1)
+			.inv(ItemID._4DOSEPOTIONOFSARADOMIN, 1)
+			.inv(ItemID._4DOSERANGERSPOTION, 1)
+			.build();
+		List<String> lines = PvmGuides.FightCave.potionLines(s);
+		assertEquals(List.of(
+			"Prayer is at 12: sip a prayer potion or super restore.",
+			"Hitpoints are at 30: sip a Saradomin brew (or eat).",
+			"Your Ranged boost has worn off: sip a ranging potion."), lines);
+
+		GuideState drained = GuideState.builder()
+			.level(Skill.PRAYER, 70)
+			.level(Skill.RANGED, 80)
+			.boosted(Skill.RANGED, 72)
+			.prayer(60)
+			.inv(ItemID._4DOSE2RESTORE, 1)
+			.build();
+		assertEquals(List.of("Brews have drained your Ranged (72/80): sip a super restore."),
+			PvmGuides.FightCave.potionLines(drained));
 	}
 }

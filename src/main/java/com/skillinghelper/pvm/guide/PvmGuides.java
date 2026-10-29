@@ -528,6 +528,7 @@ public final class PvmGuides
 				.highlight(Target.npc(null, "Tz-Kek"))
 				.highlight(Target.npc(null, "Tz-Kih"))
 				.live(FightCave::lines)
+				.priority(FightCaveWaves::firstTarget)
 				.build())
 			.fight(Fight.builder()
 				.boss("TzTok-Jad")
@@ -535,7 +536,8 @@ public final class PvmGuides
 				.note("TzTok-Jad", "Jad switches between a magic and a ranged attack; you have to read his animation "
 					+ "yourself.")
 				.tip("Pray against what's hitting you; Jad's prayer switches are up to you (no helpers allowed).")
-				.live(FightCave::supplyLine)
+				.tip("Before Jad: top up your prayer and drink a ranging potion so the boost lasts the fight.")
+				.live(FightCave::fightLines)
 				.build())
 			.profit(Profit.reward("The fire cape, and Tokkul"))
 			.build(),
@@ -948,12 +950,67 @@ public final class PvmGuides
 			Option.of("brew", ItemID._4DOSEPOTIONOFSARADOMIN, ItemID._3DOSEPOTIONOFSARADOMIN,
 				ItemID._2DOSEPOTIONOFSARADOMIN, ItemID._1DOSEPOTIONOFSARADOMIN),
 		};
+		private static final Option RANGING = Option.of("ranging", ItemID._4DOSERANGERSPOTION,
+			ItemID._3DOSERANGERSPOTION, ItemID._2DOSERANGERSPOTION, ItemID._1DOSERANGERSPOTION);
 
 		static List<String> lines(GuideState s)
 		{
 			List<String> lines = new ArrayList<>(FightCaveWaves.lines(s));
+			lines.addAll(potionLines(s));
 			lines.addAll(supplyLine(s));
 			return lines;
+		}
+
+		static List<String> fightLines(GuideState s)
+		{
+			List<String> lines = new ArrayList<>(potionLines(s));
+			lines.addAll(supplyLine(s));
+			return lines;
+		}
+
+		/**
+		 * When to drink, from the player's own prayer, hitpoints and Ranged level. Like RuneLite's own low prayer
+		 * and boost reminders: nothing here looks at the monsters.
+		 */
+		static List<String> potionLines(GuideState s)
+		{
+			List<String> lines = new ArrayList<>();
+			int prayer = s.getPrayer();
+			int prayerDoses = doses(s, POTIONS[0]) + doses(s, POTIONS[1]);
+			if (prayer <= Math.max(10, s.level(Skill.PRAYER) / 4))
+			{
+				lines.add(prayerDoses > 0 ? "Prayer is at " + prayer + ": sip a prayer potion or super restore."
+					: "Prayer is at " + prayer + " and you're out of prayer potions.");
+			}
+			boolean lowHp = s.getMaxHitpoints() > 0 && s.getHitpoints() < s.getMaxHitpoints() / 2;
+			if (lowHp && doses(s, POTIONS[2]) > 0)
+			{
+				lines.add("Hitpoints are at " + s.getHitpoints() + ": sip a Saradomin brew (or eat).");
+			}
+			int ranged = s.level(Skill.RANGED);
+			int boost = s.boosted(Skill.RANGED) - ranged;
+			if (boost < 0 && doses(s, POTIONS[1]) > 0)
+			{
+				lines.add("Brews have drained your Ranged (" + s.boosted(Skill.RANGED) + "/" + ranged
+					+ "): sip a super restore.");
+			}
+			else if (boost < 4 && doses(s, RANGING) > 0)
+			{
+				lines.add(boost <= 0 ? "Your Ranged boost has worn off: sip a ranging potion."
+					: "Ranged boost is down to +" + boost + ": sip a ranging potion.");
+			}
+			return lines;
+		}
+
+		private static int doses(GuideState s, Option potion)
+		{
+			int doses = 0;
+			int[] ids = potion.getIds();
+			for (int i = 0; i < ids.length; i++)
+			{
+				doses += s.inventory(ids[i]) * (4 - i);
+			}
+			return doses;
 		}
 
 		/**
@@ -964,12 +1021,7 @@ public final class PvmGuides
 			List<String> parts = new ArrayList<>();
 			for (Option potion : POTIONS)
 			{
-				int doses = 0;
-				int[] ids = potion.getIds();
-				for (int i = 0; i < ids.length; i++)
-				{
-					doses += s.inventory(ids[i]) * (4 - i);
-				}
+				int doses = doses(s, potion);
 				if (doses > 0)
 				{
 					parts.add(doses + " " + potion.getName() + " doses");
