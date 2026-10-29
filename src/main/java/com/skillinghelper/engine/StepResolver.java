@@ -66,7 +66,7 @@ public final class StepResolver
 		// With a Slayer task, the task is the training: the master is only needed again once it's done
 		if (SlayerTaskStep.applies(m, s))
 		{
-			return SlayerTaskStep.step(s);
+			return SlayerTaskStep.step(m, s);
 		}
 
 		// On a run, once every stop is done there's nothing to fetch or do until the next one is ready

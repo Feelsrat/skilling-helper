@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -201,5 +202,32 @@ public class SlayerTaskTest
 			}
 			assertFalse(data.taskName(id), data.places(id, wildOnly).isEmpty());
 		}
+	}
+
+	@Test
+	public void outOfFoodBanksAtTheClosestBankThenGoesBack()
+	{
+		// Fighting at the goblins in Lumbridge with no food left and sharks in the bank
+		WorldPoint atGoblins = new WorldPoint(3215, 3276, 0);
+		PlayerState out = player(atGoblins, task(GOBLINS, "Goblins", 15, 0))
+			.bank(ItemCounts.of(ItemID.SHARK, 100, ItemID.TROUT, 50)).freeInventorySlots(20).build();
+		GuideStep bank = step(turael, out);
+		assertEquals(StepType.BANK, bank.getType());
+		assertTrue(bank.getTitle(), bank.getTitle().startsWith("Out of food: bank at "));
+		assertTrue(bank.isHighlightBank());
+		assertEquals(Integer.valueOf(20), bank.getWithdrawAmounts().get(ItemID.SHARK));
+		assertFalse(bank.getWithdrawAmounts().containsKey(ItemID.TROUT));
+		// Lumbridge's bank is the closest one, not the GE or the master
+		assertTrue(near(bank.getDestination(), new WorldPoint(3208, 3220, 2), 10));
+
+		PlayerState fed = out.toBuilder().inventory(ItemCounts.of(ItemID.SHARK, 20)).build();
+		assertEquals(StepType.TRAIN, step(turael, fed).getType());
+	}
+
+	@Test
+	public void noFoodAnywhereDoesNotBlockTheTask()
+	{
+		GuideStep step = step(turael, player(burthorpe, task(GOBLINS, "Goblins", 15, 0)).build());
+		assertEquals(StepType.WALK, step.getType());
 	}
 }

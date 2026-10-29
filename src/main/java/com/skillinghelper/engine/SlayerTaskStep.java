@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Leads the player to their current Slayer task's monsters, so a task they can't (or don't want to) cancel never
@@ -30,15 +31,35 @@ public final class SlayerTaskStep
 	private static final int SPOT_RADIUS = 8;
 	private static final int ENTRANCE_RADIUS = 3;
 	private static final int ALSO_AT_LIMIT = 3;
+	/**
+	 * Food the guide looks for, best healing first, with names for the step text.
+	 */
+	private static final int[] FOOD = {
+		ItemID.MANTARAY, ItemID.ANGLERFISH, ItemID.SEATURTLE, ItemID.SHARK, ItemID.TBWT_COOKED_KARAMBWAN,
+		ItemID.MONKFISH, ItemID.SWORDFISH, ItemID.BASS, ItemID.LOBSTER, ItemID.POTATO_CHEESE, ItemID.TUNA,
+		ItemID.SALMON, ItemID.JUG_WINE, ItemID.PIKE, ItemID.CHOCOLATE_CAKE, ItemID.CAKE, ItemID.PARTIAL_CAKE,
+		ItemID.CAKE_SLICE, ItemID.COD, ItemID.TROUT, ItemID.MACKEREL, ItemID.HERRING, ItemID.BREAD, ItemID.SARDINE,
+		ItemID.COOKED_MEAT, ItemID.COOKED_CHICKEN, ItemID.SHRIMP, ItemID.ANCHOVIES,
+	};
+	private static final String[] FOOD_NAMES = {
+		"manta rays", "anglerfish", "sea turtles", "sharks", "karambwans", "monkfish", "swordfish", "bass",
+		"lobsters", "potatoes with cheese", "tuna", "salmon", "jugs of wine", "pike", "chocolate cakes", "cakes",
+		"cakes", "cake slices", "cod", "trout", "mackerel", "herring", "bread", "sardines", "cooked meat",
+		"cooked chicken", "shrimps", "anchovies",
+	};
 
 	static boolean applies(Method m, PlayerState s)
 	{
 		return m.getSkill() == Skill.SLAYER && s.getSlayerTask() != null && s.getSlayerTask().getRemaining() > 0;
 	}
 
-	static GuideStep step(PlayerState s)
+	static GuideStep step(Method m, PlayerState s)
 	{
 		SlayerTask task = s.getSlayerTask();
+		if (s.carried(FOOD) == 0 && (!s.bankKnown() || s.bankCount(FOOD) > 0))
+		{
+			return foodStep(m, s);
+		}
 		String name = task.getName() != null ? task.getName() : SlayerPlaces.get().taskName(task.getTaskId());
 		String noun = name == null ? "task monsters" : name.toLowerCase(Locale.ROOT);
 		String left = String.format("Slayer task: %,d %s left.", task.getRemaining(), noun);
@@ -99,6 +120,39 @@ public final class SlayerTaskStep
 		return b.travel(route)
 			.line("Then: kill the highlighted " + noun + ".")
 			.build();
+	}
+
+	/**
+	 * Out of food (or none brought yet) while there's some in the bank: restock at the closest bank.
+	 */
+	private static GuideStep foodStep(Method m, PlayerState s)
+	{
+		Location bank = StepResolver.bankFor(m, s);
+		boolean there = bank.contains(s.getLocation());
+		GuideStep.GuideStepBuilder b = GuideStep.builder()
+			.type(StepType.BANK)
+			.title(there ? "Withdraw food" : "Out of food: bank at " + bank.getName())
+			.highlightBank(true);
+		if (!there)
+		{
+			b.travel(Route.to(s, bank));
+		}
+		if (!s.bankKnown())
+		{
+			return b.line("Open your bank so I can see what food you have.").build();
+		}
+		for (int i = 0; i < FOOD.length; i++)
+		{
+			int banked = s.bankCount(FOOD[i]);
+			if (banked > 0)
+			{
+				int amount = Math.max(1, Math.min(banked, s.getFreeInventorySlots()));
+				b.line(String.format("• Withdraw %,d %s", amount, FOOD_NAMES[i]));
+				b.withdraw(new int[]{FOOD[i]}, amount == banked ? 0 : amount);
+				break;
+			}
+		}
+		return b.line("Then I'll take you back to your Slayer task.").build();
 	}
 
 	/**
