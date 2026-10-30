@@ -42,6 +42,11 @@ public class Fight
 	 */
 	@Builder.Default
 	Function<GuideState, List<String>> live = s -> List.of();
+	/**
+	 * The wave that's up, for a boss at the end of a wave minigame; null otherwise.
+	 */
+	@Builder.Default
+	Function<GuideState, WaveCard> wave = s -> null;
 
 	@Value
 	public static class Add

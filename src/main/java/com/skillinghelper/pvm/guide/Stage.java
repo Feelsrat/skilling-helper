@@ -50,4 +50,9 @@ public class Stage
 	 */
 	@Builder.Default
 	Function<GuideState, List<Target>> priority = s -> List.of();
+	/**
+	 * The wave that's up, for wave minigames; null otherwise.
+	 */
+	@Builder.Default
+	Function<GuideState, WaveCard> wave = s -> null;
 }

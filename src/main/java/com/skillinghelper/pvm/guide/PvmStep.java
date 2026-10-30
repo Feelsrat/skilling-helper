@@ -47,6 +47,10 @@ public class PvmStep
 	 */
 	@Singular("priorityHighlight")
 	List<Target> priorityHighlights;
+	/**
+	 * The wave that's up, shown as a card above the lines; null outside wave minigames.
+	 */
+	WaveCard wave;
 	boolean highlightBank;
 	/**
 	 * Inventory and bank items to outline and why.

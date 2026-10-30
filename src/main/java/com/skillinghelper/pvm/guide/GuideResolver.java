@@ -136,6 +136,7 @@ public final class GuideResolver
 		{
 			b.line(line);
 		}
+		b.wave(fight.getWave().apply(s));
 		supplyWarnings(b, s, plan);
 		return b.build();
 	}
@@ -369,6 +370,7 @@ public final class GuideResolver
 		{
 			b.priorityHighlight(t);
 		}
+		b.wave(stage.getWave().apply(s));
 		for (int id : stage.getUseItems())
 		{
 			b.itemHighlight(id, ItemHighlight.USE);

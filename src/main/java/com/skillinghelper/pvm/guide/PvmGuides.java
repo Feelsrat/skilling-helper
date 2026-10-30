@@ -518,19 +518,16 @@ public final class PvmGuides
 			.stage(Stage.builder()
 				.title("Work through the waves")
 				.committed(true)
-				.line("Kill order (from the wiki): Tz-Kih, Tok-Xil, Ket-Zek, Yt-MejKot, then Tz-Kek. If one is stuck "
-					+ "behind a rock, stay put and kill the ones you can reach first.")
-				.line("Safespots: stand so a rock pillar is between you and the melee monsters, so they get stuck "
-					+ "behind it while you shoot over. The wiki strategy page has pictures of the usual ones; mark "
-					+ "yours once with Ground Markers (shift + right-click a tile).")
-				.line("Click log out once and you're logged out when the wave ends, with your progress saved. Wave 63 "
-					+ "is TzTok-Jad.")
+				.line("The card lists monsters in the wiki's kill order. If one is stuck behind a rock, stay put and "
+					+ "kill the ones you can reach first.")
+				.line("Safespots: keep a rock between you and the melee monsters. Mark yours once with Ground Markers.")
+				.line("Log out: click once and you leave when the wave ends, progress saved.")
 				.highlight(Target.npc(null, "Ket-Zek"))
 				.highlight(Target.npc(null, "Tok-Xil"))
 				.highlight(Target.npc(null, "Yt-MejKot"))
 				.highlight(Target.npc(null, "Tz-Kek"))
 				.highlight(Target.npc(null, "Tz-Kih"))
-				.live(FightCave::lines)
+				.wave(FightCave::card)
 				.priority(FightCaveWaves::firstTarget)
 				.build())
 			.fight(Fight.builder()
@@ -547,7 +544,7 @@ public final class PvmGuides
 					+ "back to Jad.")
 				.tip("Mark your safespots once with Ground Markers (shift + right-click a tile); they stay for every "
 					+ "trip.")
-				.live(FightCave::fightLines)
+				.wave(FightCave::card)
 				.build())
 			.profit(Profit.reward("The fire cape, and Tokkul"))
 			.build(),
@@ -953,31 +950,31 @@ public final class PvmGuides
 	static final class FightCave
 	{
 		private static final Option[] POTIONS = {
-			Option.of("prayer", ItemID._4DOSEPRAYERRESTORE, ItemID._3DOSEPRAYERRESTORE, ItemID._2DOSEPRAYERRESTORE,
+			Option.of("Prayer", ItemID._4DOSEPRAYERRESTORE, ItemID._3DOSEPRAYERRESTORE, ItemID._2DOSEPRAYERRESTORE,
 				ItemID._1DOSEPRAYERRESTORE),
-			Option.of("restore", ItemID._4DOSE2RESTORE, ItemID._3DOSE2RESTORE, ItemID._2DOSE2RESTORE,
+			Option.of("Restore", ItemID._4DOSE2RESTORE, ItemID._3DOSE2RESTORE, ItemID._2DOSE2RESTORE,
 				ItemID._1DOSE2RESTORE),
-			Option.of("brew", ItemID._4DOSEPOTIONOFSARADOMIN, ItemID._3DOSEPOTIONOFSARADOMIN,
+			Option.of("Brew", ItemID._4DOSEPOTIONOFSARADOMIN, ItemID._3DOSEPOTIONOFSARADOMIN,
 				ItemID._2DOSEPOTIONOFSARADOMIN, ItemID._1DOSEPOTIONOFSARADOMIN),
 		};
 		private static final Option RANGING = Option.of("ranging", ItemID._4DOSERANGERSPOTION,
 			ItemID._3DOSERANGERSPOTION, ItemID._2DOSERANGERSPOTION, ItemID._1DOSERANGERSPOTION);
 
-		static List<String> lines(GuideState s)
+		/**
+		 * The wave card: this wave's monsters, the wiki's tip, potion reminders and doses left.
+		 */
+		static WaveCard card(GuideState s)
 		{
-			List<String> lines = new ArrayList<>(FightCaveWaves.lines(s));
-			lines.addAll(potionLines(s));
-			lines.addAll(supplyLine(s));
-			return lines;
-		}
-
-		static List<String> fightLines(GuideState s)
-		{
-			List<String> lines = new ArrayList<>();
-			lines.add("Wiki tip: " + FightCaveWaves.note(FightCaveWaves.JAD_WAVE));
-			lines.addAll(potionLines(s));
-			lines.addAll(supplyLine(s));
-			return lines;
+			int n = FightCaveWaves.currentWave(s);
+			WaveCard.WaveCardBuilder b = WaveCard.builder()
+				.wave(n)
+				.total(FightCaveWaves.JAD_WAVE)
+				.supplies(supplies(s));
+			if (n > 0)
+			{
+				b.rows(FightCaveWaves.rows(n, s)).tip(FightCaveWaves.note(n));
+			}
+			return b.alerts(potionLines(s)).build();
 		}
 
 		/**
@@ -1026,21 +1023,16 @@ public final class PvmGuides
 		}
 
 		/**
-		 * e.g. "Left: 31 prayer doses, 8 restore doses, 20 brew doses". Ids are listed 4-dose first.
+		 * e.g. "Prayer 31 · Restore 8 · Brew 20" (doses). Ids are listed 4-dose first.
 		 */
-		static List<String> supplyLine(GuideState s)
+		static String supplies(GuideState s)
 		{
 			List<String> parts = new ArrayList<>();
 			for (Option potion : POTIONS)
 			{
-				int doses = doses(s, potion);
-				if (doses > 0)
-				{
-					parts.add(doses + " " + potion.getName() + " doses");
-				}
+				parts.add(potion.getName() + " " + doses(s, potion));
 			}
-			return parts.isEmpty() ? List.of("No prayer, restore or brew doses left.")
-				: List.of("Left: " + String.join(", ", parts));
+			return String.join(" · ", parts);
 		}
 	}
 

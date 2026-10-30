@@ -47,20 +47,44 @@ public class FightCaveWavesTest
 	}
 
 	@Test
-	public void panelShowsOnlyTheCurrentWaveAndDoses()
+	public void cardShowsOnlyTheCurrentWaveAndDoses()
 	{
 		GuideState s = GuideState.builder()
 			.location(new WorldPoint(2400, 5080, 0))
-			.flag(FightCaveWaves.WAVE_FLAG + 14)
+			.flag(FightCaveWaves.WAVE_FLAG + 12)
+			.npc("tok-xil", 1)
+			.npc("tz-kek", 1)
 			.inv(ItemID._4DOSEPRAYERRESTORE, 2)
 			.inv(ItemID._3DOSEPRAYERRESTORE, 1)
+			.prayer(70)
+			.level(Skill.PRAYER, 70)
 			.usedSlots(3)
 			.build();
-		List<String> lines = PvmGuides.FightCave.lines(s);
-		assertEquals("Wave 14 of 63: Tok-Xil x2 (90)", lines.get(0));
-		assertTrue(lines.get(1).startsWith("• Tok-Xil: accurate ranged"));
-		assertTrue(lines.stream().noneMatch(l -> l.contains("Yt-MejKot")));
-		assertEquals("Left: 11 prayer doses", lines.get(lines.size() - 1));
+		WaveCard card = PvmGuides.FightCave.card(s);
+		assertEquals(12, card.getWave());
+		assertEquals(List.of(
+			new WaveCard.Row(2, "Tz-Kih", 22, "Melee", Monster.TZ_KIH.getNote(), false),
+			new WaveCard.Row(1, "Tok-Xil", 90, "Ranged", Monster.TOK_XIL.getNote(), true),
+			new WaveCard.Row(1, "Tz-Kek", 45, "Melee", Monster.TZ_KEK.getNote(), false)), card.getRows());
+		assertEquals("Prayer 11 · Restore 0 · Brew 0", card.getSupplies());
+		assertTrue(card.getAlerts().isEmpty());
+	}
+
+	@Test
+	public void cardBeforeTheFirstWaveMessageHasNoRows()
+	{
+		WaveCard card = PvmGuides.FightCave.card(GuideState.builder().prayer(70).level(Skill.PRAYER, 70).build());
+		assertEquals(-1, card.getWave());
+		assertTrue(card.getRows().isEmpty());
+	}
+
+	@Test
+	public void jadWaveAddsHealersOnceTheyAreUp()
+	{
+		GuideState s = GuideState.builder().flag(FightCaveWaves.WAVE_FLAG + 63).npc("yt-hurkot", 4).build();
+		List<WaveCard.Row> rows = FightCaveWaves.rows(63, s);
+		assertEquals("TzTok-Jad", rows.get(0).getName());
+		assertEquals(4, rows.get(1).getCount());
 	}
 
 	@Test

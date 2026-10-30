@@ -13,6 +13,7 @@ import com.skillinghelper.pvm.guide.PvmGuide;
 import com.skillinghelper.pvm.guide.PvmGuides;
 import com.skillinghelper.pvm.guide.PvmStep;
 import com.skillinghelper.pvm.guide.Supply;
+import com.skillinghelper.pvm.guide.WaveCard;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -52,6 +53,10 @@ public class PvmProgressionPanel extends PluginPanel
 	private static final Color BAD = new Color(230, 80, 80);
 	private static final Color HINT = new Color(110, 170, 255);
 	private static final Color MUTED = new Color(150, 150, 150);
+	/**
+	 * Matches the default "Attack first" highlight.
+	 */
+	private static final Color FIRST = new Color(255, 90, 90);
 
 	public interface Listener
 	{
@@ -200,6 +205,12 @@ public class PvmProgressionPanel extends PluginPanel
 			title.setFont(FontManager.getRunescapeBoldFont());
 			title.setForeground(Color.WHITE);
 			stepBox.add(left(title));
+			if (step.getWave() != null)
+			{
+				stepBox.add(Box.createVerticalStrut(4));
+				stepBox.add(waveCard(step.getWave()));
+				stepBox.add(Box.createVerticalStrut(4));
+			}
 			for (String line : step.getLines())
 			{
 				stepBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
@@ -583,6 +594,102 @@ public class PvmProgressionPanel extends PluginPanel
 		l.setForeground(Color.WHITE);
 		l.setBorder(new EmptyBorder(8, 0, 2, 0));
 		return left(l);
+	}
+
+	/**
+	 * The wave that's up, readable at a glance: a big wave number, one row per monster with how it attacks, the
+	 * wiki's tip, then drink reminders and doses left.
+	 */
+	private static JComponent waveCard(WaveCard card)
+	{
+		int width = TEXT_WIDTH - 25;
+		JPanel box = new JPanel();
+		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		box.setBorder(new EmptyBorder(6, 6, 6, 6));
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel header = new JLabel(card.getWave() > 0
+			? "<html><span style='font-size:110%'>Wave " + card.getWave() + "</span>"
+				+ "<span style='color:#969696'> / " + card.getTotal() + "</span></html>"
+			: "Wave ?");
+		header.setFont(FontManager.getRunescapeBoldFont());
+		header.setForeground(Color.WHITE);
+		box.add(left(header));
+		if (card.getWave() <= 0)
+		{
+			box.add(text("Shows when the next wave starts (\"Wave: N\" in chat).", MUTED, width));
+		}
+
+		for (WaveCard.Row row : card.getRows())
+		{
+			box.add(Box.createVerticalStrut(5));
+			JPanel line = new JPanel(new BorderLayout(4, 0));
+			line.setOpaque(false);
+			line.setAlignmentX(Component.LEFT_ALIGNMENT);
+			JLabel name = new JLabel((row.getCount() > 1 ? row.getCount() + "× " : "") + row.getName()
+				+ " (" + row.getLevel() + ")");
+			name.setFont(FontManager.getRunescapeBoldFont());
+			name.setForeground(row.isFirst() ? FIRST : Color.WHITE);
+			JLabel style = new JLabel(row.getStyle().toUpperCase());
+			style.setFont(FontManager.getRunescapeSmallFont());
+			style.setForeground(styleColor(row.getStyle()));
+			line.add(name, BorderLayout.WEST);
+			line.add(style, BorderLayout.EAST);
+			line.setMaximumSize(new Dimension(width + 10, name.getPreferredSize().height));
+			box.add(line);
+			box.add(text((row.isFirst() ? "▶ Attack first. " : "") + row.getNote(), row.isFirst() ? FIRST : MUTED,
+				width));
+		}
+
+		if (card.getTip() != null)
+		{
+			box.add(Box.createVerticalStrut(6));
+			JPanel tip = new JPanel();
+			tip.setLayout(new BoxLayout(tip, BoxLayout.Y_AXIS));
+			tip.setBackground(ColorScheme.DARK_GRAY_COLOR);
+			tip.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, HINT), new EmptyBorder(3, 5, 3, 3)));
+			tip.setAlignmentX(Component.LEFT_ALIGNMENT);
+			JLabel heading = new JLabel("Wiki tip");
+			heading.setFont(FontManager.getRunescapeSmallFont());
+			heading.setForeground(HINT);
+			tip.add(left(heading));
+			tip.add(text(card.getTip(), Color.LIGHT_GRAY, width - 12));
+			box.add(tip);
+		}
+
+		if (!card.getAlerts().isEmpty())
+		{
+			box.add(Box.createVerticalStrut(6));
+			for (String alert : card.getAlerts())
+			{
+				box.add(text("⚠ " + alert, WARN, width));
+			}
+		}
+		box.add(Box.createVerticalStrut(6));
+		box.add(text(card.getSupplies(), Color.LIGHT_GRAY, width));
+		return box;
+	}
+
+	/**
+	 * Wiki-style colours for the combat triangle: red melee, green ranged, blue magic.
+	 */
+	private static Color styleColor(String style)
+	{
+		String s = style.toLowerCase();
+		if (s.contains("+"))
+		{
+			return Color.LIGHT_GRAY;
+		}
+		if (s.contains("magic"))
+		{
+			return HINT;
+		}
+		if (s.contains("ranged"))
+		{
+			return GOOD;
+		}
+		return BAD;
 	}
 
 	private static JLabel text(String s, Color color)

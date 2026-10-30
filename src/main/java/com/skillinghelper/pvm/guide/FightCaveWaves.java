@@ -32,16 +32,21 @@ public final class FightCaveWaves
 	@RequiredArgsConstructor
 	public enum Monster
 	{
-		TZ_KIH("Tz-Kih", 22, "melee; every hit drains your prayer"),
-		TOK_XIL("Tok-Xil", 90, "accurate ranged that hits hard; weaker melee up close"),
-		KET_ZEK("Ket-Zek", 360, "magic from range, magic and a very hard melee up close"),
-		YT_MEJKOT("Yt-MejKot", 180, "slow melee that hits high; heals itself and monsters near it"),
-		TZ_KEK("Tz-Kek", 45, "weak melee; 1 recoil damage when you melee it; splits into two small Tz-Kek"),
-		JAD("TzTok-Jad", 702, "magic and ranged from range, melee only next to you");
+		TZ_KIH("Tz-Kih", 22, "Melee", "Drains prayer with every hit"),
+		TOK_XIL("Tok-Xil", 90, "Ranged", "Accurate and hits hard; weak melee up close"),
+		KET_ZEK("Ket-Zek", 360, "Magic", "Very hard melee if it gets next to you"),
+		YT_MEJKOT("Yt-MejKot", 180, "Melee", "Slow, hits high, heals itself and others"),
+		TZ_KEK("Tz-Kek", 45, "Melee", "Splits into two small ones; 1 recoil if you melee it"),
+		JAD("TzTok-Jad", 702, "Magic + Ranged", "Melee only when you're next to him"),
+		HEALER("Yt-HurKot", 108, "Melee", "Heals Jad: hit each once to pull it off him");
 
 		private final String npcName;
 		private final int level;
-		private final String attacks;
+		/**
+		 * How it attacks from range, as the wiki lists it.
+		 */
+		private final String style;
+		private final String note;
 	}
 
 	/**
@@ -223,34 +228,33 @@ public final class FightCaveWaves
 	}
 
 	/**
-	 * Panel lines while working through the waves: this wave and how each of its monsters attacks.
+	 * One row per monster type of wave {@code n} in kill order, plus Jad's healers once they're up. The first one
+	 * still on screen in the kill order is marked, the same one the attack-first highlight picks.
 	 */
-	public static List<String> lines(GuideState s)
+	public static List<WaveCard.Row> rows(int n, GuideState s)
 	{
-		List<String> lines = new ArrayList<>();
-		int n = currentWave(s);
-		if (n < 0)
+		List<Monster> monsters = new ArrayList<>(wave(n));
+		if (n == JAD_WAVE && s.npc(Monster.HEALER.getNpcName()) > 0)
 		{
-			lines.add("This wave's monsters show up once the next wave starts (the cave says \"Wave: N\" in chat).");
-			return lines;
-		}
-		List<Monster> now = wave(n);
-		// Only the wave that's already up: warning about future waves counts as advance warning of a hazard
-		lines.add("Wave " + n + " of " + JAD_WAVE + ": " + describe(now));
-		String note = NOTES.get(n);
-		if (note != null)
-		{
-			lines.add("Wiki tip: " + note);
-		}
-		List<Monster> seen = new ArrayList<>();
-		for (Monster m : now)
-		{
-			if (!seen.contains(m))
+			for (int i = s.npc(Monster.HEALER.getNpcName()); i > 0; i--)
 			{
-				seen.add(m);
-				lines.add("• " + m.getNpcName() + ": " + m.getAttacks());
+				monsters.add(Monster.HEALER);
 			}
 		}
-		return lines;
+		List<Target> first = firstTarget(s);
+		List<WaveCard.Row> rows = new ArrayList<>();
+		for (int i = 0; i < monsters.size(); )
+		{
+			Monster m = monsters.get(i);
+			int count = 0;
+			while (i < monsters.size() && monsters.get(i) == m)
+			{
+				count++;
+				i++;
+			}
+			boolean isFirst = !first.isEmpty() && first.get(0).equals(Target.npc(null, m.getNpcName()));
+			rows.add(new WaveCard.Row(count, m.getNpcName(), m.getLevel(), m.getStyle(), m.getNote(), isFirst));
+		}
+		return rows;
 	}
 }
