@@ -185,6 +185,18 @@ public class PvmGuidesTest
 	}
 
 	@Test
+	public void usingTheBarrowsTabletDoesNotSendYouBackToTheBank()
+	{
+		Map<Integer, Integer> inv = new HashMap<>();
+		inv.put(ItemID.SPADE, 1);
+		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
+		inv.put(ItemID.MONKFISH, 20);
+		GuideState.GuideStateBuilder b = player(70).bank(Map.of(ItemID.TELETAB_BARROWS, 10)).inventory(inv)
+			.location(new WorldPoint(3565, 3289, 0)).tripStocked(true);
+		assertEquals("Dig into Dharok's mound", step("barrows", wearAll(b).build()).getTitle());
+	}
+
+	@Test
 	public void barrowsCryptStepsFollowTheBrother()
 	{
 		// Guthan's crypt, brother alive

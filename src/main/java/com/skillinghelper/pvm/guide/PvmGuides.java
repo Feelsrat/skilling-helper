@@ -258,7 +258,7 @@ public final class PvmGuides
 			.supply(Supplies.spade())
 			.supply(Supplies.prayerPotions(6))
 			.supply(Supplies.teleport("Barrows teleports", 1, Option.of("Barrows teleport tablets",
-				ItemID.TELETAB_BARROWS)).note("To get back next run"))
+				ItemID.TELETAB_BARROWS)).withRestockBelow(0).note("Getting there; using it never sends you back to the bank"))
 			.supply(Supplies.food(Supplies.MONKFISH))
 			.inside(PvmGuides::inBarrowsUnderground)
 			.stages(Barrows.stages())
