@@ -134,12 +134,12 @@ public enum CombatGear
 		tier("Amulet of glory", null, 0, 0, true, Ids.GLORY),
 		tier("Amulet of power", null, 0, 0, false, ItemID.AMULET_OF_POWER)),
 	/**
-	 * Fire staves, so autocasting fire spells needs no fire runes.
+	 * Air staves: every combat spell uses air runes, and wind spells need nothing else.
 	 */
 	MAGIC_WEAPON(CombatStyle.MAGIC, "weapon",
-		staff("Mystic fire staff", 40, true, ItemID.MYSTIC_FIRE_STAFF),
-		staff("Fire battlestaff", 30, true, ItemID.FIRE_BATTLESTAFF),
-		tier("Staff of fire", null, 0, 0, false, ItemID.STAFF_OF_FIRE)),
+		staff("Mystic air staff", 40, true, ItemID.MYSTIC_AIR_STAFF),
+		staff("Air battlestaff", 30, true, ItemID.AIR_BATTLESTAFF),
+		tier("Staff of air", null, 0, 0, false, ItemID.STAFF_OF_AIR)),
 	MAGIC_HELM(CombatStyle.MAGIC, "helmet",
 		tier("Mystic hat", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_HAT, ItemID.MYSTIC_HAT_DARK, ItemID.MYSTIC_HAT_LIGHT,
 			ItemID.MYSTIC_HAT_DUSK),

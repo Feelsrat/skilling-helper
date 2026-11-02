@@ -192,7 +192,7 @@ final class BankTrip
 		for (ItemReq listed : m.getInputs())
 		{
 			ItemReq input = CombatGearAdvisor.resolve(listed, s);
-			if (s.carriesSubstitute(input))
+			if (input == null || s.carriesSubstitute(input))
 			{
 				continue;
 			}

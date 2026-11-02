@@ -297,6 +297,10 @@ public final class MethodPlanner
 		for (ItemReq listed : m.getInputs())
 		{
 			ItemReq input = CombatGearAdvisor.resolve(listed, state);
+			if (input == null)
+			{
+				continue;
+			}
 			long needed = (long) actions * input.getPerAction();
 			neededTotal += needed;
 			if (state.ownsSubstitute(input))

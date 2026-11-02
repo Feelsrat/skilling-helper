@@ -155,7 +155,7 @@ final class RequirementChecker
 		for (ItemReq listed : m.getInputs())
 		{
 			ItemReq input = CombatGearAdvisor.resolve(listed, s);
-			if (addSubstitute(input, s, reqs, substitutesListed))
+			if (input == null || addSubstitute(input, s, reqs, substitutesListed))
 			{
 				continue;
 			}

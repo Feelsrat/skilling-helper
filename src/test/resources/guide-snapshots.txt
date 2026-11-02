@@ -4830,36 +4830,36 @@ magic_fire_strike weak owns-all-in-bank	c5fbcfd004df00db
 magic_fire_strike weak parts-carried	18aa884b7667a3a2
 magic_fire_strike weak parts-carried-away	18aa884b7667a3a2
 magic_fire_strike weak parts-in-bank	097f41a41490cae6
-magic_gemstone_crab strong bank-empty	6c85fbb136f86dad
-magic_gemstone_crab strong bank-empty-rich	3f8832d188b58449
-magic_gemstone_crab strong bank-unknown	e209f72be0b3ecba
-magic_gemstone_crab strong full-of-products	dc52b9c21809cc05
-magic_gemstone_crab strong gear-carried	4b2f157b57a90fb9
-magic_gemstone_crab strong goal-reached	2989e594cf30f05a
-magic_gemstone_crab strong in-instance	180c89ca8b45da99
-magic_gemstone_crab strong kit-at-spot	dc52b9c21809cc05
-magic_gemstone_crab strong kit-away	234ec7234d908dfb
-magic_gemstone_crab strong kit-worn-at-spot	62719200604ed9b0
-magic_gemstone_crab strong owns-all-at-bank	5b983039b4be7b90
-magic_gemstone_crab strong owns-all-in-bank	5b983039b4be7b90
-magic_gemstone_crab strong parts-carried	dc52b9c21809cc05
-magic_gemstone_crab strong parts-carried-away	234ec7234d908dfb
-magic_gemstone_crab strong parts-in-bank	5b983039b4be7b90
-magic_gemstone_crab weak bank-empty	78edc351315e6d68
-magic_gemstone_crab weak bank-empty-rich	78edc351315e6d68
-magic_gemstone_crab weak bank-unknown	41aef2f24d00292d
-magic_gemstone_crab weak full-of-products	aebe84e82d27a5d2
-magic_gemstone_crab weak gear-carried	232cbef95378baa2
-magic_gemstone_crab weak goal-reached	6c598db67aef89d5
-magic_gemstone_crab weak in-instance	aebe84e82d27a5d2
-magic_gemstone_crab weak kit-at-spot	aebe84e82d27a5d2
-magic_gemstone_crab weak kit-away	aebe84e82d27a5d2
-magic_gemstone_crab weak kit-worn-at-spot	70287cf3df37e4fd
-magic_gemstone_crab weak owns-all-at-bank	7df246adcea39e5a
-magic_gemstone_crab weak owns-all-in-bank	7df246adcea39e5a
-magic_gemstone_crab weak parts-carried	aebe84e82d27a5d2
-magic_gemstone_crab weak parts-carried-away	aebe84e82d27a5d2
-magic_gemstone_crab weak parts-in-bank	7df246adcea39e5a
+magic_gemstone_crab strong bank-empty	8e51de33561fdbf0
+magic_gemstone_crab strong bank-empty-rich	8719169f9e6281e5
+magic_gemstone_crab strong bank-unknown	844434809fa0fecb
+magic_gemstone_crab strong full-of-products	dbac1e8f4863b138
+magic_gemstone_crab strong gear-carried	6a93b9a3845b24b6
+magic_gemstone_crab strong goal-reached	24774e360f1c568e
+magic_gemstone_crab strong in-instance	c1aa35edef95bd62
+magic_gemstone_crab strong kit-at-spot	dbac1e8f4863b138
+magic_gemstone_crab strong kit-away	bcdf4c8cb7a08076
+magic_gemstone_crab strong kit-worn-at-spot	2542a588511eefe8
+magic_gemstone_crab strong owns-all-at-bank	60fe5ac04b7c4b33
+magic_gemstone_crab strong owns-all-in-bank	60fe5ac04b7c4b33
+magic_gemstone_crab strong parts-carried	dbac1e8f4863b138
+magic_gemstone_crab strong parts-carried-away	bcdf4c8cb7a08076
+magic_gemstone_crab strong parts-in-bank	60fe5ac04b7c4b33
+magic_gemstone_crab weak bank-empty	cc1a62fdcb7caf20
+magic_gemstone_crab weak bank-empty-rich	cc1a62fdcb7caf20
+magic_gemstone_crab weak bank-unknown	e730239c0f93c282
+magic_gemstone_crab weak full-of-products	b8d99f9c4a689430
+magic_gemstone_crab weak gear-carried	9a49e49e349bd814
+magic_gemstone_crab weak goal-reached	0a27e633e1a2bb11
+magic_gemstone_crab weak in-instance	b8d99f9c4a689430
+magic_gemstone_crab weak kit-at-spot	b8d99f9c4a689430
+magic_gemstone_crab weak kit-away	b8d99f9c4a689430
+magic_gemstone_crab weak kit-worn-at-spot	07dfaa2d98863730
+magic_gemstone_crab weak owns-all-at-bank	6584f728dd8cf3d5
+magic_gemstone_crab weak owns-all-in-bank	6584f728dd8cf3d5
+magic_gemstone_crab weak parts-carried	b8d99f9c4a689430
+magic_gemstone_crab weak parts-carried-away	b8d99f9c4a689430
+magic_gemstone_crab weak parts-in-bank	6584f728dd8cf3d5
 magic_high_alch_magic strong bank-empty	6d55a3d8ce95d3c4
 magic_high_alch_magic strong bank-empty-rich	37a5db979c08984e
 magic_high_alch_magic strong bank-unknown	f1357e52076d54d2
@@ -5740,46 +5740,46 @@ plan HUNTER 90 rich Cheapest	fe17c0b9daf0c5f1
 plan HUNTER 90 rich Fastest	4d3a8f9cecb027c7
 plan HUNTER 90 rich Profit	ee7ad95ec7da5323
 plan HUNTER 90 rich Recommended	c64f1c4fb3fd0fcf
-plan MAGIC 1 poor AFK	4ece7cefd2f06e1f
-plan MAGIC 1 poor Cheapest	3e0b4ab9b77a4eed
-plan MAGIC 1 poor Fastest	ab80aaa1c9c7f7ca
-plan MAGIC 1 poor Profit	3bd095b790396668
-plan MAGIC 1 poor Recommended	adac1c59c26e3564
-plan MAGIC 1 rich AFK	8dc60d4331993665
-plan MAGIC 1 rich Cheapest	99f8a841df8a8774
-plan MAGIC 1 rich Fastest	cdc406d8aa2b7412
-plan MAGIC 1 rich Profit	cbaff6d02db30d35
-plan MAGIC 1 rich Recommended	e2e1f2dc3effac8f
-plan MAGIC 30 poor AFK	1b4d05dfc454490a
-plan MAGIC 30 poor Cheapest	70cb0ed3938b1287
-plan MAGIC 30 poor Fastest	5ecc5c633438eedb
-plan MAGIC 30 poor Profit	b380dce602c06625
-plan MAGIC 30 poor Recommended	decf9cfaa9aec20e
-plan MAGIC 30 rich AFK	f0b7c8dcd4d40f14
-plan MAGIC 30 rich Cheapest	86a9a15de97f6a56
-plan MAGIC 30 rich Fastest	75110f1a0724c2cc
-plan MAGIC 30 rich Profit	b945db1cfd92d56b
-plan MAGIC 30 rich Recommended	8961a78d3ed44db5
-plan MAGIC 60 poor AFK	57fbcc820f23ceb0
-plan MAGIC 60 poor Cheapest	48003a65a514cedc
-plan MAGIC 60 poor Fastest	b5ae021cd82d94db
-plan MAGIC 60 poor Profit	f3da1361a6062f87
-plan MAGIC 60 poor Recommended	8017fa20e58ac325
-plan MAGIC 60 rich AFK	6063ea23c05c2aa8
-plan MAGIC 60 rich Cheapest	1826645c52e95ff6
-plan MAGIC 60 rich Fastest	868df0ec7e390a2a
-plan MAGIC 60 rich Profit	df918cf765bbd01c
-plan MAGIC 60 rich Recommended	de59ce4f49176bd8
-plan MAGIC 90 poor AFK	46833dbddca9ceba
-plan MAGIC 90 poor Cheapest	602cc148fba6e8cf
-plan MAGIC 90 poor Fastest	96e8538a0177fc99
-plan MAGIC 90 poor Profit	00e819fda74bf81d
-plan MAGIC 90 poor Recommended	61cf66515bb15b2c
-plan MAGIC 90 rich AFK	51289dcc1955e45e
-plan MAGIC 90 rich Cheapest	ffc93a50273282d0
-plan MAGIC 90 rich Fastest	ecccc5ad70aa811d
-plan MAGIC 90 rich Profit	e6182a119e0402dd
-plan MAGIC 90 rich Recommended	7123cee7b43c8c78
+plan MAGIC 1 poor AFK	f4a5319c6781323e
+plan MAGIC 1 poor Cheapest	6c632ac60ffcab6b
+plan MAGIC 1 poor Fastest	b91ed145967498a2
+plan MAGIC 1 poor Profit	5f10f805f9fa2052
+plan MAGIC 1 poor Recommended	e298deb9c90bbe78
+plan MAGIC 1 rich AFK	2a55cf2da71559f3
+plan MAGIC 1 rich Cheapest	7118de20effe6b8a
+plan MAGIC 1 rich Fastest	7de18e29f3f9e085
+plan MAGIC 1 rich Profit	61b5851774c57452
+plan MAGIC 1 rich Recommended	266ac42ae9c60c4f
+plan MAGIC 30 poor AFK	7b0025c344159ca4
+plan MAGIC 30 poor Cheapest	7dc076f9e0f5cfd1
+plan MAGIC 30 poor Fastest	a4976c0c814586ea
+plan MAGIC 30 poor Profit	126ca03f2de5a3ee
+plan MAGIC 30 poor Recommended	6e5a9a4a48234a18
+plan MAGIC 30 rich AFK	0009478d9fbeeb4a
+plan MAGIC 30 rich Cheapest	0fa11930af714793
+plan MAGIC 30 rich Fastest	dd445ed7c192a27e
+plan MAGIC 30 rich Profit	867886c9d34a6384
+plan MAGIC 30 rich Recommended	7f8ab519c5079e5b
+plan MAGIC 60 poor AFK	e4d341046e66f3ab
+plan MAGIC 60 poor Cheapest	09bb0a509dc014f3
+plan MAGIC 60 poor Fastest	8cccbb3ff9b949bd
+plan MAGIC 60 poor Profit	4cd7a975a3dce1dc
+plan MAGIC 60 poor Recommended	60404db6d60298e5
+plan MAGIC 60 rich AFK	561d9f49f69c73e7
+plan MAGIC 60 rich Cheapest	40996ff3e86f70e1
+plan MAGIC 60 rich Fastest	c527e6cb61471851
+plan MAGIC 60 rich Profit	9b762d50fd9d4ff1
+plan MAGIC 60 rich Recommended	d4ac14cdfc08b9bb
+plan MAGIC 90 poor AFK	a2146f993af1f2f7
+plan MAGIC 90 poor Cheapest	e5ed2ed508c6aa5d
+plan MAGIC 90 poor Fastest	e5b327524c573c98
+plan MAGIC 90 poor Profit	638bcfbbc3bb6c55
+plan MAGIC 90 poor Recommended	5c7d2f26b45e314d
+plan MAGIC 90 rich AFK	754d4b499612e397
+plan MAGIC 90 rich Cheapest	043c5789acc57870
+plan MAGIC 90 rich Fastest	37871a7c6b9c6903
+plan MAGIC 90 rich Profit	d6ff9e299a031666
+plan MAGIC 90 rich Recommended	a5745e30f28a5ecd
 plan MINING 1 poor AFK	fcd10feb51e17aed
 plan MINING 1 poor Cheapest	0e875bc67da98176
 plan MINING 1 poor Fastest	0e875bc67da98176

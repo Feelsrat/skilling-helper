@@ -59,12 +59,13 @@ final class CombatGearAdvisor
 	}
 
 	/**
-	 * Any input but the generic ammo one is returned as it is. The ammo input is named after what the player should use: the kind they fire if they already have some,
+	 * Spell rune inputs become the runes of the player's best spell, or null when that spell doesn't use one.
+	 * Any other input but the generic ammo one is returned as it is. The ammo input is named after what the player should use: the kind they fire if they already have some,
 	 * otherwise the exact ammo to buy, which is also what its price comes from.
 	 */
 	static ItemReq resolve(ItemReq input, PlayerState s)
 	{
-		if (input == CombatSpell.CATALYST_INPUT || input == CombatSpell.AIR_INPUT || input == CombatSpell.FIRE_INPUT)
+		if (input == CombatSpell.CATALYST_INPUT || input == CombatSpell.AIR_INPUT || input == CombatSpell.ELEMENT_INPUT)
 		{
 			return spellRunes(input, s);
 		}
@@ -104,22 +105,32 @@ final class CombatGearAdvisor
 	}
 
 	/**
-	 * The runes of the best fire spell the player can cast. The catalyst is named after the spell, so the player
-	 * knows which one to autocast.
+	 * The runes of the best combat spell the player can cast, or null when this spell doesn't use the input (wind
+	 * spells have no second element). The catalyst is named after the spell, so the player knows which one to
+	 * autocast.
 	 */
 	private static ItemReq spellRunes(ItemReq input, PlayerState s)
 	{
 		CombatSpell spell = CombatSpell.best(s.level(Skill.MAGIC), s.isMembersWorld());
-		if (spell == null)
-		{
-			return input;
-		}
 		if (input == CombatSpell.CATALYST_INPUT)
 		{
-			return input.withName(spell.getCatalystName() + " (" + spell.getSpellName() + ")")
-				.withIds(new int[]{spell.getCatalyst()});
+			return input.withName(spell.getCatalyst().getRuneName() + " (" + spell.getSpellName() + ")")
+				.withIds(new int[]{spell.getCatalyst().getRune()});
 		}
-		return input.withPerAction(input == CombatSpell.AIR_INPUT ? spell.getAir() : spell.getFire());
+		if (input == CombatSpell.AIR_INPUT)
+		{
+			return input.withPerAction(spell.getAir());
+		}
+		CombatSpell.Element element = spell.getElement();
+		if (element == null)
+		{
+			return null;
+		}
+		return input.withName(element.getRuneName())
+			.withIds(new int[]{element.getRune()})
+			.withPerAction(spell.getElementRunes())
+			.withSubstituteName(element.getStaffName())
+			.withSubstituteIds(element.getStaves());
 	}
 
 	static boolean canWear(CombatGear.Tier t, PlayerState s)

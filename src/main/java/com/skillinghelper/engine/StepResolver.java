@@ -534,9 +534,10 @@ public final class StepResolver
 		{
 			return true;
 		}
-		for (ItemReq input : m.getInputs())
+		for (ItemReq listed : m.getInputs())
 		{
-			if (BankTrip.needsWithdraw(CombatGearAdvisor.resolve(input, s), s, gather))
+			ItemReq input = CombatGearAdvisor.resolve(listed, s);
+			if (input != null && BankTrip.needsWithdraw(input, s, gather))
 			{
 				return true;
 			}
@@ -611,7 +612,7 @@ public final class StepResolver
 		for (ItemReq listed : m.getInputs())
 		{
 			ItemReq input = CombatGearAdvisor.resolve(listed, s);
-			if (!s.ownsSubstitute(input))
+			if (input != null && !s.ownsSubstitute(input))
 			{
 				cost += (double) prices.price(input.primaryId()) * input.getPerAction();
 			}

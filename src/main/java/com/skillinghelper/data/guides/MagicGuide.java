@@ -25,12 +25,8 @@ final class MagicGuide
 
 	private static final int[] AIR_STAVES = CombatSpell.AIR_STAVES;
 	private static final int[] FIRE_STAVES = CombatSpell.FIRE_STAVES;
-	private static final int[] WATER_STAVES = {ItemID.STAFF_OF_WATER, ItemID.WATER_BATTLESTAFF,
-		ItemID.MYSTIC_WATER_STAFF, ItemID.MUD_BATTLESTAFF, ItemID.STEAM_BATTLESTAFF, ItemID.MIST_BATTLESTAFF};
-
-	private static final int[] EARTH_STAVES = {ItemID.STAFF_OF_EARTH, ItemID.EARTH_BATTLESTAFF,
-		ItemID.MYSTIC_EARTH_STAFF, ItemID.LAVA_BATTLESTAFF, ItemID.MYSTIC_LAVA_STAFF, ItemID.MUD_BATTLESTAFF,
-		ItemID.MYSTIC_MUD_STAFF, ItemID.DUST_BATTLESTAFF, ItemID.MYSTIC_DUST_BATTLESTAFF};
+	private static final int[] WATER_STAVES = CombatSpell.WATER_STAVES;
+	private static final int[] EARTH_STAVES = CombatSpell.EARTH_STAVES;
 
 	private static ItemReq earth(int perCast)
 	{
@@ -213,8 +209,8 @@ final class MagicGuide
 	}
 
 	/**
-	 * Autocasting the best fire spell the player has on the Gemstone Crab. It never dies or hits back, so it is AFK
-	 * casting at one cast every 3 seconds. The spell's runes are worked out from the Magic level (see
+	 * Autocasting the best standard combat spell the player has on the Gemstone Crab. It never dies or hits back, so
+	 * it is AFK casting at one cast every 3 seconds. The spell and its runes are worked out from the Magic level (see
 	 * {@link CombatSpell}). Each cast is the spell's base xp plus 2 per damage (about 45% of the max hit on average),
 	 * all cut to 87.5% like every combat xp drop on the crab.
 	 */
@@ -224,22 +220,22 @@ final class MagicGuide
 			.id("magic_gemstone_crab")
 			.skill(Skill.MAGIC)
 			.type(MethodType.ACTIVITY)
-			.name("Gemstone Crab (autocast fire spells)")
+			.name("Gemstone Crab (autocast your best spell)")
 			.members(true)
 			.tag(MethodTag.AFK)
 			.quest(Quest.CHILDREN_OF_THE_SUN)
 			.location(CombatGuide.GEMSTONE_CRAB_SPOTS[0])
 			.input(CombatSpell.CATALYST_INPUT)
 			.input(CombatSpell.AIR_INPUT)
-			.input(CombatSpell.FIRE_INPUT)
+			.input(CombatSpell.ELEMENT_INPUT)
 			.gearStyle(CombatStyle.MAGIC)
 			.target(Target.npc("Attack", "Gemstone Crab"))
 			.target(Target.npc("Mine", "Gemstone Crab Shell"))
-			.instruction("Autocast the fire spell named next to the runes and attack the Gemstone Crab")
-			.notes("Very AFK and it never hits back. Use the best fire spell you have: Fire Strike from 13, Bolt from "
-				+ "35, Blast from 59, Wave from 75, Surge from 95. A fire staff saves the fire runes. Every 10 minutes "
-				+ "the crab burrows and moves to one of the other two spots: crawl through the cave next to the old "
-				+ "spot to come out at the new one. The top 16 damage dealers can mine the shell afterwards for gems.")
+			.instruction("Autocast the spell named next to the runes and attack the Gemstone Crab")
+			.notes("Very AFK and it never hits back. The guide picks the strongest Strike, Bolt, Blast, Wave or Surge "
+				+ "spell you can cast; an air staff saves the air runes every spell uses. Every 10 minutes the crab "
+				+ "burrows and moves to one of the other two spots: crawl through the cave next to the old spot to "
+				+ "come out at the new one. The top 16 damage dealers can mine the shell afterwards for gems.")
 			.wikiPage(P2P_WIKI);
 		CombatSpell[] spells = CombatSpell.values();
 		for (int i = spells.length - 1; i >= 0; i--)
