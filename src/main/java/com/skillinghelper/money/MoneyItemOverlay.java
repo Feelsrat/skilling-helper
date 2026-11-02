@@ -9,7 +9,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 
 /**
- * Outlines the supplies to take out of the bank for the running money guide.
+ * Outlines the supplies to take out of the bank, and the inventory items to use, for the running money guide.
  */
 class MoneyItemOverlay extends WidgetItemOverlay
 {
@@ -24,17 +24,20 @@ class MoneyItemOverlay extends WidgetItemOverlay
 		this.config = config;
 		this.itemManager = itemManager;
 		showOnBank();
+		showOnInventory();
 	}
 
 	@Override
 	public void renderItemOverlay(Graphics2D g, int itemId, WidgetItem item)
 	{
 		MoneyStep step = plugin.getStep();
-		if (step == null || step.getWithdraw().isEmpty() || item.getWidget().getId() >>> 16 != InterfaceID.BANKMAIN)
+		if (step == null)
 		{
 			return;
 		}
-		if (!step.getWithdraw().contains(itemManager.canonicalize(itemId)))
+		boolean bank = item.getWidget().getId() >>> 16 == InterfaceID.BANKMAIN;
+		int id = itemManager.canonicalize(itemId);
+		if (bank ? !step.getWithdraw().containsKey(id) : !step.getUse().contains(id))
 		{
 			return;
 		}

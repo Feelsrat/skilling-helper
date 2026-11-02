@@ -8,6 +8,7 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.PriceLookup;
+import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import com.skillinghelper.money.data.MoneyMethods;
 import com.skillinghelper.money.ui.MoneyMakingPanel;
@@ -37,6 +38,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
@@ -98,6 +100,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private MoneySceneOverlay sceneOverlay;
 	@Inject
 	private MoneyItemOverlay itemOverlay;
+	@Inject
+	private MoneyBankFilter bankFilter;
 
 	private MoneyMakingPanel panel;
 	private NavigationButton navButton;
@@ -130,6 +134,16 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private volatile MoneyStep step;
 	private WorldPoint pathTarget;
 	private boolean hintArrowSet;
+	/**
+	 * Supplies of the running guide, for the bank button. Empty when no guide is running.
+	 */
+	@Getter
+	private volatile Set<Integer> bankItems = Set.of();
+	/**
+	 * Bank contents from the last time it was open this session, or null if it hasn't been.
+	 */
+	private Map<Integer, Integer> bankCounts;
+	private final Map<Integer, Boolean> stackable = new HashMap<>();
 
 	private final PriceLookup prices = id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id));
 
@@ -164,6 +178,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		}
 
 		eventBus.register(targets);
+		bankFilter.startUp();
+		eventBus.register(bankFilter);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		panel = new MoneyMakingPanel(this);
@@ -183,6 +199,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		eventBus.unregister(bankFilter);
+		bankFilter.shutDown();
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -193,6 +211,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		});
 		guide = null;
 		step = null;
+		bankItems = Set.of();
+		bankCounts = null;
 		panel = null;
 		ranked = Collections.emptyList();
 	}
@@ -216,6 +236,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		else if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			questsDone.clear();
+			bankCounts = null;
 			pathTarget = null;
 			hintArrowSet = false;
 		}
@@ -228,6 +249,24 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			rankDirty = true;
 		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged e)
+	{
+		if (e.getContainerId() != InventoryID.BANK)
+		{
+			return;
+		}
+		Map<Integer, Integer> counts = new HashMap<>();
+		for (Item item : e.getItemContainer().getItems())
+		{
+			if (item.getId() > 0)
+			{
+				counts.merge(itemManager.canonicalize(item.getId()), item.getQuantity(), Integer::sum);
+			}
+		}
+		bankCounts = counts;
 	}
 
 	@Subscribe
@@ -371,9 +410,19 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			suppliesDone = true;
 		}
-		Widget bankItems = client.getWidget(InterfaceID.Bankmain.ITEMS);
-		boolean bankOpen = bankItems != null && !bankItems.isHidden();
-		MoneyStep next = MoneyGuide.resolve(option, here, carried(), bankOpen, suppliesDone);
+		Widget bankWidget = client.getWidget(InterfaceID.Bankmain.ITEMS);
+		boolean bankOpen = bankWidget != null && !bankWidget.isHidden();
+		ItemContainer inv = client.getItemContainer(InventoryID.INV);
+		MoneyStep next = MoneyGuide.resolve(option, MoneyGuide.Player.builder()
+			.location(here)
+			.carried(carried())
+			.bank(bankCounts == null ? null : new HashMap<>(bankCounts))
+			.bankOpen(bankOpen)
+			.inventoryFull(inv != null && inv.count() >= MoneyGuide.INVENTORY_SLOTS)
+			.members(player.isMembers())
+			.stackable(stackableSupplies(running))
+			.suppliesDone(suppliesDone)
+			.build());
 		MoneyStep previous = step;
 		step = next;
 		targets.track(next.getNpcs(), next.getObjects());
@@ -386,6 +435,23 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 				SwingUtilities.invokeLater(() -> p.updateStep(running.getPage(), next));
 			}
 		}
+	}
+
+	/**
+	 * Which of the method's supplies stack in one slot, read from the item definitions once each.
+	 */
+	private Set<Integer> stackableSupplies(MoneyMethod m)
+	{
+		Set<Integer> out = new HashSet<>();
+		for (MoneyItem item : m.getInputs())
+		{
+			int id = MoneyGuide.itemId(item);
+			if (id > 0 && stackable.computeIfAbsent(id, i -> itemManager.getItemComposition(i).isStackable()))
+			{
+				out.add(id);
+			}
+		}
+		return out;
 	}
 
 	private Map<Integer, Integer> carried()
@@ -464,6 +530,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		guide = null;
 		step = null;
 		suppliesDone = false;
+		setBankItems(Set.of());
 		clearWay();
 		targets.track(Collections.emptySet(), Collections.emptySet());
 	}
@@ -488,6 +555,15 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			}
 			stopGuide();
 			guide = m;
+			Set<Integer> ids = new HashSet<>();
+			for (MoneyItem item : m.getInputs())
+			{
+				if (MoneyGuide.itemId(item) > 0)
+				{
+					ids.add(MoneyGuide.itemId(item));
+				}
+			}
+			setBankItems(ids);
 			updateGuide();
 		});
 	}
@@ -543,6 +619,15 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		if (p != null)
 		{
 			SwingUtilities.invokeLater(() -> p.updateStep(null, s));
+		}
+	}
+
+	private void setBankItems(Set<Integer> ids)
+	{
+		if (!ids.equals(bankItems))
+		{
+			bankItems = Set.copyOf(ids);
+			bankFilter.relayout();
 		}
 	}
 

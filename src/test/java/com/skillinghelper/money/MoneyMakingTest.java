@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -119,30 +120,74 @@ public class MoneyMakingTest
 		assertTrue(ranked.stream().filter(MoneyOption::isAvailable).noneMatch(o -> o.getMethod().isMembers()));
 	}
 
+	private static MoneyGuide.Player.PlayerBuilder at(WorldPoint wp)
+	{
+		return MoneyGuide.Player.builder().location(wp).members(true);
+	}
+
 	@Test
-	public void guideGoesSuppliesThenTravelThenWork()
+	public void guideBuysThenBanksThenTravelsThenWorks()
 	{
 		MoneyMethod snape = method("Collecting snape grass");
 		MoneyOption o = MoneyRanker.evaluate(snape, player(99, true, "the fremennik trials", "lunar diplomacy"), null);
 		WorldPoint ge = new WorldPoint(3165, 3487, 0);
+		Set<Integer> runes = Set.of(ItemID.ASTRALRUNE, ItemID.LAWRUNE);
 
-		MoneyStep supplies = MoneyGuide.resolve(o, ge, Map.of(), false, false);
-		assertEquals(MoneyStep.Kind.SUPPLIES, supplies.getKind());
-		assertFalse(supplies.getWithdraw().isEmpty());
-		assertNull(supplies.getDestination());
+		// Bank not seen yet: open it first
+		MoneyStep open = MoneyGuide.resolve(o, at(ge).stackable(runes).build());
+		assertEquals(MoneyStep.Kind.OPEN_BANK, open.getKind());
+		assertTrue(open.getObjects().contains("Bank booth"));
 
-		Map<Integer, Integer> carried = new HashMap<>();
-		for (int id : supplies.getWithdraw())
-		{
-			carried.put(id, 100);
-		}
-		MoneyStep travel = MoneyGuide.resolve(o, ge, carried, false, false);
+		// Bank seen without the runes: buy them at the GE
+		MoneyStep buy = MoneyGuide.resolve(o, at(ge).stackable(runes).bank(Map.of()).build());
+		assertEquals(MoneyStep.Kind.BUY, buy.getKind());
+		assertTrue(buy.getNpcs().contains("Grand Exchange Clerk"));
+
+		// Runes in the bank and the bank open: take out an hour's worth, exactly
+		MoneyStep withdraw = MoneyGuide.resolve(o, at(ge).stackable(runes).bankOpen(true)
+			.bank(Map.of(ItemID.ASTRALRUNE, 1000, ItemID.LAWRUNE, 1000)).build());
+		assertEquals(MoneyStep.Kind.WITHDRAW, withdraw.getKind());
+		assertEquals(Integer.valueOf(76), withdraw.getWithdraw().get(ItemID.ASTRALRUNE));
+		assertEquals(Integer.valueOf(152), withdraw.getWithdraw().get(ItemID.LAWRUNE));
+
+		Map<Integer, Integer> carried = new HashMap<>(withdraw.getWithdraw());
+		MoneyStep travel = MoneyGuide.resolve(o, at(ge).stackable(runes).carried(carried).build());
 		assertEquals(MoneyStep.Kind.TRAVEL, travel.getKind());
 		assertEquals(snape.getSpot(), travel.getDestination());
 
-		MoneyStep work = MoneyGuide.resolve(o, snape.getSpot().getPoint(), Map.of(), false, true);
+		WorldPoint spot = snape.getSpot().getPoint();
+		MoneyStep work = MoneyGuide.resolve(o, at(spot).stackable(runes).carried(Map.of(ItemID.LAWRUNE, 10))
+			.suppliesDone(true).build());
 		assertEquals(MoneyStep.Kind.WORK, work.getKind());
 		assertTrue(work.getLines().size() > 1);
+
+		// Full of snape grass: bank it
+		MoneyStep deposit = MoneyGuide.resolve(o, at(spot).stackable(runes).inventoryFull(true)
+			.carried(Map.of(ItemID.SNAPE_GRASS, 27)).suppliesDone(true).build());
+		assertEquals(MoneyStep.Kind.DEPOSIT, deposit.getKind());
+	}
+
+	@Test
+	public void processingFillsTheInventoryAndRestocks()
+	{
+		MoneyMethod herbs = method("Cleaning grimy ranarr weed");
+		MoneyOption o = MoneyRanker.evaluate(herbs, player(99, true, "druidic ritual"), null);
+		WorldPoint ge = herbs.getSpot().getPoint();
+		Map<Integer, Integer> bank = Map.of(ItemID.UNIDENTIFIED_RANARR, 5000);
+
+		MoneyStep withdraw = MoneyGuide.resolve(o, at(ge).bankOpen(true).bank(bank).build());
+		assertEquals(MoneyStep.Kind.WITHDRAW, withdraw.getKind());
+		assertEquals(Integer.valueOf(28), withdraw.getWithdraw().get(ItemID.UNIDENTIFIED_RANARR));
+
+		MoneyStep work = MoneyGuide.resolve(o, at(ge).bank(bank).suppliesDone(true)
+			.carried(Map.of(ItemID.UNIDENTIFIED_RANARR, 28)).build());
+		assertEquals(MoneyStep.Kind.WORK, work.getKind());
+		assertTrue(work.getUse().contains(ItemID.UNIDENTIFIED_RANARR));
+
+		// All cleaned: back to the bank for more, even though the supplies were done once
+		MoneyStep restock = MoneyGuide.resolve(o, at(ge).bank(bank).suppliesDone(true).inventoryFull(true)
+			.carried(Map.of(ItemID.RANARR_WEED, 28)).build());
+		assertEquals(MoneyStep.Kind.OPEN_BANK, restock.getKind());
 	}
 
 	@Test
@@ -152,15 +197,20 @@ public class MoneyMakingTest
 		assertEquals("Zaff", zaff.getNpc());
 		assertTrue(zaff.isRecurring());
 		MoneyOption o = MoneyRanker.evaluate(zaff, player(99, true), null);
-		MoneyStep work = MoneyGuide.resolve(o, zaff.getSpot().getPoint(), Map.of(), false, true);
+		MoneyStep work = MoneyGuide.resolve(o, at(zaff.getSpot().getPoint()).suppliesDone(true).build());
 		assertTrue(work.getNpcs().contains("Zaff"));
+
+		// Needs the coins first
+		MoneyStep coins = MoneyGuide.resolve(o, at(zaff.getSpot().getPoint()).bankOpen(true)
+			.bank(Map.of(ItemID.COINS, 2_000_000)).build());
+		assertEquals(Integer.valueOf(840_000), coins.getWithdraw().get(ItemID.COINS));
 	}
 
 	@Test
 	public void lockedMethodSaysWhy()
 	{
 		MoneyOption o = MoneyRanker.evaluate(method("Collecting snape grass"), player(1, true), null);
-		MoneyStep step = MoneyGuide.resolve(o, null, Map.of(), false, false);
+		MoneyStep step = MoneyGuide.resolve(o, at(null).build());
 		assertEquals(MoneyStep.Kind.LOCKED, step.getKind());
 	}
 

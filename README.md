@@ -126,8 +126,13 @@ levels, quests and world allow, and sorts them by gp/hr at today's GE prices.
 - **Details** for each method: requirements ticked off against your account (diaries and other unlocks the plugin
   can't read are shown as "?"), where it's done, what to bring and what it makes per hour, and the wiki's own
   instructions.
-- **Start guide**: step by step, get the supplies (outlined in the bank), walk to the spot (hint arrow and Shortest
-  Path line), then the wiki's instructions with the shopkeeper outlined for shop runs.
+- **Start guide**: written for players new to the game. If your bank doesn't have the supplies it walks you to the
+  Grand Exchange and explains how to buy them; then it has you open a bank and take out exact amounts (outlined in
+  the bank), walks you to the spot (hint arrow and Shortest Path line), and shows the wiki's instructions with the
+  shopkeeper or the items to use outlined. When your inventory fills up, or the main input runs out, it takes you
+  back to the bank and round again.
+- **Bank button**: a coin button at the top of the bank shows only the running guide's supplies. It's on by
+  default; click it to show the whole bank again.
 - **Full guides**: when Skilling Helper or PvM Progression has a click-by-click guide for the method (e.g. Barrows,
   Zulrah, Vorkath, cleaning herbs), Start opens that one instead. Turn this off with "Use full guides" in the settings.
 

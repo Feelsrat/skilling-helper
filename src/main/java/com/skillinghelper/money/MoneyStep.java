@@ -3,6 +3,7 @@ package com.skillinghelper.money;
 import com.skillinghelper.data.Location;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Singular;
@@ -22,9 +23,21 @@ public class MoneyStep
 		 */
 		LOCKED,
 		/**
-		 * Fetch the inputs and supplies from a bank or the Grand Exchange.
+		 * Buy what's missing at the Grand Exchange.
 		 */
-		SUPPLIES,
+		BUY,
+		/**
+		 * Walk to a bank and open it.
+		 */
+		OPEN_BANK,
+		/**
+		 * Bank is open: take out the supplies.
+		 */
+		WITHDRAW,
+		/**
+		 * Inventory is full of what the method makes: put it in the bank.
+		 */
+		DEPOSIT,
 		/**
 		 * Walk to where it's done.
 		 */
@@ -44,7 +57,7 @@ public class MoneyStep
 	 */
 	Location destination;
 	/**
-	 * NPC names to outline (a shopkeeper, bankers).
+	 * NPC names to outline (a shopkeeper, bankers, Grand Exchange clerks).
 	 */
 	@Builder.Default
 	Set<String> npcs = Collections.emptySet();
@@ -54,8 +67,21 @@ public class MoneyStep
 	@Builder.Default
 	Set<String> objects = Collections.emptySet();
 	/**
-	 * Items to outline in the bank, to take out.
+	 * Items to outline in the bank, with how many to take out.
 	 */
 	@Builder.Default
-	Set<Integer> withdraw = Collections.emptySet();
+	Map<Integer, Integer> withdraw = Collections.emptyMap();
+	/**
+	 * Items to outline in the inventory, to use.
+	 */
+	@Builder.Default
+	Set<Integer> use = Collections.emptySet();
+
+	/**
+	 * Whether the step is about getting the supplies, so the panel offers "I have everything".
+	 */
+	public boolean isSupplyStep()
+	{
+		return kind == Kind.BUY || kind == Kind.OPEN_BANK || kind == Kind.WITHDRAW;
+	}
 }

@@ -1,20 +1,27 @@
 package com.skillinghelper.money;
 
+import com.skillinghelper.data.Banks;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Builder;
+import lombok.Value;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.gameval.ItemID;
 
 /**
- * Turns a wiki money making method into the next step, Quest Helper style: get the supplies, walk to the spot, then
- * do it with the wiki's own instructions. Recomputed every tick from what the player carries and where they stand.
+ * Turns a wiki money making method into the next step, Quest Helper style, written for players who don't know the
+ * game well: buy what's missing at the Grand Exchange, open a bank and take out exact amounts, walk to the spot, do
+ * it with the wiki's own instructions, and bank the results when the inventory fills up. Recomputed every tick from
+ * what the player carries, what's in their bank and where they stand.
  */
 public final class MoneyGuide
 {
@@ -23,23 +30,51 @@ public final class MoneyGuide
 	 */
 	static final int MAX_SUPPLIES = 6;
 	/**
-	 * At most this many sentences of the wiki's instructions on the overlay; the panel shows them all.
+	 * At most this many sentences of the wiki's instructions on the step; the panel shows them all.
 	 */
-	static final int MAX_SENTENCES = 6;
+	static final int MAX_SENTENCES = 5;
+	static final int INVENTORY_SLOTS = 28;
 	static final Set<String> BANK_NPCS = Set.of("Banker", "Gnome banker", "Ghost banker", "Emerald Benedict");
 	static final Set<String> BANK_OBJECTS = Set.of("Bank booth", "Bank chest", "Grand Exchange booth");
+	static final Set<String> GE_CLERKS = Set.of("Grand Exchange Clerk");
 
 	private MoneyGuide()
 	{
 	}
 
 	/**
-	 * @param carried      item id to count across the inventory and worn equipment
-	 * @param bankOpen     whether the bank interface is open
-	 * @param suppliesDone the player has reached the spot once or said they have everything, so stop asking
+	 * What the guide reads about the player each tick.
 	 */
-	public static MoneyStep resolve(MoneyOption option, WorldPoint me, Map<Integer, Integer> carried, boolean bankOpen,
-		boolean suppliesDone)
+	@Value
+	@Builder
+	public static class Player
+	{
+		WorldPoint location;
+		/**
+		 * Item id to count across the inventory and worn equipment.
+		 */
+		@Builder.Default
+		Map<Integer, Integer> carried = Collections.emptyMap();
+		/**
+		 * Item id to count in the bank, or null when the bank hasn't been opened yet.
+		 */
+		Map<Integer, Integer> bank;
+		boolean bankOpen;
+		boolean inventoryFull;
+		boolean members;
+		/**
+		 * Item ids that stack in one inventory slot (runes, coins, noted items).
+		 */
+		@Builder.Default
+		Set<Integer> stackable = Collections.emptySet();
+		/**
+		 * The player reached the spot once, or said they have everything: only ask for supplies again when the main
+		 * input runs out.
+		 */
+		boolean suppliesDone;
+	}
+
+	public static MoneyStep resolve(MoneyOption option, Player p)
 	{
 		MoneyMethod m = option.getMethod();
 		if (!option.isAvailable())
@@ -50,46 +85,273 @@ public final class MoneyGuide
 			return b.line("Pick another method in the Money Making panel, or work towards these first.").build();
 		}
 
-		List<MoneyItem> missing = suppliesDone ? List.of() : missingSupplies(m, carried);
-		if (!missing.isEmpty())
+		Map<MoneyItem, Integer> trip = tripAmounts(m, p.getStackable());
+		MoneyItem main = mainInput(m, p.getStackable());
+		boolean outOfMain = main != null && p.getCarried().getOrDefault(itemId(main), 0) <= 0;
+		if (!p.isSuppliesDone() || outOfMain)
 		{
-			return suppliesStep(m, missing, bankOpen);
+			Map<MoneyItem, Integer> missing = missing(trip, p.getCarried());
+			if (!missing.isEmpty())
+			{
+				return suppliesStep(m, missing, p);
+			}
+		}
+
+		if (p.isInventoryFull() && carriesProducts(m, p.getCarried()) && main == null)
+		{
+			return depositStep(m, trip, p);
 		}
 
 		Location spot = m.getSpot();
-		if (spot != null && !spot.contains(me))
+		if (spot != null && !spot.contains(p.getLocation()))
 		{
 			MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.TRAVEL)
-				.title("Go to " + m.getLocationName())
+				.title("Walk to " + m.getLocationName())
 				.destination(spot);
+			WorldPoint me = p.getLocation();
 			if (me != null && me.getPlane() == spot.getPoint().getPlane())
 			{
-				b.line(me.distanceTo2D(spot.getPoint()) + " tiles away. Follow the arrow or the Shortest Path line.");
+				b.line("About " + me.distanceTo2D(spot.getPoint()) + " tiles away.");
+			}
+			b.line("Follow the yellow arrow, or the line on the ground if you have the Shortest Path plugin.");
+			b.line("Teleports save time: check the wiki page (button in the panel) for the fastest way.");
+			return b.build();
+		}
+		return workStep(m, main, p);
+	}
+
+	// ---- Supplies ----
+
+	/**
+	 * How many of each supply to take out for one trip: an hour's (or one run's) worth of anything that stacks, and
+	 * the inventory shared out between the rest in proportion to how many get used.
+	 */
+	static Map<MoneyItem, Integer> tripAmounts(MoneyMethod m, Set<Integer> stackable)
+	{
+		Map<MoneyItem, Integer> out = new LinkedHashMap<>();
+		List<MoneyItem> loose = new ArrayList<>();
+		int stackSlots = 0;
+		for (MoneyItem item : supplies(m))
+		{
+			if (item.isCoins() || stackable.contains(itemId(item)))
+			{
+				out.put(item, (int) Math.min(Integer.MAX_VALUE, Math.max(1, Math.round(Math.ceil(item.getQuantity())))));
+				stackSlots++;
 			}
 			else
 			{
-				b.line("Follow the arrow or the Shortest Path line.");
+				loose.add(item);
 			}
-			return b.build();
 		}
-		return workStep(m);
+		int free = Math.max(loose.size(), INVENTORY_SLOTS - stackSlots);
+		double wanted = 0;
+		for (MoneyItem item : loose)
+		{
+			wanted += Math.max(1, Math.ceil(item.getQuantity()));
+		}
+		for (MoneyItem item : loose)
+		{
+			double want = Math.max(1, Math.ceil(item.getQuantity()));
+			int amount = wanted <= free ? (int) want : (int) Math.max(1, Math.floor(want * free / wanted));
+			out.put(item, amount);
+		}
+		return out;
 	}
 
 	/**
-	 * Inputs and supplies worth bringing that the player has none of, most valuable first.
+	 * The input the method turns into money (grimy herbs, raw fish), which, once used up, means it's time to restock.
+	 * Null for methods whose inputs are only runes, coins or a few consumables.
 	 */
-	static List<MoneyItem> missingSupplies(MoneyMethod m, Map<Integer, Integer> carried)
+	static MoneyItem mainInput(MoneyMethod m, Set<Integer> stackable)
 	{
-		List<MoneyItem> out = new ArrayList<>();
 		for (MoneyItem item : supplies(m))
 		{
-			if (carried.getOrDefault(itemId(item), 0) <= 0)
+			if (!item.isCoins() && !stackable.contains(itemId(item)) && item.getQuantity() >= 100)
 			{
-				out.add(item);
+				return item;
+			}
+		}
+		return null;
+	}
+
+	private static Map<MoneyItem, Integer> missing(Map<MoneyItem, Integer> trip, Map<Integer, Integer> carried)
+	{
+		Map<MoneyItem, Integer> out = new LinkedHashMap<>();
+		for (Map.Entry<MoneyItem, Integer> e : trip.entrySet())
+		{
+			int have = carried.getOrDefault(itemId(e.getKey()), 0);
+			if (have < e.getValue())
+			{
+				out.put(e.getKey(), e.getValue() - have);
 			}
 		}
 		return out;
 	}
+
+	private static MoneyStep suppliesStep(MoneyMethod m, Map<MoneyItem, Integer> missing, Player p)
+	{
+		Map<MoneyItem, Integer> toBuy = new LinkedHashMap<>();
+		if (p.getBank() != null)
+		{
+			for (Map.Entry<MoneyItem, Integer> e : missing.entrySet())
+			{
+				int inBank = p.getBank().getOrDefault(itemId(e.getKey()), 0);
+				if (inBank < e.getValue() && !e.getKey().isCoins())
+				{
+					toBuy.put(e.getKey(), e.getValue() - inBank);
+				}
+			}
+		}
+		Map<Integer, Integer> withdraw = new LinkedHashMap<>();
+		missing.forEach((item, n) -> withdraw.put(itemId(item), n));
+
+		if (!toBuy.isEmpty() && !p.isBankOpen())
+		{
+			return buyStep(toBuy, withdraw, p);
+		}
+		if (!p.isBankOpen())
+		{
+			Location bank = Banks.nearest(p.getLocation(), p.isMembers());
+			MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.OPEN_BANK)
+				.title("Open your bank")
+				.withdraw(withdraw)
+				.npcs(BANK_NPCS)
+				.objects(BANK_OBJECTS);
+			if (bank != null && !bank.contains(p.getLocation()))
+			{
+				b.destination(bank).line("Walk to " + bank.getName() + " (follow the arrow).");
+			}
+			b.line("Click a bank booth or banker (outlined) and choose Bank.");
+			b.line("You'll need:");
+			missing.forEach((item, n) -> b.line("- " + amount(item, n)));
+			return b.build();
+		}
+
+		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.WITHDRAW)
+			.title("Take out your supplies")
+			.withdraw(withdraw);
+		b.line("1. If your inventory has other things, click \"Deposit inventory\" at the bottom of the bank.");
+		b.line("2. Take out these (outlined in the bank):");
+		missing.forEach((item, n) -> b.line("- " + amount(item, n)));
+		b.line("To take an exact number, right-click the item and choose Withdraw-X, then type it.");
+		b.line("Tip: the coin button at the top of the bank shows only these items.");
+		if (!toBuy.isEmpty())
+		{
+			b.line("You don't have enough " + names(toBuy) + ". Take out coins and buy them at the Grand Exchange.");
+		}
+		if (m.isMembers() && !p.isMembers())
+		{
+			b.line("This method needs a members world.");
+		}
+		return b.build();
+	}
+
+	private static MoneyStep buyStep(Map<MoneyItem, Integer> toBuy, Map<Integer, Integer> withdraw, Player p)
+	{
+		Location ge = Banks.GRAND_EXCHANGE;
+		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.BUY)
+			.title("Buy your supplies at the Grand Exchange")
+			.withdraw(withdraw)
+			.npcs(union(GE_CLERKS, BANK_NPCS))
+			.objects(BANK_OBJECTS);
+		if (!ge.contains(p.getLocation()))
+		{
+			b.destination(ge).line("Walk to the Grand Exchange in north-west Varrock (follow the arrow).");
+		}
+		b.line("Buy:");
+		toBuy.forEach((item, n) -> b.line("- " + amount(item, n)));
+		b.line("1. Have the coins in your inventory (take them out of a bank first).");
+		b.line("2. Click a Grand Exchange Clerk (outlined) and choose Exchange.");
+		b.line("3. Click the Buy arrow on an empty slot and type the item's name.");
+		b.line("4. Set the quantity, press +5% once or twice so it buys fast, then Confirm.");
+		b.line("5. When it's done, click the slot and Collect to bank.");
+		b.line("6. Then open the bank (booths outlined) and the guide moves on.");
+		return b.build();
+	}
+
+	private static MoneyStep depositStep(MoneyMethod m, Map<MoneyItem, Integer> trip, Player p)
+	{
+		Location bank = p.isBankOpen() ? null : Banks.nearest(p.getLocation(), p.isMembers());
+		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.DEPOSIT)
+			.title("Inventory full: bank it")
+			.npcs(BANK_NPCS)
+			.objects(BANK_OBJECTS);
+		if (p.isBankOpen())
+		{
+			b.line("Click the " + productNames(m) + " in your inventory to deposit them (or Deposit inventory).");
+			if (!trip.isEmpty())
+			{
+				b.line("Keep your " + names(trip) + ", or take them out again.");
+			}
+			b.line("Then close the bank and go back.");
+			return b.build();
+		}
+		if (bank != null && !bank.contains(p.getLocation()))
+		{
+			b.destination(bank).line("Walk to " + bank.getName() + " (follow the arrow).");
+		}
+		b.line("Click a bank booth or banker (outlined) and choose Bank.");
+		return b.build();
+	}
+
+	// ---- Doing it ----
+
+	private static MoneyStep workStep(MoneyMethod m, MoneyItem main, Player p)
+	{
+		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.WORK).title(m.getName());
+		if (m.getSpot() == null && m.getLocationName() != null)
+		{
+			b.line("Where: " + m.getLocationName());
+		}
+		if (m.getNpc() != null)
+		{
+			b.line("Click " + m.getNpc() + " (outlined) and choose Trade, then buy from the shop window.");
+			b.npcs(Set.of(m.getNpc()));
+		}
+		if (main != null && p.getCarried().getOrDefault(itemId(main), 0) > 0)
+		{
+			b.line("Use the " + main.getName() + " in your inventory (outlined).");
+			b.use(Set.of(itemId(main)));
+		}
+		List<String> sentences = sentences(m.getDetails());
+		for (int i = 0; i < Math.min(MAX_SENTENCES, sentences.size()); i++)
+		{
+			b.line(sentences.get(i));
+		}
+		if (sentences.size() > MAX_SENTENCES)
+		{
+			b.line("More tips in the panel and on the wiki page.");
+		}
+		if (main != null)
+		{
+			b.line("When you run out, the guide takes you back to the bank for more.");
+		}
+		else if (!m.getOutputs().isEmpty() && !m.isRecurring())
+		{
+			b.line("When your inventory is full, the guide takes you to the bank.");
+		}
+		String products = productNames(m);
+		if (!products.isEmpty())
+		{
+			b.line("To cash in: at the Grand Exchange click a clerk, Exchange, then click the " + products
+				+ " in your inventory, set a price (-5% sells fast) and Confirm.");
+		}
+		return b.build();
+	}
+
+	private static boolean carriesProducts(MoneyMethod m, Map<Integer, Integer> carried)
+	{
+		for (MoneyItem out : m.getOutputs())
+		{
+			if (out.getId() > 0 && carried.getOrDefault(out.getId(), 0) > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// ---- Helpers ----
 
 	/**
 	 * The inputs worth bringing: real items (or coins to spend), most gold per hour first.
@@ -99,7 +361,7 @@ public final class MoneyGuide
 		List<MoneyItem> out = new ArrayList<>();
 		for (MoneyItem item : m.getInputs())
 		{
-			if (itemId(item) > 0 && item.getQuantity() > 0)
+			if (itemId(item) > 0 && item.getQuantity() > 0 && out.stream().noneMatch(o -> itemId(o) == itemId(item)))
 			{
 				out.add(item);
 			}
@@ -108,62 +370,31 @@ public final class MoneyGuide
 		return out.size() > MAX_SUPPLIES ? out.subList(0, MAX_SUPPLIES) : out;
 	}
 
+	private static Set<String> union(Set<String> a, Set<String> b)
+	{
+		Set<String> out = new HashSet<>(a);
+		out.addAll(b);
+		return out;
+	}
+
 	static int itemId(MoneyItem item)
 	{
 		return item.isCoins() ? ItemID.COINS : item.getId();
 	}
 
-	private static MoneyStep suppliesStep(MoneyMethod m, List<MoneyItem> missing, boolean bankOpen)
+	private static String amount(MoneyItem item, int n)
 	{
-		String per = m.isRecurring() ? " per run" : " an hour";
-		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.SUPPLIES)
-			.title(bankOpen ? "Take out your supplies" : "Get your supplies from a bank");
-		Set<Integer> withdraw = new LinkedHashSet<>();
-		for (MoneyItem item : missing)
-		{
-			b.line("- " + item.getName() + " (about " + String.format("%,d", Math.max(1, Math.round(item.getQuantity())))
-				+ per + ")");
-			withdraw.add(itemId(item));
-		}
-		b.line(bankOpen ? "They're outlined in your bank. Buy any you don't have on the Grand Exchange."
-			: "Use any bank, or the Grand Exchange to buy what you don't have.");
-		b.line("Already set? Press \"I have everything\" in the panel.");
-		return b.withdraw(withdraw).npcs(BANK_NPCS).objects(BANK_OBJECTS).build();
+		return String.format("%,d", n) + " x " + item.getName();
 	}
 
-	private static MoneyStep workStep(MoneyMethod m)
+	private static String names(Map<MoneyItem, Integer> items)
 	{
-		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.WORK).title(m.getName());
-		if (m.getSpot() == null && m.getLocationName() != null)
-		{
-			b.line("Where: " + m.getLocationName());
-		}
-		if (m.getNpc() != null)
-		{
-			b.line("Trade with " + m.getNpc() + " (outlined).");
-		}
-		List<String> sentences = sentences(m.getDetails());
-		for (int i = 0; i < Math.min(MAX_SENTENCES, sentences.size()); i++)
-		{
-			b.line(sentences.get(i));
-		}
-		if (sentences.size() > MAX_SENTENCES)
-		{
-			b.line("The rest of the wiki's tips are in the panel.");
-		}
-		String sell = sellLine(m);
-		if (sell != null)
-		{
-			b.line(sell);
-		}
-		if (m.getNpc() != null)
-		{
-			b.npcs(Set.of(m.getNpc()));
-		}
-		return b.build();
+		List<String> names = new ArrayList<>();
+		items.keySet().forEach(i -> names.add(i.getName()));
+		return String.join(", ", names);
 	}
 
-	private static String sellLine(MoneyMethod m)
+	private static String productNames(MoneyMethod m)
 	{
 		List<String> names = new ArrayList<>();
 		List<MoneyItem> outputs = new ArrayList<>(m.getOutputs());
@@ -175,7 +406,7 @@ public final class MoneyGuide
 				names.add(out.getName());
 			}
 		}
-		return names.isEmpty() ? null : "Sell the " + String.join(", ", names) + " on the Grand Exchange.";
+		return String.join(", ", names);
 	}
 
 	/**

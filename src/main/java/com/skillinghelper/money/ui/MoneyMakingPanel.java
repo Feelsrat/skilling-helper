@@ -230,7 +230,7 @@ public class MoneyMakingPanel extends PluginPanel
 				guideBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
 			}
 			guideBox.add(Box.createVerticalStrut(4));
-			if (step.getKind() == MoneyStep.Kind.SUPPLIES)
+			if (step.isSupplyStep())
 			{
 				guideBox.add(button("I have everything", listener::onHaveSupplies));
 			}
