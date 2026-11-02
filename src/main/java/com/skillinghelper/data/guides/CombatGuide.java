@@ -26,7 +26,7 @@ final class CombatGuide
 	/**
 	 * The Gemstone Crab burrows every 10 minutes and pops up at the next of these three spots, from the wiki.
 	 */
-	private static final Location[] GEMSTONE_CRAB_SPOTS = {
+	static final Location[] GEMSTONE_CRAB_SPOTS = {
 		Location.of("Gemstone Crab (north)", 1275, 3160, 12),
 		Location.of("Gemstone Crab (east)", 1351, 3110, 12),
 		Location.of("Gemstone Crab (south)", 1237, 3042, 12),

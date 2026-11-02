@@ -149,6 +149,14 @@ final class MagicGuide
 				ItemID.AMULET_OF_POWER, earth(10)).build(),
 			enchant("magic_enchant_glory", "Lvl-5 Enchant", "Dragonstone amulets", 68, 78,
 				ItemID.STRUNG_DRAGONSTONE_AMULET, ItemID.AMULET_OF_GLORY, earth(15), water(15)).build(),
+			gemstoneCrab("magic_gemstone_crab_strike", "Fire Strike", 13, 11.5, 8, 20_000,
+				ItemReq.stack("Mind runes", 1, ItemID.MINDRUNE), air(2), fire(3)).build(),
+			gemstoneCrab("magic_gemstone_crab_bolt", "Fire Bolt", 35, 22.5, 12, 35_000,
+				ItemReq.stack("Chaos runes", 1, ItemID.CHAOSRUNE), air(3), fire(4)).build(),
+			gemstoneCrab("magic_gemstone_crab_blast", "Fire Blast", 59, 34.5, 16, 50_000,
+				ItemReq.stack("Death runes", 1, ItemID.DEATHRUNE), air(4), fire(5)).build(),
+			gemstoneCrab("magic_gemstone_crab_wave", "Fire Wave", 75, 42.5, 20, 62_000,
+				ItemReq.stack("Blood runes", 1, ItemID.BLOODRUNE), air(5), fire(7)).build(),
 			plankMake("magic_plank_make_oak", "Oak", ItemID.OAK_LOGS, ItemID.PLANK_OAK, 175).build(),
 			plankMake("magic_plank_make_teak", "Teak", ItemID.TEAK_LOGS, ItemID.PLANK_TEAK, 350).build(),
 			plankMake("magic_plank_make_mahogany", "Mahogany", ItemID.MAHOGANY_LOGS, ItemID.PLANK_MAHOGANY, 1_050)
@@ -204,6 +212,44 @@ final class MagicGuide
 			.instruction("Cast " + spell + " on each of the " + itemName.toLowerCase())
 			.notes("A wiki money maker when the enchanted item sells for more than the amulet and runes.")
 			.wikiPage(P2P_WIKI);
+		for (ItemReq r : runes)
+		{
+			b.input(r);
+		}
+		return b;
+	}
+
+	/**
+	 * Autocasting a fire spell on the Gemstone Crab. It never dies or hits back, so it is AFK casting at one cast
+	 * every 3 seconds. Each cast is the spell's base xp plus 2 per damage (about 45% of the max hit on average), all
+	 * cut to 87.5% like every combat xp drop on the crab.
+	 */
+	private static Method.MethodBuilder gemstoneCrab(String id, String spell, int level, double baseXp, int maxHit,
+		int xpHr, ItemReq... runes)
+	{
+		Method.MethodBuilder b = Method.builder()
+			.id(id)
+			.skill(Skill.MAGIC)
+			.type(MethodType.ACTIVITY)
+			.name(spell + " on the Gemstone Crab")
+			.minLevel(level)
+			.xpPerAction(0.875 * (baseXp + 2 * 0.45 * maxHit))
+			.xpPerHour(xpHr)
+			.members(true)
+			.tag(MethodTag.AFK)
+			.quest(Quest.CHILDREN_OF_THE_SUN)
+			.location(CombatGuide.GEMSTONE_CRAB_SPOTS[0])
+			.target(Target.npc("Attack", "Gemstone Crab"))
+			.target(Target.npc("Mine", "Gemstone Crab Shell"))
+			.instruction("Set " + spell + " to autocast and attack the Gemstone Crab")
+			.notes("Very AFK and it never hits back. Every 10 minutes it burrows and moves to one of the other two "
+				+ "spots: crawl through the cave next to the old spot to come out at the new one. Wield a fire or air "
+				+ "staff to save runes. The top 16 damage dealers can mine the shell afterwards for gems.")
+			.wikiPage(P2P_WIKI);
+		for (int i = 1; i < CombatGuide.GEMSTONE_CRAB_SPOTS.length; i++)
+		{
+			b.alsoAt(CombatGuide.GEMSTONE_CRAB_SPOTS[i]);
+		}
 		for (ItemReq r : runes)
 		{
 			b.input(r);
