@@ -6,5 +6,6 @@ package com.skillinghelper.data;
 public enum CombatStyle
 {
 	MELEE,
-	RANGED
+	RANGED,
+	MAGIC
 }

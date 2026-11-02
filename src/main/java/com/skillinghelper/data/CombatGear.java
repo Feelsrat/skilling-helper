@@ -132,7 +132,37 @@ public enum CombatGear
 	RANGED_AMULET(CombatStyle.RANGED, "amulet",
 		tier("Amulet of fury", null, 0, 0, true, ItemID.ENCHANTED_ONYX_AMULET),
 		tier("Amulet of glory", null, 0, 0, true, Ids.GLORY),
-		tier("Amulet of power", null, 0, 0, false, ItemID.AMULET_OF_POWER));
+		tier("Amulet of power", null, 0, 0, false, ItemID.AMULET_OF_POWER)),
+	/**
+	 * Fire staves, so autocasting fire spells needs no fire runes.
+	 */
+	MAGIC_WEAPON(CombatStyle.MAGIC, "weapon",
+		staff("Mystic fire staff", 40, true, ItemID.MYSTIC_FIRE_STAFF),
+		staff("Fire battlestaff", 30, true, ItemID.FIRE_BATTLESTAFF),
+		tier("Staff of fire", null, 0, 0, false, ItemID.STAFF_OF_FIRE)),
+	MAGIC_HELM(CombatStyle.MAGIC, "helmet",
+		tier("Mystic hat", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_HAT, ItemID.MYSTIC_HAT_DARK, ItemID.MYSTIC_HAT_LIGHT,
+			ItemID.MYSTIC_HAT_DUSK),
+		tier("Wizard hat", null, 0, 0, false, ItemID.BLUEWIZHAT)),
+	MAGIC_BODY(CombatStyle.MAGIC, "body",
+		tier("Mystic robe top", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_ROBE_TOP, ItemID.MYSTIC_ROBE_TOP_DARK,
+			ItemID.MYSTIC_ROBE_TOP_LIGHT, ItemID.MYSTIC_ROBE_TOP_DUSK),
+		tier("Wizard robe", null, 0, 0, false, ItemID.WIZARDS_ROBE)),
+	MAGIC_LEGS(CombatStyle.MAGIC, "legs",
+		tier("Mystic robe bottom", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_ROBE_BOTTOM,
+			ItemID.MYSTIC_ROBE_BOTTOM_DARK, ItemID.MYSTIC_ROBE_BOTTOM_LIGHT, ItemID.MYSTIC_ROBE_BOTTOM_DUSK),
+		tier("Blue skirt", null, 0, 0, false, ItemID.BLUE_SKIRT)),
+	MAGIC_GLOVES(CombatStyle.MAGIC, "gloves",
+		tier("Mystic gloves", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_GLOVES, ItemID.MYSTIC_GLOVES_DARK,
+			ItemID.MYSTIC_GLOVES_LIGHT, ItemID.MYSTIC_GLOVES_DUSK)),
+	MAGIC_BOOTS(CombatStyle.MAGIC, "boots",
+		tier("Mystic boots", Skill.MAGIC, 40, 20, true, ItemID.MYSTIC_BOOTS, ItemID.MYSTIC_BOOTS_DARK,
+			ItemID.MYSTIC_BOOTS_LIGHT, ItemID.MYSTIC_BOOTS_DUSK),
+		tier("Wizard boots", Skill.MAGIC, 20, 0, true, ItemID.BOOTS_WIZARD)),
+	MAGIC_AMULET(CombatStyle.MAGIC, "amulet",
+		tier("Occult necklace", Skill.MAGIC, 70, 0, true, ItemID.OCCULT_NECKLACE),
+		tier("Amulet of glory", null, 0, 0, true, Ids.GLORY),
+		tier("Amulet of magic", null, 0, 0, false, ItemID.AMULET_OF_MAGIC));
 
 	/**
 	 * What a ranged weapon fires, or what a piece of ammo is. {@link #NONE} for everything else.
@@ -153,8 +183,8 @@ public enum CombatGear
 		.orUse("Loaded toxic blowpipe", ItemID.TOXIC_BLOWPIPE_LOADED);
 
 	/**
-	 * One tier of gear. {@code skill} is null when there's no level requirement; {@code defenceLevel} is an extra
-	 * Defence requirement (0 if none). {@code ammo} is what a weapon fires, or what kind of ammo this is.
+	 * One tier of gear. {@code skill} is null when there's no level requirement; {@code defenceLevel} and
+	 * {@code attackLevel} are extra Defence and Attack requirements (0 if none). {@code ammo} is what a weapon fires, or what kind of ammo this is.
 	 */
 	@Value
 	public static class Tier
@@ -163,6 +193,7 @@ public enum CombatGear
 		Skill skill;
 		int level;
 		int defenceLevel;
+		int attackLevel;
 		boolean members;
 		Ammo ammo;
 		int[] ids;
@@ -201,17 +232,25 @@ public enum CombatGear
 
 	private static Tier tier(String name, Skill skill, int level, int defenceLevel, boolean members, int... ids)
 	{
-		return new Tier(name, skill, level, defenceLevel, members, Ammo.NONE, ids);
+		return new Tier(name, skill, level, defenceLevel, 0, members, Ammo.NONE, ids);
+	}
+
+	/**
+	 * A battlestaff or mystic staff, which needs the same Attack and Magic level.
+	 */
+	private static Tier staff(String name, int level, boolean members, int... ids)
+	{
+		return new Tier(name, Skill.MAGIC, level, 0, level, members, Ammo.NONE, ids);
 	}
 
 	private static Tier weapon(String name, int level, boolean members, Ammo fires, int... ids)
 	{
-		return new Tier(name, Skill.RANGED, level, 0, members, fires, ids);
+		return new Tier(name, Skill.RANGED, level, 0, 0, members, fires, ids);
 	}
 
 	private static Tier ammo(String name, int level, boolean members, Ammo kind, int... ids)
 	{
-		return new Tier(name, Skill.RANGED, level, 0, members, kind, ids);
+		return new Tier(name, Skill.RANGED, level, 0, 0, members, kind, ids);
 	}
 
 	/**

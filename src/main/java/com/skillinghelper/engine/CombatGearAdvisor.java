@@ -1,13 +1,15 @@
 package com.skillinghelper.engine;
 
 import com.skillinghelper.data.CombatGear;
+import com.skillinghelper.data.CombatSpell;
 import com.skillinghelper.data.ItemReq;
 import java.util.ArrayList;
 import java.util.List;
 import net.runelite.api.Skill;
 
 /**
- * Picks combat gear for the player's levels: which ranged weapon they'll use and the ammo it fires.
+ * Picks combat gear for the player's levels: which ranged weapon they'll use and the ammo it fires, and the runes
+ * of the fire spell they'll autocast.
  */
 final class CombatGearAdvisor
 {
@@ -62,6 +64,10 @@ final class CombatGearAdvisor
 	 */
 	static ItemReq resolve(ItemReq input, PlayerState s)
 	{
+		if (input == CombatSpell.CATALYST_INPUT || input == CombatSpell.AIR_INPUT || input == CombatSpell.FIRE_INPUT)
+		{
+			return spellRunes(input, s);
+		}
 		if (input != CombatGear.AMMO_INPUT)
 		{
 			return input;
@@ -97,10 +103,30 @@ final class CombatGearAdvisor
 		return input.withName(name).withIds(kindIds);
 	}
 
+	/**
+	 * The runes of the best fire spell the player can cast. The catalyst is named after the spell, so the player
+	 * knows which one to autocast.
+	 */
+	private static ItemReq spellRunes(ItemReq input, PlayerState s)
+	{
+		CombatSpell spell = CombatSpell.best(s.level(Skill.MAGIC), s.isMembersWorld());
+		if (spell == null)
+		{
+			return input;
+		}
+		if (input == CombatSpell.CATALYST_INPUT)
+		{
+			return input.withName(spell.getCatalystName() + " (" + spell.getSpellName() + ")")
+				.withIds(new int[]{spell.getCatalyst()});
+		}
+		return input.withPerAction(input == CombatSpell.AIR_INPUT ? spell.getAir() : spell.getFire());
+	}
+
 	static boolean canWear(CombatGear.Tier t, PlayerState s)
 	{
 		return (t.getSkill() == null || s.level(t.getSkill()) >= t.getLevel())
 			&& s.level(Skill.DEFENCE) >= t.getDefenceLevel()
+			&& s.level(Skill.ATTACK) >= t.getAttackLevel()
 			&& (!t.isMembers() || s.isMembersWorld());
 	}
 
