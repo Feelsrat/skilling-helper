@@ -131,21 +131,28 @@ levels, quests and world allow, and sorts them by gp/hr at today's GE prices.
   the bank), walks you to the spot (hint arrow and Shortest Path line), and shows the wiki's instructions with the
   shopkeeper or the items to use outlined. When your inventory fills up, or the main input runs out, it takes you
   back to the bank and round again.
+- **Profit at today's prices**: supplies are costed at what they cost to buy and products at what they sell for,
+  minus the 2% GE tax, with the breakdown in each method's details. Methods that lose money right now are hidden
+  (a switch shows them), and so are ones you can't afford a trip's supplies for, counting what you already own
+  (checked once you've opened your bank).
+- **Will it sell?** With "Live OSRS Wiki prices" on (off by default, it contacts the wiki's price API), each method's
+  main products are checked against how many traded on the GE in the last day: ones that barely trade are hidden as
+  "hard to sell" and slow ones get a warning. Inputs used faster than the GE's 4-hour buy limit get a warning too.
 - **Bank button**: a coin button at the top of the bank shows only the running guide's supplies. It's on by
   default; click it to show the whole bank again.
 - **Full guides**: when Skilling Helper or PvM Progression has a click-by-click guide for the method (e.g. Barrows,
   Zulrah, Vorkath, cleaning herbs), Start opens that one instead. Turn this off with "Use full guides" in the settings.
 
-The method list is bundled with the plugin (built from the wiki by `tools/money/build_money_methods.py`); the plugin
-itself never contacts the wiki. Profits are the wiki's figures moved by how much each item's GE price has changed
-since, using RuneLite's own GE prices.
+The method list is bundled with the plugin (built from the wiki by `tools/money/build_money_methods.py`). Prices come
+from RuneLite's own GE guide unless you turn on live wiki prices.
 
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
 fetches the wiki's single bulk price list (`prices.runescape.wiki/api/v1/osrs/latest`) at most once every 5 minutes
-while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks. PvM Progression and Money
-Making make no network requests.
+while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks. Money Making's own **Live OSRS
+Wiki prices** setting (also off by default) fetches the same price list plus the wiki's daily trade volumes
+(`/volumes`, every 30 minutes). PvM Progression makes no network requests.
 
 ## Updating on Steam Deck
 

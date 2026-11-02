@@ -12,6 +12,7 @@ import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import com.skillinghelper.money.data.MoneyMethods;
 import com.skillinghelper.money.ui.MoneyMakingPanel;
+import com.skillinghelper.prices.WikiPriceClient;
 import com.skillinghelper.pvm.PvmProgressionPlugin;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -102,6 +104,10 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private MoneyItemOverlay itemOverlay;
 	@Inject
 	private MoneyBankFilter bankFilter;
+	@Inject
+	private WikiPriceClient wikiPrices;
+	@Inject
+	private WikiVolumeClient wikiVolumes;
 
 	private MoneyMakingPanel panel;
 	private NavigationButton navButton;
@@ -145,7 +151,42 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private Map<Integer, Integer> bankCounts;
 	private final Map<Integer, Boolean> stackable = new HashMap<>();
 
-	private final PriceLookup prices = id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id));
+	/**
+	 * Ticks until live wiki prices are fetched again, when they're turned on.
+	 */
+	private int priceCountdown;
+	private int volumeCountdown;
+
+	/**
+	 * Supplies at the instant-buy price and products at the instant-sell price when live wiki prices are on, else
+	 * RuneLite's GE guide price for both.
+	 */
+	private final PriceLookup prices = new PriceLookup()
+	{
+		@Override
+		public int price(int itemId)
+		{
+			WikiPriceClient.Price live = live(itemId);
+			return live != null && live.getHigh() > 0 ? live.getHigh() : guide(itemId);
+		}
+
+		@Override
+		public int sellPrice(int itemId)
+		{
+			WikiPriceClient.Price live = live(itemId);
+			return live != null && live.getLow() > 0 ? live.getLow() : guide(itemId);
+		}
+
+		private WikiPriceClient.Price live(int itemId)
+		{
+			return config.livePrices() ? wikiPrices.get(itemManager.canonicalize(itemId)) : null;
+		}
+
+		private int guide(int itemId)
+		{
+			return (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(itemId));
+		}
+	};
 
 	@Override
 	protected void startUp()
@@ -201,6 +242,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		eventBus.unregister(targets);
 		eventBus.unregister(bankFilter);
 		bankFilter.shutDown();
+		wikiVolumes.cancel();
+		wikiVolumes.clear();
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -266,7 +309,13 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 				counts.merge(itemManager.canonicalize(item.getId()), item.getQuantity(), Integer::sum);
 			}
 		}
+		boolean first = bankCounts == null;
 		bankCounts = counts;
+		if (first)
+		{
+			// Now gold and owned supplies are known, so affordability can be checked
+			rankDirty = true;
+		}
 	}
 
 	@Subscribe
@@ -274,6 +323,17 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	{
 		if (MoneyMakingConfig.GROUP.equals(e.getGroup()))
 		{
+			if ("livePrices".equals(e.getKey()))
+			{
+				priceCountdown = 0;
+				volumeCountdown = 0;
+				refreshCountdown = 3;
+				if (!config.livePrices())
+				{
+					wikiVolumes.cancel();
+					wikiVolumes.clear();
+				}
+			}
 			clientThread.invokeLater(() ->
 			{
 				clearWay();
@@ -288,6 +348,18 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		if (client.getGameState() != GameState.LOGGED_IN || client.getLocalPlayer() == null)
 		{
 			return;
+		}
+		if (config.livePrices() && --priceCountdown <= 0)
+		{
+			// About every 5 minutes; the next ranking picks the new prices up
+			priceCountdown = REFRESH_TICKS * 5;
+			wikiPrices.refresh();
+		}
+		if (config.livePrices() && --volumeCountdown <= 0)
+		{
+			// Daily volumes barely move, so every half hour is plenty
+			volumeCountdown = REFRESH_TICKS * 30;
+			wikiVolumes.refresh();
 		}
 		if (--refreshCountdown <= 0)
 		{
@@ -322,13 +394,21 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		MoneyPlayer.MoneyPlayerBuilder b = MoneyPlayer.builder()
 			.questsDone(new HashSet<>(questsDone))
 			.knownQuests(new HashSet<>(quests.keySet()))
-			.members(client.getWorldType().contains(WorldType.MEMBERS));
+			.members(client.getWorldType().contains(WorldType.MEMBERS))
+			.stackable(stackableInputs());
+		if (bankCounts != null)
+		{
+			Map<Integer, Integer> owned = new HashMap<>(bankCounts);
+			carried().forEach((id, n) -> owned.merge(id, n, Integer::sum));
+			b.owned(owned).coins(owned.getOrDefault(ItemID.COINS, 0));
+		}
 		for (Skill s : Skill.values())
 		{
 			b.level(s, client.getRealSkillLevel(s));
 		}
 		player = b.build();
-		ranked = MoneyRanker.rank(methods, player, prices);
+		ranked = MoneyRanker.rank(methods, player, prices,
+			config.livePrices() ? wikiVolumes.get() : Collections.emptyMap());
 		boolean skillOn = isActive(SkillingHelperPlugin.class);
 		boolean pvmOn = isActive(PvmProgressionPlugin.class);
 		Map<String, String> fullGuides = new HashMap<>();
@@ -402,7 +482,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		}
 		if (option == null)
 		{
-			option = MoneyRanker.evaluate(running, player, prices);
+			option = MoneyRanker.evaluate(running, player, prices,
+				config.livePrices() ? wikiVolumes.get() : Collections.emptyMap());
 		}
 		Player me = client.getLocalPlayer();
 		WorldPoint here = me == null ? null : WorldPoint.fromLocalInstance(client, me.getLocalLocation());
@@ -438,7 +519,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	}
 
 	/**
-	 * Which of the method's supplies stack in one slot, read from the item definitions once each.
+	 * Which of the method's supplies stack in one slot, read from the item definitions once each. Client thread.
 	 */
 	private Set<Integer> stackableSupplies(MoneyMethod m)
 	{
@@ -450,6 +531,16 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			{
 				out.add(id);
 			}
+		}
+		return out;
+	}
+
+	private Set<Integer> stackableInputs()
+	{
+		Set<Integer> out = new HashSet<>();
+		for (MoneyMethod m : methods)
+		{
+			out.addAll(stackableSupplies(m));
 		}
 		return out;
 	}

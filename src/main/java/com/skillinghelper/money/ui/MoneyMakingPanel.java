@@ -73,7 +73,8 @@ public class MoneyMakingPanel extends PluginPanel
 	private final Listener listener;
 	private final JComboBox<String> category = new JComboBox<>();
 	private final JComboBox<String> effort = new JComboBox<>(new String[]{ANY_EFFORT, "Low", "Moderate", "High"});
-	private final JCheckBox showLocked = new JCheckBox("Show ones I can't do yet");
+	private final JCheckBox showLocked = new JCheckBox("Show ones I can't do or afford yet");
+	private final JCheckBox showLosing = new JCheckBox("Show ones losing money or not selling");
 	private final JTextField search = new JTextField();
 	private final JPanel guideBox = new JPanel();
 	private final JPanel list = new JPanel();
@@ -113,6 +114,10 @@ public class MoneyMakingPanel extends PluginPanel
 		showLocked.setForeground(Color.LIGHT_GRAY);
 		showLocked.setFont(FontManager.getRunescapeSmallFont());
 		showLocked.addActionListener(e -> filtersChanged());
+		showLosing.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		showLosing.setForeground(Color.LIGHT_GRAY);
+		showLosing.setFont(FontManager.getRunescapeSmallFont());
+		showLosing.addActionListener(e -> filtersChanged());
 		search.setToolTipText("Search by name, item or skill");
 		search.getDocument().addDocumentListener(new DocumentListener()
 		{
@@ -142,6 +147,7 @@ public class MoneyMakingPanel extends PluginPanel
 		header.add(Box.createVerticalStrut(4));
 		header.add(full(search));
 		header.add(left(showLocked));
+		header.add(left(showLosing));
 		add(header, BorderLayout.NORTH);
 
 		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
@@ -270,9 +276,9 @@ public class MoneyMakingPanel extends PluginPanel
 		}
 		else
 		{
-			long available = visible.stream().filter(MoneyOption::isAvailable).count();
-			list.add(text(available + " you can do" + (visible.size() > available
-				? ", " + (visible.size() - available) + " not yet" : "") + ":", MUTED));
+			long good = visible.stream().filter(MoneyOption::isGood).count();
+			list.add(text(good + " you can do that make money right now" + (visible.size() > good
+				? ", " + (visible.size() - good) + " others" : "") + ":", MUTED));
 			list.add(Box.createVerticalStrut(4));
 		}
 		for (int i = 0; i < Math.min(shown, visible.size()); i++)
@@ -295,9 +301,16 @@ public class MoneyMakingPanel extends PluginPanel
 	private boolean matches(MoneyOption o)
 	{
 		MoneyMethod m = o.getMethod();
-		if (!o.isAvailable() && !showLocked.isSelected() && !m.getPage().equals(running))
+		if (!m.getPage().equals(running))
 		{
-			return false;
+			if (!o.isAvailable() && !showLocked.isSelected())
+			{
+				return false;
+			}
+			if ((!o.isProfitable() || o.isHardToSell()) && !showLosing.isSelected())
+			{
+				return false;
+			}
 		}
 		Object cat = category.getSelectedItem();
 		if (cat != null && !ALL.equals(cat) && !cat.equals(m.mainCategory()))
@@ -336,7 +349,7 @@ public class MoneyMakingPanel extends PluginPanel
 		JPanel row = new JPanel();
 		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
 		row.setBackground(open ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		Color edge = m.getPage().equals(running) ? HINT : o.isAvailable() ? GOOD : BAD;
+		Color edge = m.getPage().equals(running) ? HINT : o.isGood() ? GOOD : o.isAvailable() ? WARN : BAD;
 		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -346,6 +359,15 @@ public class MoneyMakingPanel extends PluginPanel
 		name.setForeground(Color.WHITE);
 		row.add(left(name));
 		row.add(text(profitText(o) + " · " + summary(m), o.getProfit() > 0 ? GOOD : BAD, TEXT_WIDTH - 15));
+		if (o.isHardToSell())
+		{
+			row.add(text("⚠ Hard to sell", BAD, TEXT_WIDTH - 15));
+		}
+		else if (!o.getMarketWarnings().isEmpty())
+		{
+			row.add(text("⚠ " + (o.getMarketWarnings().get(0).startsWith("GE buy limit") ? "GE buy limit"
+				: "Sells slowly"), WARN, TEXT_WIDTH - 15));
+		}
 		if (fullGuides.containsKey(m.getPage()))
 		{
 			row.add(text("Full guide in " + fullGuides.get(m.getPage()), HINT, TEXT_WIDTH - 15));
@@ -391,16 +413,54 @@ public class MoneyMakingPanel extends PluginPanel
 			box.add(text("One run takes about " + Format.hours(m.getRunHours()) + ", every "
 				+ Format.hours(m.getEveryHours()) + ".", MUTED));
 		}
-		if (o.getStartCost() > 0)
+		String per = m.isRecurring() ? " a run" : " an hour";
+		box.add(section("Money at today's prices"));
+		box.add(text("Sells for " + Format.gp(o.getOutputValue()) + per, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		if (o.getGeTax() > 0)
 		{
-			box.add(text("Supplies cost about " + Format.gp(o.getStartCost()) + (m.isRecurring() ? " per run"
-				: " an hour") + ".", MUTED));
+			box.add(text("GE tax (2%): -" + Format.gp(o.getGeTax()), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		}
+		if (o.getInputCost() > 0)
+		{
+			box.add(text("Supplies cost: -" + Format.gp(o.getInputCost()), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		}
+		box.add(text("Profit: " + Format.gp(o.getProfit()) + per, o.isProfitable() ? GOOD : BAD, TEXT_WIDTH - 15));
+		if (!o.isProfitable())
+		{
+			box.add(text("Loses money right now: the supplies cost more than the products sell for.", BAD,
+				TEXT_WIDTH - 15));
+		}
+		for (String w : o.getMarketWarnings())
+		{
+			box.add(text("⚠ " + w, o.isHardToSell() && !w.startsWith("GE buy limit") ? BAD : WARN,
+				TEXT_WIDTH - 15));
+		}
+		if (!o.isVolumesKnown() && !m.getOutputs().isEmpty())
+		{
+			box.add(text("Turn on \"Live OSRS Wiki prices\" in the plugin settings to check how fast it sells.",
+				MUTED, TEXT_WIDTH - 15));
+		}
+		if (o.getTripCost() > 0)
+		{
+			box.add(text("Gold needed for one trip, after what you own: " + Format.gp(o.getTripCost()), MUTED,
+				TEXT_WIDTH - 15));
+		}
+		else if (o.getTripCost() < 0)
+		{
+			box.add(text("Open your bank once so the plugin can check you can afford it.", MUTED, TEXT_WIDTH - 15));
 		}
 
 		box.add(section("Requirements"));
 		if (m.isMembers())
 		{
 			box.add(check("Members", !o.getBlockers().contains("Members only")));
+		}
+		for (String b : o.getBlockers())
+		{
+			if (b.contains("one trip's supplies"))
+			{
+				box.add(check(b.substring("Needs ".length()), false));
+			}
 		}
 		for (Map.Entry<Skill, Integer> e : m.getSkills().entrySet())
 		{

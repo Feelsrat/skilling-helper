@@ -2,6 +2,7 @@ package com.skillinghelper.money;
 
 import com.skillinghelper.data.Banks;
 import com.skillinghelper.data.Location;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public final class MoneyGuide
 			Map<MoneyItem, Integer> missing = missing(trip, p.getCarried());
 			if (!missing.isEmpty())
 			{
-				return suppliesStep(m, missing, p);
+				return suppliesStep(option, missing, p);
 			}
 		}
 
@@ -188,8 +189,19 @@ public final class MoneyGuide
 		return out;
 	}
 
-	private static MoneyStep suppliesStep(MoneyMethod m, Map<MoneyItem, Integer> missing, Player p)
+	private static MoneyStep suppliesStep(MoneyOption option, Map<MoneyItem, Integer> missing, Player p)
 	{
+		MoneyMethod m = option.getMethod();
+		String warning = null;
+		if (!option.isProfitable())
+		{
+			warning = "Heads up: at today's GE prices this loses about " + Format.gp(-option.getProfit())
+				+ (m.isRecurring() ? " a run" : " an hour") + ". Consider picking another method.";
+		}
+		else if (option.isHardToSell())
+		{
+			warning = "Heads up: " + option.getMarketWarnings().get(0) + " Consider picking another method.";
+		}
 		Map<MoneyItem, Integer> toBuy = new LinkedHashMap<>();
 		if (p.getBank() != null)
 		{
@@ -207,7 +219,7 @@ public final class MoneyGuide
 
 		if (!toBuy.isEmpty() && !p.isBankOpen())
 		{
-			return buyStep(toBuy, withdraw, p);
+			return buyStep(toBuy, withdraw, p, warning, option.getTripCost());
 		}
 		if (!p.isBankOpen())
 		{
@@ -224,6 +236,10 @@ public final class MoneyGuide
 			b.line("Click a bank booth or banker (outlined) and choose Bank.");
 			b.line("You'll need:");
 			missing.forEach((item, n) -> b.line("- " + amount(item, n)));
+			if (warning != null)
+			{
+				b.line(warning);
+			}
 			return b.build();
 		}
 
@@ -239,14 +255,15 @@ public final class MoneyGuide
 		{
 			b.line("You don't have enough " + names(toBuy) + ". Take out coins and buy them at the Grand Exchange.");
 		}
-		if (m.isMembers() && !p.isMembers())
+		if (warning != null)
 		{
-			b.line("This method needs a members world.");
+			b.line(warning);
 		}
 		return b.build();
 	}
 
-	private static MoneyStep buyStep(Map<MoneyItem, Integer> toBuy, Map<Integer, Integer> withdraw, Player p)
+	private static MoneyStep buyStep(Map<MoneyItem, Integer> toBuy, Map<Integer, Integer> withdraw, Player p,
+		String warning, long cost)
 	{
 		Location ge = Banks.GRAND_EXCHANGE;
 		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.BUY)
@@ -258,7 +275,11 @@ public final class MoneyGuide
 		{
 			b.destination(ge).line("Walk to the Grand Exchange in north-west Varrock (follow the arrow).");
 		}
-		b.line("Buy:");
+		if (warning != null)
+		{
+			b.line(warning);
+		}
+		b.line("Buy" + (cost > 0 ? " (about " + Format.gp(cost) + " in total)" : "") + ":");
 		toBuy.forEach((item, n) -> b.line("- " + amount(item, n)));
 		b.line("1. Have the coins in your inventory (take them out of a bank first).");
 		b.line("2. Click a Grand Exchange Clerk (outlined) and choose Exchange.");

@@ -155,8 +155,9 @@ public final class MoneyMethods
 		List<MoneyItem> out = new ArrayList<>();
 		for (String part : list(s, ";"))
 		{
-			String[] f = part.split(":", 4);
-			out.add(new MoneyItem(Integer.parseInt(f[0]), Double.parseDouble(f[1]), Double.parseDouble(f[2]), f[3]));
+			String[] f = part.split(":", 5);
+			out.add(new MoneyItem(Integer.parseInt(f[0]), Double.parseDouble(f[1]), Double.parseDouble(f[2]),
+				Integer.parseInt(f[3]), f[4]));
 		}
 		return out;
 	}

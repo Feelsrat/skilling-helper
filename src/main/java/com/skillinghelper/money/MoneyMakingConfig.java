@@ -15,7 +15,10 @@ public interface MoneyMakingConfig extends Config
 	@ConfigSection(name = "Guide", description = "How a running guide shows the way", position = 0)
 	String guideSection = "guide";
 
-	@ConfigSection(name = "Colours", description = "Highlight colours", position = 1)
+	@ConfigSection(name = "Prices", description = "Where profit numbers come from", position = 1)
+	String pricesSection = "prices";
+
+	@ConfigSection(name = "Colours", description = "Highlight colours", position = 2)
 	String colourSection = "colours";
 
 	@ConfigItem(
@@ -53,6 +56,20 @@ public interface MoneyMakingConfig extends Config
 	default boolean handOff()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		keyName = "livePrices",
+		name = "Live OSRS Wiki prices",
+		description = "Cost supplies at the real-time instant-buy price and products at the instant-sell price from the"
+			+ " OSRS Wiki (refreshed every 5 minutes while logged in), instead of RuneLite's Grand Exchange guide prices",
+		warning = "This feature submits your IP address to a 3rd-party server not controlled or verified by RuneLite developers",
+		section = pricesSection,
+		position = 0
+	)
+	default boolean livePrices()
+	{
+		return false;
 	}
 
 	@Alpha

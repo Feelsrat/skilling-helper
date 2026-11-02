@@ -20,6 +20,10 @@ public class MoneyItem
 	 * The price the wiki used, so profit can be updated with today's prices.
 	 */
 	double wikiValue;
+	/**
+	 * How many the Grand Exchange lets one player buy every 4 hours, or 0 when unknown.
+	 */
+	int buyLimit;
 	String name;
 
 	public boolean isCoins()

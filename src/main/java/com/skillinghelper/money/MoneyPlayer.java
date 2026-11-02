@@ -12,7 +12,7 @@ import net.runelite.api.Skill;
  * What the method list needs to know about the account: levels, quests and world type.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class MoneyPlayer
 {
 	public static final MoneyPlayer NONE = MoneyPlayer.builder().members(true).build();
@@ -35,6 +35,15 @@ public class MoneyPlayer
 	 */
 	@Builder.Default
 	long coins = -1;
+	/**
+	 * Item id to count carried plus banked, or null when the bank hasn't been seen.
+	 */
+	Map<Integer, Integer> owned;
+	/**
+	 * Item ids that stack in one inventory slot.
+	 */
+	@Builder.Default
+	Set<Integer> stackable = Collections.emptySet();
 
 	public int level(Skill skill)
 	{

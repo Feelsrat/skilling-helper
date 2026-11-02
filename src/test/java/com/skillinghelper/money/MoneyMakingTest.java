@@ -65,23 +65,89 @@ public class MoneyMakingTest
 	}
 
 	@Test
-	public void wikiProfitWithoutPrices()
+	public void wikiProfitWithoutPricesLessGeTax()
 	{
 		MoneyMethod snape = method("Collecting snape grass");
 		MoneyOption o = MoneyRanker.evaluate(snape, player(99, true, "the fremennik trials", "lunar diplomacy"), null);
-		assertEquals(snape.getWikiProfit(), o.getProfit());
-		assertTrue(o.isAvailable());
+		assertTrue(o.getGeTax() > 0);
+		// The wiki's figure doesn't take off the tax
+		assertEquals((double) snape.getWikiProfit() - o.getGeTax(), o.getProfit(), 2);
+		assertEquals(o.getOutputValue() - o.getGeTax() - o.getInputCost(), o.getProfit(), 2);
+		assertTrue(o.isGood());
 	}
 
 	@Test
-	public void livePricesMoveProfit()
+	public void todaysPricesDecideProfit()
+	{
+		MoneyMethod herbs = method("Cleaning grimy ranarr weed");
+		MoneyItem grimy = herbs.getInputs().get(0);
+		MoneyItem clean = herbs.getOutputs().get(0);
+		MoneyPlayer p = player(99, true, "druidic ritual");
+		// Grimy dearer than clean: losing money, so it sorts after the ones that make money
+		MoneyOption losing = MoneyRanker.evaluate(herbs, p, prices(grimy.getId(), 5000, clean.getId(), 4900));
+		assertFalse(losing.isProfitable());
+		assertFalse(losing.isGood());
+		assertTrue(losing.isAvailable());
+
+		MoneyOption making = MoneyRanker.evaluate(herbs, p, prices(grimy.getId(), 4000, clean.getId(), 5000));
+		long expected = Math.round(clean.getQuantity() * (5000 - 100) - grimy.getQuantity() * 4000);
+		assertEquals(expected, making.getProfit());
+	}
+
+	@Test
+	public void cantAffordATrip()
+	{
+		MoneyMethod herbs = method("Cleaning grimy ranarr weed");
+		MoneyItem grimy = herbs.getInputs().get(0);
+		MoneyPlayer broke = player(99, true, "druidic ritual").toBuilder().coins(1000).owned(Map.of()).build();
+		MoneyOption o = MoneyRanker.evaluate(herbs, broke, prices(grimy.getId(), 5000, 0, 0));
+		assertEquals(28L * 5000, o.getTripCost());
+		assertFalse(o.isAvailable());
+
+		// Owning the herbs already means nothing to buy
+		MoneyPlayer stocked = broke.toBuilder().owned(Map.of(grimy.getId(), 100)).build();
+		MoneyOption ok = MoneyRanker.evaluate(herbs, stocked, prices(grimy.getId(), 5000, 0, 0));
+		assertEquals(0, ok.getTripCost());
+		assertTrue(ok.isAvailable());
+	}
+
+	@Test
+	public void productsThatDontTradeAreFlagged()
 	{
 		MoneyMethod herbs = method("Cleaning grimy ranarr weed");
 		MoneyItem clean = herbs.getOutputs().get(0);
-		// Clean ranarr up 100 gp each, everything else as the wiki had it
-		MoneyOption o = MoneyRanker.evaluate(herbs, player(99, true, "druidic ritual"),
-			id -> id == clean.getId() ? (int) clean.getWikiValue() + 100 : 0);
-		assertEquals(herbs.getWikiProfit() + Math.round(clean.getQuantity() * 100), o.getProfit());
+		MoneyPlayer p = player(99, true, "druidic ritual");
+
+		MoneyOption unknown = MoneyRanker.evaluate(herbs, p, null);
+		assertFalse(unknown.isVolumesKnown());
+		assertFalse(unknown.isHardToSell());
+
+		MoneyOption dead = MoneyRanker.evaluate(herbs, p, null, Map.of(clean.getId(), 10L));
+		assertTrue(dead.isHardToSell());
+		assertFalse(dead.isGood());
+
+		MoneyOption slow = MoneyRanker.evaluate(herbs, p, null, Map.of(clean.getId(), 20_000L));
+		assertFalse(slow.isHardToSell());
+		assertTrue(slow.getMarketWarnings().toString(), slow.getMarketWarnings().stream()
+			.anyMatch(w -> w.startsWith("Sells slowly")));
+
+		MoneyOption liquid = MoneyRanker.evaluate(herbs, p, null, Map.of(clean.getId(), 5_000_000L));
+		assertTrue(liquid.getMarketWarnings().stream().noneMatch(w -> w.startsWith("Sells slowly")));
+	}
+
+	@Test
+	public void buyLimitWarns()
+	{
+		// 5,000 grimy ranarr an hour is far over the 4-hour buy limit
+		MoneyOption o = MoneyRanker.evaluate(method("Cleaning grimy ranarr weed"), player(99, true, "druidic ritual"),
+			null);
+		assertTrue(o.getMarketWarnings().toString(), o.getMarketWarnings().stream()
+			.anyMatch(w -> w.startsWith("GE buy limit")));
+	}
+
+	private static com.skillinghelper.engine.PriceLookup prices(int a, int pa, int b, int pb)
+	{
+		return id -> id == a ? pa : id == b ? pb : 0;
 	}
 
 	@Test
@@ -112,8 +178,11 @@ public class MoneyMakingTest
 				continue;
 			}
 			assertFalse("available after locked: " + o.getMethod().getName(), seenLocked);
-			assertTrue(o.getProfitPerHour() <= last);
-			last = o.getProfitPerHour();
+			if (o.isGood())
+			{
+				assertTrue(o.getProfitPerHour() <= last);
+				last = o.getProfitPerHour();
+			}
 		}
 		long f2p = ranked.stream().filter(MoneyOption::isAvailable).count();
 		assertTrue("a level 30 F2P account should have some methods: " + f2p, f2p > 5);
