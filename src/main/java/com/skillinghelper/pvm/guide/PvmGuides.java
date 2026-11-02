@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm.guide;
 
 import static com.skillinghelper.pvm.guide.Gear.buy;
+import com.skillinghelper.data.CombatSpell;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.pvm.guide.Supply.Option;
@@ -1104,32 +1105,41 @@ public final class PvmGuides
 
 		/**
 		 * An air staff to swap to for the brothers weak to Magic (all but Ahrim). Wind spells hit their elemental
-		 * weakness and the staff pays for the air runes. Magic level is the spell's: Wind Bolt needs 29.
+		 * weakness and the staff pays for the air runes. The staff of air's level is the first wind spell worth
+		 * bringing: Wind Bolt at 17.
 		 */
 		static final GearSlot STAFF = GearSlot.swap("magic weapon",
 			buy("Smoke battlestaff", Skill.MAGIC, 40, 0, true, ItemID.SMOKE_BATTLESTAFF),
 			buy("Mystic air staff", Skill.MAGIC, 40, 0, true, ItemID.MYSTIC_AIR_STAFF),
 			buy("Air battlestaff", Skill.MAGIC, 30, 0, true, ItemID.AIR_BATTLESTAFF),
-			buy("Staff of air", Skill.MAGIC, 29, 0, false, ItemID.STAFF_OF_AIR));
+			buy("Staff of air", Skill.MAGIC, 17, 0, false, ItemID.STAFF_OF_AIR));
 
 		/**
-		 * The wind spells by Magic level, best first, with the rune they use besides air and how many to bring
-		 * for five brothers plus a few tunnel monsters.
+		 * The wind spells worth casting (Wind Bolt and up), best first, from the shared spell table. Barrows sticks
+		 * to wind even when a fire spell of the same level hits harder, because the brothers are weak to air.
 		 */
-		private static final Object[][] SPELLS = {
-			{62, "Wind Wave", Supply.stack("Blood runes", 100, Option.of("Blood runes", ItemID.BLOODRUNE))},
-			{41, "Wind Blast", Supply.stack("Death runes", 150, Option.of("Death runes", ItemID.DEATHRUNE))},
-			{29, "Wind Bolt", Supply.stack("Chaos runes", 200, Option.of("Chaos runes", ItemID.CHAOSRUNE))},
-		};
+		private static final List<CombatSpell> SPELLS = java.util.Arrays.stream(CombatSpell.values())
+			.filter(spell -> spell.getElement() == null && spell.getLevel() >= CombatSpell.WIND_BOLT.getLevel())
+			.collect(Collectors.toList());
 
-		static final List<Supply> RUNES = List.of((Supply) SPELLS[0][2], (Supply) SPELLS[1][2],
-			(Supply) SPELLS[2][2]);
+		static final List<Supply> RUNES = SPELLS.stream().map(Barrows::catalyst).collect(Collectors.toList());
 
-		private static Object[] spell(GuideState s)
+		/**
+		 * The rune a wind spell uses besides air, and how many to bring for five brothers plus a few tunnel
+		 * monsters: fewer casts are needed as the spells hit harder.
+		 */
+		private static Supply catalyst(CombatSpell spell)
 		{
-			for (Object[] spell : SPELLS)
+			CombatSpell.Catalyst rune = spell.getCatalyst();
+			int amount = rune == CombatSpell.Catalyst.CHAOS ? 200 : rune == CombatSpell.Catalyst.DEATH ? 150 : 100;
+			return Supply.stack(rune.getRuneName(), amount, Option.of(rune.getRuneName(), rune.getRune()));
+		}
+
+		private static CombatSpell spell(GuideState s)
+		{
+			for (CombatSpell spell : SPELLS)
 			{
-				if (s.level(Skill.MAGIC) >= (int) spell[0])
+				if (s.level(Skill.MAGIC) >= spell.getLevel() && (s.isMembers() || !spell.isMembers()))
 				{
 					return spell;
 				}
@@ -1139,13 +1149,13 @@ public final class PvmGuides
 
 		static List<Supply> runes(GuideState s)
 		{
-			Object[] spell = spell(s);
+			CombatSpell spell = spell(s);
 			if (spell == null)
 			{
 				return List.of();
 			}
-			Supply runes = (Supply) spell[2];
-			return List.of(runes.withRestockBelow(runes.getAmount() / 4).note("For " + spell[1]));
+			Supply runes = RUNES.get(SPELLS.indexOf(spell));
+			return List.of(runes.withRestockBelow(runes.getAmount() / 4).note("For " + spell.getSpellName()));
 		}
 
 		/**
@@ -1154,7 +1164,7 @@ public final class PvmGuides
 		 */
 		static WeaponSwap weaponFor(GuideState s, int brother)
 		{
-			Object[] spell = spell(s);
+			CombatSpell spell = spell(s);
 			if (brother < 0 || spell == null)
 			{
 				return null;
@@ -1164,7 +1174,7 @@ public final class PvmGuides
 				return new WeaponSwap(GearSets.MELEE_WEAPON, "Ahrim is weak to Melee", null);
 			}
 			return new WeaponSwap(STAFF, shortName(brother) + " is weak to Magic",
-				"Autocast " + spell[1] + " on your staff (combat tab).");
+				"Autocast " + spell.getSpellName() + " on your staff (combat tab).");
 		}
 
 		static WeaponSwap fightWeapon(GuideState s)

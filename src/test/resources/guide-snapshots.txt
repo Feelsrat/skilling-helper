@@ -4680,6 +4680,36 @@ magic_camelot_tele weak owns-all-in-bank	89f019f1faa6ba7e
 magic_camelot_tele weak parts-carried	bdcc3ef4bd0a37d3
 magic_camelot_tele weak parts-carried-away	071df4ce564679f3
 magic_camelot_tele weak parts-in-bank	09f2a6432e9cea4e
+magic_combat_spells_cows strong bank-empty	2b48e84ca842353e
+magic_combat_spells_cows strong bank-empty-rich	927f47f431557c56
+magic_combat_spells_cows strong bank-unknown	0a318cfbe64837b9
+magic_combat_spells_cows strong full-of-products	1aac915b345e2ae6
+magic_combat_spells_cows strong gear-carried	7217ffb6c8d95890
+magic_combat_spells_cows strong goal-reached	e991a2665b370dbe
+magic_combat_spells_cows strong in-instance	1aac915b345e2ae6
+magic_combat_spells_cows strong kit-at-spot	1aac915b345e2ae6
+magic_combat_spells_cows strong kit-away	1aac915b345e2ae6
+magic_combat_spells_cows strong kit-worn-at-spot	a4579ac6ae0b4664
+magic_combat_spells_cows strong owns-all-at-bank	d72983bb0274eb20
+magic_combat_spells_cows strong owns-all-in-bank	c2dadf2ce4d1a7b8
+magic_combat_spells_cows strong parts-carried	1aac915b345e2ae6
+magic_combat_spells_cows strong parts-carried-away	1aac915b345e2ae6
+magic_combat_spells_cows strong parts-in-bank	d72983bb0274eb20
+magic_combat_spells_cows weak bank-empty	0997a3e51acfd1ab
+magic_combat_spells_cows weak bank-empty-rich	8d1d346cb1bf7026
+magic_combat_spells_cows weak bank-unknown	0a318cfbe64837b9
+magic_combat_spells_cows weak full-of-products	4a8f65f8dd115288
+magic_combat_spells_cows weak gear-carried	5b4dd110bc795f78
+magic_combat_spells_cows weak goal-reached	3a34e0d44447cc72
+magic_combat_spells_cows weak in-instance	4a8f65f8dd115288
+magic_combat_spells_cows weak kit-at-spot	4a8f65f8dd115288
+magic_combat_spells_cows weak kit-away	4a8f65f8dd115288
+magic_combat_spells_cows weak kit-worn-at-spot	3c78dd2740d22e72
+magic_combat_spells_cows weak owns-all-at-bank	7b91c5e867e420ab
+magic_combat_spells_cows weak owns-all-in-bank	d8f364a7bdc21ff7
+magic_combat_spells_cows weak parts-carried	4a8f65f8dd115288
+magic_combat_spells_cows weak parts-carried-away	4a8f65f8dd115288
+magic_combat_spells_cows weak parts-in-bank	7b91c5e867e420ab
 magic_enchant_glory strong bank-empty	104e3d4ff4264916
 magic_enchant_glory strong bank-empty-rich	08a923283d8b62cf
 magic_enchant_glory strong bank-unknown	368e4d99b83b0192
@@ -4800,36 +4830,6 @@ magic_falador_tele weak owns-all-in-bank	d43426c52420b134
 magic_falador_tele weak parts-carried	f62477c23a726659
 magic_falador_tele weak parts-carried-away	dce06b91f4c15fad
 magic_falador_tele weak parts-in-bank	ec2231cc5cc47a01
-magic_fire_strike strong bank-empty	6901c8ccd86cb292
-magic_fire_strike strong bank-empty-rich	0d30dcf6b52cd6c7
-magic_fire_strike strong bank-unknown	326fe95ed961d5bd
-magic_fire_strike strong full-of-products	18aa884b7667a3a2
-magic_fire_strike strong gear-carried	18aa884b7667a3a2
-magic_fire_strike strong goal-reached	82fd33ae7037316a
-magic_fire_strike strong in-instance	18aa884b7667a3a2
-magic_fire_strike strong kit-at-spot	18aa884b7667a3a2
-magic_fire_strike strong kit-away	18aa884b7667a3a2
-magic_fire_strike strong kit-worn-at-spot	be0357647994d892
-magic_fire_strike strong owns-all-at-bank	097f41a41490cae6
-magic_fire_strike strong owns-all-in-bank	c5fbcfd004df00db
-magic_fire_strike strong parts-carried	18aa884b7667a3a2
-magic_fire_strike strong parts-carried-away	18aa884b7667a3a2
-magic_fire_strike strong parts-in-bank	097f41a41490cae6
-magic_fire_strike weak bank-empty	6901c8ccd86cb292
-magic_fire_strike weak bank-empty-rich	0d30dcf6b52cd6c7
-magic_fire_strike weak bank-unknown	326fe95ed961d5bd
-magic_fire_strike weak full-of-products	18aa884b7667a3a2
-magic_fire_strike weak gear-carried	18aa884b7667a3a2
-magic_fire_strike weak goal-reached	82fd33ae7037316a
-magic_fire_strike weak in-instance	18aa884b7667a3a2
-magic_fire_strike weak kit-at-spot	18aa884b7667a3a2
-magic_fire_strike weak kit-away	18aa884b7667a3a2
-magic_fire_strike weak kit-worn-at-spot	be0357647994d892
-magic_fire_strike weak owns-all-at-bank	097f41a41490cae6
-magic_fire_strike weak owns-all-in-bank	c5fbcfd004df00db
-magic_fire_strike weak parts-carried	18aa884b7667a3a2
-magic_fire_strike weak parts-carried-away	18aa884b7667a3a2
-magic_fire_strike weak parts-in-bank	097f41a41490cae6
 magic_gemstone_crab strong bank-empty	8e51de33561fdbf0
 magic_gemstone_crab strong bank-empty-rich	8719169f9e6281e5
 magic_gemstone_crab strong bank-unknown	844434809fa0fecb
@@ -5070,36 +5070,6 @@ magic_varrock_tele weak owns-all-in-bank	d46f3e282a8653fd
 magic_varrock_tele weak parts-carried	bdb05620c64c51db
 magic_varrock_tele weak parts-carried-away	e49fff546da90bfc
 magic_varrock_tele weak parts-in-bank	d40603d7dbb6bf07
-magic_wind_strike strong bank-empty	9cbd25ada7565fac
-magic_wind_strike strong bank-empty-rich	bbf238e4752940a6
-magic_wind_strike strong bank-unknown	4b938e215f306396
-magic_wind_strike strong full-of-products	ee83e74082dbcfae
-magic_wind_strike strong gear-carried	ee83e74082dbcfae
-magic_wind_strike strong goal-reached	1e1f79316dcb9b55
-magic_wind_strike strong in-instance	ee83e74082dbcfae
-magic_wind_strike strong kit-at-spot	ee83e74082dbcfae
-magic_wind_strike strong kit-away	ee83e74082dbcfae
-magic_wind_strike strong kit-worn-at-spot	037b6033edd5c494
-magic_wind_strike strong owns-all-at-bank	8cf4571b90bb7737
-magic_wind_strike strong owns-all-in-bank	3a072c9ebdfe1a9e
-magic_wind_strike strong parts-carried	ee83e74082dbcfae
-magic_wind_strike strong parts-carried-away	ee83e74082dbcfae
-magic_wind_strike strong parts-in-bank	8cf4571b90bb7737
-magic_wind_strike weak bank-empty	9cbd25ada7565fac
-magic_wind_strike weak bank-empty-rich	bbf238e4752940a6
-magic_wind_strike weak bank-unknown	4b938e215f306396
-magic_wind_strike weak full-of-products	ee83e74082dbcfae
-magic_wind_strike weak gear-carried	ee83e74082dbcfae
-magic_wind_strike weak goal-reached	1e1f79316dcb9b55
-magic_wind_strike weak in-instance	ee83e74082dbcfae
-magic_wind_strike weak kit-at-spot	ee83e74082dbcfae
-magic_wind_strike weak kit-away	ee83e74082dbcfae
-magic_wind_strike weak kit-worn-at-spot	037b6033edd5c494
-magic_wind_strike weak owns-all-at-bank	8cf4571b90bb7737
-magic_wind_strike weak owns-all-in-bank	3a072c9ebdfe1a9e
-magic_wind_strike weak parts-carried	ee83e74082dbcfae
-magic_wind_strike weak parts-carried-away	ee83e74082dbcfae
-magic_wind_strike weak parts-in-bank	8cf4571b90bb7737
 mine_copper_tin_varrock strong bank-empty	e50c1a9b5ffe1eab
 mine_copper_tin_varrock strong bank-empty-rich	4d44b062a311b2da
 mine_copper_tin_varrock strong bank-unknown	2ffd8d8cba1b1c98
@@ -5740,46 +5710,46 @@ plan HUNTER 90 rich Cheapest	fe17c0b9daf0c5f1
 plan HUNTER 90 rich Fastest	4d3a8f9cecb027c7
 plan HUNTER 90 rich Profit	ee7ad95ec7da5323
 plan HUNTER 90 rich Recommended	c64f1c4fb3fd0fcf
-plan MAGIC 1 poor AFK	f4a5319c6781323e
-plan MAGIC 1 poor Cheapest	6c632ac60ffcab6b
-plan MAGIC 1 poor Fastest	b91ed145967498a2
-plan MAGIC 1 poor Profit	5f10f805f9fa2052
-plan MAGIC 1 poor Recommended	e298deb9c90bbe78
-plan MAGIC 1 rich AFK	2a55cf2da71559f3
-plan MAGIC 1 rich Cheapest	7118de20effe6b8a
-plan MAGIC 1 rich Fastest	7de18e29f3f9e085
-plan MAGIC 1 rich Profit	61b5851774c57452
-plan MAGIC 1 rich Recommended	266ac42ae9c60c4f
-plan MAGIC 30 poor AFK	7b0025c344159ca4
-plan MAGIC 30 poor Cheapest	7dc076f9e0f5cfd1
-plan MAGIC 30 poor Fastest	a4976c0c814586ea
-plan MAGIC 30 poor Profit	126ca03f2de5a3ee
-plan MAGIC 30 poor Recommended	6e5a9a4a48234a18
-plan MAGIC 30 rich AFK	0009478d9fbeeb4a
-plan MAGIC 30 rich Cheapest	0fa11930af714793
-plan MAGIC 30 rich Fastest	dd445ed7c192a27e
-plan MAGIC 30 rich Profit	867886c9d34a6384
-plan MAGIC 30 rich Recommended	7f8ab519c5079e5b
-plan MAGIC 60 poor AFK	e4d341046e66f3ab
-plan MAGIC 60 poor Cheapest	09bb0a509dc014f3
-plan MAGIC 60 poor Fastest	8cccbb3ff9b949bd
-plan MAGIC 60 poor Profit	4cd7a975a3dce1dc
-plan MAGIC 60 poor Recommended	60404db6d60298e5
-plan MAGIC 60 rich AFK	561d9f49f69c73e7
-plan MAGIC 60 rich Cheapest	40996ff3e86f70e1
-plan MAGIC 60 rich Fastest	c527e6cb61471851
-plan MAGIC 60 rich Profit	9b762d50fd9d4ff1
-plan MAGIC 60 rich Recommended	d4ac14cdfc08b9bb
-plan MAGIC 90 poor AFK	a2146f993af1f2f7
-plan MAGIC 90 poor Cheapest	e5ed2ed508c6aa5d
-plan MAGIC 90 poor Fastest	e5b327524c573c98
-plan MAGIC 90 poor Profit	638bcfbbc3bb6c55
-plan MAGIC 90 poor Recommended	5c7d2f26b45e314d
-plan MAGIC 90 rich AFK	754d4b499612e397
-plan MAGIC 90 rich Cheapest	043c5789acc57870
-plan MAGIC 90 rich Fastest	37871a7c6b9c6903
-plan MAGIC 90 rich Profit	d6ff9e299a031666
-plan MAGIC 90 rich Recommended	a5745e30f28a5ecd
+plan MAGIC 1 poor AFK	3ca7c01362c4391a
+plan MAGIC 1 poor Cheapest	97109c4e639c651c
+plan MAGIC 1 poor Fastest	6f2dfe364e1f2332
+plan MAGIC 1 poor Profit	90d92a3dbd33543c
+plan MAGIC 1 poor Recommended	2d24f36c20931221
+plan MAGIC 1 rich AFK	3758c283eb695a72
+plan MAGIC 1 rich Cheapest	6dfc79dfb8c14703
+plan MAGIC 1 rich Fastest	67c168e8ab9e5694
+plan MAGIC 1 rich Profit	32a898a8f5dd461a
+plan MAGIC 1 rich Recommended	2b36594e70e2215e
+plan MAGIC 30 poor AFK	a20411dc8d3ed609
+plan MAGIC 30 poor Cheapest	3df86e7d3ea0b6bd
+plan MAGIC 30 poor Fastest	3a0c1f94ccc3122a
+plan MAGIC 30 poor Profit	c7774d5409ea6b01
+plan MAGIC 30 poor Recommended	a53d6cefeb492803
+plan MAGIC 30 rich AFK	2cb9a6d81cee8bd7
+plan MAGIC 30 rich Cheapest	61c6cb7d0d7bc70a
+plan MAGIC 30 rich Fastest	fe7c97a871b129cd
+plan MAGIC 30 rich Profit	c1b1bd6998412757
+plan MAGIC 30 rich Recommended	9bd634bad7561225
+plan MAGIC 60 poor AFK	10c8717516cf9ee5
+plan MAGIC 60 poor Cheapest	5ddb83d272955923
+plan MAGIC 60 poor Fastest	df2a73467f785aa6
+plan MAGIC 60 poor Profit	5b0ca651b3633541
+plan MAGIC 60 poor Recommended	6022705b52133475
+plan MAGIC 60 rich AFK	fd78b01a91f97006
+plan MAGIC 60 rich Cheapest	171b473aaacc37b3
+plan MAGIC 60 rich Fastest	aaf65d7e6e0bef3e
+plan MAGIC 60 rich Profit	9389d3b0ffc542a0
+plan MAGIC 60 rich Recommended	2af2de5940fd33cd
+plan MAGIC 90 poor AFK	a7ef4eb345f3f4da
+plan MAGIC 90 poor Cheapest	65e36d062792f0a2
+plan MAGIC 90 poor Fastest	693181dec2c8adae
+plan MAGIC 90 poor Profit	5757bd4fe946ce0a
+plan MAGIC 90 poor Recommended	8464390bc79b3ba4
+plan MAGIC 90 rich AFK	357d5e9cccef5025
+plan MAGIC 90 rich Cheapest	61b6113504b8431a
+plan MAGIC 90 rich Fastest	e5d99d97b940b87c
+plan MAGIC 90 rich Profit	88e5d1fe6f962513
+plan MAGIC 90 rich Recommended	b1cc18b03ea53e79
 plan MINING 1 poor AFK	fcd10feb51e17aed
 plan MINING 1 poor Cheapest	0e875bc67da98176
 plan MINING 1 poor Fastest	0e875bc67da98176

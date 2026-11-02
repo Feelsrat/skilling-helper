@@ -50,43 +50,16 @@ final class MagicGuide
 
 	static List<Method> methods()
 	{
-		Location chickens = Location.of("Lumbridge chicken pen", 3231, 3297, 8);
 		Location cows = Location.of("Lumbridge cow field", 3257, 3270, 12);
 		return List.of(
-			Method.builder()
-				.id("magic_wind_strike")
-				.skill(Skill.MAGIC)
-				.type(MethodType.ACTIVITY)
-				.name("Wind Strike on chickens")
-				.minLevel(1)
-				.xpPerAction(7.5)
-				.xpPerHour(4_500)
-				.tag(MethodTag.CHEAP)
-				.location(chickens)
-				.bank(Banks.LUMBRIDGE)
-				.input(ItemReq.stack("Mind runes", 1, ItemID.MINDRUNE))
-				.input(air(1))
-				.target(Target.npc("Attack", "Chicken"))
-				.instruction("Set Wind Strike to autocast (or click it each time) and attack the chickens")
-				.notes("Every cast gives 5.5 xp plus 2 per damage. Splashing still gives the base xp.")
-				.wikiPage(F2P_WIKI)
-				.build(),
-			Method.builder()
-				.id("magic_fire_strike")
-				.skill(Skill.MAGIC)
-				.type(MethodType.ACTIVITY)
-				.name("Fire Strike on cows")
-				.minLevel(13)
-				.xpPerAction(15)
-				.xpPerHour(9_000)
+			combatSpells("magic_combat_spells_cows", "Cows (autocast your best spell)", false, 1, 700, 8)
 				.location(cows)
 				.bank(Banks.LUMBRIDGE)
-				.input(ItemReq.stack("Mind runes", 1, ItemID.MINDRUNE))
-				.input(air(2))
-				.input(fire(3))
+				.tag(MethodTag.CHEAP)
 				.target(Target.npc("Attack", "Cow", "Cow calf"))
-				.instruction("Autocast Fire Strike and attack the cows")
-				.notes("Wield a staff of fire or air to save runes; the guide stops asking for those runes when you do.")
+				.instruction("Autocast the spell named next to the runes and attack the cows")
+				.notes("The guide picks the strongest Strike, Bolt or Blast spell you can cast; an air staff saves "
+					+ "the air runes every spell uses. Splashing still gives the spell's base xp.")
 				.wikiPage(F2P_WIKI)
 				.build(),
 			teleport("magic_varrock_tele", "Varrock Teleport", 25, 35, false,
@@ -210,25 +183,15 @@ final class MagicGuide
 
 	/**
 	 * Autocasting the best standard combat spell the player has on the Gemstone Crab. It never dies or hits back, so
-	 * it is AFK casting at one cast every 3 seconds. The spell and its runes are worked out from the Magic level (see
-	 * {@link CombatSpell}). Each cast is the spell's base xp plus 2 per damage (about 45% of the max hit on average),
-	 * all cut to 87.5% like every combat xp drop on the crab.
+	 * it is AFK casting at one cast every 3 seconds. All its combat xp is cut to 87.5%.
 	 */
 	private static Method.MethodBuilder gemstoneCrab()
 	{
-		Method.MethodBuilder b = Method.builder()
-			.id("magic_gemstone_crab")
-			.skill(Skill.MAGIC)
-			.type(MethodType.ACTIVITY)
-			.name("Gemstone Crab (autocast your best spell)")
-			.members(true)
+		Method.MethodBuilder b = combatSpells("magic_gemstone_crab", "Gemstone Crab (autocast your best spell)", true,
+			0.875, 1_200, 0)
 			.tag(MethodTag.AFK)
 			.quest(Quest.CHILDREN_OF_THE_SUN)
 			.location(CombatGuide.GEMSTONE_CRAB_SPOTS[0])
-			.input(CombatSpell.CATALYST_INPUT)
-			.input(CombatSpell.AIR_INPUT)
-			.input(CombatSpell.ELEMENT_INPUT)
-			.gearStyle(CombatStyle.MAGIC)
 			.target(Target.npc("Attack", "Gemstone Crab"))
 			.target(Target.npc("Mine", "Gemstone Crab Shell"))
 			.instruction("Autocast the spell named next to the runes and attack the Gemstone Crab")
@@ -237,24 +200,57 @@ final class MagicGuide
 				+ "burrows and moves to one of the other two spots: crawl through the cave next to the old spot to "
 				+ "come out at the new one. The top 16 damage dealers can mine the shell afterwards for gems.")
 			.wikiPage(P2P_WIKI);
+		for (int i = 1; i < CombatGuide.GEMSTONE_CRAB_SPOTS.length; i++)
+		{
+			b.alsoAt(CombatGuide.GEMSTONE_CRAB_SPOTS[i]);
+		}
+		return b;
+	}
+
+	/**
+	 * Combat Magic with the best standard spell for the player's level: the spell and its runes are worked out by
+	 * the guide (see {@link CombatSpell}), and magic gear is suggested. Each cast is the spell's base xp plus 2 per
+	 * damage (about 45% of the max hit on average), so xp per cast steps up with each new spell.
+	 *
+	 * @param xpModifier scales all xp, e.g. 0.875 on the Gemstone Crab
+	 * @param hitpoints the target's hitpoints, which caps the damage a cast can do (0 if it never dies)
+	 */
+	private static Method.MethodBuilder combatSpells(String id, String name, boolean members, double xpModifier,
+		int castsPerHour, int hitpoints)
+	{
+		Method.MethodBuilder b = Method.builder()
+			.id(id)
+			.skill(Skill.MAGIC)
+			.type(MethodType.ACTIVITY)
+			.name(name)
+			.members(members)
+			.input(CombatSpell.CATALYST_INPUT)
+			.input(CombatSpell.AIR_INPUT)
+			.input(CombatSpell.ELEMENT_INPUT)
+			.gearStyle(CombatStyle.MAGIC);
 		CombatSpell[] spells = CombatSpell.values();
 		for (int i = spells.length - 1; i >= 0; i--)
 		{
 			CombatSpell spell = spells[i];
-			double xp = 0.875 * (spell.getBaseXp() + 2 * 0.45 * spell.getMaxHit());
-			// Xp per hour steps up with each new spell
+			if (spell.isMembers() && !members)
+			{
+				continue;
+			}
+			double damage = 0.45 * spell.getMaxHit();
+			if (hitpoints > 0)
+			{
+				// Overkill is wasted: on average a cast does at most about half the target's hitpoints
+				damage = Math.min(damage, hitpoints / 2.0);
+			}
+			double xp = xpModifier * (spell.getBaseXp() + 2 * damage);
 			if (i == spells.length - 1)
 			{
-				b.minLevel(spell.getLevel()).xpPerAction(xp).xpPerHour((int) (xp * 1_200));
+				b.minLevel(spell.getLevel()).xpPerAction(xp).xpPerHour((int) (xp * castsPerHour));
 			}
 			else
 			{
 				b.xpAt(new int[]{spell.getLevel(), (int) Math.round(xp)});
 			}
-		}
-		for (int i = 1; i < CombatGuide.GEMSTONE_CRAB_SPOTS.length; i++)
-		{
-			b.alsoAt(CombatGuide.GEMSTONE_CRAB_SPOTS[i]);
 		}
 		return b;
 	}
