@@ -132,6 +132,11 @@ public final class GuideResolver
 				b.line(note.getValue());
 			}
 		}
+		WeaponSwap swap = fight.getWield().apply(s);
+		if (swap != null)
+		{
+			swap.apply(b, s);
+		}
 		for (String line : fight.getLive().apply(s))
 		{
 			b.line(line);
@@ -269,7 +274,7 @@ public final class GuideResolver
 		{
 			if (g.getHave() == LoadoutPlan.Have.IN_BANK)
 			{
-				b.line("• 1 x " + g.getGear().getName() + " (wear it)");
+				b.line("• 1 x " + g.getGear().getName() + (g.isSwap() ? " (weapon swap)" : " (wear it)"));
 				b.itemHighlight(g.getItemId(), ItemHighlight.WITHDRAW);
 				slotsNeeded++;
 				any = true;
@@ -332,7 +337,7 @@ public final class GuideResolver
 		boolean any = false;
 		for (LoadoutPlan.GearLine g : plan.getGear())
 		{
-			if (g.getHave() == LoadoutPlan.Have.CARRIED)
+			if (g.getHave() == LoadoutPlan.Have.CARRIED && !g.isSwap())
 			{
 				b.line("• Wear your " + g.getGear().getName());
 				b.itemHighlight(g.getItemId(), ItemHighlight.EQUIP);
@@ -359,6 +364,11 @@ public final class GuideResolver
 		for (String line : stage.getLines())
 		{
 			b.line(line);
+		}
+		WeaponSwap wield = stage.getWield().apply(s);
+		if (wield != null)
+		{
+			wield.apply(b, s);
 		}
 		for (String line : stage.getLive().apply(s))
 		{

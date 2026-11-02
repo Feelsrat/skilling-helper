@@ -27,6 +27,16 @@ public class PvmGuide
 	@Singular
 	List<Supply> supplies;
 	/**
+	 * Supplies that depend on the player's levels, e.g. the runes for the best spell they can cast.
+	 */
+	@Builder.Default
+	java.util.function.Function<GuideState, List<Supply>> levelSupplies = s -> List.of();
+	/**
+	 * Every supply {@link #levelSupplies} can pick, so the bank tracks them all.
+	 */
+	@Singular("possibleSupply")
+	List<Supply> possibleSupplies;
+	/**
 	 * Steps before the fight, in order.
 	 */
 	@Singular
@@ -67,6 +77,13 @@ public class PvmGuide
 	 */
 	@Singular("track")
 	List<String> tracked;
+
+	public List<Supply> allSupplies()
+	{
+		List<Supply> all = new java.util.ArrayList<>(supplies);
+		all.addAll(possibleSupplies);
+		return all;
+	}
 
 	public List<Gear> allGear()
 	{

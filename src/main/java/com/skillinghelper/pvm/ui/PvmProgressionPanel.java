@@ -445,7 +445,7 @@ public class PvmProgressionPanel extends PluginPanel
 			case WORN:
 				return text("✔ " + name, GOOD);
 			case CARRIED:
-				return text("➜ Wear your " + name, WARN);
+				return g.isSwap() ? text("✔ " + name + " (swap)", GOOD) : text("➜ Wear your " + name, WARN);
 			case IN_BANK:
 				return text("• " + name + " (in bank)", Color.LIGHT_GRAY);
 			case BUY:

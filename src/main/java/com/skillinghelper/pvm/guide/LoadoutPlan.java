@@ -32,6 +32,7 @@ public class LoadoutPlan
 	}
 
 	@Value
+	@lombok.With
 	public static class GearLine
 	{
 		String slot;
@@ -47,6 +48,10 @@ public class LoadoutPlan
 		 */
 		Gear upgrade;
 		int upgradePrice;
+		/**
+		 * Swapped with another weapon during the trip, so carrying it in the inventory is as good as wearing it.
+		 */
+		boolean swap;
 	}
 
 	@Value
@@ -122,12 +127,24 @@ public class LoadoutPlan
 		List<GearLine> gear = new ArrayList<>();
 		Gear weapon = null;
 		long buy = 0;
+		int swapSlots = 0;
+		for (GearSlot slot : guide.getGear())
+		{
+			if (slot.isSwap() && gearLine(slot, guide.getBudget(), s, prices) != null)
+			{
+				swapSlots++;
+			}
+		}
 		for (GearSlot slot : guide.getGear())
 		{
 			GearLine line = gearLine(slot, guide.getBudget(), s, prices);
 			if (line == null)
 			{
 				continue;
+			}
+			if (slot.isSwap() || (swapSlots > 0 && "weapon".equals(slot.getName())))
+			{
+				line = line.withSwap(true);
 			}
 			gear.add(line);
 			if (line.getHave() == Have.BUY)
@@ -147,6 +164,7 @@ public class LoadoutPlan
 			wanted.add(ammo);
 		}
 		wanted.addAll(guide.getSupplies());
+		wanted.addAll(guide.getLevelSupplies().apply(s));
 
 		int fixedSlots = 0;
 		for (Supply sup : wanted)
@@ -157,7 +175,8 @@ public class LoadoutPlan
 				fixedSlots += sup.slots(sup.getAmount());
 			}
 		}
-		int fill = Math.max(0, INVENTORY_SIZE - fixedSlots);
+		// One of the swapped weapons is always in the inventory
+		int fill = Math.max(0, INVENTORY_SIZE - fixedSlots - swapSlots);
 
 		List<SupplyLine> lines = new ArrayList<>();
 		long trip = 0;
@@ -234,13 +253,13 @@ public class LoadoutPlan
 		if (owned == null)
 		{
 			return bestBuy == null ? null
-				: new GearLine(slot.getName(), bestBuy, Have.BUY, bestBuy.getBuyId(), bestBuyPrice, null, 0);
+				: new GearLine(slot.getName(), bestBuy, Have.BUY, bestBuy.getBuyId(), bestBuyPrice, null, 0, false);
 		}
 		int id = ownedId(owned, s);
 		Have have = s.worn(owned.getIds()) > 0 ? Have.WORN
 			: s.inventory(owned.getIds()) > 0 ? Have.CARRIED : Have.IN_BANK;
 		// bestBuy can only be set before the owned piece was reached, so it's an upgrade
-		return new GearLine(slot.getName(), owned, have, id, 0, bestBuy, bestBuyPrice);
+		return new GearLine(slot.getName(), owned, have, id, 0, bestBuy, bestBuyPrice, false);
 	}
 
 	private static int ownedId(Gear g, GuideState s)

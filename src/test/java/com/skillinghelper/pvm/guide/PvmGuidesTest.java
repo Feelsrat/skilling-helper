@@ -93,8 +93,9 @@ public class PvmGuidesTest
 		PvmStep step = step("barrows", s);
 		assertEquals(PvmStep.Kind.BANK, step.getKind());
 		assertEquals(ItemHighlight.WITHDRAW, step.getItemHighlights().get(ItemID.ABYSSAL_WHIP));
-		// Spade, 6 prayer potions and a stack of teleports leave 20 slots for food; monkfish missing, so sharks
-		assertTrue(step.getLines().toString(), step.getLines().contains("• 20 x Sharks"));
+		// Spade, 6 prayer potions, teleports, blood runes and the swap weapon leave 18 slots for food; monkfish
+		// missing, so sharks
+		assertTrue(step.getLines().toString(), step.getLines().contains("• 18 x Sharks"));
 		assertTrue(step.getLines().contains("• 6 x Prayer potions"));
 		assertTrue(step.getLines().contains("• 1 x Barrows teleport tablets"));
 	}
@@ -138,6 +139,7 @@ public class PvmGuidesTest
 		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
 		inv.put(ItemID.TELETAB_BARROWS, 1);
 		inv.put(ItemID.MONKFISH, 20);
+		inv.put(ItemID.BLOODRUNE, 100);
 		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).inventory(inv)
 			.location(new WorldPoint(3565, 3289, 0))
 			.varbit(VarbitID.BARROWS_KILLED_AHRIM, 1)
@@ -169,6 +171,7 @@ public class PvmGuidesTest
 		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
 		inv.put(ItemID.TELETAB_BARROWS, 1);
 		inv.put(ItemID.MONKFISH, 20);
+		inv.put(ItemID.BLOODRUNE, 100);
 		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).inventory(inv)
 			.location(new WorldPoint(3565, 3289, 0));
 		PvmStep step = step("barrows", wearAll(b).build());
@@ -191,9 +194,51 @@ public class PvmGuidesTest
 		inv.put(ItemID.SPADE, 1);
 		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
 		inv.put(ItemID.MONKFISH, 20);
+		inv.put(ItemID.BLOODRUNE, 100);
 		GuideState.GuideStateBuilder b = player(70).bank(Map.of(ItemID.TELETAB_BARROWS, 10)).inventory(inv)
 			.location(new WorldPoint(3565, 3289, 0)).tripStocked(true);
 		assertEquals("Dig into Dharok's mound", step("barrows", wearAll(b).build()).getTitle());
+	}
+
+	@Test
+	public void barrowsSaysWhichWeaponToHoldForEachBrother()
+	{
+		Map<Integer, Integer> inv = new HashMap<>();
+		inv.put(ItemID.SPADE, 1);
+		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
+		inv.put(ItemID.MONKFISH, 20);
+		inv.put(ItemID.BLOODRUNE, 100);
+		inv.put(ItemID.SMOKE_BATTLESTAFF, 1);
+		Map<Integer, Integer> worn = new HashMap<>();
+		GuideState probe = player(70).bank(Map.of()).build();
+		for (LoadoutPlan.GearLine g : LoadoutPlan.of(PvmGuides.forContent("barrows"), probe, PRICES).getGear())
+		{
+			if (!g.getSlot().equals("magic weapon"))
+			{
+				worn.put(g.getItemId(), 1);
+			}
+		}
+		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).inventory(inv).worn(worn)
+			.location(new WorldPoint(3575, 3298, 0)).tripStocked(true);
+		// Holding the whip with the staff in the bag counts as ready, and Dharok wants the staff
+		PvmStep step = step("barrows", b.build());
+		assertEquals("Dig into Dharok's mound", step.getTitle());
+		assertEquals(ItemHighlight.EQUIP, step.getItemHighlights().get(ItemID.SMOKE_BATTLESTAFF));
+		assertTrue(step.getLines().toString(), step.getLines().stream().anyMatch(l -> l.contains("Wield your Smoke")));
+
+		// Ahrim in view while holding the staff: swap back to melee
+		Map<Integer, Integer> inv2 = new HashMap<>(inv);
+		inv2.remove(ItemID.SMOKE_BATTLESTAFF);
+		Map<Integer, Integer> worn2 = new HashMap<>(worn);
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent("barrows"), b.build(), PRICES);
+		int weapon = plan.getGear().stream().filter(g -> g.getSlot().equals("weapon")).findFirst().get().getItemId();
+		worn2.remove(weapon);
+		inv2.put(weapon, 1);
+		worn2.put(ItemID.SMOKE_BATTLESTAFF, 1);
+		step = step("barrows", player(70).bank(Map.of()).inventory(inv2).worn(worn2)
+			.location(new WorldPoint(3557, 9703, 3)).npc("ahrim the blighted", 1).build());
+		assertEquals(PvmStep.Kind.FIGHT, step.getKind());
+		assertEquals(ItemHighlight.EQUIP, step.getItemHighlights().get(weapon));
 	}
 
 	@Test

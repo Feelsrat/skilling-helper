@@ -242,7 +242,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 					trackedItems.add(id);
 				}
 			}
-			for (Supply s : g.getSupplies())
+			for (Supply s : g.allSupplies())
 			{
 				for (int id : s.allIds())
 				{

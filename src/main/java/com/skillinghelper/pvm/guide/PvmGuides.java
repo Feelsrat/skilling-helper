@@ -253,7 +253,9 @@ public final class PvmGuides
 
 		PvmGuide.builder()
 			.contentId("barrows")
-			.gear(GearSets.melee())
+			.gear(GearSets.with(GearSets.melee(), Barrows.STAFF))
+			.levelSupplies(Barrows::runes)
+			.possibleSupplies(Barrows.RUNES)
 			.budget(5_000_000)
 			.supply(Supplies.spade())
 			.supply(Supplies.prayerPotions(6))
@@ -268,7 +270,10 @@ public final class PvmGuides
 				.notes(Barrows.notes())
 				.live(Barrows::progress)
 				.ignoreWhen(Barrows::looted)
-				.tip("Melee works on all six. Pray Protect from Melee for Dharok, Guthan, Torag and Verac, "
+				.wield(Barrows::fightWeapon)
+				.tip("Five brothers are weak to Magic: bring an air staff and the runes for your best wind spell, plus "
+					+ "your melee weapon for Ahrim. The guide tells you which one to hold for each brother.")
+				.tip("Pray Protect from Melee for Dharok, Guthan, Torag and Verac, "
 					+ "Protect from Missiles for Karil and Protect from Magic for Ahrim.")
 				.tip("Prayer drains slowly in the crypts and tunnels, so drink a dose when it's low.")
 				.tip("The guide marks the way through the tunnels and outlines the right answer to each door puzzle.")
@@ -1097,6 +1102,83 @@ public final class PvmGuides
 			"Verac attacks with Melee and some of his hits go through armour and prayer. Weak to Magic.",
 		};
 
+		/**
+		 * An air staff to swap to for the brothers weak to Magic (all but Ahrim). Wind spells hit their elemental
+		 * weakness and the staff pays for the air runes. Magic level is the spell's: Wind Bolt needs 29.
+		 */
+		static final GearSlot STAFF = GearSlot.swap("magic weapon",
+			buy("Smoke battlestaff", Skill.MAGIC, 40, 0, true, ItemID.SMOKE_BATTLESTAFF),
+			buy("Mystic air staff", Skill.MAGIC, 40, 0, true, ItemID.MYSTIC_AIR_STAFF),
+			buy("Air battlestaff", Skill.MAGIC, 30, 0, true, ItemID.AIR_BATTLESTAFF),
+			buy("Staff of air", Skill.MAGIC, 29, 0, false, ItemID.STAFF_OF_AIR));
+
+		/**
+		 * The wind spells by Magic level, best first, with the rune they use besides air and how many to bring
+		 * for five brothers plus a few tunnel monsters.
+		 */
+		private static final Object[][] SPELLS = {
+			{62, "Wind Wave", Supply.stack("Blood runes", 100, Option.of("Blood runes", ItemID.BLOODRUNE))},
+			{41, "Wind Blast", Supply.stack("Death runes", 150, Option.of("Death runes", ItemID.DEATHRUNE))},
+			{29, "Wind Bolt", Supply.stack("Chaos runes", 200, Option.of("Chaos runes", ItemID.CHAOSRUNE))},
+		};
+
+		static final List<Supply> RUNES = List.of((Supply) SPELLS[0][2], (Supply) SPELLS[1][2],
+			(Supply) SPELLS[2][2]);
+
+		private static Object[] spell(GuideState s)
+		{
+			for (Object[] spell : SPELLS)
+			{
+				if (s.level(Skill.MAGIC) >= (int) spell[0])
+				{
+					return spell;
+				}
+			}
+			return null;
+		}
+
+		static List<Supply> runes(GuideState s)
+		{
+			Object[] spell = spell(s);
+			if (spell == null)
+			{
+				return List.of();
+			}
+			Supply runes = (Supply) spell[2];
+			return List.of(runes.withRestockBelow(runes.getAmount() / 4).note("For " + spell[1]));
+		}
+
+		/**
+		 * The weapon to hold for this brother: melee for Ahrim, the air staff for the rest. Null (any weapon) when
+		 * the player can't cast a wind spell yet.
+		 */
+		static WeaponSwap weaponFor(GuideState s, int brother)
+		{
+			Object[] spell = spell(s);
+			if (brother < 0 || spell == null)
+			{
+				return null;
+			}
+			if (brother == 0)
+			{
+				return new WeaponSwap(GearSets.MELEE_WEAPON, "Ahrim is weak to Melee", null);
+			}
+			return new WeaponSwap(STAFF, shortName(brother) + " is weak to Magic",
+				"Autocast " + spell[1] + " on your staff (combat tab).");
+		}
+
+		static WeaponSwap fightWeapon(GuideState s)
+		{
+			for (int i = 0; i < NAMES.size(); i++)
+			{
+				if (s.npc(NAMES.get(i)) > 0)
+				{
+					return weaponFor(s, i);
+				}
+			}
+			return null;
+		}
+
 		private static final Location CHEST_ROOM = Location.of("the chest room", 3551, 9695, 0, 4);
 		private static final WorldPoint BARROWS = new WorldPoint(3565, 3289, 0);
 		private static final String FEARLESS = "Yeah I'm fearless!";
@@ -1279,6 +1361,7 @@ public final class PvmGuides
 				.title("Search the sarcophagus")
 				.when(Barrows::knownCrypt)
 				.committed(true)
+				.wield(s -> weaponFor(s, s.getCrypt()))
 				.live(s -> withProgress(s, List.of(
 					"Search the outlined sarcophagus: " + shortName(s.getCrypt()) + " climbs out. Kill him, then "
 						+ "climb the stairs.",
@@ -1303,6 +1386,7 @@ public final class PvmGuides
 				.title("Open the chest")
 				.when(s -> inTunnels(s) && s.getTunnel() != null && s.getTunnel().atChest())
 				.committed(true)
+				.wield(s -> tunnelBrother(s) < 0 || killed(s, tunnelBrother(s)) ? null : weaponFor(s, tunnelBrother(s)))
 				.live(s ->
 				{
 					int last = tunnelBrother(s);
@@ -1359,6 +1443,7 @@ public final class PvmGuides
 					.title("Dig into " + MOUNDS.get(i).getName())
 					.when(s -> nextMound(s) == b)
 					.place(MOUNDS.get(i))
+					.wield(s -> weaponFor(s, b))
 					.tiles(s -> List.of(MOUNDS.get(b).getPoint()))
 					.line("Stand on the marked tile and click your spade (outlined) to dig.")
 					.line(STYLES[i])
@@ -1374,6 +1459,7 @@ public final class PvmGuides
 					.title("Enter the tunnel from " + MOUNDS.get(i).getName())
 					.when(s -> tunnelBrother(s) == b)
 					.place(MOUNDS.get(i))
+					.wield(s -> weaponFor(s, b))
 					.tiles(s -> List.of(MOUNDS.get(b).getPoint()))
 					.line("Last one: this mound has the tunnel. Stand on the marked tile and dig with your spade.")
 					.line("Then search the sarcophagus and click \"" + FEARLESS + "\".")

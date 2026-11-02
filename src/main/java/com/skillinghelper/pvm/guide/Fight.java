@@ -53,6 +53,11 @@ public class Fight
 	 */
 	@Builder.Default
 	Predicate<GuideState> ignoreWhen = s -> false;
+	/**
+	 * The weapon to fight the boss in view with, e.g. the one a Barrows brother is weak to; null for any.
+	 */
+	@Builder.Default
+	Function<GuideState, WeaponSwap> wield = s -> null;
 
 	@Value
 	public static class Add

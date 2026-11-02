@@ -48,6 +48,11 @@ public class Stage
 	@Builder.Default
 	Function<GuideState, WorldPoint> objectAt = s -> null;
 	/**
+	 * The weapon to have in hand for this stage, e.g. the one a Barrows brother is weak to; null for any.
+	 */
+	@Builder.Default
+	Function<GuideState, WeaponSwap> wield = s -> null;
+	/**
 	 * Text of the dialogue option to click when it comes up, e.g. "Yeah I'm fearless!".
 	 */
 	String dialogOption;
