@@ -383,6 +383,22 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
 
+	/**
+	 * Another plugin in this jar (Money Making) asked to run one method: open its skill with that method chosen.
+	 */
+	@Subscribe
+	public void onOpenMethodRequest(OpenMethodRequest e)
+	{
+		Method method = guides.byId(e.getMethodId());
+		if (method == null || client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+		settings.setForcedMethod(method.getSkill(), method.getId());
+		selectSkill(method.getSkill());
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
+	}
+
 	// ---- Panel callbacks (Swing thread) ----
 
 	@Override

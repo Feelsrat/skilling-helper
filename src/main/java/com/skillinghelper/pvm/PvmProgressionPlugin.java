@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm;
 
 import com.google.inject.Provides;
+import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.engine.PriceLookup;
@@ -556,6 +557,23 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		configManager.setRSProfileConfiguration(GROUP, KEY_KILL_COUNTS, killCounts.entrySet().stream()
 			.map(en -> en.getKey() + ":" + en.getValue())
 			.collect(Collectors.joining(",")));
+	}
+
+	/**
+	 * Another plugin in this jar (Money Making) asked to run the guide for one boss or raid.
+	 */
+	@Subscribe
+	public void onStartPvmGuideRequest(StartPvmGuideRequest e)
+	{
+		for (PvmContent c : PvmLadder.ALL)
+		{
+			if (c.getId().equals(e.getContentId()))
+			{
+				onStartGuide(c);
+				SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
+				return;
+			}
+		}
 	}
 
 	// ---- Panel callbacks (Swing thread) ----

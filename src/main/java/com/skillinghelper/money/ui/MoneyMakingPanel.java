@@ -1,0 +1,548 @@
+package com.skillinghelper.money.ui;
+
+import com.skillinghelper.engine.Format;
+import com.skillinghelper.money.MoneyGuide;
+import com.skillinghelper.money.MoneyOption;
+import com.skillinghelper.money.MoneyStep;
+import com.skillinghelper.money.data.MoneyItem;
+import com.skillinghelper.money.data.MoneyMethod;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeSet;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.runelite.api.Skill;
+import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.FontManager;
+import net.runelite.client.ui.PluginPanel;
+
+/**
+ * Side panel: the wiki's money making methods the player can do, best gp/hr first, with filters. Clicking one shows
+ * its requirements, supplies and the wiki's instructions, and starts its guide.
+ */
+public class MoneyMakingPanel extends PluginPanel
+{
+	private static final int TEXT_WIDTH = 165;
+	private static final int PAGE_SIZE = 40;
+	private static final Color GOOD = new Color(80, 200, 80);
+	private static final Color WARN = new Color(255, 170, 0);
+	private static final Color BAD = new Color(230, 80, 80);
+	private static final Color HINT = new Color(110, 170, 255);
+	private static final Color MUTED = new Color(150, 150, 150);
+	private static final String ALL = "All categories";
+	private static final String ANY_EFFORT = "Any effort";
+
+	public interface Listener
+	{
+		void onStartGuide(String page);
+
+		void onStopGuide();
+
+		void onHaveSupplies();
+
+		void onOpenWiki(String path);
+	}
+
+	private final Listener listener;
+	private final JComboBox<String> category = new JComboBox<>();
+	private final JComboBox<String> effort = new JComboBox<>(new String[]{ANY_EFFORT, "Low", "Moderate", "High"});
+	private final JCheckBox showLocked = new JCheckBox("Show ones I can't do yet");
+	private final JTextField search = new JTextField();
+	private final JPanel guideBox = new JPanel();
+	private final JPanel list = new JPanel();
+
+	private List<MoneyOption> options = Collections.emptyList();
+	private Map<String, String> fullGuides = Collections.emptyMap();
+	private String selected;
+	private String running;
+	private MoneyStep step;
+	private int shown = PAGE_SIZE;
+	private boolean updating;
+
+	public MoneyMakingPanel(Listener listener)
+	{
+		super(false);
+		this.listener = listener;
+		setLayout(new BorderLayout());
+		setBorder(new EmptyBorder(8, 8, 8, 8));
+		setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+		JPanel header = new JPanel();
+		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+		header.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		header.setBorder(new EmptyBorder(0, 0, 6, 0));
+		JLabel title = new JLabel("Money Making");
+		title.setFont(FontManager.getRunescapeBoldFont());
+		title.setForeground(Color.WHITE);
+		header.add(left(title));
+		header.add(Box.createVerticalStrut(4));
+		header.add(text("OSRS Wiki money making guides, best gp/hr at today's prices first.", MUTED));
+		header.add(Box.createVerticalStrut(6));
+
+		category.addItem(ALL);
+		category.addActionListener(e -> filtersChanged());
+		effort.addActionListener(e -> filtersChanged());
+		showLocked.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		showLocked.setForeground(Color.LIGHT_GRAY);
+		showLocked.setFont(FontManager.getRunescapeSmallFont());
+		showLocked.addActionListener(e -> filtersChanged());
+		search.setToolTipText("Search by name, item or skill");
+		search.getDocument().addDocumentListener(new DocumentListener()
+		{
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				filtersChanged();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+				filtersChanged();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+				filtersChanged();
+			}
+		});
+		JPanel combos = new JPanel(new GridLayout(1, 2, 4, 0));
+		combos.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		combos.add(category);
+		combos.add(effort);
+		header.add(full(combos));
+		header.add(Box.createVerticalStrut(4));
+		header.add(full(search));
+		header.add(left(showLocked));
+		add(header, BorderLayout.NORTH);
+
+		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
+		guideBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		guideBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 6, 6)));
+		guideBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		guideBox.setVisible(false);
+
+		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+		list.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		JPanel body = new JPanel();
+		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		body.add(guideBox);
+		body.add(Box.createVerticalStrut(6));
+		body.add(list);
+		JPanel wrapper = new JPanel(new BorderLayout());
+		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		wrapper.add(body, BorderLayout.NORTH);
+		JScrollPane scroll = new JScrollPane(wrapper);
+		scroll.setBorder(null);
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		add(scroll, BorderLayout.CENTER);
+
+		list.add(text("Log in to see the money makers you can do.", MUTED));
+	}
+
+	/**
+	 * Shows the latest ranking. Runs on the Swing thread.
+	 *
+	 * @param fullGuides plugin name with a click-by-click guide, by wiki page
+	 */
+	public void update(List<MoneyOption> options, Map<String, String> fullGuides)
+	{
+		this.options = options;
+		this.fullGuides = fullGuides;
+		updating = true;
+		Object picked = category.getSelectedItem();
+		TreeSet<String> categories = new TreeSet<>();
+		for (MoneyOption o : options)
+		{
+			categories.add(o.getMethod().mainCategory());
+		}
+		category.removeAllItems();
+		category.addItem(ALL);
+		categories.forEach(category::addItem);
+		category.setSelectedItem(picked != null && categories.contains(picked) ? picked : ALL);
+		updating = false;
+		rebuild();
+	}
+
+	/**
+	 * Shows the running guide's step, or hides the guide box when {@code step} is null. Runs on the Swing thread.
+	 */
+	public void updateStep(String page, MoneyStep step)
+	{
+		String nowRunning = step == null ? null : page;
+		boolean changed = !Objects.equals(nowRunning, running);
+		running = nowRunning;
+		this.step = step;
+		fillGuide();
+		if (changed)
+		{
+			if (nowRunning != null)
+			{
+				selected = nowRunning;
+			}
+			rebuild();
+		}
+	}
+
+	private void fillGuide()
+	{
+		guideBox.removeAll();
+		guideBox.setVisible(step != null);
+		if (step != null)
+		{
+			JLabel title = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>"
+				+ escape(step.getTitle()) + "</body></html>");
+			title.setFont(FontManager.getRunescapeBoldFont());
+			title.setForeground(Color.WHITE);
+			guideBox.add(left(title));
+			for (String line : step.getLines())
+			{
+				guideBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+			}
+			guideBox.add(Box.createVerticalStrut(4));
+			if (step.getKind() == MoneyStep.Kind.SUPPLIES)
+			{
+				guideBox.add(button("I have everything", listener::onHaveSupplies));
+			}
+			guideBox.add(button("Stop guide", listener::onStopGuide));
+		}
+		guideBox.revalidate();
+		guideBox.repaint();
+	}
+
+	private void filtersChanged()
+	{
+		if (!updating)
+		{
+			shown = PAGE_SIZE;
+			rebuild();
+		}
+	}
+
+	private void rebuild()
+	{
+		list.removeAll();
+		List<MoneyOption> visible = new ArrayList<>();
+		for (MoneyOption o : options)
+		{
+			if (matches(o))
+			{
+				visible.add(o);
+			}
+		}
+		if (options.isEmpty())
+		{
+			list.add(text("Log in to see the money makers you can do.", MUTED));
+		}
+		else if (visible.isEmpty())
+		{
+			list.add(text("Nothing matches. Try another category, or show the ones you can't do yet.", MUTED));
+		}
+		else
+		{
+			long available = visible.stream().filter(MoneyOption::isAvailable).count();
+			list.add(text(available + " you can do" + (visible.size() > available
+				? ", " + (visible.size() - available) + " not yet" : "") + ":", MUTED));
+			list.add(Box.createVerticalStrut(4));
+		}
+		for (int i = 0; i < Math.min(shown, visible.size()); i++)
+		{
+			list.add(row(visible.get(i)));
+			list.add(Box.createVerticalStrut(3));
+		}
+		if (visible.size() > shown)
+		{
+			list.add(button("Show more (" + (visible.size() - shown) + " left)", () ->
+			{
+				shown += PAGE_SIZE;
+				rebuild();
+			}));
+		}
+		list.revalidate();
+		list.repaint();
+	}
+
+	private boolean matches(MoneyOption o)
+	{
+		MoneyMethod m = o.getMethod();
+		if (!o.isAvailable() && !showLocked.isSelected() && !m.getPage().equals(running))
+		{
+			return false;
+		}
+		Object cat = category.getSelectedItem();
+		if (cat != null && !ALL.equals(cat) && !cat.equals(m.mainCategory()))
+		{
+			return false;
+		}
+		Object eff = effort.getSelectedItem();
+		if (eff != null && !ANY_EFFORT.equals(eff) && !eff.equals(m.getIntensity()))
+		{
+			return false;
+		}
+		String q = search.getText().trim().toLowerCase(Locale.ROOT);
+		if (q.isEmpty())
+		{
+			return true;
+		}
+		if (m.getName().toLowerCase(Locale.ROOT).contains(q)
+			|| (m.getSkillCategory() != null && m.getSkillCategory().toLowerCase(Locale.ROOT).contains(q)))
+		{
+			return true;
+		}
+		for (MoneyItem item : m.getOutputs())
+		{
+			if (item.getName().toLowerCase(Locale.ROOT).contains(q))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private JComponent row(MoneyOption o)
+	{
+		MoneyMethod m = o.getMethod();
+		boolean open = m.getPage().equals(selected);
+		JPanel row = new JPanel();
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setBackground(open ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
+		Color edge = m.getPage().equals(running) ? HINT : o.isAvailable() ? GOOD : BAD;
+		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel name = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>" + escape(m.getName())
+			+ "</body></html>");
+		name.setFont(FontManager.getRunescapeSmallFont());
+		name.setForeground(Color.WHITE);
+		row.add(left(name));
+		row.add(text(profitText(o) + " · " + summary(m), o.getProfit() > 0 ? GOOD : BAD, TEXT_WIDTH - 15));
+		if (fullGuides.containsKey(m.getPage()))
+		{
+			row.add(text("Full guide in " + fullGuides.get(m.getPage()), HINT, TEXT_WIDTH - 15));
+		}
+		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		row.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				selected = Objects.equals(selected, m.getPage()) ? null : m.getPage();
+				rebuild();
+			}
+		});
+		if (open)
+		{
+			detail(row, o);
+		}
+		row.setMaximumSize(new Dimension(Integer.MAX_VALUE, row.getPreferredSize().height));
+		return row;
+	}
+
+	private void detail(JPanel box, MoneyOption o)
+	{
+		MoneyMethod m = o.getMethod();
+		box.add(Box.createVerticalStrut(4));
+		boolean isRunning = m.getPage().equals(running);
+		String full = fullGuides.get(m.getPage());
+		if (isRunning)
+		{
+			box.add(button("Stop guide", listener::onStopGuide));
+		}
+		else
+		{
+			box.add(button(full != null ? "Start (opens " + full + ")" : "Start guide",
+				() -> listener.onStartGuide(m.getPage())));
+		}
+		box.add(button("Open wiki page", () -> listener.onOpenWiki(m.wikiPath())));
+		box.add(Box.createVerticalStrut(4));
+
+		if (m.isRecurring())
+		{
+			box.add(text("One run takes about " + Format.hours(m.getRunHours()) + ", every "
+				+ Format.hours(m.getEveryHours()) + ".", MUTED));
+		}
+		if (o.getStartCost() > 0)
+		{
+			box.add(text("Supplies cost about " + Format.gp(o.getStartCost()) + (m.isRecurring() ? " per run"
+				: " an hour") + ".", MUTED));
+		}
+
+		box.add(section("Requirements"));
+		if (m.isMembers())
+		{
+			box.add(check("Members", !o.getBlockers().contains("Members only")));
+		}
+		for (Map.Entry<Skill, Integer> e : m.getSkills().entrySet())
+		{
+			box.add(check(e.getValue() + " " + e.getKey().getName(), o.getBlockers().stream()
+				.noneMatch(b -> b.startsWith("Needs " + e.getValue() + " " + e.getKey().getName()))));
+		}
+		for (String quest : m.getQuests())
+		{
+			if (o.getUnchecked().contains(quest))
+			{
+				box.add(text("? " + quest, WARN, TEXT_WIDTH - 15));
+			}
+			else
+			{
+				box.add(check(quest, !o.getBlockers().contains("Needs " + quest)));
+			}
+		}
+		if (m.getOther() != null)
+		{
+			box.add(text("? " + m.getOther(), WARN, TEXT_WIDTH - 15));
+		}
+		if (m.getSkills().isEmpty() && m.getQuests().isEmpty() && m.getOther() == null && !m.isMembers())
+		{
+			box.add(text("None", MUTED));
+		}
+
+		if (m.getLocationName() != null)
+		{
+			box.add(section("Where"));
+			box.add(text(m.getLocationName(), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		}
+		items(box, "Bring" + (m.isRecurring() ? " (per run)" : " (per hour)"), m.getInputs());
+		items(box, "Makes" + (m.isRecurring() ? " (per run)" : " (per hour)"), m.getOutputs());
+
+		List<String> sentences = MoneyGuide.sentences(m.getDetails());
+		if (!sentences.isEmpty())
+		{
+			box.add(section("How (from the wiki)"));
+			for (String s : sentences)
+			{
+				box.add(text(s, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+				box.add(Box.createVerticalStrut(2));
+			}
+		}
+	}
+
+	private void items(JPanel box, String heading, List<MoneyItem> items)
+	{
+		if (items.isEmpty())
+		{
+			return;
+		}
+		box.add(section(heading));
+		List<MoneyItem> sorted = new ArrayList<>(items);
+		sorted.sort(Comparator.comparingDouble((MoneyItem i) -> i.getQuantity() * i.getWikiValue()).reversed());
+		int n = Math.min(6, sorted.size());
+		for (int i = 0; i < n; i++)
+		{
+			MoneyItem item = sorted.get(i);
+			box.add(text(quantity(item.getQuantity()) + " x " + item.getName(), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		}
+		if (sorted.size() > n)
+		{
+			box.add(text("...and " + (sorted.size() - n) + " more on the wiki page", MUTED));
+		}
+	}
+
+	private static String quantity(double q)
+	{
+		if (q >= 10 || q == Math.rint(q))
+		{
+			return String.format("%,d", Math.round(q));
+		}
+		return String.format("%.2f", q);
+	}
+
+	private static String profitText(MoneyOption o)
+	{
+		MoneyMethod m = o.getMethod();
+		return m.isRecurring() ? Format.gp(o.getProfit()) + " / run" : Format.gp(o.getProfit()) + "/hr";
+	}
+
+	private static String summary(MoneyMethod m)
+	{
+		String s = m.getSkillCategory() != null ? m.getSkillCategory() : m.mainCategory();
+		if (m.getIntensity() != null)
+		{
+			s += " · " + m.getIntensity() + " effort";
+		}
+		return m.isMembers() ? s : s + " · F2P";
+	}
+
+	private static JLabel section(String s)
+	{
+		JLabel l = new JLabel(s);
+		l.setFont(FontManager.getRunescapeBoldFont());
+		l.setForeground(Color.WHITE);
+		l.setBorder(new EmptyBorder(6, 0, 2, 0));
+		return left(l);
+	}
+
+	private static JLabel check(String s, boolean ok)
+	{
+		return text((ok ? "✔ " : "✘ ") + s, ok ? GOOD : BAD, TEXT_WIDTH - 15);
+	}
+
+	private static JLabel text(String s, Color color)
+	{
+		return text(s, color, TEXT_WIDTH);
+	}
+
+	private static JLabel text(String s, Color color, int width)
+	{
+		JLabel l = new JLabel("<html><body style='width:" + width + "px'>" + escape(s) + "</body></html>");
+		l.setForeground(color);
+		l.setFont(FontManager.getRunescapeSmallFont());
+		l.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return l;
+	}
+
+	private static String escape(String s)
+	{
+		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+
+	private static JButton button(String label, Runnable action)
+	{
+		JButton b = new JButton(label);
+		b.addActionListener(e -> action.run());
+		return full(b);
+	}
+
+	private static <T extends JComponent> T left(T c)
+	{
+		c.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return c;
+	}
+
+	private static <T extends JComponent> T full(T c)
+	{
+		c.setAlignmentX(Component.LEFT_ALIGNMENT);
+		c.setMaximumSize(new Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
+		return c;
+	}
+}

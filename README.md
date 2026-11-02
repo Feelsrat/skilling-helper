@@ -114,12 +114,33 @@ Recommended levels are the comfortable levels commonly suggested in wiki guides,
 shows information before you go in: it has no in-fight helpers (no attack, prayer or mechanic indicators), which
 RuneLite doesn't allow for bosses.
 
+## Money Making (third plugin)
+
+The jar also contains **Money Making**, its own plugin and panel (coin icon), all about gold rather than xp. It lists
+every method in the [OSRS Wiki money making guide](https://oldschool.runescape.wiki/w/Money_making_guide) (skilling,
+combat, collecting, processing and recurring ones like herb runs and daily shop stock), keeps only the ones your
+levels, quests and world allow, and sorts them by gp/hr at today's GE prices.
+
+- **Filters**: category, effort (the wiki's intensity), a search box (name, skill or item made), and a switch to also
+  show the ones you can't do yet with what's missing.
+- **Details** for each method: requirements ticked off against your account (diaries and other unlocks the plugin
+  can't read are shown as "?"), where it's done, what to bring and what it makes per hour, and the wiki's own
+  instructions.
+- **Start guide**: step by step, get the supplies (outlined in the bank), walk to the spot (hint arrow and Shortest
+  Path line), then the wiki's instructions with the shopkeeper outlined for shop runs.
+- **Full guides**: when Skilling Helper or PvM Progression has a click-by-click guide for the method (e.g. Barrows,
+  Zulrah, Vorkath, cleaning herbs), Start opens that one instead. Turn this off with "Use full guides" in the settings.
+
+The method list is bundled with the plugin (built from the wiki by `tools/money/build_money_methods.py`); the plugin
+itself never contacts the wiki. Profits are the wiki's figures moved by how much each item's GE price has changed
+since, using RuneLite's own GE prices.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
 fetches the wiki's single bulk price list (`prices.runescape.wiki/api/v1/osrs/latest`) at most once every 5 minutes
-while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks. PvM Progression makes no
-network requests.
+while you're logged in, with a User-Agent that identifies the plugin, as the wiki asks. PvM Progression and Money
+Making make no network requests.
 
 ## Updating on Steam Deck
 
