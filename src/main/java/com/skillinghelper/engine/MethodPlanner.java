@@ -7,9 +7,11 @@ import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.function.ToIntFunction;
 import net.runelite.api.Experience;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
@@ -44,6 +46,48 @@ public final class MethodPlanner
 		int level = skill == null ? 1 : state.level(skill);
 		long xpNeeded = skill == null ? 0 : xpBetween(state.xp(skill), targetLevel);
 		return rankAt(methods, state, pref, level, xpNeeded);
+	}
+
+	/**
+	 * The method that earns the most gold per hour of everything the player can do right now: unlocked, affordable
+	 * and making a profit. Each method is costed over the climb to its skill's goal. Null when nothing makes money.
+	 */
+	public MethodOption mostProfitable(Collection<Method> methods, PlayerState state, ToIntFunction<Skill> goal)
+	{
+		MethodOption best = null;
+		for (Method m : methods)
+		{
+			Skill skill = m.getSkill();
+			int level = state.level(skill);
+			long xpNeeded = xpBetween(state.xp(skill), Math.max(level + 1, goal.applyAsInt(skill)));
+			MethodOption option = evaluate(m, state, TrainingPreference.PROFIT, level, xpNeeded);
+			if (!option.isAvailable() || !option.isAffordable() || option.gpPerHour() <= 0)
+			{
+				continue;
+			}
+			if (best == null || option.gpPerHour() > best.gpPerHour())
+			{
+				best = option;
+			}
+		}
+		return best;
+	}
+
+	/**
+	 * The player's lowest-level skill among {@code skills}, breaking ties by the least xp. Null if none are given.
+	 */
+	public static Skill lowestSkill(Collection<Skill> skills, PlayerState state)
+	{
+		Skill lowest = null;
+		for (Skill s : skills)
+		{
+			if (lowest == null || state.level(s) < state.level(lowest)
+				|| (state.level(s) == state.level(lowest) && state.xp(s) < state.xp(lowest)))
+			{
+				lowest = s;
+			}
+		}
+		return lowest;
 	}
 
 	/**

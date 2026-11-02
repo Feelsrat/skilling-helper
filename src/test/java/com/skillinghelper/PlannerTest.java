@@ -117,4 +117,44 @@ public class PlannerTest
 		PlayerState s = state(Skill.MINING, 40, true, ItemCounts.EMPTY);
 		assertTrue(planner.plan(guides.methods(Skill.MINING), s, TrainingPreference.RECOMMENDED, 40, null).isEmpty());
 	}
+
+	@Test
+	public void lowestSkillPicksLowestLevelThenLeastXp()
+	{
+		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
+		Map<Skill, Integer> xp = new EnumMap<>(Skill.class);
+		levels.put(Skill.MINING, 30);
+		xp.put(Skill.MINING, Experience.getXpForLevel(30));
+		levels.put(Skill.FISHING, 12);
+		xp.put(Skill.FISHING, Experience.getXpForLevel(12) + 50);
+		levels.put(Skill.COOKING, 12);
+		xp.put(Skill.COOKING, Experience.getXpForLevel(12));
+		PlayerState s = PlayerState.builder().levels(levels).xp(xp).build();
+		assertEquals(Skill.COOKING,
+			MethodPlanner.lowestSkill(java.util.Arrays.asList(Skill.MINING, Skill.FISHING, Skill.COOKING), s));
+	}
+
+	@Test
+	public void mostProfitablePicksAnAvailableMoneyMaker()
+	{
+		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
+		Map<Skill, Integer> xp = new EnumMap<>(Skill.class);
+		for (Skill skill : Skill.values())
+		{
+			levels.put(skill, 60);
+			xp.put(skill, Experience.getXpForLevel(60));
+		}
+		PlayerState s = PlayerState.builder().levels(levels).xp(xp).bank(ItemCounts.of(ItemID.COINS, 10_000_000))
+			.freeInventorySlots(28).membersWorld(true).build();
+		MethodPlanner real = new MethodPlanner(id -> 100);
+		MethodOption best = real.mostProfitable(guides.all(), s, skill -> 70);
+		org.junit.Assert.assertNotNull(best);
+		assertTrue(best.isAvailable());
+		assertTrue(best.gpPerHour() > 0);
+		for (Method m : guides.all())
+		{
+			MethodOption other = real.mostProfitable(java.util.Collections.singletonList(m), s, skill -> 70);
+			assertTrue(other == null || other.gpPerHour() <= best.gpPerHour());
+		}
+	}
 }

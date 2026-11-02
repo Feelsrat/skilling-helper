@@ -36,6 +36,8 @@ import javax.swing.JSpinner;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.runelite.api.Experience;
 import net.runelite.api.Skill;
 import net.runelite.client.game.SkillIconManager;
@@ -55,9 +57,28 @@ public class SkillingHelperPanel extends PluginPanel
 	private static final Color HINT = new Color(110, 170, 255);
 	private static final Color GOLD = new Color(255, 215, 90);
 
+	/**
+	 * Dropdown entries that pick the skill for the player.
+	 */
+	@Getter
+	@RequiredArgsConstructor
+	public enum QuickPick
+	{
+		BEST_GOLD("Best gold/hr", "Opens the guide that earns the most gold per hour with your current stats"),
+		LOWEST_SKILL("Lowest skill", "Opens the guide for your lowest-level skill");
+
+		private final String label;
+		private final String description;
+	}
+
 	public interface Listener
 	{
 		void onSkillSelected(Skill skill);
+
+		/**
+		 * Let the plugin choose the skill (and for gold, the method) to train.
+		 */
+		void onQuickPick(QuickPick pick);
 
 		/**
 		 * Turn the guide off: no steps, paths or highlights until a skill is picked again.
@@ -79,7 +100,7 @@ public class SkillingHelperPanel extends PluginPanel
 
 	private final Listener listener;
 	private final SkillIconManager skillIcons;
-	private final JComboBox<Skill> skillBox = new JComboBox<>();
+	private final JComboBox<Object> skillBox = new JComboBox<>();
 	private final JButton stopButton = new JButton("Stop");
 	private final SpinnerNumberModel targetModel = new SpinnerNumberModel(2, 2, Experience.MAX_REAL_LEVEL, 1);
 	private final JSpinner targetSpinner = new JSpinner(targetModel);
@@ -136,9 +157,13 @@ public class SkillingHelperPanel extends PluginPanel
 		return row;
 	}
 
-	private JComboBox<Skill> skillPicker()
+	private JComboBox<Object> skillPicker()
 	{
 		skillBox.addItem(null);
+		for (QuickPick pick : QuickPick.values())
+		{
+			skillBox.addItem(pick);
+		}
 		for (Skill s : Skill.values())
 		{
 			skillBox.addItem(s);
@@ -150,10 +175,22 @@ public class SkillingHelperPanel extends PluginPanel
 				boolean focus)
 			{
 				super.getListCellRendererComponent(list, value, index, selected, focus);
+				setToolTipText(null);
 				if (value == null)
 				{
 					setText("Choose a skill...");
 					setIcon(null);
+				}
+				else if (value instanceof QuickPick)
+				{
+					QuickPick pick = (QuickPick) value;
+					setText(pick.getLabel());
+					setIcon(null);
+					setToolTipText(pick.getDescription());
+					if (!selected)
+					{
+						setForeground(GOLD);
+					}
 				}
 				else
 				{
@@ -166,9 +203,20 @@ public class SkillingHelperPanel extends PluginPanel
 		});
 		skillBox.addActionListener(e ->
 		{
-			if (!updating)
+			if (updating)
 			{
-				listener.onSkillSelected((Skill) skillBox.getSelectedItem());
+				return;
+			}
+			Object item = skillBox.getSelectedItem();
+			if (item instanceof QuickPick)
+			{
+				// The plugin opens the skill it picks; resync the dropdown to it on the next update
+				lastSignature = null;
+				listener.onQuickPick((QuickPick) item);
+			}
+			else
+			{
+				listener.onSkillSelected((Skill) item);
 			}
 		});
 		return skillBox;

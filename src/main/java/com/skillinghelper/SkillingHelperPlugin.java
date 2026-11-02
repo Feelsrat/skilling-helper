@@ -23,12 +23,14 @@ import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
 import com.skillinghelper.ui.SkillingHelperPanel;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
 import net.runelite.api.GameState;
@@ -390,6 +392,81 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	}
 
 	@Override
+	public void onQuickPick(SkillingHelperPanel.QuickPick pick)
+	{
+		clientThread.invokeLater(() ->
+		{
+			if (client.getGameState() != GameState.LOGGED_IN || !profileLoaded)
+			{
+				return;
+			}
+			if (pick == SkillingHelperPanel.QuickPick.LOWEST_SKILL)
+			{
+				pickLowestSkill();
+			}
+			else if (pick == SkillingHelperPanel.QuickPick.BEST_GOLD)
+			{
+				pickBestGold();
+			}
+		});
+	}
+
+	/**
+	 * Opens the guide for the player's lowest-level skill that has one.
+	 */
+	private void pickLowestSkill()
+	{
+		List<Skill> guided = new ArrayList<>();
+		for (Skill s : Skill.values())
+		{
+			if (guides.hasGuide(s))
+			{
+				guided.add(s);
+			}
+		}
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
+		Skill lowest = MethodPlanner.lowestSkill(guided, state);
+		if (lowest != null)
+		{
+			selectSkill(lowest);
+		}
+	}
+
+	/**
+	 * Looks through every guide for the method that earns the most gold per hour that the player can do now, then
+	 * opens that skill with that method chosen.
+	 */
+	private void pickBestGold()
+	{
+		Set<Quest> allQuests = EnumSet.noneOf(Quest.class);
+		for (Method m : guides.all())
+		{
+			allQuests.addAll(m.getQuests());
+		}
+		Set<Quest> done = EnumSet.noneOf(Quest.class);
+		Set<Quest> started = EnumSet.noneOf(Quest.class);
+		readQuests(allQuests, done, started);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), done, started);
+		planner.setPace(config.ratePace());
+		MethodOption best = planner.mostProfitable(guides.all(), state, s ->
+		{
+			Integer saved = settings.getTarget(s);
+			return saved != null && saved > state.level(s) ? saved
+				: Math.min(Experience.MAX_REAL_LEVEL, state.level(s) + config.defaultTargetOffset());
+		});
+		if (best == null)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
+				"Skilling Helper: none of the guides make money with your current levels, quests and gold.", null);
+			refresh();
+			return;
+		}
+		Skill skill = best.getMethod().getSkill();
+		settings.setForcedMethod(skill, best.getMethod().getId());
+		selectSkill(skill);
+	}
+
+	@Override
 	public void onStopGuide()
 	{
 		clientThread.invokeLater(() ->
@@ -530,16 +607,21 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			// Quests that open up places to do Slayer tasks
 			quests.addAll(SlayerPlaces.get().quests());
 		}
+		readQuests(quests, completedQuests, startedQuests);
+	}
+
+	private void readQuests(Set<Quest> quests, Set<Quest> completed, Set<Quest> started)
+	{
 		for (Quest q : quests)
 		{
 			QuestState state = q.getState(client);
 			if (state == QuestState.FINISHED)
 			{
-				completedQuests.add(q);
+				completed.add(q);
 			}
 			if (state != QuestState.NOT_STARTED)
 			{
-				startedQuests.add(q);
+				started.add(q);
 			}
 		}
 	}
