@@ -161,6 +161,102 @@ public class PvmGuidesTest
 		assertFalse(step.getLines().isEmpty());
 	}
 
+	@Test
+	public void barrowsGoesRoundTheMoundsClockwise()
+	{
+		Map<Integer, Integer> inv = new HashMap<>();
+		inv.put(ItemID.SPADE, 1);
+		inv.put(ItemID._4DOSEPRAYERRESTORE, 6);
+		inv.put(ItemID.TELETAB_BARROWS, 1);
+		inv.put(ItemID.MONKFISH, 20);
+		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).inventory(inv)
+			.location(new WorldPoint(3565, 3289, 0));
+		PvmStep step = step("barrows", wearAll(b).build());
+		assertEquals("Dig into Dharok's mound", step.getTitle());
+		assertEquals(1, step.getTiles().size());
+		b.varbit(VarbitID.BARROWS_KILLED_DHAROK, 1);
+		assertEquals("Dig into Guthan's mound", step("barrows", wearAll(b).build()).getTitle());
+
+		// Far away with a tablet: break it first
+		b.location(VARROCK_SQUARE);
+		step = step("barrows", wearAll(b).build());
+		assertEquals("Teleport to the Barrows", step.getTitle());
+		assertEquals(ItemHighlight.USE, step.getItemHighlights().get(ItemID.TELETAB_BARROWS));
+	}
+
+	@Test
+	public void barrowsCryptStepsFollowTheBrother()
+	{
+		// Guthan's crypt, brother alive
+		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).location(new WorldPoint(3538, 9703, 3)).crypt(2);
+		PvmStep step = step("barrows", b.build());
+		assertEquals("Search the sarcophagus", step.getTitle());
+		assertTrue(step.getLines().get(0).contains("Guthan"));
+		assertTrue(step.getHighlights().stream().anyMatch(t -> "Search".equals(t.getAction())));
+
+		// The brother is up: fight
+		step = step("barrows", b.npc("guthan the infested", 1).build());
+		assertEquals(PvmStep.Kind.FIGHT, step.getKind());
+		assertTrue(step.getLines().stream().anyMatch(l -> l.contains("Weak to Magic")));
+
+		// Killed: climb out
+		b = player(70).bank(Map.of()).location(new WorldPoint(3538, 9703, 3)).crypt(2)
+			.varbit(VarbitID.BARROWS_KILLED_GUTHAN, 1);
+		step = step("barrows", b.build());
+		assertEquals("Climb out of the crypt", step.getTitle());
+		assertTrue(step.getHighlights().stream().anyMatch(t -> "Climb-up".equals(t.getAction())));
+
+		// The tunnel crypt with brothers left: say no and leave
+		b = player(70).bank(Map.of()).location(new WorldPoint(3538, 9703, 3)).crypt(2)
+			.flag(PvmGuides.Barrows.TUNNEL_FLAG + 2);
+		step = step("barrows", b.build());
+		assertEquals("Tunnel crypt: come back last", step.getTitle());
+		assertEquals("No way", step.getDialogOption());
+
+		// ... and once they're all dead, go in
+		for (int v : PvmGuides.Barrows.KILLED)
+		{
+			if (v != VarbitID.BARROWS_KILLED_GUTHAN)
+			{
+				b.varbit(v, 1);
+			}
+		}
+		step = step("barrows", b.build());
+		assertEquals("Go down into the tunnels", step.getTitle());
+		assertEquals("Yeah I'm fearless!", step.getDialogOption());
+	}
+
+	@Test
+	public void barrowsTunnelsFollowTheRouteToTheChest()
+	{
+		WorldPoint door = new WorldPoint(3540, 9690, 0);
+		TunnelRoute route = new TunnelRoute(java.util.List.of(new WorldPoint(3537, 9690, 0),
+			new WorldPoint(3538, 9690, 0), new WorldPoint(3539, 9690, 0), new WorldPoint(3540, 9690, 0),
+			new WorldPoint(3541, 9690, 0)), door, new WorldPoint(3541, 9690, 0));
+		GuideState.GuideStateBuilder b = player(70).bank(Map.of()).location(new WorldPoint(3537, 9690, 0))
+			.tunnel(route);
+		PvmStep step = step("barrows", b.build());
+		assertEquals("Follow the path to the chest", step.getTitle());
+		assertEquals(door, step.getObjectAt());
+		assertEquals(door, step.getDestination().getPoint());
+		assertTrue(step.isLocalRoute());
+		assertEquals(5, step.getTiles().size());
+
+		TunnelRoute atChest = new TunnelRoute(java.util.List.of(new WorldPoint(3550, 9693, 0)), null,
+			new WorldPoint(3550, 9693, 0));
+		step = step("barrows", b.tunnel(atChest).build());
+		assertEquals("Open the chest", step.getTitle());
+
+		// The last brother jumping out of the chest is a fight...
+		step = step("barrows", b.npc("karil the tainted", 1).build());
+		assertEquals(PvmStep.Kind.FIGHT, step.getKind());
+
+		// ...but after looting, brothers from doors aren't worth it: leave
+		step = step("barrows", b.flag(PvmGuides.Barrows.LOOTED_FLAG).build());
+		assertEquals("Leave the tunnels", step.getTitle());
+		assertEquals(ItemHighlight.USE, step.getItemHighlights().get(ItemID.TELETAB_BARROWS));
+	}
+
 	/**
 	 * Wears the best melee gear a level 70 can buy so the loadout counts as ready.
 	 */

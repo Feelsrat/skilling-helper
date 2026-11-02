@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.gameval.ItemID;
+import net.runelite.api.gameval.ObjectID;
 import net.runelite.api.gameval.VarbitID;
 
 /**
@@ -264,11 +265,13 @@ public final class PvmGuides
 			.place(Location.of("the Barrows", 3565, 3289, 20))
 			.fight(Fight.builder()
 				.bosses(Barrows.NAMES)
+				.notes(Barrows.notes())
 				.live(Barrows::progress)
+				.ignoreWhen(Barrows::looted)
 				.tip("Melee works on all six. Pray Protect from Melee for Dharok, Guthan, Torag and Verac, "
 					+ "Protect from Missiles for Karil and Protect from Magic for Ahrim.")
 				.tip("Prayer drains slowly in the crypts and tunnels, so drink a dose when it's low.")
-				.tip("Turn on RuneLite's Barrows plugin: it shows the puzzle door answers in the tunnels.")
+				.tip("The guide marks the way through the tunnels and outlines the right answer to each door puzzle.")
 				.build())
 			.profit(Profit.gp(1_100_000, "Runes, bolt racks and a chance at Barrows armour from each chest"))
 			.build(),
@@ -1037,12 +1040,17 @@ public final class PvmGuides
 	}
 
 	/**
-	 * The six brothers: which have been killed this run, and which one has the tunnel.
+	 * The six brothers: which have been killed this run, which one has the tunnel, and every step of a run from
+	 * digging into the first mound to leaving with the loot.
 	 */
 	public static final class Barrows
 	{
 		public static final int CRYPT_REGION = 14231;
 		public static final String TUNNEL_FLAG = "barrows-tunnel:";
+		/**
+		 * Set once the chest has been looted, until the player is back above ground.
+		 */
+		public static final String LOOTED_FLAG = "barrows-looted";
 
 		static final List<String> NAMES = List.of("Ahrim the Blighted", "Dharok the Wretched", "Guthan the Infested",
 			"Karil the Tainted", "Torag the Corrupted", "Verac the Defiled");
@@ -1063,7 +1071,46 @@ public final class PvmGuides
 			VarbitID.BARROWS_KILLED_KARIL, VarbitID.BARROWS_KILLED_TORAG, VarbitID.BARROWS_KILLED_VERAC,
 		};
 
+		/**
+		 * Each brother's sarcophagus, to tell which crypt the player is in.
+		 */
+		public static final int[] SARCOPHAGI = {
+			ObjectID.BARROW_AHRIM_SARCOPHAGUS, ObjectID.BARROW_DHAROK_SARCOPHAGUS, ObjectID.BARROW_GUTHAN_SARCOPHAGUS,
+			ObjectID.BARROW_KARIL_SARCOPHAGUS, ObjectID.BARROW_TORAG_SARCOPHAGUS, ObjectID.BARROW_VERAC_SARCOPHAGUS,
+		};
+
+		/**
+		 * The wiki's simple clockwise rotation (Dharok, Guthan, Karil, Torag, Verac, Ahrim): tied for the least
+		 * running between mounds.
+		 */
+		private static final int[] ROTATION = {1, 2, 3, 4, 5, 0};
+
+		/**
+		 * What each brother does, from the wiki. Descriptions only.
+		 */
+		private static final String[] STYLES = {
+			"Ahrim attacks with Magic and can lower your stats. Weak to Ranged and Melee.",
+			"Dharok attacks with Melee and hits harder the lower his hitpoints get. Weak to Magic.",
+			"Guthan attacks with Melee and heals himself with some of his hits. Weak to Magic.",
+			"Karil attacks with Ranged and can lower your Agility. Weak to Magic and Melee.",
+			"Torag attacks with Melee and can drain your run energy. Weak to Magic.",
+			"Verac attacks with Melee and some of his hits go through armour and prayer. Weak to Magic.",
+		};
+
 		private static final Location CHEST_ROOM = Location.of("the chest room", 3551, 9695, 0, 4);
+		private static final WorldPoint BARROWS = new WorldPoint(3565, 3289, 0);
+		private static final String FEARLESS = "Yeah I'm fearless!";
+		private static final String SCARED = "No way";
+
+		static Map<String, String> notes()
+		{
+			Map<String, String> notes = new java.util.LinkedHashMap<>();
+			for (int i = 0; i < NAMES.size(); i++)
+			{
+				notes.put(NAMES.get(i), STYLES[i]);
+			}
+			return notes;
+		}
 
 		static boolean killed(GuideState s, int i)
 		{
@@ -1075,6 +1122,11 @@ public final class PvmGuides
 			return s.flag(TUNNEL_FLAG + i);
 		}
 
+		static boolean looted(GuideState s)
+		{
+			return s.flag(LOOTED_FLAG);
+		}
+
 		static int killedCount(GuideState s)
 		{
 			int n = 0;
@@ -1083,6 +1135,21 @@ public final class PvmGuides
 				n += killed(s, i) ? 1 : 0;
 			}
 			return n;
+		}
+
+		/**
+		 * Every brother but this one is dead.
+		 */
+		static boolean othersKilled(GuideState s, int brother)
+		{
+			for (int i = 0; i < KILLED.length; i++)
+			{
+				if (i != brother && !killed(s, i))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		/**
@@ -1107,16 +1174,58 @@ public final class PvmGuides
 			return count == 1 ? left : -1;
 		}
 
+		/**
+		 * The next mound to dig into, going round in the rotation and leaving the tunnel crypt for last.
+		 */
+		static int nextMound(GuideState s)
+		{
+			int tunnel = tunnelBrother(s);
+			for (int i : ROTATION)
+			{
+				if (!killed(s, i) && !tunnel(s, i) && tunnel != i)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		static String shortName(int i)
+		{
+			return NAMES.get(i).split(" ")[0];
+		}
+
 		static List<String> progress(GuideState s)
 		{
 			List<String> out = new ArrayList<>();
 			out.add("Brothers down: " + killedCount(s) + "/6");
 			for (int i = 0; i < NAMES.size(); i++)
 			{
-				String name = NAMES.get(i).split(" ")[0];
-				out.add((killed(s, i) ? "✔ " : tunnel(s, i) ? "➜ " : "✘ ") + name
+				out.add((killed(s, i) ? "✔ " : tunnel(s, i) ? "➜ " : "✘ ") + shortName(i)
 					+ (tunnel(s, i) ? " (tunnel)" : ""));
 			}
+			return out;
+		}
+
+		private static boolean inCrypt(GuideState s)
+		{
+			return inBarrowsUnderground(s) && s.getLocation().getPlane() == 3;
+		}
+
+		private static boolean inTunnels(GuideState s)
+		{
+			return inBarrowsUnderground(s) && s.getLocation().getPlane() == 0;
+		}
+
+		private static boolean knownCrypt(GuideState s)
+		{
+			return inCrypt(s) && s.getCrypt() >= 0;
+		}
+
+		private static List<String> withProgress(GuideState s, List<String> first)
+		{
+			List<String> out = new ArrayList<>(first);
+			out.addAll(progress(s));
 			return out;
 		}
 
@@ -1124,9 +1233,63 @@ public final class PvmGuides
 		{
 			List<Stage> stages = new ArrayList<>();
 			Function<GuideState, List<String>> live = Barrows::progress;
+
+			// ---- Done: get out ----
+			stages.add(Stage.builder()
+				.title("Leave the tunnels")
+				.when(s -> inBarrowsUnderground(s) && looted(s))
+				.committed(true)
+				.line("Chest looted! Break your Barrows teleport tablet (outlined in your inventory) to leave.")
+				.line("No tablet? Climb the outlined ladder. Brothers that jump out now don't count, so don't fight "
+					+ "them.")
+				.use(ItemID.TELETAB_BARROWS)
+				.highlight(Target.object("Climb-up", "Ladder"))
+				.build());
+
+			// ---- In a crypt ----
+			stages.add(Stage.builder()
+				.title("Go down into the tunnels")
+				.when(s -> knownCrypt(s) && tunnelBrother(s) == s.getCrypt() && othersKilled(s, s.getCrypt()))
+				.committed(true)
+				.line("Search the outlined sarcophagus, then click \"" + FEARLESS + "\" to drop into the tunnels.")
+				.highlight(Target.object("Search", "Sarcophagus"))
+				.dialogOption(FEARLESS)
+				.live(live)
+				.build());
+			stages.add(Stage.builder()
+				.title("Tunnel crypt: come back last")
+				.when(s -> knownCrypt(s) && tunnelBrother(s) == s.getCrypt() && !killed(s, s.getCrypt()))
+				.committed(true)
+				.line("This crypt has the tunnel to the chest. If you're asked, click \"No way\", then climb the "
+					+ "outlined staircase.")
+				.line("Come back here once the other brothers are dead.")
+				.highlight(Target.object("Climb-up", "Staircase"))
+				.dialogOption(SCARED)
+				.live(live)
+				.build());
+			stages.add(Stage.builder()
+				.title("Climb out of the crypt")
+				.when(s -> knownCrypt(s) && killed(s, s.getCrypt()))
+				.committed(true)
+				.live(s -> withProgress(s, List.of(shortName(s.getCrypt()) + " is down. Climb the outlined staircase "
+					+ "back up.")))
+				.highlight(Target.object("Climb-up", "Staircase"))
+				.build());
 			stages.add(Stage.builder()
 				.title("Search the sarcophagus")
-				.when(s -> inBarrowsUnderground(s) && s.getLocation().getPlane() == 3)
+				.when(Barrows::knownCrypt)
+				.committed(true)
+				.live(s -> withProgress(s, List.of(
+					"Search the outlined sarcophagus: " + shortName(s.getCrypt()) + " climbs out. Kill him, then "
+						+ "climb the stairs.",
+					STYLES[s.getCrypt()],
+					"If it asks about a hidden tunnel instead, this is the tunnel crypt: I'll remember it.")))
+				.highlight(Target.object("Search", "Sarcophagus"))
+				.dialogOption(SCARED)
+				.build());
+			stages.add(Stage.builder()
+				.title("Search the sarcophagus")
+				.when(Barrows::inCrypt)
 				.committed(true)
 				.line("Search the sarcophagus to wake the brother and kill him, then climb the staircase back up.")
 				.line("If it says there's a hidden tunnel, that's the tunnel crypt: say No and come back last.")
@@ -1134,31 +1297,72 @@ public final class PvmGuides
 				.highlight(Target.object("Climb-up", "Staircase"))
 				.live(live)
 				.build());
+
+			// ---- In the tunnels ----
 			stages.add(Stage.builder()
-				.title("Get to the chest")
-				.when(s -> inBarrowsUnderground(s) && !CHEST_ROOM.contains(s.getLocation()))
+				.title("Open the chest")
+				.when(s -> inTunnels(s) && s.getTunnel() != null && s.getTunnel().atChest())
 				.committed(true)
-				.place(CHEST_ROOM)
-				.line("Head for the middle room. Each door asks a puzzle (RuneLite's Barrows plugin can show the "
-					+ "answer).")
+				.live(s ->
+				{
+					int last = tunnelBrother(s);
+					String who = last >= 0 && !killed(s, last) ? shortName(last) : "the last brother";
+					return withProgress(s, List.of(
+						"Click the outlined chest to open it. " + who + " climbs out if he hasn't shown up yet: kill "
+							+ "him.",
+						"Then click the chest again to search it and take your loot."));
+				})
+				.tiles(s -> s.getTunnel().getPath())
+				.highlight(Target.object("Open", "Chest"))
+				.highlight(Target.object("Search", "Chest"))
+				.build());
+			stages.add(Stage.builder()
+				.title("Follow the path to the chest")
+				.when(s -> inTunnels(s) && s.getTunnel() != null)
+				.committed(true)
+				.goTo(s -> new Location("the next door", s.getTunnel().getDoor(), 0, false, false))
+				.local(true)
+				.tiles(s -> s.getTunnel().getPath())
+				.objectAt(s -> s.getTunnel().getDoor())
+				.line("Follow the marked tiles and click Open on the outlined door.")
+				.line("If a picture puzzle pops up, click the answer outlined in green.")
+				.line("A monster may jump out of a door: kill it for a better chest, or just keep going.")
 				.live(live)
 				.build());
 			stages.add(Stage.builder()
-				.title("Open the chest")
-				.when(PvmGuides::inBarrowsUnderground)
+				.title("Get to the chest")
+				.when(Barrows::inTunnels)
 				.committed(true)
-				.line("Open the chest; the last brother comes out. Kill him, search the chest, then teleport out.")
-				.highlight(Target.object(null, "Chest"))
+				.place(CHEST_ROOM)
+				.local(true)
+				.line("Head for the middle room. Only some doors open (they're outlined): try the ones towards the "
+					+ "middle.")
+				.line("If a picture puzzle pops up, click the answer outlined in green.")
+				.highlight(Target.object("Open", "Door"))
+				.highlight(Target.object("Open", "Chest"))
+				.highlight(Target.object("Search", "Chest"))
 				.live(live)
+				.build());
+
+			// ---- Above ground ----
+			stages.add(Stage.builder()
+				.title("Teleport to the Barrows")
+				.when(s -> !inBarrowsUnderground(s) && s.getLocation() != null
+					&& s.getLocation().distanceTo2D(BARROWS) > 60 && s.inventory(ItemID.TELETAB_BARROWS) > 0)
+				.line("Break a Barrows teleport tablet (outlined in your inventory).")
+				.use(ItemID.TELETAB_BARROWS)
 				.build());
 			for (int i = 0; i < MOUNDS.size(); i++)
 			{
 				int b = i;
 				stages.add(Stage.builder()
 					.title("Dig into " + MOUNDS.get(i).getName())
-					.when(s -> !killed(s, b) && !tunnel(s, b) && tunnelBrother(s) != b)
+					.when(s -> nextMound(s) == b)
 					.place(MOUNDS.get(i))
-					.line("Stand on top of the mound and dig with your spade.")
+					.tiles(s -> List.of(MOUNDS.get(b).getPoint()))
+					.line("Stand on the marked tile and click your spade (outlined) to dig.")
+					.line(STYLES[i])
+					.line("Top up prayer and hitpoints before you dig: the crypt drains prayer.")
 					.use(ItemID.SPADE)
 					.live(live)
 					.build());
@@ -1170,7 +1374,9 @@ public final class PvmGuides
 					.title("Enter the tunnel from " + MOUNDS.get(i).getName())
 					.when(s -> tunnelBrother(s) == b)
 					.place(MOUNDS.get(i))
-					.line("Dig into this mound, search the sarcophagus and say Yes to enter the tunnel.")
+					.tiles(s -> List.of(MOUNDS.get(b).getPoint()))
+					.line("Last one: this mound has the tunnel. Stand on the marked tile and dig with your spade.")
+					.line("Then search the sarcophagus and click \"" + FEARLESS + "\".")
 					.use(ItemID.SPADE)
 					.live(live)
 					.build());

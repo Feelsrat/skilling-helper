@@ -3,6 +3,7 @@ package com.skillinghelper.pvm.guide;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
@@ -47,6 +48,11 @@ public class Fight
 	 */
 	@Builder.Default
 	Function<GuideState, WaveCard> wave = s -> null;
+	/**
+	 * When the boss showing up isn't a fight to take, e.g. Barrows brothers after the chest is looted.
+	 */
+	@Builder.Default
+	Predicate<GuideState> ignoreWhen = s -> false;
 
 	@Value
 	public static class Add

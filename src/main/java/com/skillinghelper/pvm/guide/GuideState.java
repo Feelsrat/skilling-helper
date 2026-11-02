@@ -72,6 +72,15 @@ public class GuideState
 	 */
 	@Singular
 	Set<String> flags;
+	/**
+	 * Barrows: the brother whose crypt the player is in (index into the brothers list), or -1.
+	 */
+	@Builder.Default
+	int crypt = -1;
+	/**
+	 * Barrows: the way through the tunnels to the chest, or null outside the tunnels or when it can't be worked out.
+	 */
+	TunnelRoute tunnel;
 
 	public int level(Skill skill)
 	{

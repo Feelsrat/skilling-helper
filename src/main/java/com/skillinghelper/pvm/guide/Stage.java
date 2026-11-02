@@ -5,6 +5,7 @@ import com.skillinghelper.data.Target;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.runelite.api.coords.WorldPoint;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
@@ -26,6 +27,30 @@ public class Stage
 	 * Where to go for this stage; the step walks there first. Null when it's done where the player stands.
 	 */
 	Location place;
+	/**
+	 * Where to go when it depends on the player's progress (e.g. the next door in the Barrows tunnels). Used when
+	 * {@link #place} is null; null means stay put.
+	 */
+	@Builder.Default
+	Function<GuideState, Location> goTo = s -> null;
+	/**
+	 * The way to {@link #goTo} is shown on the ground and by the hint arrow only (Shortest Path doesn't know it).
+	 */
+	boolean local;
+	/**
+	 * Tiles to mark on the ground, e.g. the way through the Barrows tunnels or the spot to dig.
+	 */
+	@Builder.Default
+	Function<GuideState, List<WorldPoint>> tiles = s -> List.of();
+	/**
+	 * A single object to outline, by where it stands (e.g. the one Barrows door to open out of several).
+	 */
+	@Builder.Default
+	Function<GuideState, WorldPoint> objectAt = s -> null;
+	/**
+	 * Text of the dialogue option to click when it comes up, e.g. "Yeah I'm fearless!".
+	 */
+	String dialogOption;
 	/**
 	 * Objects and NPCs to click.
 	 */

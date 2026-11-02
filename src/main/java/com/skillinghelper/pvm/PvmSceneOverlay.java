@@ -3,15 +3,19 @@ package com.skillinghelper.pvm;
 import com.skillinghelper.TargetTracker;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.pvm.guide.PvmStep;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.util.List;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
+import net.runelite.api.Perspective;
 import net.runelite.api.Player;
 import net.runelite.api.TileObject;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -59,6 +63,8 @@ class PvmSceneOverlay extends Overlay
 			return null;
 		}
 		WorldPoint me = player.getWorldLocation();
+		renderTiles(g, step.getTiles(), me);
+		WorldPoint door = step.getObjectAt();
 		for (GuideTargets.Tracked<NPC> t : targets.getNpcs())
 		{
 			if (inRange(t.getEntity().getWorldLocation(), me))
@@ -74,7 +80,9 @@ class PvmSceneOverlay extends Overlay
 		{
 			if (inRange(t.getEntity().getWorldLocation(), me))
 			{
-				Color c = colorFor(Target.Kind.OBJECT, t.getName(), t.getActions(), step);
+				Color c = door != null && isAt(t.getEntity().getWorldLocation(), door)
+					? config.targetColor()
+					: colorFor(Target.Kind.OBJECT, t.getName(), t.getActions(), step);
 				if (c != null)
 				{
 					outlines.drawOutline(t.getEntity(), 2, c, 4);
@@ -82,6 +90,44 @@ class PvmSceneOverlay extends Overlay
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Marks the way to walk (or the spot to dig) on the ground.
+	 */
+	private void renderTiles(Graphics2D g, List<WorldPoint> tiles, WorldPoint me)
+	{
+		if (tiles.isEmpty())
+		{
+			return;
+		}
+		Color c = config.targetColor();
+		Color fill = new Color(c.getRed(), c.getGreen(), c.getBlue(), 50);
+		g.setStroke(new BasicStroke(1.5f));
+		for (WorldPoint wp : tiles)
+		{
+			if (!inRange(wp, me))
+			{
+				continue;
+			}
+			LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), wp);
+			Polygon poly = lp == null ? null : Perspective.getCanvasTilePoly(client, lp);
+			if (poly != null)
+			{
+				g.setColor(fill);
+				g.fill(poly);
+				g.setColor(c);
+				g.draw(poly);
+			}
+		}
+	}
+
+	/**
+	 * On this tile or right next to it, so both halves of a double door count.
+	 */
+	private static boolean isAt(WorldPoint wp, WorldPoint target)
+	{
+		return wp != null && wp.getPlane() == target.getPlane() && wp.distanceTo2D(target) <= 1;
 	}
 
 	private Color colorFor(Target.Kind kind, String name, String[] actions, PvmStep step)

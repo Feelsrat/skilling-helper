@@ -44,6 +44,8 @@ import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.WorldType;
 import net.runelite.api.Skill;
+import net.runelite.api.TileObject;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
@@ -130,6 +132,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private HiscoreClient hiscoreClient;
 	@Inject
 	private PvmBankFilter bankFilter;
+	@Inject
+	private PvmWidgetOverlay widgetOverlay;
+	@Inject
+	private BarrowsTunnel barrowsTunnel;
 
 	/**
 	 * Hiscore boss entries per ladder entry, to find kills from before the plugin was installed.
@@ -201,14 +207,19 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	 */
 	private boolean tripStocked;
 	private Location routed;
+	private boolean routedLocal;
 	private boolean hintArrowSet;
 	private int lastKillTick = -100;
 	private final Set<String> guideFlags = new HashSet<>();
 	/**
-	 * The Barrows mound the player last stood on, and whether they were in a crypt last tick.
+	 * The Barrows brother whose crypt the player is in, or -1.
 	 */
-	private int lastMound = -1;
-	private boolean wasInCrypt;
+	private int barrowsCrypt = -1;
+	/**
+	 * The picture to click in the Barrows door puzzle, read by the widget overlay.
+	 */
+	@Getter
+	private volatile Widget puzzleAnswer;
 
 	private final PriceLookup prices = id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id));
 
@@ -256,6 +267,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		eventBus.register(bankFilter);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
+		overlayManager.add(widgetOverlay);
 
 		clientThread.invokeLater(() ->
 		{
@@ -274,6 +286,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		clientToolbar.removeNavigation(navButton);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
+		overlayManager.remove(widgetOverlay);
+		puzzleAnswer = null;
 		eventBus.unregister(targets);
 		eventBus.unregister(bankFilter);
 		bankFilter.shutDown();
@@ -366,6 +380,34 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			bankOpen = true;
 			dirty = true;
 		}
+		else if (e.getGroupId() == InterfaceID.BARROWS_PUZZLE)
+		{
+			puzzleAnswer = puzzleAnswer();
+		}
+	}
+
+	/**
+	 * The Barrows door puzzle's answer, worked out the same way as RuneLite's Barrows plugin: the right picture's
+	 * model is the last one in the sequence minus 3.
+	 */
+	private Widget puzzleAnswer()
+	{
+		Widget sequence = client.getWidget(InterfaceID.BarrowsPuzzle._1);
+		if (sequence == null)
+		{
+			return null;
+		}
+		int answer = sequence.getModelId() - 3;
+		for (int id : new int[]{InterfaceID.BarrowsPuzzle.PIC_A, InterfaceID.BarrowsPuzzle.PIC_B,
+			InterfaceID.BarrowsPuzzle.PIC_C})
+		{
+			Widget w = client.getWidget(id);
+			if (w != null && w.getModelId() == answer)
+			{
+				return w;
+			}
+		}
+		return null;
 	}
 
 	@Subscribe
@@ -375,6 +417,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			bankOpen = false;
 			dirty = true;
+		}
+		else if (e.getGroupId() == InterfaceID.BARROWS_PUZZLE)
+		{
+			puzzleAnswer = null;
 		}
 	}
 
@@ -441,11 +487,15 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		saveKillCounts();
 		if (guideContent != null && guideContent.getId().equals(id))
 		{
-			lastKillTick = client.getTickCount();
 			if ("barrows".equals(id))
 			{
-				// A looted chest ends the run
+				// A looted chest ends the run: the guide says to leave rather than pick up loot
 				guideFlags.clear();
+				guideFlags.add(PvmGuides.Barrows.LOOTED_FLAG);
+			}
+			else
+			{
+				lastKillTick = client.getTickCount();
 			}
 		}
 		dirty = true;
@@ -610,8 +660,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		guideContent = null;
 		step = null;
 		guideFlags.clear();
-		lastMound = -1;
-		wasInCrypt = false;
+		barrowsCrypt = -1;
 		targets.track(Set.of(), Set.of());
 		showRoute(null);
 	}
@@ -625,8 +674,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			return false;
 		}
+		trackBarrows();
 		GuideState state = guideState();
-		trackBarrows(state);
 		if (!PvmGuides.inFightCave(state))
 		{
 			guideFlags.removeIf(f -> f.startsWith(FightCaveWaves.WAVE_FLAG));
@@ -642,7 +691,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		}
 		state = state.toBuilder().tripStocked(tripStocked).build();
 		PvmStep next = GuideResolver.resolve(guide, guideContent.getName(), state, plan);
-		showRoute(next.getDestination());
+		showRoute(next.getDestination(), next.isLocalRoute());
 		Set<Integer> items = plan.bankItems();
 		if (!items.equals(bankItems))
 		{
@@ -653,7 +702,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			return false;
 		}
+		PvmStep previous = step;
 		step = next;
+		// The panel only shows the text: don't redraw it every tick just because the marked path moved
+		if (previous != null && Objects.equals(previous.getTitle(), next.getTitle()) && previous.getLines().equals(next.getLines())
+			&& Objects.equals(previous.getWave(), next.getWave()))
+		{
+			return false;
+		}
 		PvmProgressionPanel p = panel;
 		if (p != null)
 		{
@@ -663,33 +719,81 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	}
 
 	/**
-	 * The tunnel crypt can't be read from the game, so it's remembered when the player climbs out of a crypt
-	 * without having killed its brother.
+	 * Which crypt the player is in (from the sarcophagus next to them), and which one has the tunnel: the game only
+	 * says so in the dialogue after searching its sarcophagus, so that's remembered for the rest of the run.
 	 */
-	private void trackBarrows(GuideState s)
+	private void trackBarrows()
 	{
-		if (!"barrows".equals(guideContent.getId()) || s.getLocation() == null)
+		barrowsCrypt = -1;
+		Player me = client.getLocalPlayer();
+		if (!"barrows".equals(guideContent.getId()) || me == null)
 		{
 			return;
 		}
-		WorldPoint p = s.getLocation();
-		boolean inCrypt = p.getRegionID() == PvmGuides.Barrows.CRYPT_REGION && p.getPlane() == 3;
-		if (!inCrypt && p.getRegionID() != PvmGuides.Barrows.CRYPT_REGION)
+		WorldPoint p = me.getWorldLocation();
+		if (p.getRegionID() != PvmGuides.Barrows.CRYPT_REGION)
 		{
-			for (int i = 0; i < PvmGuides.Barrows.MOUNDS.size(); i++)
+			// Back above ground: the next run starts fresh once the chest was looted
+			guideFlags.remove(PvmGuides.Barrows.LOOTED_FLAG);
+			return;
+		}
+		if (p.getPlane() != 3)
+		{
+			return;
+		}
+		int best = Integer.MAX_VALUE;
+		for (GuideTargets.Tracked<TileObject> t : targets.getObjects())
+		{
+			WorldPoint wp = t.getEntity().getWorldLocation();
+			int i = indexOf(PvmGuides.Barrows.SARCOPHAGI, t.getEntity().getId());
+			if (i >= 0 && wp.getPlane() == p.getPlane() && wp.distanceTo2D(p) < best && wp.distanceTo2D(p) <= 20)
 			{
-				if (PvmGuides.Barrows.MOUNDS.get(i).contains(p))
-				{
-					lastMound = i;
-				}
-			}
-			if (wasInCrypt && lastMound >= 0 && client.getVarbitValue(PvmGuides.Barrows.KILLED[lastMound]) == 0)
-			{
-				guideFlags.removeIf(f -> f.startsWith(PvmGuides.Barrows.TUNNEL_FLAG));
-				guideFlags.add(PvmGuides.Barrows.TUNNEL_FLAG + lastMound);
+				best = wp.distanceTo2D(p);
+				barrowsCrypt = i;
 			}
 		}
-		wasInCrypt = inCrypt;
+		if (barrowsCrypt >= 0 && tunnelDialogOpen())
+		{
+			guideFlags.removeIf(f -> f.startsWith(PvmGuides.Barrows.TUNNEL_FLAG));
+			guideFlags.add(PvmGuides.Barrows.TUNNEL_FLAG + barrowsCrypt);
+		}
+	}
+
+	/**
+	 * "You've found a hidden tunnel, do you want to enter?" or its options are on screen.
+	 */
+	private boolean tunnelDialogOpen()
+	{
+		Widget box = client.getWidget(InterfaceID.Messagebox.TEXT);
+		if (box != null && !box.isHidden() && box.getText() != null
+			&& box.getText().toLowerCase(Locale.ROOT).contains("hidden tunnel"))
+		{
+			return true;
+		}
+		Widget options = client.getWidget(InterfaceID.Chatmenu.OPTIONS);
+		if (options != null && !options.isHidden() && options.getDynamicChildren() != null)
+		{
+			for (Widget o : options.getDynamicChildren())
+			{
+				if (o.getText() != null && o.getText().toLowerCase(Locale.ROOT).contains("fearless"))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private static int indexOf(int[] ids, int id)
+	{
+		for (int i = 0; i < ids.length; i++)
+		{
+			if (ids[i] == id)
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private GuideState guideState()
@@ -703,7 +807,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			.prayer(client.getBoostedSkillLevel(Skill.PRAYER))
 			.inInstance(client.getTopLevelWorldView().isInstance())
 			.justKilled(client.getTickCount() - lastKillTick <= LOOT_TICKS)
-			.flags(guideFlags);
+			.flags(guideFlags)
+			.crypt(barrowsCrypt);
 		for (Skill skill : Skill.values())
 		{
 			b.level(skill, client.getRealSkillLevel(skill));
@@ -774,6 +879,11 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 				}
 			}
 			b.npcs(npcs);
+			if ("barrows".equals(guideContent.getId()) && here != null
+				&& here.getRegionID() == PvmGuides.Barrows.CRYPT_REGION && here.getPlane() == 0)
+			{
+				b.tunnel(barrowsTunnel.route());
+			}
 		}
 		return b.build();
 	}
@@ -783,11 +893,21 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	 */
 	private void showRoute(Location place)
 	{
-		if (Objects.equals(place, routed))
+		showRoute(place, false);
+	}
+
+	/**
+	 * With {@code local}, only the hint arrow points there: Shortest Path can't route through e.g. the Barrows
+	 * tunnels' doors.
+	 */
+	private void showRoute(Location place, boolean local)
+	{
+		if (Objects.equals(place, routed) && local == routedLocal)
 		{
 			return;
 		}
 		routed = place;
+		routedLocal = local;
 		if (hintArrowSet)
 		{
 			client.clearHintArrow();
@@ -806,7 +926,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			client.setHintArrow(place.getPoint());
 			hintArrowSet = true;
 		}
-		if (config.shortestPath())
+		if (local)
+		{
+			if (pathShown == null)
+			{
+				eventBus.post(new PluginMessage("shortestpath", "clear", new HashMap<>()));
+			}
+		}
+		else if (config.shortestPath())
 		{
 			postPath(place.getPoint(), guideContent != null && guideContent.isWilderness());
 		}

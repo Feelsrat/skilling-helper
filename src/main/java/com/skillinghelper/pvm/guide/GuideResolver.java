@@ -23,7 +23,7 @@ public final class GuideResolver
 	public static PvmStep resolve(PvmGuide guide, String contentName, GuideState s, LoadoutPlan plan)
 	{
 		Fight fight = guide.getFight();
-		if (fight != null && bossHere(fight, s))
+		if (fight != null && !fight.getIgnoreWhen().test(s) && bossHere(fight, s))
 		{
 			return fightStep(guide, contentName, s, plan);
 		}
@@ -349,10 +349,12 @@ public final class GuideResolver
 		PvmStep.PvmStepBuilder b = PvmStep.builder()
 			.kind(PvmStep.Kind.STAGE)
 			.title(stage.getTitle());
-		if (stage.getPlace() != null && !s.in(stage.getPlace()))
+		Location place = stage.getPlace() != null ? stage.getPlace() : stage.getGoTo().apply(s);
+		if (place != null && !s.in(place))
 		{
-			b.destination(stage.getPlace());
-			b.line("Head to " + stage.getPlace().getName() + ".");
+			b.destination(place);
+			b.localRoute(stage.isLocal());
+			b.line("Head to " + place.getName() + ".");
 		}
 		for (String line : stage.getLines())
 		{
@@ -371,6 +373,9 @@ public final class GuideResolver
 			b.priorityHighlight(t);
 		}
 		b.wave(stage.getWave().apply(s));
+		b.tiles(stage.getTiles().apply(s));
+		b.objectAt(stage.getObjectAt().apply(s));
+		b.dialogOption(stage.getDialogOption());
 		for (int id : stage.getUseItems())
 		{
 			b.itemHighlight(id, ItemHighlight.USE);
