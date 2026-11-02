@@ -8,6 +8,7 @@ import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -26,6 +27,15 @@ final class MagicGuide
 		ItemID.LAVA_BATTLESTAFF, ItemID.SMOKE_BATTLESTAFF, ItemID.STEAM_BATTLESTAFF, ItemID.TOME_OF_FIRE};
 	private static final int[] WATER_STAVES = {ItemID.STAFF_OF_WATER, ItemID.WATER_BATTLESTAFF,
 		ItemID.MYSTIC_WATER_STAFF, ItemID.MUD_BATTLESTAFF, ItemID.STEAM_BATTLESTAFF, ItemID.MIST_BATTLESTAFF};
+
+	private static final int[] EARTH_STAVES = {ItemID.STAFF_OF_EARTH, ItemID.EARTH_BATTLESTAFF,
+		ItemID.MYSTIC_EARTH_STAFF, ItemID.LAVA_BATTLESTAFF, ItemID.MYSTIC_LAVA_STAFF, ItemID.MUD_BATTLESTAFF,
+		ItemID.MYSTIC_MUD_STAFF, ItemID.DUST_BATTLESTAFF, ItemID.MYSTIC_DUST_BATTLESTAFF};
+
+	private static ItemReq earth(int perCast)
+	{
+		return ItemReq.stack("Earth runes", perCast, ItemID.EARTHRUNE).orUse("Staff of earth", EARTH_STAVES);
+	}
 
 	private static ItemReq air(int perCast)
 	{
@@ -134,6 +144,14 @@ final class MagicGuide
 				.useItem(ItemID.SAPPHIRE_RING)
 				.instruction("Cast Lvl-1 Enchant on each sapphire ring")
 				.wikiPage(P2P_WIKI)
+				.build(),
+			enchant("magic_enchant_power", "Lvl-4 Enchant", "Diamond amulets", 57, 67, ItemID.STRUNG_DIAMOND_AMULET,
+				ItemID.AMULET_OF_POWER, earth(10)).build(),
+			enchant("magic_enchant_glory", "Lvl-5 Enchant", "Dragonstone amulets", 68, 78,
+				ItemID.STRUNG_DRAGONSTONE_AMULET, ItemID.AMULET_OF_GLORY, earth(15), water(15)).build(),
+			plankMake("magic_plank_make_oak", "Oak", ItemID.OAK_LOGS, ItemID.PLANK_OAK, 175).build(),
+			plankMake("magic_plank_make_teak", "Teak", ItemID.TEAK_LOGS, ItemID.PLANK_TEAK, 350).build(),
+			plankMake("magic_plank_make_mahogany", "Mahogany", ItemID.MAHOGANY_LOGS, ItemID.PLANK_MAHOGANY, 1_050)
 				.build()
 		);
 	}
@@ -162,6 +180,66 @@ final class MagicGuide
 			b.input(r);
 		}
 		return b;
+	}
+
+	private static Method.MethodBuilder enchant(String id, String spell, String itemName, int level, double xp,
+		int item, int product, ItemReq... runes)
+	{
+		Method.MethodBuilder b = Method.builder()
+			.id(id)
+			.skill(Skill.MAGIC)
+			.type(MethodType.PROCESS)
+			.name(spell + " (" + itemName.toLowerCase() + ")")
+			.minLevel(level)
+			.xpPerAction(xp)
+			.xpPerHour((int) (xp * 1_300))
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.stack("Cosmic runes", 1, ItemID.COSMICRUNE))
+			.input(ItemReq.consumed(itemName, 27, 1, item))
+			.product(product)
+			.useItem(item)
+			.instruction("Cast " + spell + " on each of the " + itemName.toLowerCase())
+			.notes("A wiki money maker when the enchanted item sells for more than the amulet and runes.")
+			.wikiPage(P2P_WIKI);
+		for (ItemReq r : runes)
+		{
+			b.input(r);
+		}
+		return b;
+	}
+
+	/**
+	 * Lunar Plank Make: turns one log into a plank for a coin fee, 70% of what the sawmill charges.
+	 */
+	private static Method.MethodBuilder plankMake(String id, String wood, int log, int plank, int fee)
+	{
+		return Method.builder()
+			.id(id)
+			.skill(Skill.MAGIC)
+			.type(MethodType.PROCESS)
+			.name("Plank Make (" + wood.toLowerCase() + " logs)")
+			.minLevel(86)
+			.xpPerAction(90)
+			.xpPerHour(90 * 1_500)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.quest(Quest.DREAM_MENTOR)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.stack("Astral runes", 2, ItemID.ASTRALRUNE))
+			.input(ItemReq.stack("Nature runes", 1, ItemID.NATURERUNE))
+			.input(earth(15))
+			.input(ItemReq.stack("Coins", fee, ItemID.COINS))
+			.input(ItemReq.consumed(wood + " logs", 25, 1, log))
+			.product(plank)
+			.useItem(log)
+			.instruction("On the Lunar spellbook, cast Plank Make on each " + wood.toLowerCase() + " log")
+			.notes("Needs the Lunar spellbook (Lunar Diplomacy) and Dream Mentor to cast. Each cast costs "
+				+ String.format("%,d", fee) + " coins on top of the runes.")
+			.wikiPage("Plank_Make");
 	}
 
 	private static Method.MethodBuilder alch(String id, String name, String itemName, int item, int noted,

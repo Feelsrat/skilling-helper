@@ -26,6 +26,7 @@ final class CraftingGuide
 	private static final ItemReq CHISEL = ItemReq.tool("Chisel", ItemID.CHISEL);
 	private static final ItemReq PIPE = ItemReq.tool("Glassblowing pipe", ItemID.GLASSBLOWINGPIPE);
 	private static final ItemReq RING_MOULD = ItemReq.tool("Ring mould", ItemID.RING_MOULD);
+	private static final ItemReq AMULET_MOULD = ItemReq.tool("Amulet mould", ItemID.AMULET_MOULD);
 	private static final Location EDGEVILLE_FURNACE = Location.of("Edgeville furnace", 3109, 3499, 4);
 	private static final Target FURNACE = Target.object("Smelt", "Furnace");
 	private static final Location TANNER = Location.of("Al Kharid tanner (Ellis)", 3274, 3191, 4);
@@ -47,7 +48,7 @@ final class CraftingGuide
 			ItemID.HARDLEATHER_BODY).build());
 
 		m.add(furnace("craft_gold_rings", "Gold rings", 5, 15, RING_MOULD, null, 0, ItemID.GOLD_RING).build());
-		m.add(furnace("craft_gold_amulets", "Gold amulets (u)", 8, 30, ItemReq.tool("Amulet mould", ItemID.AMULET_MOULD),
+		m.add(furnace("craft_gold_amulets", "Gold amulets (u)", 8, 30, AMULET_MOULD,
 			null, 0, ItemID.UNSTRUNG_GOLD_AMULET).build());
 		m.add(furnace("craft_sapphire_rings", "Sapphire rings", 20, 40, RING_MOULD, "Sapphires", ItemID.SAPPHIRE,
 			ItemID.SAPPHIRE_RING).build());
@@ -57,6 +58,12 @@ final class CraftingGuide
 			ItemID.RUBY_RING).build());
 		m.add(furnace("craft_diamond_rings", "Diamond rings", 43, 85, RING_MOULD, "Diamonds", ItemID.DIAMOND,
 			ItemID.DIAMOND_RING).build());
+		m.add(furnace("craft_dragonstone_rings", "Dragonstone rings", 55, 100, RING_MOULD, "Dragonstones",
+			ItemID.DRAGONSTONE, ItemID.DRAGONSTONE_RING).members(true).build());
+		m.add(furnace("craft_diamond_amulets", "Diamond amulets (u)", 70, 100, AMULET_MOULD, "Diamonds",
+			ItemID.DIAMOND, ItemID.UNSTRUNG_DIAMOND_AMULET).members(true).build());
+		m.add(furnace("craft_dragonstone_amulets", "Dragonstone amulets (u)", 80, 150, AMULET_MOULD, "Dragonstones",
+			ItemID.DRAGONSTONE, ItemID.UNSTRUNG_DRAGONSTONE_AMULET).members(true).build());
 
 		m.add(gem("craft_cut_sapphire", "Sapphires", 20, 50, ItemID.UNCUT_SAPPHIRE, ItemID.SAPPHIRE, false).build());
 		m.add(gem("craft_cut_emerald", "Emeralds", 27, 67.5, ItemID.UNCUT_EMERALD, ItemID.EMERALD, false).build());

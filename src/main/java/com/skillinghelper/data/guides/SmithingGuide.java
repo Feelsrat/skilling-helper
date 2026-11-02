@@ -62,6 +62,8 @@ final class SmithingGuide
 				ItemID.MITHRIL_PLATEBODY).members(true).build(),
 			anvil("smith_adamant_platebodies", "Adamant platebodies", 88, 312.5, 5, ItemID.ADAMANTITE_BAR,
 				"Adamantite bars", ItemID.ADAMANT_PLATEBODY).members(true).build(),
+			anvil("smith_rune_battleaxes", "Rune battleaxes", 95, 225, 3, ItemID.RUNITE_BAR, "Runite bars",
+				ItemID.RUNE_BATTLEAXE).tag(MethodTag.PROFIT).build(),
 			Method.builder()
 				.id("smith_blast_furnace_gold")
 				.skill(Skill.SMITHING)

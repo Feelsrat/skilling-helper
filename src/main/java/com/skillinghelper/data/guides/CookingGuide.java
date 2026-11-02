@@ -39,6 +39,31 @@ final class CookingGuide
 			.quest(Quest.SWAN_SONG).build());
 		methods.add(fish("cook_shark", "Sharks", 80, 210, ItemID.RAW_SHARK, ItemID.SHARK, true)
 			.tag(MethodTag.PROFIT).build());
+		methods.add(fish("cook_anglerfish", "Anglerfish", 84, 230, ItemID.RAW_ANGLERFISH, ItemID.ANGLERFISH, true)
+			.tag(MethodTag.PROFIT).build());
+		methods.add(fish("cook_dark_crab", "Dark crabs", 90, 215, ItemID.RAW_DARK_CRAB, ItemID.DARK_CRAB, true)
+			.tag(MethodTag.PROFIT).build());
+		methods.add(Method.builder()
+			.id("cook_pineapple_pizza")
+			.skill(Skill.COOKING)
+			.type(MethodType.PROCESS)
+			.name("Pineapple pizzas (bank-standing)")
+			.minLevel(65)
+			.xpPerAction(45)
+			.xpPerHour(45 * 2_400)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.consumed("Plain pizzas", 14, 1, ItemID.PLAIN_PIZZA))
+			.input(ItemReq.consumed("Pineapple rings (or chunks)", 14, 1, ItemID.PINEAPPLE_RING,
+				ItemID.PINEAPPLE_CHUNKS))
+			.product(ItemID.PINEAPPLE_PIZZA)
+			.useItem(ItemID.PINEAPPLE_RING).useItem(ItemID.PINEAPPLE_CHUNKS).useItem(ItemID.PLAIN_PIZZA)
+			.instruction("Use the pineapple rings on the plain pizzas and press Space to make them all")
+			.notes("A wiki money maker: no range needed and every pizza succeeds.")
+			.wikiPage("Money_making_guide/Making_pineapple_pizzas")
+			.build());
 		methods.add(Method.builder()
 			.id("cook_wine")
 			.skill(Skill.COOKING)

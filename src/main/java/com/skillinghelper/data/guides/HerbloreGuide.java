@@ -22,6 +22,8 @@ final class HerbloreGuide
 	private static final String WIKI = "Herblore_training";
 	// 14 potions per trip, about 2,500 an hour
 	private static final int POTIONS_PER_HOUR = 2_500;
+	// Cleaning one herb per click, about 4,500 an hour with banking
+	private static final int HERBS_CLEANED_PER_HOUR = 4_500;
 
 	static List<Method> methods()
 	{
@@ -69,6 +71,50 @@ final class HerbloreGuide
 			ItemID.LANTADYME, ItemID.CACTUS_POTATO, "Potato cacti", ItemID._3DOSE1MAGIC).build());
 		m.add(potion("herb_saradomin_brew", "Saradomin brews", 81, 180, ItemID.TOADFLAXVIAL, "Toadflax potions (unf)",
 			ItemID.TOADFLAX, ItemID.CRUSHED_BIRD_NEST, "Crushed nests", ItemID._3DOSEPOTIONOFSARADOMIN).build());
+		m.add(Method.builder()
+			.id("herb_super_combat")
+			.skill(Skill.HERBLORE)
+			.type(MethodType.PROCESS)
+			.name("Make super combat potions")
+			.minLevel(90)
+			.xpPerAction(150)
+			.xpPerHour(150 * 2_000)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.quest(Quest.DRUIDIC_RITUAL)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.consumed("Torstol potions (unf) or clean torstol", 7, 1, ItemID.TORSTOLVIAL, ItemID.TORSTOL))
+			.input(ItemReq.consumed("Super attack (4)", 7, 1, ItemID._4DOSE2ATTACK))
+			.input(ItemReq.consumed("Super strength (4)", 7, 1, ItemID._4DOSE2STRENGTH))
+			.input(ItemReq.consumed("Super defence (4)", 7, 1, ItemID._4DOSE2DEFENSE))
+			.product(ItemID._4DOSECOMBAT)
+			.useItem(ItemID.TORSTOL).useItem(ItemID.TORSTOLVIAL).useItem(ItemID._4DOSE2ATTACK)
+			.instruction("Use the torstol on a super attack potion and press Space to make them all")
+			.notes("Each potion takes a torstol and one 4-dose super attack, strength and defence.")
+			.wikiPage("Money_making_guide/Making_super_combat_potions")
+			.build());
+		m.add(clean("herb_clean_guam", "guam leaves", 3, 2.5, ItemID.UNIDENTIFIED_GUAM, ItemID.GUAM_LEAF).build());
+		m.add(clean("herb_clean_marrentill", "marrentill", 5, 3.8, ItemID.UNIDENTIFIED_MARENTILL, ItemID.MARENTILL)
+			.build());
+		m.add(clean("herb_clean_tarromin", "tarromin", 11, 5, ItemID.UNIDENTIFIED_TARROMIN, ItemID.TARROMIN).build());
+		m.add(clean("herb_clean_harralander", "harralander", 20, 6.3, ItemID.UNIDENTIFIED_HARRALANDER,
+			ItemID.HARRALANDER).build());
+		m.add(clean("herb_clean_ranarr", "ranarr weed", 25, 7.5, ItemID.UNIDENTIFIED_RANARR, ItemID.RANARR_WEED)
+			.build());
+		m.add(clean("herb_clean_toadflax", "toadflax", 30, 8, ItemID.UNIDENTIFIED_TOADFLAX, ItemID.TOADFLAX).build());
+		m.add(clean("herb_clean_irit", "irit leaves", 40, 8.8, ItemID.UNIDENTIFIED_IRIT, ItemID.IRIT_LEAF).build());
+		m.add(clean("herb_clean_avantoe", "avantoe", 48, 10, ItemID.UNIDENTIFIED_AVANTOE, ItemID.AVANTOE).build());
+		m.add(clean("herb_clean_kwuarm", "kwuarm", 54, 11.3, ItemID.UNIDENTIFIED_KWUARM, ItemID.KWUARM).build());
+		m.add(clean("herb_clean_snapdragon", "snapdragon", 59, 11.8, ItemID.UNIDENTIFIED_SNAPDRAGON,
+			ItemID.SNAPDRAGON).build());
+		m.add(clean("herb_clean_cadantine", "cadantine", 65, 12.5, ItemID.UNIDENTIFIED_CADANTINE, ItemID.CADANTINE)
+			.build());
+		m.add(clean("herb_clean_lantadyme", "lantadyme", 67, 13.1, ItemID.UNIDENTIFIED_LANTADYME, ItemID.LANTADYME)
+			.build());
+		m.add(clean("herb_clean_dwarf_weed", "dwarf weed", 70, 13.8, ItemID.UNIDENTIFIED_DWARF_WEED,
+			ItemID.DWARF_WEED).build());
+		m.add(clean("herb_clean_torstol", "torstol", 75, 15, ItemID.UNIDENTIFIED_TORSTOL, ItemID.TORSTOL).build());
 		return m;
 	}
 
@@ -95,6 +141,32 @@ final class HerbloreGuide
 	{
 		return req.madeFrom("Use the pestle and mortar on the " + fromName.toLowerCase(), false,
 			ItemReq.part(fromName, 1, from), ItemReq.tool("Pestle and mortar", ItemID.PESTLE_AND_MORTAR));
+	}
+
+	/**
+	 * Cleaning grimy herbs at a bank: low xp, but a steady wiki money maker that needs nothing but the herbs.
+	 */
+	private static Method.MethodBuilder clean(String id, String herbName, int level, double xp, int grimy, int clean)
+	{
+		return Method.builder()
+			.id(id)
+			.skill(Skill.HERBLORE)
+			.type(MethodType.PROCESS)
+			.name("Clean grimy " + herbName)
+			.minLevel(level)
+			.xpPerAction(xp)
+			.xpPerHour((int) (xp * HERBS_CLEANED_PER_HOUR))
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.quest(Quest.DRUIDIC_RITUAL)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.consumed("Grimy " + herbName, 28, 1, grimy))
+			.product(clean)
+			.useItem(grimy)
+			.instruction("Click each grimy " + herbName + " to clean it, then bank and repeat")
+			.notes("Slow xp but it pays: clean herbs sell for more than grimy ones. Profit depends on today's prices.")
+			.wikiPage("Money_making_guide/Cleaning_grimy_" + herbName.replace(' ', '_'));
 	}
 
 	private static Method.MethodBuilder potion(String id, String name, int level, double xp, int unf, String unfName,
