@@ -652,3 +652,37 @@ patch("runelite-client/src/main/java/net/runelite/client/headless/JavaBridge.jav
 		focused = true;""",
 	"""		// Skilling Helper build: always re-assert focus (see patch.py step 17)
 		focused = true;""")
+
+# 18. The chat stuck in its dialogue look. The bridge treats the chat as busy with a dialogue (opaque box, can't be
+# collapsed, its left side under the button column) while any dialogue widget merely exists or anything is mounted
+# on the chatbox, even when the game has hidden it. Count only what is actually showing.
+hv = "runelite-client/src/main/java/net/runelite/client/headless/HudVeneerBridge.java"
+patch(hv,
+	"""			return c.getWidget(id) != null;
+		}
+		catch (RuntimeException ex)
+		{
+			return false;
+		}""",
+	"""			final Widget w = c.getWidget(id);
+			return w != null && !w.isHidden(); // Skilling Helper build: shown, not just loaded
+		}
+		catch (RuntimeException ex)
+		{
+			return false;
+		}""")
+patch(hv,
+	"""				if (n != null && (((int) n.getHash()) >>> 16) == InterfaceID.CHATBOX)
+				{
+					return n.getId();
+				}""",
+	"""				if (n != null && (((int) n.getHash()) >>> 16) == InterfaceID.CHATBOX)
+				{
+					// Skilling Helper build: skip a box mounted on a chatbox component the game has hidden
+					final Widget host = c.getWidget((int) n.getHash());
+					if (host != null && host.isHidden())
+					{
+						continue;
+					}
+					return n.getId();
+				}""")
