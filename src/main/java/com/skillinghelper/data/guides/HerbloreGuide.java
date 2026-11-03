@@ -65,6 +65,13 @@ final class HerbloreGuide
 		m.add(potion("herb_super_defence", "Super defence potions", 66, 150, ItemID.CADANTINEVIAL,
 			"Cadantine potions (unf)", ItemID.CADANTINE, ItemID.WHITE_BERRIES, "White berries", ItemID._3DOSE2DEFENSE)
 			.build());
+		m.add(potion("herb_super_antipoison", "Super antipoisons", 48, 106.3, ItemID.IRITVIAL, "Irit potions (unf)",
+			ItemID.IRIT_LEAF, ItemID.UNICORN_HORN_DUST, "Unicorn horn dust", ItemID._3DOSE2ANTIPOISON).build());
+		m.add(potion("herb_super_energy", "Super energy potions", 52, 117.5, ItemID.AVANTOEVIAL,
+			"Avantoe potions (unf)", ItemID.AVANTOE, ItemID.MORTMYREMUSHROOM, "Mort myre fungi",
+			ItemID._3DOSE2ENERGY).build());
+		m.add(potion("herb_antifire", "Antifire potions", 69, 157.5, ItemID.LANTADYMEVIAL, "Lantadyme potions (unf)",
+			ItemID.LANTADYME, ItemID.DRAGON_SCALE_DUST, "Dragon scale dust", ItemID._3DOSE1ANTIDRAGON).build());
 		m.add(potion("herb_ranging", "Ranging potions", 72, 162.5, ItemID.DWARFWEEDVIAL, "Dwarf weed potions (unf)",
 			ItemID.DWARF_WEED, ItemID.WINE_OF_ZAMORAK, "Wines of Zamorak", ItemID._3DOSERANGERSPOTION).build());
 		m.add(potion("herb_magic", "Magic potions", 76, 172.5, ItemID.LANTADYMEVIAL, "Lantadyme potions (unf)",

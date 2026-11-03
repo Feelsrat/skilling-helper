@@ -88,6 +88,36 @@ agility_ardougne weak owns-all-in-bank	67ba2a6818e35c11
 agility_ardougne weak parts-carried	6392db1bb55204e7
 agility_ardougne weak parts-carried-away	67ba2a6818e35c11
 agility_ardougne weak parts-in-bank	67ba2a6818e35c11
+agility_barbarian strong bank-empty	bbb2556cb7b5d15e
+agility_barbarian strong bank-empty-rich	bbb2556cb7b5d15e
+agility_barbarian strong bank-unknown	bbb2556cb7b5d15e
+agility_barbarian strong full-of-products	e53d148281523d38
+agility_barbarian strong gear-carried	e53d148281523d38
+agility_barbarian strong goal-reached	6951d2c37f0689fc
+agility_barbarian strong in-instance	e53d148281523d38
+agility_barbarian strong kit-at-spot	e53d148281523d38
+agility_barbarian strong kit-away	13e42275684a4a34
+agility_barbarian strong kit-worn-at-spot	e53d148281523d38
+agility_barbarian strong owns-all-at-bank	13e42275684a4a34
+agility_barbarian strong owns-all-in-bank	13e42275684a4a34
+agility_barbarian strong parts-carried	e53d148281523d38
+agility_barbarian strong parts-carried-away	13e42275684a4a34
+agility_barbarian strong parts-in-bank	13e42275684a4a34
+agility_barbarian weak bank-empty	0118dc466f562af3
+agility_barbarian weak bank-empty-rich	0118dc466f562af3
+agility_barbarian weak bank-unknown	0118dc466f562af3
+agility_barbarian weak full-of-products	14b404ad8ea30a6b
+agility_barbarian weak gear-carried	14b404ad8ea30a6b
+agility_barbarian weak goal-reached	640baab934bc09a6
+agility_barbarian weak in-instance	14b404ad8ea30a6b
+agility_barbarian weak kit-at-spot	14b404ad8ea30a6b
+agility_barbarian weak kit-away	14b404ad8ea30a6b
+agility_barbarian weak kit-worn-at-spot	14b404ad8ea30a6b
+agility_barbarian weak owns-all-at-bank	14b404ad8ea30a6b
+agility_barbarian weak owns-all-in-bank	14b404ad8ea30a6b
+agility_barbarian weak parts-carried	14b404ad8ea30a6b
+agility_barbarian weak parts-carried-away	14b404ad8ea30a6b
+agility_barbarian weak parts-in-bank	14b404ad8ea30a6b
 agility_brimhaven strong bank-empty	5dc1f90ca8594e45
 agility_brimhaven strong bank-empty-rich	136a5abe76ea6095
 agility_brimhaven strong bank-unknown	9a0e583e5235c1aa
@@ -4256,6 +4286,36 @@ fm_yew weak owns-all-in-bank	f0bc4c903387037a
 fm_yew weak parts-carried	4ec9b56a40295b36
 fm_yew weak parts-carried-away	5e1b29385668cc91
 fm_yew weak parts-in-bank	ab8b5224f400839b
+herb_antifire strong bank-empty	6ed2f5127e76f4b1
+herb_antifire strong bank-empty-rich	adfdbce6c3eadf8d
+herb_antifire strong bank-unknown	5cb3a0c661182cba
+herb_antifire strong full-of-products	d2fd3248568d7f15
+herb_antifire strong gear-carried	0919e30990f59276
+herb_antifire strong goal-reached	23479edfddfe7fdb
+herb_antifire strong in-instance	d2fd3248568d7f15
+herb_antifire strong kit-at-spot	d2fd3248568d7f15
+herb_antifire strong kit-away	ea50d8e650cb86d5
+herb_antifire strong kit-worn-at-spot	d870da2bca774014
+herb_antifire strong owns-all-at-bank	d4f83110f90eabe4
+herb_antifire strong owns-all-in-bank	45bbdadf5027f351
+herb_antifire strong parts-carried	643df1c78e6d723b
+herb_antifire strong parts-carried-away	643df1c78e6d723b
+herb_antifire strong parts-in-bank	ea7421edffafa399
+herb_antifire weak bank-empty	c88ec764b3b51c7f
+herb_antifire weak bank-empty-rich	c88ec764b3b51c7f
+herb_antifire weak bank-unknown	c88ec764b3b51c7f
+herb_antifire weak full-of-products	36374d9e59a25090
+herb_antifire weak gear-carried	1ad5a66979953d46
+herb_antifire weak goal-reached	683a4bdc0502009d
+herb_antifire weak in-instance	36374d9e59a25090
+herb_antifire weak kit-at-spot	36374d9e59a25090
+herb_antifire weak kit-away	36374d9e59a25090
+herb_antifire weak kit-worn-at-spot	2118227125b1ff0b
+herb_antifire weak owns-all-at-bank	bbfdf7c619549d0e
+herb_antifire weak owns-all-in-bank	bbfdf7c619549d0e
+herb_antifire weak parts-carried	2c87f0528c3463a2
+herb_antifire weak parts-carried-away	2c87f0528c3463a2
+herb_antifire weak parts-in-bank	f1d0c9035d0ce1ba
 herb_antipoison strong bank-empty	92b9dce2aebb9531
 herb_antipoison strong bank-empty-rich	573184563ec30f47
 herb_antipoison strong bank-unknown	f8cc21901275d8ed
@@ -4946,6 +5006,36 @@ herb_strength weak owns-all-in-bank	1071c135efe7d027
 herb_strength weak parts-carried	f6d3dad5d90bca53
 herb_strength weak parts-carried-away	f6d3dad5d90bca53
 herb_strength weak parts-in-bank	3651f9f8a2e238e9
+herb_super_antipoison strong bank-empty	88ca003ec245d6f1
+herb_super_antipoison strong bank-empty-rich	dc899176a676a77c
+herb_super_antipoison strong bank-unknown	b8e966ac582c60df
+herb_super_antipoison strong full-of-products	adfdc85cbfd07454
+herb_super_antipoison strong gear-carried	0a56f3ba5bf87bfa
+herb_super_antipoison strong goal-reached	0131ff97a0540ef1
+herb_super_antipoison strong in-instance	adfdc85cbfd07454
+herb_super_antipoison strong kit-at-spot	adfdc85cbfd07454
+herb_super_antipoison strong kit-away	1bd8fd76ebd9bb21
+herb_super_antipoison strong kit-worn-at-spot	e7eaa6d3a4af38a3
+herb_super_antipoison strong owns-all-at-bank	c4d22b282a7dd1c9
+herb_super_antipoison strong owns-all-in-bank	a29e7a9884b27fa8
+herb_super_antipoison strong parts-carried	2479956f33395800
+herb_super_antipoison strong parts-carried-away	2479956f33395800
+herb_super_antipoison strong parts-in-bank	f87fc23e41ea0ff0
+herb_super_antipoison weak bank-empty	95d83a4a7e4a7d99
+herb_super_antipoison weak bank-empty-rich	95d83a4a7e4a7d99
+herb_super_antipoison weak bank-unknown	95d83a4a7e4a7d99
+herb_super_antipoison weak full-of-products	5d6da760b121963c
+herb_super_antipoison weak gear-carried	a32e3d221cb7f401
+herb_super_antipoison weak goal-reached	e9c563669232cdd4
+herb_super_antipoison weak in-instance	5d6da760b121963c
+herb_super_antipoison weak kit-at-spot	5d6da760b121963c
+herb_super_antipoison weak kit-away	5d6da760b121963c
+herb_super_antipoison weak kit-worn-at-spot	eaa852b018bafbdc
+herb_super_antipoison weak owns-all-at-bank	40cf339eeaa0f19b
+herb_super_antipoison weak owns-all-in-bank	40cf339eeaa0f19b
+herb_super_antipoison weak parts-carried	c1d3e140a486550d
+herb_super_antipoison weak parts-carried-away	c1d3e140a486550d
+herb_super_antipoison weak parts-in-bank	e99d0a17c2864b60
 herb_super_attack strong bank-empty	cdbedced382702b6
 herb_super_attack strong bank-empty-rich	8cf2e55f9eee9ce2
 herb_super_attack strong bank-unknown	24b374da9685676f
@@ -5036,6 +5126,36 @@ herb_super_defence weak owns-all-in-bank	b758f2673ea1dfd1
 herb_super_defence weak parts-carried	00d526e9668879fd
 herb_super_defence weak parts-carried-away	00d526e9668879fd
 herb_super_defence weak parts-in-bank	1b883071a0592860
+herb_super_energy strong bank-empty	3dac142456b75ca4
+herb_super_energy strong bank-empty-rich	c7c621d762dea36e
+herb_super_energy strong bank-unknown	8a0d247a2f1bd1cf
+herb_super_energy strong full-of-products	fe2e39ee46ccc03a
+herb_super_energy strong gear-carried	c194adff0240b3b9
+herb_super_energy strong goal-reached	f669605f4ad4cb55
+herb_super_energy strong in-instance	fe2e39ee46ccc03a
+herb_super_energy strong kit-at-spot	fe2e39ee46ccc03a
+herb_super_energy strong kit-away	a505ac24707d5490
+herb_super_energy strong kit-worn-at-spot	6b5c263776bf41fa
+herb_super_energy strong owns-all-at-bank	7d8cf2cd49ddce47
+herb_super_energy strong owns-all-in-bank	3fc1d5e146567358
+herb_super_energy strong parts-carried	55d7654f461fc643
+herb_super_energy strong parts-carried-away	55d7654f461fc643
+herb_super_energy strong parts-in-bank	abab92f953e468ed
+herb_super_energy weak bank-empty	48dbd4e3e6f55288
+herb_super_energy weak bank-empty-rich	48dbd4e3e6f55288
+herb_super_energy weak bank-unknown	48dbd4e3e6f55288
+herb_super_energy weak full-of-products	7e2070fb9ca8cf04
+herb_super_energy weak gear-carried	da76c420f18979f9
+herb_super_energy weak goal-reached	471f19b85e2693ef
+herb_super_energy weak in-instance	7e2070fb9ca8cf04
+herb_super_energy weak kit-at-spot	7e2070fb9ca8cf04
+herb_super_energy weak kit-away	7e2070fb9ca8cf04
+herb_super_energy weak kit-worn-at-spot	ee19962887c8971e
+herb_super_energy weak owns-all-at-bank	d2b0cf0e74dc5ec9
+herb_super_energy weak owns-all-in-bank	d2b0cf0e74dc5ec9
+herb_super_energy weak parts-carried	64ff3c3493560d9c
+herb_super_energy weak parts-carried-away	64ff3c3493560d9c
+herb_super_energy weak parts-in-bank	ba0e5e9c6def75bc
 herb_super_restore strong bank-empty	df9d7a2ecde097f2
 herb_super_restore strong bank-empty-rich	164c993a164d5d98
 herb_super_restore strong bank-unknown	639aa8930bfba9b2
@@ -6510,46 +6630,46 @@ mine_motherlode weak owns-all-in-bank	e3f91a41e1a7cee6
 mine_motherlode weak parts-carried	670984b67248c203
 mine_motherlode weak parts-carried-away	67a94370a697f513
 mine_motherlode weak parts-in-bank	e3f91a41e1a7cee6
-plan AGILITY 1 poor AFK	6d2cfbdf49d780e3
-plan AGILITY 1 poor Cheapest	c4890afd67a94dcf
-plan AGILITY 1 poor Fastest	c4890afd67a94dcf
-plan AGILITY 1 poor Profit	f452d473d548e429
-plan AGILITY 1 poor Recommended	c4890afd67a94dcf
-plan AGILITY 1 rich AFK	339b04e865309bcc
-plan AGILITY 1 rich Cheapest	0a092db34aed3f1e
-plan AGILITY 1 rich Fastest	0a092db34aed3f1e
-plan AGILITY 1 rich Profit	f60a0b110bcb8275
-plan AGILITY 1 rich Recommended	0a092db34aed3f1e
-plan AGILITY 30 poor AFK	200168f8c93329c1
-plan AGILITY 30 poor Cheapest	d0fa28dde613ae5d
-plan AGILITY 30 poor Fastest	d0fa28dde613ae5d
-plan AGILITY 30 poor Profit	b582780ab2cd8731
-plan AGILITY 30 poor Recommended	d0fa28dde613ae5d
-plan AGILITY 30 rich AFK	da3cb2b47346a5de
-plan AGILITY 30 rich Cheapest	00594101be3e108c
-plan AGILITY 30 rich Fastest	00594101be3e108c
-plan AGILITY 30 rich Profit	a53fd40afc6df1bf
-plan AGILITY 30 rich Recommended	00594101be3e108c
-plan AGILITY 60 poor AFK	434ac86a4779a3e9
-plan AGILITY 60 poor Cheapest	b299135d9dcebce0
-plan AGILITY 60 poor Fastest	b299135d9dcebce0
-plan AGILITY 60 poor Profit	47447bf965522b54
-plan AGILITY 60 poor Recommended	b299135d9dcebce0
-plan AGILITY 60 rich AFK	9975b90fa1976ba8
-plan AGILITY 60 rich Cheapest	b046a90945b1ce2e
-plan AGILITY 60 rich Fastest	b046a90945b1ce2e
-plan AGILITY 60 rich Profit	0be668410443a094
-plan AGILITY 60 rich Recommended	b046a90945b1ce2e
-plan AGILITY 90 poor AFK	8a19b728cb37cc8b
-plan AGILITY 90 poor Cheapest	5f9722b9fd780b45
-plan AGILITY 90 poor Fastest	5f9722b9fd780b45
-plan AGILITY 90 poor Profit	496b11ba83ad67fb
-plan AGILITY 90 poor Recommended	5f9722b9fd780b45
-plan AGILITY 90 rich AFK	70278b27e6787931
-plan AGILITY 90 rich Cheapest	f7d8a68db29fa8cd
-plan AGILITY 90 rich Fastest	f7d8a68db29fa8cd
-plan AGILITY 90 rich Profit	31a682be94430a4d
-plan AGILITY 90 rich Recommended	f7d8a68db29fa8cd
+plan AGILITY 1 poor AFK	90d63ba14fc8ee95
+plan AGILITY 1 poor Cheapest	3bac7db3050fa22f
+plan AGILITY 1 poor Fastest	3bac7db3050fa22f
+plan AGILITY 1 poor Profit	582ba4c181b1664a
+plan AGILITY 1 poor Recommended	3bac7db3050fa22f
+plan AGILITY 1 rich AFK	4a82913a9416b9ea
+plan AGILITY 1 rich Cheapest	a922427d069e7a4d
+plan AGILITY 1 rich Fastest	a922427d069e7a4d
+plan AGILITY 1 rich Profit	ca4594803dc1ac07
+plan AGILITY 1 rich Recommended	a922427d069e7a4d
+plan AGILITY 30 poor AFK	fc87e14f436c8511
+plan AGILITY 30 poor Cheapest	e98e5bc4d12b21d8
+plan AGILITY 30 poor Fastest	e98e5bc4d12b21d8
+plan AGILITY 30 poor Profit	4520e834b444816c
+plan AGILITY 30 poor Recommended	e98e5bc4d12b21d8
+plan AGILITY 30 rich AFK	00abb5d2a5f63663
+plan AGILITY 30 rich Cheapest	1c44b472f32a584b
+plan AGILITY 30 rich Fastest	1c44b472f32a584b
+plan AGILITY 30 rich Profit	9c09c5e126b5d3e1
+plan AGILITY 30 rich Recommended	1c44b472f32a584b
+plan AGILITY 60 poor AFK	4c685baa6bdfbe57
+plan AGILITY 60 poor Cheapest	514adf2c6bca2d09
+plan AGILITY 60 poor Fastest	514adf2c6bca2d09
+plan AGILITY 60 poor Profit	3ded2ae13a9ccfdb
+plan AGILITY 60 poor Recommended	514adf2c6bca2d09
+plan AGILITY 60 rich AFK	e0ff30d8ff9a14f4
+plan AGILITY 60 rich Cheapest	5967bb20d59f61ba
+plan AGILITY 60 rich Fastest	5967bb20d59f61ba
+plan AGILITY 60 rich Profit	c459e18ca871b709
+plan AGILITY 60 rich Recommended	5967bb20d59f61ba
+plan AGILITY 90 poor AFK	4112f2e256a43051
+plan AGILITY 90 poor Cheapest	703619f84a1cf56b
+plan AGILITY 90 poor Fastest	703619f84a1cf56b
+plan AGILITY 90 poor Profit	f3ce28e81bd1dab3
+plan AGILITY 90 poor Recommended	703619f84a1cf56b
+plan AGILITY 90 rich AFK	b5aa43598e9b62ca
+plan AGILITY 90 rich Cheapest	33d7ad72b8c192f0
+plan AGILITY 90 rich Fastest	33d7ad72b8c192f0
+plan AGILITY 90 rich Profit	890c4ffa05d7f265
+plan AGILITY 90 rich Recommended	33d7ad72b8c192f0
 plan ATTACK 1 poor AFK	64acc2333ac8860f
 plan ATTACK 1 poor Cheapest	38078ec52cbfe491
 plan ATTACK 1 poor Fastest	38078ec52cbfe491
@@ -6910,46 +7030,46 @@ plan FLETCHING 90 rich Cheapest	7c911993b4da1aa1
 plan FLETCHING 90 rich Fastest	b56bac4bba2dbe7b
 plan FLETCHING 90 rich Profit	170d36f508387885
 plan FLETCHING 90 rich Recommended	c923233759ed2682
-plan HERBLORE 1 poor AFK	5ea58aee48c17aeb
-plan HERBLORE 1 poor Cheapest	4f7c9f2787e859ed
-plan HERBLORE 1 poor Fastest	cc0f8818a905356c
-plan HERBLORE 1 poor Profit	e3277897fbec1a84
-plan HERBLORE 1 poor Recommended	84df126b7642648e
-plan HERBLORE 1 rich AFK	b11dba00c7e91cf3
-plan HERBLORE 1 rich Cheapest	b7ca2d5ddfd631c7
-plan HERBLORE 1 rich Fastest	16f22a723c1dad88
-plan HERBLORE 1 rich Profit	47789b5e80240a13
-plan HERBLORE 1 rich Recommended	52748488582a1ef2
-plan HERBLORE 30 poor AFK	ef2604375faefe43
-plan HERBLORE 30 poor Cheapest	c9e7f2ea3f1b5ffb
-plan HERBLORE 30 poor Fastest	98d60bda4bad18ed
-plan HERBLORE 30 poor Profit	88b48b6c4f0e8392
-plan HERBLORE 30 poor Recommended	ae8b5e0482cfdfe3
-plan HERBLORE 30 rich AFK	aac763a8b9db75d3
-plan HERBLORE 30 rich Cheapest	8fd760c561b51792
-plan HERBLORE 30 rich Fastest	6046298b07837975
-plan HERBLORE 30 rich Profit	96011f4662f6a917
-plan HERBLORE 30 rich Recommended	ff2988b34958e73c
-plan HERBLORE 60 poor AFK	2a7c99d391c8de4d
-plan HERBLORE 60 poor Cheapest	ff47aafae9d1020e
-plan HERBLORE 60 poor Fastest	ef0ab9af7c588199
-plan HERBLORE 60 poor Profit	a7df1e34a7a97c61
-plan HERBLORE 60 poor Recommended	7b1f2142b7f05a8f
-plan HERBLORE 60 rich AFK	7646f4ed5a5bc14e
-plan HERBLORE 60 rich Cheapest	03384b2ac76c414c
-plan HERBLORE 60 rich Fastest	820966b0ad2ec7fb
-plan HERBLORE 60 rich Profit	c90bebbfca9d22a4
-plan HERBLORE 60 rich Recommended	ecdb361861e04230
-plan HERBLORE 90 poor AFK	9649e08f445aea19
-plan HERBLORE 90 poor Cheapest	310dd08de54b61d7
-plan HERBLORE 90 poor Fastest	72f3a72707d4cb8e
-plan HERBLORE 90 poor Profit	102e058a9a979487
-plan HERBLORE 90 poor Recommended	3b72e86f6c4bdc33
-plan HERBLORE 90 rich AFK	04456c01a15f6c94
-plan HERBLORE 90 rich Cheapest	2867c043fcd2a5e9
-plan HERBLORE 90 rich Fastest	23ae0255b261d64b
-plan HERBLORE 90 rich Profit	dc8d7fd80106b890
-plan HERBLORE 90 rich Recommended	d3810d66b6f3c042
+plan HERBLORE 1 poor AFK	0359d496a7268707
+plan HERBLORE 1 poor Cheapest	e82a9bce17fd4205
+plan HERBLORE 1 poor Fastest	dd0a9b865fc75b46
+plan HERBLORE 1 poor Profit	eed33bc3be19a4c2
+plan HERBLORE 1 poor Recommended	8dc075162e5ae257
+plan HERBLORE 1 rich AFK	cf256a11b5f66196
+plan HERBLORE 1 rich Cheapest	f198227dad2de966
+plan HERBLORE 1 rich Fastest	ecc276bca210c5af
+plan HERBLORE 1 rich Profit	ce97b66c83040eb1
+plan HERBLORE 1 rich Recommended	16b2b20bf8d71043
+plan HERBLORE 30 poor AFK	1c63b98a153a9d62
+plan HERBLORE 30 poor Cheapest	8b73eeb9ee88599a
+plan HERBLORE 30 poor Fastest	fb9860535393509f
+plan HERBLORE 30 poor Profit	5350c03e4746f671
+plan HERBLORE 30 poor Recommended	e881d88d9ef04fa4
+plan HERBLORE 30 rich AFK	7879cd46382e66d5
+plan HERBLORE 30 rich Cheapest	b276a00278330108
+plan HERBLORE 30 rich Fastest	c4e11402e2864968
+plan HERBLORE 30 rich Profit	3faad3ae7d9d901f
+plan HERBLORE 30 rich Recommended	3dc82bbe40669a53
+plan HERBLORE 60 poor AFK	c8e9a3527ecd58f2
+plan HERBLORE 60 poor Cheapest	977cf5ec076ae841
+plan HERBLORE 60 poor Fastest	72ebf7485c92a34b
+plan HERBLORE 60 poor Profit	fef81d74f073e6f2
+plan HERBLORE 60 poor Recommended	c4d165cc99acfd1e
+plan HERBLORE 60 rich AFK	8ad33bf338e4e418
+plan HERBLORE 60 rich Cheapest	7ca6a3bc92d0345d
+plan HERBLORE 60 rich Fastest	43a37e6dba07bdf5
+plan HERBLORE 60 rich Profit	bb4b409555da17bd
+plan HERBLORE 60 rich Recommended	46eff98e09b233b2
+plan HERBLORE 90 poor AFK	0041adedbdf7a3e0
+plan HERBLORE 90 poor Cheapest	20fe7416117f3c5a
+plan HERBLORE 90 poor Fastest	1ec719ae446842ab
+plan HERBLORE 90 poor Profit	a7dd55291ed44da4
+plan HERBLORE 90 poor Recommended	c6695315c50e41e3
+plan HERBLORE 90 rich AFK	6e821a63f2e6eced
+plan HERBLORE 90 rich Cheapest	340bea18720a36bf
+plan HERBLORE 90 rich Fastest	a80c1b680a14f4e0
+plan HERBLORE 90 rich Profit	f662c7414472a0eb
+plan HERBLORE 90 rich Recommended	1e2ee6dafa84d622
 plan HITPOINTS 1 poor AFK	10ff123d0f873a23
 plan HITPOINTS 1 poor Cheapest	139bbc0306ab16eb
 plan HITPOINTS 1 poor Fastest	139bbc0306ab16eb

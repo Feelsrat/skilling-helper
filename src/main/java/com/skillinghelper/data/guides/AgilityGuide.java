@@ -97,6 +97,12 @@ final class AgilityGuide
 					+ "Bring waterskins for the desert heat, or wear a desert amulet 4 or a charged circlet of water.")
 				.wikiPage("Agility_Pyramid")
 				.build(),
+			course("agility_barbarian", "Barbarian Outpost Agility Course", 35, 153.2, 14_000, 2552, 3556,
+				"Rope swing", "Log balance", "Obstacle net", "Balancing ledge", "Ladder", "Crumbling wall")
+				.quest(Quest.ALFRED_GRIMHANDS_BARCRAWL)
+				.notes("No marks of grace, but it's an option near a bank (Barbarian Outpost) before Canifis. "
+					+ "A games necklace teleports you right next to it.")
+				.build(),
 			course("agility_canifis", "Canifis Rooftop", 40, 240, 19_000, 3506, 3490,
 				"Tall tree", "Gap", "Pole-vault")
 				.quest(Quest.PRIEST_IN_PERIL)
