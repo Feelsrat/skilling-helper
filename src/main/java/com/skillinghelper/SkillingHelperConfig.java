@@ -52,6 +52,23 @@ public interface SkillingHelperConfig extends Config
 	@ConfigSection(name = "Pyramid Plunder", description = "The Pyramid Plunder Thieving guide", position = 6)
 	String plunderSection = "pyramidPlunder";
 
+	@ConfigSection(name = "Blackjacking", description = "The blackjacking Thieving guide", position = 7)
+	String blackjackSection = "blackjacking";
+
+	@ConfigItem(
+		keyName = "blackjackSwap",
+		name = "Left-click Knock-Out/Pickpocket",
+		description = "While the blackjacking guide is open, make \"Knock-Out\" the left-click on bandits and "
+			+ "Menaphite Thugs, then \"Pickpocket\" for the two pickpockets after a knock-out lands (hold Shift for "
+			+ "the normal menu)",
+		section = blackjackSection,
+		position = 0
+	)
+	default boolean blackjackSwap()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		keyName = "plunderSceptreHunt",
 		name = "Hunt the sceptre",

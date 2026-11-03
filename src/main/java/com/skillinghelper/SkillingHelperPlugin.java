@@ -27,6 +27,7 @@ import com.skillinghelper.shops.Shops;
 import com.skillinghelper.plunder.PlunderOverlay;
 import com.skillinghelper.plunder.PlunderTracker;
 import com.skillinghelper.plunder.PyramidPlunder;
+import com.skillinghelper.thieving.BlackjackSwapper;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
 import com.skillinghelper.tog.TogTracker;
@@ -138,6 +139,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private PlunderOverlay plunderOverlay;
 	@Inject
+	private BlackjackSwapper blackjack;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -185,6 +188,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.register(shortestPath);
 		eventBus.register(tog);
 		eventBus.register(plunder);
+		eventBus.register(blackjack);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(tearsOverlay);
 		overlayManager.add(plunderOverlay);
@@ -226,6 +230,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.unregister(bankAmountSwapper);
 		eventBus.unregister(tog);
 		eventBus.unregister(plunder);
+		eventBus.unregister(blackjack);
+		blackjack.setActive(false);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(tearsOverlay);
 		overlayManager.remove(plunderOverlay);
@@ -308,6 +314,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		plunder.setSwapEnabled(config.plunderSwapUrns());
 		plunder.setCharmOn(config.plunderSnakeCharm());
 		plunder.tick(plunderGuideOpen(activeSkill), config.plunderSceptreHunt());
+		blackjack.setActive(config.blackjackSwap() && blackjackGuideOpen(activeSkill));
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
 	}
@@ -852,6 +859,15 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.step(step)
 			.bankItems(StepResolver.bankItems(reqs, step))
 			.build();
+	}
+
+	/**
+	 * Whether blackjacking is the method the Thieving guide is showing.
+	 */
+	private boolean blackjackGuideOpen(Skill activeSkill)
+	{
+		Method m = guide.getMethod();
+		return !tearsOpen && activeSkill == Skill.THIEVING && m != null && BlackjackSwapper.METHOD_ID.equals(m.getId());
 	}
 
 	/**

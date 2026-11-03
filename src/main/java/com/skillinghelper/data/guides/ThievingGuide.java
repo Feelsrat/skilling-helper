@@ -200,7 +200,9 @@ final class ThievingGuide
 				.requirementText("A blackjack (any kind)")
 				.supply(Supplies.food(15))
 				.target(Target.npc(null, "Bandit", "Menaphite Thug"))
-				.instruction("Lure a bandit into an empty house, knock it out, then pickpocket it twice while it's out")
+				.instruction("Lure a bandit into an empty house, knock it out, then pickpocket it twice while it's out. "
+					+ "With \"Left-click Knock-Out/Pickpocket\" on (the default), just left-click it: the plugin "
+					+ "switches between the two for you (hold Shift for the normal menu)")
 				.notes("Bearded bandits from 45, beardless from 55, Menaphite Thugs from 65. Quit and re-lure when a "
 					+ "knock-out fails. Only part of The Feud is needed. " + POUCHES)
 				.wikiPage("Blackjack")
