@@ -11,7 +11,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   4. Plugin Hub search works like desktop: ranked results, tags, install counts (HubSearch.kt.txt).
   5. Taps in rendered plugin panels reach the component that listens for them, like desktop AWT does.
   6. Panels: hover events before a tap, faster and cheaper refresh, a narrower desktop-sized panel; compact hub rows.
-  7. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  7. In landscape the open sidebar takes its width from the game, which resizes like desktop instead of being covered.
+  8. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -293,3 +294,65 @@ patch(hub,
                 Text(meta, color = Color(0xFF9A9A9A), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
 """)
+
+# 7. Sidebar shrinks the game instead of covering it (landscape). The window width the stage fit and the canvas
+# resize use loses the sidebar's width while it is open, and the stage docks left; the engine then re-lays out at the
+# narrower size, like desktop RuneLite when its sidebar opens.
+ma = "android/app/src/main/java/dev/audaro/runemobile/MainActivity.kt"
+patch(ma,
+	"    private var gameStage: FrameLayout? = null\n",
+	"    private var gameStage: FrameLayout? = null\n"
+	"    private var shSidebarPx = 0 // Skilling Helper build: width the open plugin sidebar takes from the game\n")
+patch(ma,
+	"""        val (w, h) = stageSize(root.width, root.height, canvasW, canvasH)
+        val lp = stage.layoutParams as FrameLayout.LayoutParams
+        if (lp.width != w || lp.height != h) {
+            lp.width = w
+            lp.height = h
+""",
+	"""        val availW = (root.width - shSidebarPx).coerceAtLeast(1)
+        var (w, h) = stageSize(availW, root.height, canvasW, canvasH)
+        if (shSidebarPx > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) w = availW
+        val grav = if (shSidebarPx > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
+        val lp = stage.layoutParams as FrameLayout.LayoutParams
+        if (lp.width != w || lp.height != h || lp.gravity != grav) {
+            lp.width = w
+            lp.height = h
+            lp.gravity = grav
+""")
+patch(ma,
+	"""            val (w, h) = if (root == null) 0 to 0 else canvasFor(root.width, root.height, resources.displayMetrics.density)
+            val strip = if (root == null) 0 else stripFor(root.width, root.height, resources.displayMetrics.density)""",
+	"""            val gameW = if (root == null) 0 else (root.width - shSidebarPx).coerceAtLeast(1)
+            val (w, h) = if (root == null) 0 to 0 else canvasFor(gameW, root.height, resources.displayMetrics.density)
+            val strip = if (root == null) 0 else stripFor(gameW, root.height, resources.displayMetrics.density)""")
+patch(ma,
+	"    private fun fitGameStage() {\n",
+	"""    /** Skilling Helper build: reserve (or give back) the plugin sidebar's width beside the game. Landscape only: in
+     *  portrait the sidebar would leave the game too narrow, so it overlays as before. Matches SidePanel's width
+     *  (42% of the window, 280-300dp) plus its 30dp close tab. */
+    private fun shApplySidebar(open: Boolean) {
+        val root = rootContainer ?: return
+        val d = resources.displayMetrics.density
+        val rw = root.width
+        shSidebarPx =
+            if (open && rw > root.height) {
+                val panel = (rw * 0.42f).coerceIn(minOf(280 * d, rw.toFloat()), minOf(300 * d, rw.toFloat()))
+                Math.round(panel + 30 * d)
+            } else {
+                0
+            }
+        fitGameStage()
+        root.removeCallbacks(resizeCanvasToWindow)
+        root.postDelayed(resizeCanvasToWindow, RESIZE_SETTLE_MS)
+    }
+
+    private fun fitGameStage() {
+""")
+t = (root / ma).read_text()
+if t.count("pluginPanel.visibility = View.GONE\n") != 2 or t.count("pluginPanel.visibility = View.VISIBLE\n") != 1:
+	sys.exit("patch.py: pluginPanel visibility anchors changed")
+t = t.replace("pluginPanel.visibility = View.GONE\n", "pluginPanel.visibility = View.GONE\n shApplySidebar(false)\n")
+t = t.replace("pluginPanel.visibility = View.VISIBLE\n", "pluginPanel.visibility = View.VISIBLE\n shApplySidebar(true)\n")
+(root / ma).write_text(t)
+print("patched MainActivity.kt (sidebar open/close)")
