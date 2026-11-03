@@ -78,6 +78,18 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "plunderUrnNumbers",
+		name = "Number the urn walk",
+		description = "Number the other urns worth searching in the shortest walk, after the outlined one",
+		section = plunderSection,
+		position = 2
+	)
+	default boolean plunderUrnNumbers()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "togInfobox",
 		name = "Ready indicator",
 		description = "Show an infobox saying whether Juna will let you into Tears of Guthix yet",

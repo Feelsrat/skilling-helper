@@ -5,6 +5,7 @@ import com.skillinghelper.overlay.SceneHighlightOverlay;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.util.List;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Player;
@@ -51,6 +52,10 @@ public class PlunderOverlay extends Overlay
 		}
 		Color c = config.targetColor();
 		SceneHighlightOverlay.drawObject(g, obj, c, config.highlightStyle(), outlines);
+		if (config.plunderUrnNumbers() && tracker.isUrnsNext())
+		{
+			drawRouteNumbers(g, tracker.getUrnRoute(), c);
+		}
 		String option = tracker.getHighlightOption();
 		if (config.plunderOptionText() && option != null)
 		{
@@ -61,5 +66,22 @@ public class PlunderOverlay extends Overlay
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * The urns after the next one, numbered in walking order, without outlines so only the next click stands out.
+	 */
+	private void drawRouteNumbers(Graphics2D g, List<TileObject> route, Color c)
+	{
+		Color dim = new Color(c.getRed(), c.getGreen(), c.getBlue(), 170);
+		for (int i = 1; i < route.size(); i++)
+		{
+			String n = String.valueOf(i + 1);
+			Point at = route.get(i).getCanvasTextLocation(g, n, 60);
+			if (at != null)
+			{
+				OverlayUtil.renderTextLocation(g, at, n, dim);
+			}
+		}
 	}
 }

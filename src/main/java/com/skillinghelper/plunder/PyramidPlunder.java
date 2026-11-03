@@ -6,6 +6,7 @@ import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.ItemHighlight;
 import com.skillinghelper.engine.StepType;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
@@ -13,10 +14,10 @@ import net.runelite.api.gameval.ItemID;
 
 /**
  * The Pyramid Plunder round plan and the one thing to click next. Kept free of client references so it can be unit
- * tested. Strategy from the OSRS wiki "Pyramid Plunder" page: in the early rooms only pass the trap (and open the
- * gold chest from room 4, or everywhere at low levels), search every urn in the last two rooms you can enter, keep 90
- * seconds for the last room, open chests just before leaving a room, use a snake charm below 51 Thieving and carry a
- * lockpick for the doors.
+ * tested. Strategy from the OSRS wiki "Pyramid Plunder" page (chests from room 4, urns in the deepest rooms, chests
+ * last before leaving a room, a snake charm below 51 Thieving, a lockpick for the doors). The clock budgeting idea,
+ * replanning every tick and giving the time left to whatever pays the most xp per tick, comes from Nubles' Codex
+ * Plunder Pilot (BSD-2-Clause).
  */
 public final class PyramidPlunder
 {
@@ -31,9 +32,25 @@ public final class PyramidPlunder
 	 */
 	public static final int ROUND_TICKS = 500;
 	/**
-	 * Time to keep for the last room, as the wiki suggests (90 seconds), plus a little for finding the door.
+	 * Typical time to get through a room without looting it (trap, walk, finding the door), and to pass just the
+	 * last room's trap.
 	 */
-	public static final int LAST_ROOM_TICKS = 150 + 20;
+	static final int PASS_TICKS = 25;
+	static final int TRAP_TICKS = 6;
+	/**
+	 * Typical time per search, failed tries and the walk between included.
+	 */
+	static final int URN_TICKS = 10;
+	static final int CHEST_TICKS = 6;
+	static final int SARCOPHAGUS_TICKS = 12;
+	/**
+	 * Held back so the last search isn't cut off by the clock.
+	 */
+	static final int MARGIN_TICKS = 10;
+	/**
+	 * Hit points below which a snake bite and its poison start to hurt.
+	 */
+	static final int LOW_HP = 12;
 	/**
 	 * Below this the snake charm makes urns faster; above it checking for snakes only slows you down.
 	 */
@@ -50,6 +67,8 @@ public final class PyramidPlunder
 	static final int[] URN_XP = {60, 90, 150, 215, 300, 450, 675, 825};
 	static final int[] CHEST_XP = {40, 60, 100, 140, 200, 300, 450, 550};
 	static final int[] DOOR_XP = {40, 60, 100, 140, 200, 300, 450, 0};
+	static final int[] URNS = {13, 13, 12, 13, 13, 13, 13, 13};
+	static final int[] SCEPTRE_ONE_IN = {4200, 2800, 1600, 950, 800, 750, 650, 650};
 
 	public static final Location ALI = Location.of("Ali the Snake Charmer (Pollnivneach)", 3355, 2953, 4);
 	public static final Target MONEY_POT = Target.object(null, "Money pot");
@@ -111,13 +130,30 @@ public final class PyramidPlunder
 	}
 
 	/**
+	 * Something chasing the player.
+	 */
+	public enum Threat
+	{
+		NONE,
+		SWARM,
+		MUMMY,
+	}
+
+	/**
 	 * What to loot in one room.
 	 */
 	@Value
 	public static class RoomPlan
 	{
 		int room;
-		boolean urns;
+		/**
+		 * Urns worth searching with the time left.
+		 */
+		int urns;
+		/**
+		 * Urns still closed in the room.
+		 */
+		int urnsInRoom;
 		boolean chest;
 		boolean sarcophagus;
 		/**
@@ -130,7 +166,7 @@ public final class PyramidPlunder
 	 * Everything the next action depends on during a round.
 	 */
 	@Value
-	@Builder
+	@Builder(toBuilder = true)
 	public static class Situation
 	{
 		int level;
@@ -158,6 +194,8 @@ public final class PyramidPlunder
 		boolean inventoryFull;
 		boolean sceptreHunt;
 		int prayerLevel;
+		@Builder.Default
+		Threat threat = Threat.NONE;
 	}
 
 	/**
@@ -187,17 +225,118 @@ public final class PyramidPlunder
 		return level < LOCKPICK_BELOW;
 	}
 
-	/**
-	 * What to loot in {@code room} for a player whose deepest room is {@code maxRoom}. Urns only pay off in the last
-	 * two rooms; chests are instant, so take them from room 4 on, in the urn rooms, and everywhere while the deepest
-	 * room is still low. Hunting the sceptre adds every chest and the sarcophagi from room 4.
-	 */
-	public static RoomPlan plan(int room, int maxRoom, boolean sceptreHunt)
+	private static final class Option
 	{
-		boolean urns = room >= maxRoom - 1;
-		boolean chest = urns || room >= 4 || maxRoom <= 4 || sceptreHunt;
-		boolean sarcophagus = sceptreHunt && room >= 4;
-		return new RoomPlan(room, urns, chest, sarcophagus, room >= maxRoom);
+		final int room;
+		final int kind;
+		final int tier;
+		final int ticks;
+		final double density;
+
+		Option(int room, int kind, int tier, int ticks, double value)
+		{
+			this.room = room;
+			this.kind = kind;
+			this.tier = tier;
+			this.ticks = ticks;
+			this.density = value / ticks;
+		}
+	}
+
+	private static final int URN = 0;
+	private static final int CHEST = 1;
+	private static final int SARCOPHAGUS = 2;
+
+	/**
+	 * The rest of the round, from the current room to the deepest one. Getting through each room costs a fixed time;
+	 * the time left goes to the searches that pay the most per tick, so the deepest rooms' urns win and shallow rooms
+	 * are walked through. Called every tick, so a slow room shortens what follows.
+	 *
+	 * @param room the room the player is in, or 0 before the round starts
+	 */
+	public static List<RoomPlan> plan(int level, int room, boolean trapDone, int urnsLeft, boolean chestDone,
+		boolean sarcophagusDone, int ticksLeft, boolean sceptreHunt)
+	{
+		int top = Math.max(1, maxRoom(level));
+		int start = room < 1 ? 1 : Math.min(room, top);
+		boolean fresh = room < 1;
+		int fixed = 0;
+		List<Option> options = new ArrayList<>();
+		for (int r = start; r <= top; r++)
+		{
+			boolean here = r == start && !fresh;
+			boolean trapPassed = here && trapDone;
+			if (r == top)
+			{
+				fixed += trapPassed ? 0 : TRAP_TICKS;
+			}
+			else
+			{
+				fixed += trapPassed ? PASS_TICKS - TRAP_TICKS : PASS_TICKS;
+			}
+			// The wiki keeps urns to the last two rooms: earlier ones pay too little for the walk
+			int urns = r < top - 1 ? 0 : here ? urnsLeft : URNS[r - 1];
+			for (int u = 0; u < urns; u++)
+			{
+				options.add(new Option(r, URN, 1, URN_TICKS, URN_XP[r - 1]));
+			}
+			if (!(here && chestDone))
+			{
+				options.add(sceptreHunt
+					? new Option(r, CHEST, 0, CHEST_TICKS, 1.0 / SCEPTRE_ONE_IN[r - 1])
+					: new Option(r, CHEST, r >= 4 ? 0 : 1, CHEST_TICKS, CHEST_XP[r - 1]));
+			}
+			if (sceptreHunt && r >= 4 && !(here && sarcophagusDone))
+			{
+				options.add(new Option(r, SARCOPHAGUS, 0, SARCOPHAGUS_TICKS, 1.0 / SCEPTRE_ONE_IN[r - 1]));
+			}
+		}
+		options.sort(Comparator.<Option>comparingInt(o -> o.tier).thenComparing(o -> -o.density));
+		int budget = ticksLeft - fixed - MARGIN_TICKS;
+		int[] urns = new int[ROOMS + 1];
+		boolean[] chest = new boolean[ROOMS + 1];
+		boolean[] sarcophagus = new boolean[ROOMS + 1];
+		for (Option o : options)
+		{
+			if (o.ticks > budget)
+			{
+				continue;
+			}
+			budget -= o.ticks;
+			if (o.kind == URN)
+			{
+				urns[o.room]++;
+			}
+			else if (o.kind == CHEST)
+			{
+				chest[o.room] = true;
+			}
+			else
+			{
+				sarcophagus[o.room] = true;
+			}
+		}
+		List<RoomPlan> plans = new ArrayList<>();
+		for (int r = start; r <= top; r++)
+		{
+			boolean here = r == start && !fresh;
+			plans.add(new RoomPlan(r, urns[r], here ? urnsLeft : URNS[r - 1], chest[r], sarcophagus[r], r == top));
+		}
+		return plans;
+	}
+
+	/**
+	 * The plan for a whole fresh round.
+	 */
+	public static List<RoomPlan> freshPlan(int level, boolean sceptreHunt)
+	{
+		return plan(level, 0, false, 0, false, false, ROUND_TICKS, sceptreHunt);
+	}
+
+	static List<RoomPlan> plan(Situation s)
+	{
+		return plan(s.level, Math.max(1, s.room), !s.trapActive, s.urnsLeft, !s.chestClosed,
+			!s.sarcophagusClosed && !s.sarcophagusOpen, s.ticksLeft, s.sceptreHunt);
 	}
 
 	/**
@@ -205,15 +344,16 @@ public final class PyramidPlunder
 	 */
 	public static Action decide(Situation s)
 	{
-		int maxRoom = Math.max(1, maxRoom(s.level));
-		RoomPlan plan = plan(s.room, maxRoom, s.sceptreHunt);
+		return decide(s, plan(s).get(0));
+	}
+
+	private static Action decide(Situation s, RoomPlan here)
+	{
 		if (s.trapActive)
 		{
 			return Action.PASS_TRAP;
 		}
-		// Keep 90 seconds for the last room: in the room before it, move on when time gets short
-		boolean timeHere = plan.last || s.ticksLeft > LAST_ROOM_TICKS;
-		if (plan.urns && timeHere && s.urnsLeft > 0 && s.nextUrn != null && s.nextUrn != UrnState.OPEN)
+		if (here.urns > 0 && s.nextUrn != null && s.nextUrn != UrnState.OPEN)
 		{
 			if (useCharm(s.level) && s.carriesCharm)
 			{
@@ -230,19 +370,27 @@ public final class PyramidPlunder
 			return Action.SEARCH_URN;
 		}
 		// Chests and sarcophagi go last: a scarab swarm or mummy is easier to leave behind on the way out
-		if (plan.chest && s.chestClosed)
+		if (here.chest && s.chestClosed)
 		{
 			return Action.OPEN_CHEST;
 		}
-		if (plan.sarcophagus && s.sarcophagusOpen)
+		if (here.sarcophagus && s.sarcophagusOpen)
 		{
 			return Action.SEARCH_SARCOPHAGUS;
 		}
-		if (plan.sarcophagus && s.sarcophagusClosed && timeHere)
+		if (here.sarcophagus && s.sarcophagusClosed)
 		{
 			return Action.OPEN_SARCOPHAGUS;
 		}
-		return plan.last ? Action.LEAVE : Action.PICK_DOOR;
+		return here.last ? Action.LEAVE : Action.PICK_DOOR;
+	}
+
+	/**
+	 * How many urns the plan wants searched in the player's room now, for numbering the walk between them.
+	 */
+	public static int urnsToSearch(Situation s)
+	{
+		return s.trapActive && s.urnsLeft == 0 ? 0 : plan(s).get(0).urns;
 	}
 
 	/**
@@ -252,8 +400,11 @@ public final class PyramidPlunder
 	{
 		int maxRoom = Math.max(1, maxRoom(s.level));
 		int r = Math.max(1, Math.min(ROOMS, s.room));
+		List<RoomPlan> plans = plan(s);
+		RoomPlan here = plans.get(0);
 		GuideStep.GuideStepBuilder b = GuideStep.builder().type(StepType.TRAIN);
 		String time = "Room " + r + " of " + maxRoom + ", " + timeLeft(s.ticksLeft) + " left.";
+		threatLine(b, s);
 		switch (a)
 		{
 			case PASS_TRAP:
@@ -264,17 +415,20 @@ public final class PyramidPlunder
 				b.title("Check the urn for snakes");
 				b.line("Click \"Check for Snakes\" on the outlined urn.");
 				b.line("Next: \"Charm Snake\", then \"Search\". If the check fails, just check again.");
+				b.line("Note: you never click the snake charm itself. Carrying it gives the urn its \"Charm Snake\" "
+					+ "option.");
 				b.line("Why: below " + SNAKE_CHARM_BELOW + " Thieving the charm saves failed searches and poison, "
 					+ "for the same xp.");
 				break;
 			case CHARM_URN:
 				b.title("Charm the snake");
-				b.line("Click \"Charm Snake\" on the outlined urn, then \"Search\" it.");
+				b.line("Click \"Charm Snake\" on the outlined urn (not the charm in your inventory), then "
+					+ "\"Search\" it.");
 				break;
 			case SEARCH_URN:
 				b.title("Search the urn");
-				b.line("Click \"Search\" on the outlined urn (" + URN_XP[r - 1] + " xp). " + s.urnsLeft
-					+ (s.urnsLeft == 1 ? " urn" : " urns") + " left in this room.");
+				b.line("Click \"Search\" on the outlined urn (" + URN_XP[r - 1] + " xp). " + here.urns
+					+ (here.urns == 1 ? " urn" : " urns") + " to search here; the numbers show the shortest walk.");
 				if (s.nextUrn == UrnState.CLOSED && useCharm(s.level) && !s.carriesCharm)
 				{
 					b.line("Tip: a snake charm from Ali in Pollnivneach makes urns safer below "
@@ -307,14 +461,17 @@ public final class PyramidPlunder
 					? DOOR_XP[r - 1] / 2 + " xp with your lockpick" : DOOR_XP[r - 1] + " xp") + ").");
 				b.line("One door goes on; if it's a dead end the next door gets outlined. After three wrong doors the "
 					+ "fourth always works.");
+				if (s.carriesLockpick)
+				{
+					b.line("Note: your lockpick works by itself when you pick the lock; you never click it.");
+				}
 				if (!s.carriesLockpick && useLockpick(s.level))
 				{
 					b.line("Tip: bring a lockpick next round: doors open much more often at your level.");
 				}
-				if (!plan(r, maxRoom, s.sceptreHunt).last && plan(r + 1, maxRoom, s.sceptreHunt).last
-					&& s.ticksLeft <= LAST_ROOM_TICKS && s.urnsLeft > 0)
+				if (here.urnsInRoom > 0 && here.urns == 0 && !s.trapActive && plans.size() > 1)
 				{
-					b.line("Time to move on: the last room is worth more than these urns.");
+					b.line("Leave these urns: the time left pays more in the deeper rooms.");
 				}
 				break;
 			case LEAVE:
@@ -331,32 +488,62 @@ public final class PyramidPlunder
 				+ "keep gold ones and ivory combs, they're worth the most.");
 		}
 		b.line(time);
-		for (String line : roundPlan(maxRoom, r, s.sceptreHunt))
+		b.line(goalLine(s.sceptreHunt));
+		for (String line : roundPlan(plans, r))
 		{
 			b.line(line);
 		}
 		return b.build();
 	}
 
+	static String goalLine(boolean sceptreHunt)
+	{
+		return sceptreHunt
+			? "Goal: the Pharaoh's sceptre (every chest, sarcophagi from room 4). Turn off \"Hunt the sceptre\" in "
+				+ "the settings for the most xp."
+			: "Goal: the most Thieving xp. Turn on \"Hunt the sceptre\" in the settings to go for the sceptre.";
+	}
+
+	private static void threatLine(GuideStep.GuideStepBuilder b, Situation s)
+	{
+		if (s.threat == Threat.NONE)
+		{
+			return;
+		}
+		String what = s.threat == Threat.SWARM ? "A scarab swarm" : "A mummy";
+		b.line("Warning: " + what + " is attacking you. " + (s.prayerLevel >= 43
+			? "Turn on Protect from Melee, then carry on." : "Eat if you need to; it stays behind when you go "
+			+ "through the next door."));
+	}
+
 	/**
-	 * One line per group of rooms with the same plan, marking the rooms already done.
+	 * One line per group of rooms with the same plan, marking the room the player is in.
+	 *
+	 * @param currentRoom 0 before the round starts
 	 */
-	public static List<String> roundPlan(int maxRoom, int currentRoom, boolean sceptreHunt)
+	public static List<String> roundPlan(List<RoomPlan> plans, int currentRoom)
 	{
 		List<String> out = new ArrayList<>();
-		int start = 1;
-		while (start <= maxRoom)
+		if (!plans.isEmpty() && plans.get(0).room > 1)
 		{
-			RoomPlan first = plan(start, maxRoom, sceptreHunt);
-			int end = start;
-			while (end < maxRoom && !first.urns && !first.last && same(first, plan(end + 1, maxRoom, sceptreHunt)))
+			int done = plans.get(0).room - 1;
+			out.add("✔ " + (done == 1 ? "Room 1" : "Rooms 1-" + done) + ": done.");
+		}
+		int i = 0;
+		while (i < plans.size())
+		{
+			RoomPlan first = plans.get(i);
+			int j = i;
+			while (j + 1 < plans.size() && first.urns == 0 && !first.last && first.room != currentRoom
+				&& same(first, plans.get(j + 1)) && plans.get(j + 1).room != currentRoom)
 			{
-				end++;
+				j++;
 			}
-			String marker = currentRoom > end ? "✔ " : currentRoom >= start ? "➜ " : "• ";
-			String rooms = start == end ? "Room " + start : "Rooms " + start + "-" + end;
-			out.add(marker + rooms + ": " + describe(first, maxRoom));
-			start = end + 1;
+			int end = plans.get(j).room;
+			String marker = first.room == currentRoom ? "➜ " : "• ";
+			String rooms = first.room == end ? "Room " + first.room : "Rooms " + first.room + "-" + end;
+			out.add(marker + rooms + ": " + describe(first));
+			i = j + 1;
 		}
 		return out;
 	}
@@ -366,13 +553,13 @@ public final class PyramidPlunder
 		return a.urns == b.urns && a.chest == b.chest && a.sarcophagus == b.sarcophagus && a.last == b.last;
 	}
 
-	static String describe(RoomPlan p, int maxRoom)
+	static String describe(RoomPlan p)
 	{
 		List<String> parts = new ArrayList<>();
 		parts.add("trap");
-		if (p.urns)
+		if (p.urns > 0)
 		{
-			parts.add("every urn");
+			parts.add(p.urns >= p.urnsInRoom ? "every urn" : p.urns + (p.urns == 1 ? " urn" : " urns"));
 		}
 		if (p.chest)
 		{
@@ -383,12 +570,7 @@ public final class PyramidPlunder
 			parts.add("sarcophagus");
 		}
 		parts.add(p.last ? "leave" : "door");
-		String text = String.join(", then ", parts) + ".";
-		if (p.urns && !p.last)
-		{
-			text += " Keep 90 seconds for room " + maxRoom + ".";
-		}
-		return text;
+		return String.join(", then ", parts) + ".";
 	}
 
 	/**
@@ -406,7 +588,7 @@ public final class PyramidPlunder
 	 * The player is in the lobby: start a round.
 	 */
 	public static GuideStep startStep(int level, boolean carriesCharm, boolean carriesLockpick, boolean sceptreHunt,
-		boolean canCharge)
+		boolean canCharge, int freeSlots, int hitpoints, int prayerLevel)
 	{
 		GuideStep.GuideStepBuilder b = GuideStep.builder()
 			.type(StepType.TRAIN)
@@ -420,7 +602,35 @@ public final class PyramidPlunder
 			b.itemHighlight(UNCHARGED_SCEPTRE, ItemHighlight.USE);
 		}
 		prepLines(b, level, carriesCharm, carriesLockpick);
-		for (String line : roundPlan(Math.max(1, maxRoom(level)), 0, sceptreHunt))
+		List<RoomPlan> fresh = freshPlan(level, sceptreHunt);
+		int searches = 0;
+		for (RoomPlan p : fresh)
+		{
+			searches += p.urns + (p.chest ? 1 : 0) + (p.sarcophagus ? 1 : 0);
+		}
+		if (freeSlots < searches)
+		{
+			b.line("Warning: only " + freeSlots + " free slots. A round like this finds about " + searches
+				+ " artefacts, and a full inventory stops the loot.");
+		}
+		if (hitpoints < LOW_HP)
+		{
+			b.line("Warning: low hitpoints. Urn snakes bite for up to 4 and poison, so eat first.");
+		}
+		if (carriesLockpick && !useLockpick(level))
+		{
+			b.line("Tip: at your level the lockpick halves door xp for few saved tries; you can leave it in the bank.");
+		}
+		if (carriesCharm && !useCharm(level))
+		{
+			b.line("Tip: from " + SNAKE_CHARM_BELOW + " Thieving the snake charm only slows you down; leave it.");
+		}
+		if (prayerLevel >= 43)
+		{
+			b.line("Tip: Protect from Melee stops all damage from scarab swarms and mummies.");
+		}
+		b.line(goalLine(sceptreHunt));
+		for (String line : roundPlan(fresh, 0))
 		{
 			b.line(line);
 		}
@@ -476,11 +686,13 @@ public final class PyramidPlunder
 	{
 		if (useCharm(level) && !carriesCharm)
 		{
-			b.line("Bring: a snake charm. Below " + SNAKE_CHARM_BELOW + " Thieving it makes urns faster and safer.");
+			b.line("Bring: a snake charm. Below " + SNAKE_CHARM_BELOW + " Thieving it makes urns faster and safer. "
+				+ "Just carry it; the guide tells you when to charm.");
 		}
 		if (useLockpick(level) && !carriesLockpick)
 		{
-			b.line("Bring: a lockpick. Doors open far more often at your level, for half the door xp.");
+			b.line("Bring: a lockpick. Doors open far more often at your level, for half the door xp. Just carry "
+				+ "it; picking a lock uses it by itself.");
 		}
 	}
 

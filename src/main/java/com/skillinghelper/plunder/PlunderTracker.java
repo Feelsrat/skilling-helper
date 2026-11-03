@@ -3,6 +3,8 @@ package com.skillinghelper.plunder;
 import com.skillinghelper.engine.GuideStep;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +132,12 @@ public class PlunderTracker
 	// The round
 	private int room;
 	private TileObject urnTarget;
+	/**
+	 * The planned urns in walking order, the next one first.
+	 */
+	private List<TileObject> urnRoute = new ArrayList<>();
+	private int routeCount = -1;
+	private final Set<NPC> chasers = new HashSet<>();
 	private TileObject doorTarget;
 	private boolean sarcophagusSearched;
 
@@ -150,6 +158,11 @@ public class PlunderTracker
 	private GuideStep step;
 	@Getter
 	private boolean inRound;
+	/**
+	 * Whether to number {@link #getUrnRoute()} in the room: only while urns are the next thing to do.
+	 */
+	@Getter
+	private boolean urnsNext;
 
 	@Inject
 	public PlunderTracker(Client client)
@@ -161,6 +174,9 @@ public class PlunderTracker
 	{
 		objects.clear();
 		chests.clear();
+		chasers.clear();
+		urnRoute = new ArrayList<>();
+		routeCount = -1;
 		mummy = null;
 		highlight = null;
 		step = null;
@@ -215,6 +231,7 @@ public class PlunderTracker
 		highlight = null;
 		highlightOption = null;
 		step = null;
+		urnsNext = false;
 		Player player = client.getLocalPlayer();
 		WorldPoint me = player == null ? null : player.getWorldLocation();
 		if (me == null)
@@ -232,6 +249,8 @@ public class PlunderTracker
 		if (!inRound)
 		{
 			room = 0;
+			urnRoute = new ArrayList<>();
+			routeCount = -1;
 			urnTarget = null;
 			doorTarget = null;
 			sarcophagusSearched = false;
@@ -250,9 +269,12 @@ public class PlunderTracker
 		}
 		else if (lobby)
 		{
+			ItemContainer inv = client.getItemContainer(InventoryID.INV);
 			step = PyramidPlunder.startStep(level, charm, lockpick, sceptreHunt,
 				PyramidPlunder.canCharge(carries(PyramidPlunder.UNCHARGED_SCEPTRE), count(PyramidPlunder.GOLD_ARTEFACTS),
-					count(PyramidPlunder.STONE_ARTEFACTS), count(PyramidPlunder.POTTERY_ARTEFACTS)));
+					count(PyramidPlunder.STONE_ARTEFACTS), count(PyramidPlunder.POTTERY_ARTEFACTS)),
+				inv == null ? 28 : 28 - inv.count(), client.getBoostedSkillLevel(Skill.HITPOINTS),
+				client.getRealSkillLevel(Skill.PRAYER));
 		}
 		else if (insideRoom)
 		{
@@ -283,6 +305,8 @@ public class PlunderTracker
 		{
 			room = r;
 			urnTarget = null;
+			urnRoute = new ArrayList<>();
+			routeCount = -1;
 			doorTarget = null;
 			sarcophagusSearched = false;
 		}
@@ -319,10 +343,6 @@ public class PlunderTracker
 			}
 		}
 
-		if (urnTarget == null || !urns.contains(urnTarget))
-		{
-			urnTarget = closest(me, urns);
-		}
 		if (doorTarget == null || !inRoom(doorTarget, chest) || state(doorTarget) != ObjectID.NTK_TOMB_DOOR_NOANIM)
 		{
 			doorTarget = nearest(me, Kind.DOOR, chest, ObjectID.NTK_TOMB_DOOR_NOANIM);
@@ -330,13 +350,12 @@ public class PlunderTracker
 		int sarcState = sarcophagus == null ? -1 : state(sarcophagus);
 		TileObject exit = nearest(me, Kind.EXIT, chest);
 
-		PyramidPlunder.Situation sit = PyramidPlunder.Situation.builder()
+		PyramidPlunder.Situation sit0 = PyramidPlunder.Situation.builder()
 			.level(level)
 			.room(r)
 			.ticksLeft(PyramidPlunder.ROUND_TICKS - timer)
 			.trapActive(client.getVarbitValue(VarbitID.NTK_TRAP_ACTIVE) == 1)
 			.urnsLeft(urns.size())
-			.nextUrn(urnTarget == null ? null : urnState(urnTarget))
 			.chestClosed(chest != null && state(chest) == ObjectID.NTK_GOLDEN_CHEST_CLOSED)
 			.sarcophagusClosed(sarcState == ObjectID.NTK_SARCOPHAGUS)
 			.sarcophagusOpen(sarcState == ObjectID.NTK_SARCOPHAGUS_OPEN && !sarcophagusSearched)
@@ -347,8 +366,16 @@ public class PlunderTracker
 			.inventoryFull(inventoryFull())
 			.sceptreHunt(sceptreHunt)
 			.prayerLevel(client.getRealSkillLevel(Skill.PRAYER))
+			.threat(threat(player()))
+			.build();
+		updateRoute(me, urns, PyramidPlunder.urnsToSearch(sit0));
+		urnTarget = urnRoute.isEmpty() ? null : urnRoute.get(0);
+		PyramidPlunder.Situation sit = sit0.toBuilder()
+			.nextUrn(urnTarget == null ? null : urnState(urnTarget))
 			.build();
 		PyramidPlunder.Action action = PyramidPlunder.decide(sit);
+		urnsNext = action == PyramidPlunder.Action.CHECK_URN || action == PyramidPlunder.Action.CHARM_URN
+			|| action == PyramidPlunder.Action.SEARCH_URN;
 		switch (action)
 		{
 			case PASS_TRAP:
@@ -381,6 +408,68 @@ public class PlunderTracker
 				break;
 		}
 		step = PyramidPlunder.step(sit, action);
+	}
+
+	/**
+	 * Replans the walk through the urns when one gets searched or the plan wants a different number of them. The
+	 * urn being worked on stays first while it's still closed, so the outline doesn't jump between two close urns.
+	 */
+	private void updateRoute(WorldPoint me, List<TileObject> closed, int count)
+	{
+		count = Math.min(count, closed.size());
+		if (count == routeCount && closed.containsAll(urnRoute) && urnRoute.size() == count)
+		{
+			return;
+		}
+		routeCount = count;
+		TileObject keep = !urnRoute.isEmpty() && closed.contains(urnRoute.get(0)) && count > 0 ? urnRoute.get(0) : null;
+		List<TileObject> rest = new ArrayList<>(closed);
+		rest.remove(keep);
+		WorldPoint from = keep != null ? keep.getWorldLocation() : me;
+		int left = keep != null ? count - 1 : count;
+		int[] xs = new int[rest.size()];
+		int[] ys = new int[rest.size()];
+		for (int i = 0; i < rest.size(); i++)
+		{
+			xs[i] = rest.get(i).getWorldLocation().getX();
+			ys[i] = rest.get(i).getWorldLocation().getY();
+		}
+		List<TileObject> route = new ArrayList<>();
+		if (keep != null)
+		{
+			route.add(keep);
+		}
+		for (int i : UrnWalk.order(from.getX(), from.getY(), xs, ys, left))
+		{
+			route.add(rest.get(i));
+		}
+		urnRoute = route;
+	}
+
+	/**
+	 * The planned urns in walking order, the next one first.
+	 */
+	public List<TileObject> getUrnRoute()
+	{
+		return Collections.unmodifiableList(urnRoute);
+	}
+
+	private Player player()
+	{
+		return client.getLocalPlayer();
+	}
+
+	private PyramidPlunder.Threat threat(Player me)
+	{
+		for (NPC npc : chasers)
+		{
+			if (me != null && npc.getInteracting() == me)
+			{
+				return npc.getId() == NpcID.NTK_SCARAB_SWARM ? PyramidPlunder.Threat.SWARM
+					: PyramidPlunder.Threat.MUMMY;
+			}
+		}
+		return PyramidPlunder.Threat.NONE;
 	}
 
 	private void pick(TileObject obj, String option)
@@ -659,11 +748,22 @@ public class PlunderTracker
 		}
 	}
 
+	private static final Set<Integer> CHASER_IDS = Set.of(NpcID.NTK_SCARAB_SWARM, NpcID.NTK_MUMMY_1,
+		NpcID.NTK_MUMMY_2, NpcID.NTK_MUMMY_3, NpcID.NTK_MUMMY_4, NpcID.NTK_MUMMY_5);
+
 	private void addNpc(NPC npc)
 	{
-		if (npc != null && npc.getId() == NpcID.NTK_MUMMY_GUARDIAN)
+		if (npc == null)
+		{
+			return;
+		}
+		if (npc.getId() == NpcID.NTK_MUMMY_GUARDIAN)
 		{
 			mummy = npc;
+		}
+		else if (CHASER_IDS.contains(npc.getId()))
+		{
+			chasers.add(npc);
 		}
 	}
 
@@ -676,8 +776,11 @@ public class PlunderTracker
 			|| e.getGameState() == GameState.HOPPING)
 		{
 			objects.clear();
+			chasers.clear();
 			mummy = null;
 			urnTarget = null;
+			urnRoute = new ArrayList<>();
+			routeCount = -1;
 			doorTarget = null;
 			highlight = null;
 		}
@@ -720,6 +823,7 @@ public class PlunderTracker
 		{
 			mummy = null;
 		}
+		chasers.remove(e.getNpc());
 	}
 
 	@Subscribe

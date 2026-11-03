@@ -32,30 +32,6 @@ public class PyramidPlunderTest
 	}
 
 	@Test
-	public void urnsOnlyInTheLastTwoRooms()
-	{
-		// Level 75: rooms 1-6, so urns in 5 and 6
-		assertFalse(PyramidPlunder.plan(3, 6, false).isUrns());
-		assertFalse(PyramidPlunder.plan(3, 6, false).isChest());
-		assertTrue(PyramidPlunder.plan(4, 6, false).isChest());
-		assertFalse(PyramidPlunder.plan(4, 6, false).isUrns());
-		assertTrue(PyramidPlunder.plan(5, 6, false).isUrns());
-		assertTrue(PyramidPlunder.plan(6, 6, false).isUrns());
-		assertTrue(PyramidPlunder.plan(6, 6, false).isLast());
-		assertFalse(PyramidPlunder.plan(5, 6, false).isSarcophagus());
-		assertTrue(PyramidPlunder.plan(5, 6, true).isSarcophagus());
-		assertTrue(PyramidPlunder.plan(1, 6, true).isChest());
-	}
-
-	@Test
-	public void lowLevelsLootEveryChest()
-	{
-		assertTrue(PyramidPlunder.plan(1, 3, false).isChest());
-		assertFalse(PyramidPlunder.plan(1, 3, false).isUrns());
-		assertTrue(PyramidPlunder.plan(1, 1, false).isUrns());
-	}
-
-	@Test
 	public void trapFirst()
 	{
 		assertEquals(PyramidPlunder.Action.PASS_TRAP, PyramidPlunder.decide(at(75, 5).trapActive(true)
@@ -65,7 +41,8 @@ public class PyramidPlunderTest
 	@Test
 	public void earlyRoomsGoStraightToTheDoor()
 	{
-		assertEquals(PyramidPlunder.Action.PICK_DOOR, PyramidPlunder.decide(at(75, 2)
+		// Early rooms' urns are never worth it, and their chests only with time to spare
+		assertEquals(PyramidPlunder.Action.PICK_DOOR, PyramidPlunder.decide(at(75, 2).ticksLeft(180)
 			.urnsLeft(13).nextUrn(PyramidPlunder.UrnState.CLOSED).chestClosed(true).build()));
 		assertEquals(PyramidPlunder.Action.OPEN_CHEST, PyramidPlunder.decide(at(75, 4)
 			.urnsLeft(13).nextUrn(PyramidPlunder.UrnState.CLOSED).chestClosed(true).build()));
@@ -81,16 +58,6 @@ public class PyramidPlunderTest
 			.urnsLeft(0).nextUrn(null).build()));
 		assertEquals(PyramidPlunder.Action.PICK_DOOR, PyramidPlunder.decide(room5
 			.chestClosed(false).build()));
-	}
-
-	@Test
-	public void keepNinetySecondsForTheLastRoom()
-	{
-		assertEquals(PyramidPlunder.Action.OPEN_CHEST, PyramidPlunder.decide(at(75, 5).ticksLeft(100)
-			.urnsLeft(5).nextUrn(PyramidPlunder.UrnState.CLOSED).chestClosed(true).build()));
-		// In the last room there's no later room to save time for
-		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(75, 6).ticksLeft(30)
-			.urnsLeft(5).nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
 	}
 
 	@Test
@@ -133,19 +100,81 @@ public class PyramidPlunderTest
 		GuideStep with = PyramidPlunder.step(at(75, 3).carriesLockpick(true).build(),
 			PyramidPlunder.Action.PICK_DOOR);
 		assertTrue(with.getDetails().get(0).contains("50 xp with your lockpick"));
+		assertTrue(String.join(" ", with.getDetails()).contains("works by itself"));
 		GuideStep without = PyramidPlunder.step(at(60, 3).build(), PyramidPlunder.Action.PICK_DOOR);
 		assertTrue(String.join(" ", without.getDetails()).contains("bring a lockpick"));
 	}
 
 	@Test
-	public void roundPlanGroupsEarlyRooms()
+	public void freshRoundAtSeventyFive()
 	{
-		List<String> plan = PyramidPlunder.roundPlan(6, 5, false);
+		List<PyramidPlunder.RoomPlan> plan = PyramidPlunder.freshPlan(75, false);
+		assertEquals(6, plan.size());
+		assertEquals(0, plan.get(3).getUrns());
+		assertEquals(13, plan.get(4).getUrns());
+		assertEquals(13, plan.get(5).getUrns());
+		assertTrue(plan.get(3).isChest());
+		assertTrue(plan.get(5).isLast());
 		assertEquals(List.of(
-			"✔ Rooms 1-3: trap, then door.",
-			"✔ Room 4: trap, then chest, then door.",
-			"➜ Room 5: trap, then every urn, then chest, then door. Keep 90 seconds for room 6.",
-			"• Room 6: trap, then every urn, then chest, then leave."), plan);
+			"• Rooms 1-4: trap, then chest, then door.",
+			"• Room 5: trap, then every urn, then chest, then door.",
+			"• Room 6: trap, then every urn, then chest, then leave."), PyramidPlunder.roundPlan(plan, 0));
+	}
+
+	@Test
+	public void slowRoomShortensItsUrns()
+	{
+		// 2 minutes left in room 5: the deepest room's urns come first, so room 5 gets only a few
+		List<PyramidPlunder.RoomPlan> plan = PyramidPlunder.plan(75, 5, true, 13, false, true, 200, false);
+		assertEquals(13, plan.get(1).getUrns());
+		assertTrue(plan.get(0).getUrns() < 13);
+		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(75, 5).ticksLeft(200)
+			.urnsLeft(13).nextUrn(PyramidPlunder.UrnState.CLOSED).chestClosed(true).build()));
+		// With under a minute left, room 5's urns are dropped for room 6
+		assertEquals(PyramidPlunder.Action.OPEN_CHEST, PyramidPlunder.decide(at(75, 5).ticksLeft(100)
+			.urnsLeft(13).nextUrn(PyramidPlunder.UrnState.CLOSED).chestClosed(true).build()));
+		// In the last room every second goes to its urns
+		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(75, 6).ticksLeft(40)
+			.urnsLeft(5).nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
+	}
+
+	@Test
+	public void lowLevelsLootEverything()
+	{
+		List<PyramidPlunder.RoomPlan> one = PyramidPlunder.freshPlan(25, false);
+		assertEquals(1, one.size());
+		assertEquals(13, one.get(0).getUrns());
+		assertTrue(one.get(0).isChest());
+	}
+
+	@Test
+	public void sceptreHuntPlansEveryChestAndLateSarcophagi()
+	{
+		List<PyramidPlunder.RoomPlan> plan = PyramidPlunder.freshPlan(95, true);
+		for (PyramidPlunder.RoomPlan p : plan)
+		{
+			assertTrue(p.isChest());
+			assertEquals(p.getRoom() >= 4, p.isSarcophagus());
+		}
+	}
+
+	@Test
+	public void shortestUrnWalk()
+	{
+		// Three urns in a row: from the left end, walk them left to right
+		int[] xs = {10, 2, 6};
+		int[] ys = {0, 0, 0};
+		assertEquals(List.of(1, 2, 0), UrnWalk.order(0, 0, xs, ys, 3));
+		assertEquals(List.of(1), UrnWalk.order(0, 0, xs, ys, 1));
+		assertEquals(List.of(), UrnWalk.order(0, 0, xs, ys, 0));
+	}
+
+	@Test
+	public void threatComesFirst()
+	{
+		GuideStep step = PyramidPlunder.step(at(75, 5).threat(PyramidPlunder.Threat.SWARM).prayerLevel(70)
+			.urnsLeft(3).nextUrn(PyramidPlunder.UrnState.CLOSED).build(), PyramidPlunder.Action.SEARCH_URN);
+		assertTrue(step.getDetails().get(0).contains("Protect from Melee"));
 	}
 
 	@Test
