@@ -64,6 +64,34 @@ final class SmithingGuide
 				"Adamantite bars", ItemID.ADAMANT_PLATEBODY).members(true).build(),
 			anvil("smith_rune_battleaxes", "Rune battleaxes", 95, 225, 3, ItemID.RUNITE_BAR, "Runite bars",
 				ItemID.RUNE_BATTLEAXE).tag(MethodTag.PROFIT).build(),
+			anvil("smith_mithril_dart_tips", "Mithril dart tips", 54, 50, 1, ItemID.MITHRIL_BAR, "Mithril bars",
+				ItemID.MITHRIL_DART_TIP).members(true).build(),
+			anvil("smith_adamant_dart_tips", "Adamant dart tips", 74, 62.5, 1, ItemID.ADAMANTITE_BAR, "Adamantite bars",
+				ItemID.ADAMANT_DART_TIP).members(true).build(),
+			anvil("smith_rune_dart_tips", "Rune dart tips", 89, 75, 1, ItemID.RUNITE_BAR, "Runite bars",
+				ItemID.RUNE_DART_TIP).members(true).build(),
+			Method.builder()
+				.id("smith_cannonballs")
+				.skill(Skill.SMITHING)
+				.type(MethodType.PROCESS)
+				.name("Steel cannonballs (Edgeville)")
+				.minLevel(35)
+				.xpPerAction(25.6)
+				.xpPerHour(9_000)
+				.members(true)
+				.tag(MethodTag.AFK).tag(MethodTag.PROFIT)
+				.quest(Quest.DWARF_CANNON)
+				.location(EDGEVILLE_FURNACE)
+				.bank(Banks.EDGEVILLE)
+				.tool(ItemReq.tool("Ammo mould", ItemID.AMMO_MOULD))
+				.input(ItemReq.consumed("Steel bars", 27, 1, ItemID.STEEL_BAR))
+				.product(ItemID.MCANNONBALL)
+				.target(Target.object("Smelt", "Furnace"))
+				.useItem(ItemID.STEEL_BAR)
+				.instruction("Use the steel bars on the furnace to make cannonballs")
+				.notes("Slow xp but very AFK: one inventory takes about 2.5 minutes. Each bar makes 4 cannonballs.")
+				.wikiPage(P2P_WIKI)
+				.build(),
 			Method.builder()
 				.id("smith_blast_furnace_gold")
 				.skill(Skill.SMITHING)

@@ -44,7 +44,63 @@ final class FletchingGuide
 		m.add(string("fletch_string_maple_long", "Maple longbows", 55, 58.3, ItemID.UNSTRUNG_MAPLE_LONGBOW, ItemID.MAPLE_LONGBOW).build());
 		m.add(string("fletch_string_yew_long", "Yew longbows", 70, 75, ItemID.UNSTRUNG_YEW_LONGBOW, ItemID.YEW_LONGBOW).build());
 		m.add(string("fletch_string_magic_long", "Magic longbows", 85, 91.5, ItemID.UNSTRUNG_MAGIC_LONGBOW, ItemID.MAGIC_LONGBOW).build());
+
+		m.add(ammo("fletch_headless_arrows", "Headless arrows", 1, 15, "Arrow shafts", ItemID.ARROW_SHAFT, 15,
+			ItemID.HEADLESS_ARROW).tag(MethodTag.CHEAP).build());
+		m.add(ammo("fletch_adamant_arrows", "Adamant arrows", 60, 150, "Adamant arrowheads", ItemID.ADAMANT_ARROWHEADS,
+			15, ItemID.ADAMANT_ARROW, ItemID.HEADLESS_ARROW, "Headless arrows").build());
+		m.add(ammo("fletch_rune_arrows", "Rune arrows", 75, 187.5, "Rune arrowheads", ItemID.RUNE_ARROWHEADS, 15,
+			ItemID.RUNE_ARROW, ItemID.HEADLESS_ARROW, "Headless arrows").build());
+		m.add(ammo("fletch_steel_darts", "Steel darts", 37, 75, "Steel dart tips", ItemID.STEEL_DART_TIP, 10,
+			ItemID.STEEL_DART).build());
+		m.add(ammo("fletch_mithril_darts", "Mithril darts", 52, 112, "Mithril dart tips", ItemID.MITHRIL_DART_TIP, 10,
+			ItemID.MITHRIL_DART).build());
+		m.add(ammo("fletch_adamant_darts", "Adamant darts", 67, 150, "Adamant dart tips", ItemID.ADAMANT_DART_TIP, 10,
+			ItemID.ADAMANT_DART).build());
+		m.add(ammo("fletch_rune_darts", "Rune darts", 81, 188, "Rune dart tips", ItemID.RUNE_DART_TIP, 10,
+			ItemID.RUNE_DART).build());
+		m.add(ammo("fletch_adamant_bolts", "Adamant bolts", 61, 70, "Adamant bolts (unf)",
+			ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_UNFEATHERED, 10, ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE).build());
+		m.add(ammo("fletch_runite_bolts", "Runite bolts", 69, 100, "Runite bolts (unf)",
+			ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE_UNFEATHERED, 10, ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE).build());
 		return m;
+	}
+
+	/**
+	 * Stackable ammo made 10 or 15 at a time from two stacks (tips and feathers, or tips and headless arrows). The
+	 * wiki counts these as zero-time methods: about one set per game tick when clicking steadily.
+	 */
+	private static Method.MethodBuilder ammo(String id, String name, int level, double xpPerSet, String partName,
+		int part, int perSet, int product)
+	{
+		return ammo(id, name, level, xpPerSet, partName, part, perSet, product, ItemID.FEATHER, "Feathers");
+	}
+
+	private static Method.MethodBuilder ammo(String id, String name, int level, double xpPerSet, String partName,
+		int part, int perSet, int product, int other, String otherName)
+	{
+		return Method.builder()
+			.id(id)
+			.skill(Skill.FLETCHING)
+			.type(MethodType.PROCESS)
+			.name(name)
+			.minLevel(level)
+			.xpPerAction(xpPerSet)
+			// About 1,500 sets an hour clicking at a steady pace
+			.xpPerHour((int) (xpPerSet * 1_500))
+			.members(level > 1)
+			.tag(MethodTag.FAST).tag(MethodTag.BANKSTANDING)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.stack(otherName, perSet, other))
+			.input(ItemReq.stack(partName, perSet, part))
+			.product(product)
+			.useItem(part)
+			.instruction("Use the " + partName.toLowerCase() + " on the " + otherName.toLowerCase()
+				+ " to make " + perSet + " " + name.toLowerCase() + " at a time")
+			.notes("Everything stacks, so you never bank and can do this anywhere, even while running. "
+				+ "Very fast xp, but the cost depends on today's prices.")
+			.wikiPage(WIKI);
 	}
 
 	private static Method.MethodBuilder cut(String id, String productName, int level, double xp, String logName, int log,

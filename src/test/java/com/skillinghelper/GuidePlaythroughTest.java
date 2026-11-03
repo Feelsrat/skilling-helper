@@ -90,6 +90,11 @@ public class GuidePlaythroughTest
 					}
 				}
 			}
+			// Ammo made only from stacks (darts, bolts, arrows) stacks too
+			if (!method.getInputs().isEmpty() && method.getInputs().stream().allMatch(ItemReq::isWholeStack))
+			{
+				stackable.addAll(method.getProducts());
+			}
 			bank.put(ItemID.COINS, 50_000_000);
 			for (Skill s : Skill.values())
 			{

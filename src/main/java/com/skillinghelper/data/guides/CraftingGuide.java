@@ -97,6 +97,47 @@ final class CraftingGuide
 			"Red dragon leather", ItemID.RED_DRAGONHIDE_BODY).build());
 		m.add(dhide("craft_black_dhide_body", "Black d'hide bodies", 84, 258, ItemID.DRAGON_LEATHER_BLACK,
 			"Black dragon leather", ItemID.BLACK_DRAGONHIDE_BODY).build());
+		m.add(Method.builder()
+			.id("craft_spin_flax")
+			.skill(Skill.CRAFTING)
+			.type(MethodType.PROCESS)
+			.name("Spin flax (Seers' Village)")
+			.minLevel(10)
+			.xpPerAction(15)
+			.xpPerHour(15_000)
+			.members(true)
+			.tag(MethodTag.AFK).tag(MethodTag.PROFIT)
+			.location(Location.of("Seers' Village spinning wheel", 2711, 3471, 1, 5))
+			.bank(Banks.SEERS)
+			.input(ItemReq.consumed("Flax", 28, 1, ItemID.FLAX))
+			.product(ItemID.BOW_STRING)
+			.target(Target.object("Spin", "Spinning wheel"))
+			.instruction("Use the spinning wheel upstairs and spin the flax into bow strings")
+			.notes("Slow but very AFK, and bow strings sell well. The spinning wheel is upstairs in the house "
+				+ "next to the bank.")
+			.wikiPage(P2P_WIKI)
+			.build());
+		m.add(Method.builder()
+			.id("craft_amethyst_arrowtips")
+			.skill(Skill.CRAFTING)
+			.type(MethodType.PROCESS)
+			.name("Cut amethyst into arrowtips")
+			.minLevel(85)
+			.xpPerAction(60)
+			.xpPerHour(70_000)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.tool(CHISEL)
+			.input(ItemReq.consumed("Amethyst", 27, 1, ItemID.AMETHYST))
+			.product(ItemID.AMETHYST_ARROWHEADS)
+			.useItem(ItemID.CHISEL)
+			.instruction("Use the chisel on the amethyst and pick arrowtips")
+			.notes("Each amethyst makes 15 arrowtips. Bolt tips (83), javelin heads (87) and dart tips (89) are "
+				+ "other options.")
+			.wikiPage(P2P_WIKI)
+			.build());
 		return m;
 	}
 
