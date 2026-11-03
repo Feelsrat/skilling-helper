@@ -9,8 +9,11 @@
 #   skilling-helper-android --reinstall-java   set the game up in GameNative again (after removing it there)
 #
 # What goes where:
-#   GameNative/CustomGames/Skilling Helper   a Windows Java 21. GameNative finds it there by itself, lists it as a
-#                                             game and moves it into its own storage on first start.
+#   GameNative/CustomGames/Skilling Helper   SkillingHelper.exe and a Windows Java 21 (jre\). GameNative finds the
+#                                             folder by itself, lists it as a game, picks SkillingHelper.exe as the
+#                                             program (the only .exe it looks at) and moves the folder into its own
+#                                             storage on first start. SkillingHelper.exe starts Java with the right
+#                                             arguments, so nothing needs setting in GameNative.
 #   Download/skilling-helper                  skilling-helper-all.jar and RuneLite's settings (home/.runelite).
 #                                             GameNative shows the Download folder to Windows as drive D:.
 # It also adds "Play Skilling Helper" and "Update Skilling Helper" buttons for the Termux:Widget app.
@@ -25,8 +28,9 @@ GN_PKG=app.gamenative
 GN_REPO=utkarshdalal/GameNative
 GN_FALLBACK_APK="https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3.0.apk"
 # Fixed custom-game id, written to the game folder's .gamenative file, so the Play button can start it
-APP_ID=742011
-JAVA_ARGS='-ea -Xmx1g -Duser.home=D:\skilling-helper\home -jar D:\skilling-helper\skilling-helper-all.jar --developer-mode'
+# (742011 was the first layout, with java.exe and no launcher)
+APP_ID=742012
+SETUP_MARK="java-installed-v2"
 STATE="$HOME/.config/skilling-helper-android"
 TOKEN_FILE="$STATE/token"
 SELF="$HOME/.local/bin/skilling-helper-android"
@@ -100,9 +104,15 @@ install_gamenative() {
 install_java() {
 	mkdir -p "$STATE"
 	# GameNative moves the folder into its own storage on first start, so remember that it was done
-	if [ -f "$STATE/java-installed" ] && [ "${1:-}" != force ]; then return 0; fi
-	say "Downloading Windows Java 21 (about 50 MB)..."
+	if [ -f "$STATE/$SETUP_MARK" ] && [ "${1:-}" != force ]; then return 0; fi
 	local tmp; tmp="$(mktemp -d)"
+	gh_get "$API/repos/$REPO/releases/latest" "$tmp/release.json" || fail "couldn't reach GitHub; try again"
+	local exe_id
+	exe_id="$(jq -r '.assets[] | select(.name == "SkillingHelper.exe") | .id' "$tmp/release.json" | head -1)"
+	[ -n "$exe_id" ] || fail "the newest release has no SkillingHelper.exe yet; try again in a few minutes"
+	gh_get "$API/repos/$REPO/releases/assets/$exe_id" "$tmp/SkillingHelper.exe" "application/octet-stream" \
+		|| fail "couldn't download SkillingHelper.exe; try again"
+	say "Downloading Windows Java 21 (about 50 MB)..."
 	curl -fsSL --retry 3 -o "$tmp/info.json" "$JRE_API"
 	local url sum
 	url="$(jq -r '.[0].binary.package.link' "$tmp/info.json")"
@@ -112,13 +122,18 @@ install_java() {
 	unzip -q "$tmp/jre.zip" -d "$tmp/x"
 	rm -rf "$GAME"
 	mkdir -p "$(dirname "$GAME")"
-	mv "$tmp"/x/* "$GAME"
+	mkdir -p "$GAME"
+	# Java goes one folder deeper (jre\bin) than GameNative looks for programs, so SkillingHelper.exe is the only one
+	mv "$tmp"/x/* "$GAME/jre"
+	install -m 644 "$tmp/SkillingHelper.exe" "$GAME/SkillingHelper.exe"
 	rm -rf "$tmp"
-	# GameNative picks the program to run by itself only when the folder holds exactly one .exe
-	find "$GAME/bin" -maxdepth 1 -iname '*.exe' ! -iname 'java.exe' -delete
 	printf '{"appId":%s}\n' "$APP_ID" > "$GAME/.gamenative"
-	date > "$STATE/java-installed"
+	date > "$STATE/$SETUP_MARK"
 	say "Added \"Skilling Helper\" to GameNative's library."
+	if [ -f "$STATE/java-installed" ]; then
+		rm -f "$STATE/java-installed"
+		say "If GameNative also lists an older \"Skilling Helper\" from the first setup, remove that one."
+	fi
 }
 
 update_jar() {
@@ -169,9 +184,9 @@ https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts (run RuneLite fro
 --insecure-write-credentials), then copy .runelite/credentials.properties from that machine into
 home/.runelite/ here. Keep that file private: it is your login.
 
-Play: tap "Play Skilling Helper" on the Termux widget (or run: skilling-helper-android --play).
-Starting it from GameNative's library instead? Set its arguments (game settings) to:
-  $JAVA_ARGS
+Play: tap "Skilling Helper" in GameNative's library, or "Play Skilling Helper" on the Termux widget
+(that one checks for an update first). Nothing needs setting in GameNative except, once, Touchscreen Mode
+in its in-game quick menu (taps become mouse clicks and the on-screen gamepad goes away).
 EOF
 }
 
@@ -221,7 +236,7 @@ play() {
 	fi
 	say "Starting Skilling Helper in GameNative..."
 	am start -n "$GN_PKG/.MainActivity" -a "$GN_PKG.LAUNCH_GAME" \
-		--ei app_id "$APP_ID" --es game_source CUSTOM_GAME --es exec_args "$JAVA_ARGS" >/dev/null \
+		--ei app_id "$APP_ID" --es game_source CUSTOM_GAME >/dev/null \
 		|| fail "couldn't start GameNative. Open it and start \"Skilling Helper\" from its library."
 }
 

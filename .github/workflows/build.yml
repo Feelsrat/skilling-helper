@@ -29,11 +29,18 @@ jobs:
       - name: Build
         run: ./gradlew build shadowJar -Pversion="$VERSION"
 
+      - name: Build Android launcher (SkillingHelper.exe)
+        run: |
+          command -v lld-link >/dev/null && command -v llvm-dlltool >/dev/null || sudo apt-get install -y -q clang lld llvm
+          android/launcher/build.sh build/libs/SkillingHelper.exe
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: skilling-helper-${{ env.VERSION }}
-          path: build/libs/*.jar
+          path: |
+            build/libs/*.jar
+            build/libs/SkillingHelper.exe
 
       - name: Publish release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -45,6 +52,7 @@ jobs:
             build/libs/skilling-helper-$VERSION-all.jar \
             steamdeck/skilling-helper-update.sh \
             android/skilling-helper-android.sh \
+            build/libs/SkillingHelper.exe \
             --target "$GITHUB_SHA" \
             --title "Skilling Helper v$VERSION" \
             --generate-notes \

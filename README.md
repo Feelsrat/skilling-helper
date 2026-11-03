@@ -194,16 +194,19 @@ so it can run the normal Windows RuneLite dev client with these plugins built in
 1. Install Termux and Termux:Widget from F-Droid (Termux:API too if you want the daily update check).
 2. Download `skilling-helper-android.sh` from the latest release and in Termux run
    `bash /sdcard/Download/skilling-helper-android.sh`. If GameNative isn't installed it downloads it and opens the
-   installer; open GameNative once, then run the script again. It then puts a Windows Java 21 in
-   `GameNative/CustomGames/Skilling Helper` (GameNative lists it as a game by itself) and the newest `-all.jar`
-   in `Download/skilling-helper`.
+   installer; open GameNative once, then run the script again. It then puts `SkillingHelper.exe` and a Windows
+   Java 21 in `GameNative/CustomGames/Skilling Helper` and the newest `-all.jar` in `Download/skilling-helper`.
+   GameNative lists the folder as a game by itself and picks `SkillingHelper.exe` (a tiny launcher built from
+   `android/launcher/`) as its program, which starts Java with the right arguments, so nothing needs typing into
+   GameNative's settings.
 3. Your Jagex login: on the Steam Deck double-click **Skilling Helper phone kit** on the Desktop (added by the Deck
    updater). It makes `skilling-helper-phone.zip` with your saved login (see
    [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)) and the Android
    installer. Copy the zip into the phone's Download folder and run the installer again: it moves the login into
    place and deletes the zip.
-4. Add the Termux widget to your home screen and tap **Play Skilling Helper**. It updates to the newest release,
-   then starts the game in GameNative with the right arguments.
+4. Start **Skilling Helper** from GameNative's library, or tap **Play Skilling Helper** on the Termux widget (it
+   updates to the newest release first). The first time, turn on **Touchscreen Mode** in GameNative's in-game
+   quick menu so taps act as mouse clicks; GameNative remembers it.
 
 `skilling-helper-android --daily` also checks for updates once a day in the background, with a notification when
 it updated. The script updates itself from each release too.
