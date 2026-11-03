@@ -322,10 +322,12 @@ void start(void)
 	   HotSpot normally turns null checks into deliberate memory faults, which an emulator can mishandle, so use
 	   explicit checks, and the simpler C1 compiler only. Crash reports go next to the log in Download.
 	   The next crash was in a vtable stub decoding a compressed class pointer, so use full 64-bit pointers.
-	   Serial GC keeps Java to one GC thread (less emulation work), and Java2D's Direct3D path is off. */
+	   Serial GC keeps Java to one GC thread (less emulation work), and Java2D's Direct3D path is off.
+	   Crashes kept moving around, so also avoid AVX/BMI/FMA, which the emulator advertises but may mis-emulate. */
 	p = append(p, L"\" -ea -Xmx1g -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockDiagnosticVMOptions"
 		L" -XX:-ImplicitNullChecks -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops -XX:-UseCompressedClassPointers"
-		L" -XX:+UseSerialGC -Dsun.java2d.d3d=false -Dsun.java2d.noddraw=true"
+		L" -XX:+UseSerialGC -XX:UseAVX=0 -XX:-UseBMI1Instructions -XX:-UseBMI2Instructions -XX:-UseFMA"
+		L" -Dsun.java2d.d3d=false -Dsun.java2d.noddraw=true"
 		L" -XX:ErrorFile=D:\\SkillingHelper-crash-%p.log"
 		L" \"-Duser.home=");
 	p = append(p, home);
