@@ -44,6 +44,7 @@ jobs:
             build/libs/skilling-helper-$VERSION.jar \
             build/libs/skilling-helper-$VERSION-all.jar \
             steamdeck/skilling-helper-update.sh \
+            android/skilling-helper-android.sh \
             --target "$GITHUB_SHA" \
             --title "Skilling Helper v$VERSION" \
             --generate-notes \
@@ -51,4 +52,5 @@ jobs:
 
           - \`skilling-helper-$VERSION.jar\`: Skilling Helper and PvM Progression on their own, for sideloading into RuneLite.
           - \`skilling-helper-$VERSION-all.jar\`: standalone dev client with both plugins bundled (\`java -jar skilling-helper-$VERSION-all.jar\`).
-          - \`skilling-helper-update.sh\`: Steam Deck updater. It finds your RuneLite Steam shortcut and swaps in the newest jar (see the README)."
+          - \`skilling-helper-update.sh\`: Steam Deck updater. It finds your RuneLite Steam shortcut and swaps in the newest jar (see the README).
+          - \`skilling-helper-android.sh\`: Android installer/updater, run in Termux. Sets up the GameNative folder and keeps the jar current (see the README)."
