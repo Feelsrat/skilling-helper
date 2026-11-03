@@ -763,3 +763,16 @@ patch(pp,
 	"""                            TextButton(onClick = { hubOpen = true }) { Text("Hub") }
                             TextButton(onClick = onClose) { Text("Close") }""",
 	"""                            TextButton(onClick = { hubOpen = true }) { Text("Hub") }""")
+
+# 23. S Pen side button = right-click: touching the screen with the pen's button held opens the menu at once, the
+# same menu a long-press opens, instead of after the long-press wait.
+patch(ma,
+	"""                    touchPastSlop = false
+                    surfaceView.removeCallbacks(holdRunnable)
+                    surfaceView.postDelayed(holdRunnable, GameSettings.longPressMs(this))""",
+	"""                    touchPastSlop = false
+                    surfaceView.removeCallbacks(holdRunnable)
+                    // Skilling Helper build: the S Pen's side button held = right-click (see patch.py step 23)
+                    val shPenButton = event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS &&
+                        (event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) != 0
+                    surfaceView.postDelayed(holdRunnable, if (shPenButton) 0L else GameSettings.longPressMs(this).toLong())""")
