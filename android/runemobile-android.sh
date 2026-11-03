@@ -52,7 +52,13 @@ curl -fL --retry 3 "$BASE/RuneMobile-SH.apk" -o "$APK"
 echo "$latest" > "$STATE/runemobile-build.txt"
 
 say "Opening the installer. Tap Install (allow Termux to install apps if Android asks)."
-termux-open "$APK"
+# Android only lets Termux pop up the installer when Termux may "Display over other apps"
+# (Settings > Apps > Termux). Without it nothing appears, so also say where the APK is.
+termux-open --content-type application/vnd.android.package-archive "$APK" 2>/dev/null || true
+cat <<EOF2
+If no installer appeared: open Download/RuneMobile-SH.apk in your Files app and tap it, or allow
+Termux to "Display over other apps" (Settings > Apps > Termux) and run runemobile-sh again.
+EOF2
 cat <<'EOF'
 
 After it installs:
