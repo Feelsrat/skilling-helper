@@ -828,3 +828,32 @@ patch(mbp,
 			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, 1, false, MouseEvent.BUTTON1));""",
 	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, when + 1, 0, p.x, p.y, shCount, false, MouseEvent.BUTTON1));
 			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, shCount, false, MouseEvent.BUTTON1));""")
+
+# 25. The game's own right-click menu, as on desktop. RuneMobile hid the engine menu and drew its own list over it.
+# Now a long-press right-clicks at the finger and the game draws its normal "Choose Option" menu, which stays open
+# like a desktop right-click: tap an option to pick it, or tap elsewhere to close it.
+patch("runelite-client/src/main/java/net/runelite/client/headless/JavaBridge.java",
+	"	private static volatile boolean menuRenderSuppressed = true;",
+	"	private static volatile boolean menuRenderSuppressed = false; // Skilling Helper build: the game draws its menu")
+patch("runelite-client/src/main/java/net/runelite/client/headless/JavaBridge.java",
+	"""	public static void setMenuRenderSuppressed(boolean suppressed)
+	{
+		menuRenderSuppressed = suppressed;""",
+	"""	public static void setMenuRenderSuppressed(boolean suppressed)
+	{
+		menuRenderSuppressed = false; // Skilling Helper build: never hide the game's own menu""")
+patch(ma,
+	"""        dropTapArm()
+        val gx = toGameX(viewX)
+        val gy = toGameY(viewY)
+        surfaceToOverlay(viewX, viewY)""",
+	"""        dropTapArm()
+        // Skilling Helper build: right-click and let the game show its own menu (see patch.py step 25)
+        if (true) {
+            JvmLauncher.click(toGameX(viewX), toGameY(viewY), 3)
+            haptic(GameSettings.Haptic.MENU_OPEN)
+            return
+        }
+        val gx = toGameX(viewX)
+        val gy = toGameY(viewY)
+        surfaceToOverlay(viewX, viewY)""")
