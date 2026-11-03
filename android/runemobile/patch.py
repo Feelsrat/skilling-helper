@@ -456,7 +456,11 @@ patch(ma,
                                 } else {
                                     openLauncher(sel)
                                 }
-                            })
+                            }, tools = listOf(
+                                ShTool("⌨", "Keyboard", { manualKeyboard }, { kbButton.performClick() }),
+                                ShTool("⇧", "Shift", { shiftHeld }, { shiftButton.performClick() }),
+                                ShTool("⌃", "Ctrl", { ctrlHeld }, { ctrlButton.performClick() }),
+                            ))
                         }
                     },
                     FrameLayout.LayoutParams(
@@ -693,3 +697,14 @@ patch(hv,
 patch("android/app/src/main/java/dev/audaro/runemobile/ChromeOverlayView.kt",
 	"    private var shown = true // A/B debug toggle (▦ native grid vs ▤ raw engine stones)",
 	"    private var shown = false // Skilling Helper build: the game's own (desktop) HUD; was true (native grid)")
+
+# 20. The touch helpers (keyboard, sticky Shift/Ctrl) move from the bottom-left, where they sat over the game's chat
+# in the desktop HUD, to the bottom of the icon bar. Their buttons stay as the state holders, just not shown.
+patch(ma,
+	"""                addView(
+                    devBar,""",
+	"""                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+                    devBar.visibility = View.GONE // Skilling Helper build: shown in the icon bar instead
+                }
+                addView(
+                    devBar,""")

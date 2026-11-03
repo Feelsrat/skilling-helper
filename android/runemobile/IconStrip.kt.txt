@@ -23,7 +23,10 @@ object ShUi {
 /** Desktop-style icon bar, always on the right edge in landscape like RuneLite's: ≡ opens the plugin launcher, and
  *  one icon per plugin panel opens that panel in the sidebar. The host toggles: the active icon closes it again. */
 @Composable
-fun ShIconStrip(onOpen: (Pair<Int, String>?) -> Unit) {
+fun ShIconStrip(
+    onOpen: (Pair<Int, String>?) -> Unit,
+    tools: List<ShTool> = emptyList(),
+) {
     val conf = androidx.compose.ui.platform.LocalConfiguration.current
     if (conf.screenWidthDp <= conf.screenHeightDp) return
     var panels by remember { mutableStateOf<List<PanelEntry>>(emptyList()) }
@@ -41,6 +44,14 @@ fun ShIconStrip(onOpen: (Pair<Int, String>?) -> Unit) {
         }
     }
     val active = ShUi.active.value
+    // The touch helpers (keyboard, sticky Shift/Ctrl) latch outside this view, so re-read their state now and then.
+    var toolTick by remember { mutableStateOf(0) }
+    LaunchedEffect(tools.size) {
+        while (tools.isNotEmpty()) {
+            delay(400)
+            toolTick++
+        }
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -66,8 +77,21 @@ fun ShIconStrip(onOpen: (Pair<Int, String>?) -> Unit) {
                 }
             }
         }
+        if (tools.isNotEmpty()) {
+            Box(Modifier.padding(vertical = 6.dp).size(width = 24.dp, height = 1.dp).background(Color(0xFF4A4A4A)))
+        }
+        for (t in tools) {
+            @Suppress("UNUSED_EXPRESSION")
+            toolTick
+            ShStripButton(t.isOn(), t.label, { t.onClick(); toolTick++ }) {
+                Text(t.glyph, color = Color.White, fontSize = 17.sp)
+            }
+        }
     }
 }
+
+/** A touch helper shown at the bottom of the icon bar (they used to float over the game's chat). */
+class ShTool(val glyph: String, val label: String, val isOn: () -> Boolean, val onClick: () -> Unit)
 
 @Composable
 private fun ShStripButton(
