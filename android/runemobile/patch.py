@@ -686,3 +686,10 @@ patch(hv,
 					}
 					return n.getId();
 				}""")
+
+# 19. Desktop HUD. RuneMobile redraws the game's HUD in a mobile layout (chat moved to the top-left with a button
+# column, native tab grid, minimap moved). Yuri wants it to look like RuneLite on desktop, so start with the game's
+# own HUD where the game puts it: chat bottom-left, tab stones bottom-right, minimap top-right.
+patch("android/app/src/main/java/dev/audaro/runemobile/ChromeOverlayView.kt",
+	"    private var shown = true // A/B debug toggle (▦ native grid vs ▤ raw engine stones)",
+	"    private var shown = false // Skilling Helper build: the game's own (desktop) HUD; was true (native grid)")
