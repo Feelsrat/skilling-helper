@@ -84,7 +84,7 @@ final class ThievingGuide
 				.name("Pyramid Plunder")
 				.minLevel(21)
 				.xpPerAction(200)
-				.xpPerHour(30_000)
+				.xpPerHour(15_000)
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.FAST)
 				.quest(Quest.ICTHLARINS_LITTLE_HELPER)
@@ -103,7 +103,10 @@ final class ThievingGuide
 					+ "seconds for the last one. A lockpick helps doors a lot at low levels; a snake charm helps "
 					+ "urns below 51.")
 				.wikiPage("Pyramid_Plunder")
-				.rateAt(51, 80_000).rateAt(71, 120_000).rateAt(91, 275_000)
+				// Wiki Thieving training (with a sceptre): 125k at 71-80, 190k at 81-90, 270k at 91+. Below 71 the wiki only
+				// says it's much lower; halved after in-game play came in at about half the old estimate
+				.rateAt(41, 30_000).rateAt(51, 45_000).rateAt(61, 70_000).rateAt(71, 110_000).rateAt(81, 170_000)
+				.rateAt(91, 250_000)
 				.build(),
 			Method.builder()
 				.id("thieve_rogues_den")
