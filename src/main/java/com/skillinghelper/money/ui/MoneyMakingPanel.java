@@ -42,6 +42,7 @@ import net.runelite.api.Skill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import com.skillinghelper.ui.GuideUi;
 
 /**
  * Side panel: the wiki's money making methods the player can do, best gp/hr first, with filters. Clicking one shows
@@ -49,13 +50,13 @@ import net.runelite.client.ui.PluginPanel;
  */
 public class MoneyMakingPanel extends PluginPanel
 {
-	private static final int TEXT_WIDTH = 165;
+	private static final int TEXT_WIDTH = GuideUi.WIDTH;
 	private static final int PAGE_SIZE = 40;
-	private static final Color GOOD = new Color(80, 200, 80);
-	private static final Color WARN = new Color(255, 170, 0);
-	private static final Color BAD = new Color(230, 80, 80);
-	private static final Color HINT = new Color(110, 170, 255);
-	private static final Color MUTED = new Color(150, 150, 150);
+	private static final Color GOOD = GuideUi.GOOD;
+	private static final Color WARN = GuideUi.WARN;
+	private static final Color BAD = GuideUi.BAD;
+	private static final Color HINT = GuideUi.HINT;
+	private static final Color MUTED = GuideUi.MUTED;
 	private static final String ALL = "All categories";
 	private static final String ANY_EFFORT = "Any effort";
 
@@ -226,16 +227,8 @@ public class MoneyMakingPanel extends PluginPanel
 		guideBox.setVisible(step != null);
 		if (step != null)
 		{
-			JLabel title = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>"
-				+ escape(step.getTitle()) + "</body></html>");
-			title.setFont(FontManager.getRunescapeBoldFont());
-			title.setForeground(Color.WHITE);
-			guideBox.add(left(title));
-			for (String line : step.getLines())
-			{
-				guideBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
-			}
-			guideBox.add(Box.createVerticalStrut(4));
+			GuideUi.fillStep(guideBox, "Now", HINT, step.getTitle(), step.getLines());
+			guideBox.add(Box.createVerticalStrut(6));
 			if (step.isSupplyStep())
 			{
 				guideBox.add(button("I have everything", listener::onHaveSupplies));
@@ -353,12 +346,11 @@ public class MoneyMakingPanel extends PluginPanel
 		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel name = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>" + escape(m.getName())
-			+ "</body></html>");
-		name.setFont(FontManager.getRunescapeSmallFont());
-		name.setForeground(Color.WHITE);
-		row.add(left(name));
-		row.add(text(profitText(o) + " · " + summary(m), o.getProfit() > 0 ? GOOD : BAD, TEXT_WIDTH - 15));
+		JLabel name = GuideUi.text(m.getName(), Color.WHITE, TEXT_WIDTH - 15);
+		name.setFont(FontManager.getRunescapeBoldFont());
+		row.add(name);
+		row.add(GuideUi.text(profitText(o), o.getProfit() > 0 ? GOOD : BAD, TEXT_WIDTH - 15));
+		row.add(GuideUi.text(summary(m), MUTED, TEXT_WIDTH - 15));
 		if (o.isHardToSell())
 		{
 			row.add(text("⚠ Hard to sell", BAD, TEXT_WIDTH - 15));
@@ -413,18 +405,18 @@ public class MoneyMakingPanel extends PluginPanel
 			box.add(text("One run takes about " + Format.hours(m.getRunHours()) + ", every "
 				+ Format.hours(m.getEveryHours()) + ".", MUTED));
 		}
-		String per = m.isRecurring() ? " a run" : " an hour";
-		box.add(section("Money at today's prices"));
-		box.add(text("Sells for " + Format.gp(o.getOutputValue()) + per, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+		box.add(section(m.isRecurring() ? "Money per run" : "Money per hour"));
+		box.add(GuideUi.text("At today's GE prices", MUTED, TEXT_WIDTH - 15));
+		box.add(GuideUi.stat("Sells for", Format.gp(o.getOutputValue()), GuideUi.TEXT));
 		if (o.getGeTax() > 0)
 		{
-			box.add(text("GE tax (2%): -" + Format.gp(o.getGeTax()), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+			box.add(GuideUi.stat("GE tax (2%)", "-" + Format.gp(o.getGeTax()), GuideUi.TEXT));
 		}
 		if (o.getInputCost() > 0)
 		{
-			box.add(text("Supplies cost: -" + Format.gp(o.getInputCost()), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+			box.add(GuideUi.stat("Supplies", "-" + Format.gp(o.getInputCost()), GuideUi.TEXT));
 		}
-		box.add(text("Profit: " + Format.gp(o.getProfit()) + per, o.isProfitable() ? GOOD : BAD, TEXT_WIDTH - 15));
+		box.add(GuideUi.stat("Profit", Format.gp(o.getProfit()), o.isProfitable() ? GOOD : BAD));
 		if (!o.isProfitable())
 		{
 			box.add(text("Loses money right now: the supplies cost more than the products sell for.", BAD,
@@ -501,8 +493,8 @@ public class MoneyMakingPanel extends PluginPanel
 			box.add(section("How (from the wiki)"));
 			for (String s : sentences)
 			{
-				box.add(text(s, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
-				box.add(Box.createVerticalStrut(2));
+				box.add(text("• " + s, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+				box.add(Box.createVerticalStrut(3));
 			}
 		}
 	}
@@ -520,7 +512,8 @@ public class MoneyMakingPanel extends PluginPanel
 		for (int i = 0; i < n; i++)
 		{
 			MoneyItem item = sorted.get(i);
-			box.add(text(quantity(item.getQuantity()) + " x " + item.getName(), Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+			box.add(text("• " + quantity(item.getQuantity()) + " x " + item.getName(), Color.LIGHT_GRAY,
+				TEXT_WIDTH - 15));
 		}
 		if (sorted.size() > n)
 		{
@@ -553,37 +546,36 @@ public class MoneyMakingPanel extends PluginPanel
 		return m.isMembers() ? s : s + " · F2P";
 	}
 
-	private static JLabel section(String s)
+	private static JComponent section(String s)
 	{
-		JLabel l = new JLabel(s);
-		l.setFont(FontManager.getRunescapeBoldFont());
-		l.setForeground(Color.WHITE);
-		l.setBorder(new EmptyBorder(6, 0, 2, 0));
-		return left(l);
+		return GuideUi.section(s);
 	}
 
-	private static JLabel check(String s, boolean ok)
+	private static JComponent check(String s, boolean ok)
 	{
 		return text((ok ? "✔ " : "✘ ") + s, ok ? GOOD : BAD, TEXT_WIDTH - 15);
 	}
 
-	private static JLabel text(String s, Color color)
+	private static JComponent text(String s, Color color)
 	{
 		return text(s, color, TEXT_WIDTH);
 	}
 
-	private static JLabel text(String s, Color color, int width)
+	/**
+	 * A guide line in the shared look: split into short lines with the key bits highlighted. Light grey and green
+	 * lines get inline highlights (green just colours the tick); other colours draw the whole line in that colour.
+	 */
+	private static JComponent text(String s, Color color, int width)
 	{
-		JLabel l = new JLabel("<html><body style='width:" + width + "px'>" + escape(s) + "</body></html>");
-		l.setForeground(color);
-		l.setFont(FontManager.getRunescapeSmallFont());
-		l.setAlignmentX(Component.LEFT_ALIGNMENT);
-		return l;
-	}
-
-	private static String escape(String s)
-	{
-		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+		if (color == Color.LIGHT_GRAY || color == GuideUi.TEXT)
+		{
+			return GuideUi.line(s, width);
+		}
+		if (color == GOOD)
+		{
+			return GuideUi.line(s, GOOD, GuideUi.TEXT, width);
+		}
+		return GuideUi.line(s, color, width);
 	}
 
 	private static JButton button(String label, Runnable action)

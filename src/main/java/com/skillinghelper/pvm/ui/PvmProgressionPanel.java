@@ -40,6 +40,7 @@ import net.runelite.api.Skill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import com.skillinghelper.ui.GuideUi;
 
 /**
  * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked with
@@ -47,12 +48,12 @@ import net.runelite.client.ui.PluginPanel;
  */
 public class PvmProgressionPanel extends PluginPanel
 {
-	private static final int TEXT_WIDTH = 165;
-	private static final Color GOOD = new Color(80, 200, 80);
-	private static final Color WARN = new Color(255, 170, 0);
-	private static final Color BAD = new Color(230, 80, 80);
-	private static final Color HINT = new Color(110, 170, 255);
-	private static final Color MUTED = new Color(150, 150, 150);
+	private static final int TEXT_WIDTH = GuideUi.WIDTH;
+	private static final Color GOOD = GuideUi.GOOD;
+	private static final Color WARN = GuideUi.WARN;
+	private static final Color BAD = GuideUi.BAD;
+	private static final Color HINT = GuideUi.HINT;
+	private static final Color MUTED = GuideUi.MUTED;
 	/**
 	 * Matches the default "Attack first" highlight.
 	 */
@@ -160,7 +161,7 @@ public class PvmProgressionPanel extends PluginPanel
 
 		stepBox.setLayout(new BoxLayout(stepBox, BoxLayout.Y_AXIS));
 		stepBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		stepBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 6, 6)));
+		stepBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 7, 6)));
 		stepBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 	}
 
@@ -200,20 +201,16 @@ public class PvmProgressionPanel extends PluginPanel
 		stepBox.removeAll();
 		if (step != null)
 		{
-			JLabel title = new JLabel("<html><body style='width:" + (TEXT_WIDTH - 15) + "px'>" + escape(step.getTitle())
-				+ "</body></html>");
-			title.setFont(FontManager.getRunescapeBoldFont());
-			title.setForeground(Color.WHITE);
-			stepBox.add(left(title));
+			GuideUi.fillStep(stepBox, "Now", HINT, step.getTitle(), Collections.emptyList());
 			if (step.getWave() != null)
 			{
-				stepBox.add(Box.createVerticalStrut(4));
+				stepBox.add(Box.createVerticalStrut(5));
 				stepBox.add(waveCard(step.getWave()));
-				stepBox.add(Box.createVerticalStrut(4));
 			}
-			for (String line : step.getLines())
+			if (!step.getLines().isEmpty())
 			{
-				stepBox.add(text(line, Color.LIGHT_GRAY, TEXT_WIDTH - 15));
+				stepBox.add(Box.createVerticalStrut(5));
+				GuideUi.lines(stepBox, step.getLines(), GuideUi.CARD_WIDTH);
 			}
 		}
 		stepBox.revalidate();
@@ -351,6 +348,7 @@ public class PvmProgressionPanel extends PluginPanel
 			for (String tip : fight.getTips())
 			{
 				content.add(text("• " + tip, Color.LIGHT_GRAY));
+				content.add(Box.createVerticalStrut(3));
 			}
 			content.add(Box.createVerticalStrut(2));
 		}
@@ -384,15 +382,17 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 		Profit.Verdict verdict = profit.verdict();
 		Color color = verdict == Profit.Verdict.GOOD ? GOOD : verdict == Profit.Verdict.SOME ? WARN : MUTED;
-		String line = "Money: " + verdict.getLabel()
-			+ (profit.getGpPerHour() > 0 ? " · ~" + gp(profit.getGpPerHour()) + "/hr" : "");
 		content.add(Box.createVerticalStrut(4));
-		content.add(text(line, color));
-		content.add(text(profit.getNote(), MUTED));
+		content.add(GuideUi.text("Money: " + verdict.getLabel(), color, TEXT_WIDTH));
+		if (profit.getGpPerHour() > 0)
+		{
+			content.add(GuideUi.stat("Profit", "~" + gp(profit.getGpPerHour()) + "/hr", color));
+		}
 		if (plan != null && plan.getTripCost() > 0)
 		{
-			content.add(text("Supplies cost ~" + gp(plan.getTripCost()) + " a trip.", MUTED));
+			content.add(GuideUi.stat("Supplies a trip", "~" + gp(plan.getTripCost()), GuideUi.TEXT));
 		}
+		content.add(GuideUi.text(profit.getNote(), MUTED, TEXT_WIDTH));
 	}
 
 	private void loadout(LoadoutPlan plan)
@@ -408,9 +408,10 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 		if (!plan.getGear().isEmpty())
 		{
-			content.add(text("Wear:", Color.WHITE));
+			content.add(GuideUi.subheading("Wear"));
 			for (LoadoutPlan.GearLine g : plan.getGear())
 			{
+				content.add(Box.createVerticalStrut(2));
 				content.add(gearLine(g));
 				if (g.getUpgrade() != null && guides.isBankKnown())
 				{
@@ -421,13 +422,16 @@ public class PvmProgressionPanel extends PluginPanel
 		if (!plan.getSupplies().isEmpty())
 		{
 			content.add(Box.createVerticalStrut(4));
-			content.add(text("Inventory:", Color.WHITE));
+			content.add(GuideUi.subheading("Inventory"));
 			for (LoadoutPlan.SupplyLine l : plan.getSupplies())
 			{
+				content.add(Box.createVerticalStrut(2));
 				content.add(supplyLine(l));
 				if (l.getSupply().getNote() != null)
 				{
-					content.add(text("   " + l.getSupply().getNote(), MUTED));
+					JLabel note = GuideUi.text(l.getSupply().getNote(), MUTED, TEXT_WIDTH - 14);
+					note.setBorder(new EmptyBorder(0, 14, 0, 0));
+					content.add(note);
 				}
 			}
 		}
@@ -437,7 +441,7 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 	}
 
-	private JLabel gearLine(LoadoutPlan.GearLine g)
+	private JComponent gearLine(LoadoutPlan.GearLine g)
 	{
 		String name = g.getGear().getName();
 		switch (g.getHave())
@@ -456,7 +460,7 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 	}
 
-	private JLabel supplyLine(LoadoutPlan.SupplyLine l)
+	private JComponent supplyLine(LoadoutPlan.SupplyLine l)
 	{
 		Supply sup = l.getSupply();
 		String what = l.getAmount() + " x " + (sup.getOptions().size() == 1 ? l.buyName()
@@ -513,14 +517,14 @@ public class PvmProgressionPanel extends PluginPanel
 		boolean met = have >= s.getLevel();
 		String label = (met ? "✔ " : "✘ ") + s.getSkill().getName() + " " + have + "/" + s.getLevel()
 			+ (s.isRequired() ? " (required)" : "");
-		JLabel line = text(label, met ? GOOD : (s.isRequired() || s.getLevel() - have > 5 ? BAD : WARN));
+		Color color = met ? GOOD : (s.isRequired() || s.getLevel() - have > 5 ? BAD : WARN);
 		if (met)
 		{
-			return line;
+			return text(label, color);
 		}
 		JPanel row = new JPanel(new BorderLayout(4, 0));
 		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		row.add(text(label, line.getForeground(), TEXT_WIDTH - 55), BorderLayout.CENTER);
+		row.add(text(label, color, TEXT_WIDTH - 55), BorderLayout.CENTER);
 		JButton train = new JButton("Train");
 		train.setToolTipText("Open the Skilling Helper guide for " + s.getSkill().getName() + " to level "
 			+ s.getLevel());
@@ -529,7 +533,7 @@ public class PvmProgressionPanel extends PluginPanel
 		return full(row);
 	}
 
-	private JLabel itemLine(ItemNeed i)
+	private JComponent itemLine(ItemNeed i)
 	{
 		if (!i.isCheckable())
 		{
@@ -587,13 +591,9 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 	}
 
-	private static JLabel section(String s)
+	private static JComponent section(String s)
 	{
-		JLabel l = new JLabel(s);
-		l.setFont(FontManager.getRunescapeSmallFont());
-		l.setForeground(Color.WHITE);
-		l.setBorder(new EmptyBorder(8, 0, 2, 0));
-		return left(l);
+		return GuideUi.section(s);
 	}
 
 	/**
@@ -692,23 +692,26 @@ public class PvmProgressionPanel extends PluginPanel
 		return BAD;
 	}
 
-	private static JLabel text(String s, Color color)
+	private static JComponent text(String s, Color color)
 	{
 		return text(s, color, TEXT_WIDTH);
 	}
 
-	private static JLabel text(String s, Color color, int width)
+	/**
+	 * A guide line in the shared look: split into short lines with the key bits highlighted. Light grey and green
+	 * lines get inline highlights (green just colours the tick); other colours draw the whole line in that colour.
+	 */
+	private static JComponent text(String s, Color color, int width)
 	{
-		JLabel l = new JLabel("<html><body style='width:" + width + "px'>" + escape(s) + "</body></html>");
-		l.setForeground(color);
-		l.setFont(FontManager.getRunescapeSmallFont());
-		l.setAlignmentX(Component.LEFT_ALIGNMENT);
-		return l;
-	}
-
-	private static String escape(String s)
-	{
-		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+		if (color == Color.LIGHT_GRAY || color == GuideUi.TEXT)
+		{
+			return GuideUi.line(s, width);
+		}
+		if (color == GOOD)
+		{
+			return GuideUi.line(s, GOOD, GuideUi.TEXT, width);
+		}
+		return GuideUi.line(s, color, width);
 	}
 
 	private static JButton button(String label, Runnable action)
