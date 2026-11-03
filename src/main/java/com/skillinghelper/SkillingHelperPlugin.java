@@ -305,6 +305,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			tog.tick(this);
 		}
 		Skill activeSkill = settings.getActiveSkill();
+		plunder.setSwapEnabled(config.plunderSwapUrns());
 		plunder.tick(plunderGuideOpen(activeSkill), config.plunderSceptreHunt());
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();

@@ -17,7 +17,10 @@ import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.KeyCode;
+import net.runelite.api.Menu;
 import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.NPC;
 import net.runelite.api.ObjectComposition;
 import net.runelite.api.Player;
@@ -32,6 +35,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcDespawned;
 import net.runelite.api.events.NpcSpawned;
+import net.runelite.api.events.PostMenuSort;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.api.gameval.InventoryID;
@@ -39,6 +43,7 @@ import net.runelite.api.gameval.NpcID;
 import net.runelite.api.gameval.ObjectID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.util.Text;
 
 /**
  * Follows a Pyramid Plunder round: keeps the room's urns, chest, sarcophagus, trap and doors (from spawn events), reads
@@ -163,6 +168,11 @@ public class PlunderTracker
 	 */
 	@Getter
 	private boolean urnsNext;
+	/**
+	 * Put "Check for Snakes" and "Charm Snake" on left-click on urns.
+	 */
+	private boolean swapUrns;
+	private boolean swapEnabled = true;
 
 	@Inject
 	public PlunderTracker(Client client)
@@ -232,6 +242,7 @@ public class PlunderTracker
 		highlightOption = null;
 		step = null;
 		urnsNext = false;
+		swapUrns = false;
 		Player player = client.getLocalPlayer();
 		WorldPoint me = player == null ? null : player.getWorldLocation();
 		if (me == null)
@@ -263,6 +274,7 @@ public class PlunderTracker
 		int level = client.getRealSkillLevel(Skill.THIEVING);
 		boolean charm = carries(PyramidPlunder.SNAKE_CHARM);
 		boolean lockpick = carries(PyramidPlunder.LOCKPICK);
+		swapUrns = inRound && swapEnabled && charm && PyramidPlunder.useCharm(level);
 		if (inRound)
 		{
 			roundTick(me, level, charm, lockpick, timer, sceptreHunt);
@@ -825,6 +837,47 @@ public class PlunderTracker
 		}
 		chasers.remove(e.getNpc());
 	}
+
+	public void setSwapEnabled(boolean on)
+	{
+		swapEnabled = on;
+	}
+
+	/**
+	 * While charming snakes, an urn's left-click is "Charm Snake" when it has a snake and "Check for Snakes" while
+	 * it's closed, so the whole urn is left-clicks. Only reorders the urn's own options, like Menu Entry Swapper.
+	 */
+	@Subscribe(priority = -1)
+	public void onPostMenuSort(PostMenuSort e)
+	{
+		if (!swapUrns || client.isMenuOpen() || client.isKeyPressed(KeyCode.KC_SHIFT))
+		{
+			return;
+		}
+		Menu menu = client.getMenu();
+		MenuEntry[] entries = menu.getMenuEntries();
+		for (String option : URN_SWAPS)
+		{
+			for (int i = entries.length - 1; i >= 0; i--)
+			{
+				MenuEntry entry = entries[i];
+				if (KINDS.get(entry.getIdentifier()) != Kind.URN
+					|| !option.equalsIgnoreCase(Text.removeTags(entry.getOption())))
+				{
+					continue;
+				}
+				if (i != entries.length - 1)
+				{
+					entries[i] = entries[entries.length - 1];
+					entries[entries.length - 1] = entry;
+					menu.setMenuEntries(entries);
+				}
+				return;
+			}
+		}
+	}
+
+	private static final String[] URN_SWAPS = {"Charm Snake", "Check for Snakes"};
 
 	@Subscribe
 	public void onMenuOptionClicked(MenuOptionClicked e)

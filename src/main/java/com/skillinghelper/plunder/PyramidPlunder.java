@@ -41,6 +41,10 @@ public final class PyramidPlunder
 	 * Typical time per search, failed tries and the walk between included.
 	 */
 	static final int URN_TICKS = 10;
+	/**
+	 * Checking, charming and then searching takes three clicks instead of one.
+	 */
+	static final int CHARMED_URN_TICKS = 14;
 	static final int CHEST_TICKS = 6;
 	static final int SARCOPHAGUS_TICKS = 12;
 	/**
@@ -257,6 +261,13 @@ public final class PyramidPlunder
 	public static List<RoomPlan> plan(int level, int room, boolean trapDone, int urnsLeft, boolean chestDone,
 		boolean sarcophagusDone, int ticksLeft, boolean sceptreHunt)
 	{
+		return plan(level, room, trapDone, urnsLeft, chestDone, sarcophagusDone, ticksLeft, sceptreHunt, false);
+	}
+
+	public static List<RoomPlan> plan(int level, int room, boolean trapDone, int urnsLeft, boolean chestDone,
+		boolean sarcophagusDone, int ticksLeft, boolean sceptreHunt, boolean charming)
+	{
+		int urnTicks = charming && useCharm(level) ? CHARMED_URN_TICKS : URN_TICKS;
 		int top = Math.max(1, maxRoom(level));
 		int start = room < 1 ? 1 : Math.min(room, top);
 		boolean fresh = room < 1;
@@ -278,7 +289,7 @@ public final class PyramidPlunder
 			int urns = r < top - 1 ? 0 : here ? urnsLeft : URNS[r - 1];
 			for (int u = 0; u < urns; u++)
 			{
-				options.add(new Option(r, URN, 1, URN_TICKS, URN_XP[r - 1]));
+				options.add(new Option(r, URN, 1, urnTicks, URN_XP[r - 1]));
 			}
 			if (!(here && chestDone))
 			{
@@ -336,7 +347,7 @@ public final class PyramidPlunder
 	static List<RoomPlan> plan(Situation s)
 	{
 		return plan(s.level, Math.max(1, s.room), !s.trapActive, s.urnsLeft, !s.chestClosed,
-			!s.sarcophagusClosed && !s.sarcophagusOpen, s.ticksLeft, s.sceptreHunt);
+			!s.sarcophagusClosed && !s.sarcophagusOpen, s.ticksLeft, s.sceptreHunt, s.carriesCharm);
 	}
 
 	/**
@@ -413,7 +424,8 @@ public final class PyramidPlunder
 				break;
 			case CHECK_URN:
 				b.title("Check the urn for snakes");
-				b.line("Click \"Check for Snakes\" on the outlined urn.");
+				b.line("Click \"Check for Snakes\" on the outlined urn. With \"Left-click snake options\" on (the "
+					+ "default), that and \"Charm Snake\" are the urn's left-click.");
 				b.line("Next: \"Charm Snake\", then \"Search\". If the check fails, just check again.");
 				b.line("Note: you never click the snake charm itself. Carrying it gives the urn its \"Charm Snake\" "
 					+ "option.");

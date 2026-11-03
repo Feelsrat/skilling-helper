@@ -90,6 +90,19 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "plunderSwapUrns",
+		name = "Left-click snake options",
+		description = "While the guide has you charming snakes, make \"Check for Snakes\" and \"Charm Snake\" the "
+			+ "left-click on urns (hold Shift for the normal menu)",
+		section = plunderSection,
+		position = 3
+	)
+	default boolean plunderSwapUrns()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "togInfobox",
 		name = "Ready indicator",
 		description = "Show an infobox saying whether Juna will let you into Tears of Guthix yet",
