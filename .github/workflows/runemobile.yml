@@ -1,0 +1,114 @@
+name: RuneMobile build
+
+# Builds RuneMobile (github.com/audaro/RuneMobile, the Android RuneLite port) with the Skilling Helper patches from
+# android/runemobile/ and publishes it as the rolling "runemobile" prerelease of this repo. The app downloads the
+# newest Skilling Helper plugin jar itself at every start, so this only needs to rebuild when RuneMobile changes
+# (e.g. after an OSRS weekly update) or when the patches change. The daily run checks for that.
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'android/runemobile/**'
+      - 'android/runemobile-android.sh'
+      - '.github/workflows/runemobile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: runemobile
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decide whether anything changed
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RM_SHA=$(git ls-remote https://github.com/audaro/RuneMobile.git refs/heads/master | cut -c1-40)
+          OURS=$(cat android/runemobile/* android/runemobile-android.sh .github/workflows/runemobile.yml | sha256sum | cut -c1-12)
+          KEY="${RM_SHA::10}-$OURS"
+          echo "rm_sha=$RM_SHA" >> "$GITHUB_OUTPUT"
+          echo "key=$KEY" >> "$GITHUB_OUTPUT"
+          HAVE=$(curl -fsSL "https://github.com/${GITHUB_REPOSITORY}/releases/download/runemobile/runemobile-build.txt" 2>/dev/null | head -1 || true)
+          echo "built: '$HAVE'  wanted: '$KEY'"
+          if [ "$HAVE" = "$KEY" ] && [ "$GITHUB_EVENT_NAME" = schedule ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out RuneMobile
+        if: steps.check.outputs.skip == 'false'
+        uses: actions/checkout@v4
+        with:
+          repository: audaro/RuneMobile
+          ref: ${{ steps.check.outputs.rm_sha }}
+          path: rm
+          persist-credentials: false
+
+      - uses: actions/setup-java@v4
+        if: steps.check.outputs.skip == 'false'
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Patch RuneMobile
+        if: steps.check.outputs.skip == 'false'
+        env:
+          # Repository secret (Settings > Secrets and variables > Actions): base64 of the sideload keystore, so each
+          # new APK installs as an update over the last one. Without it the APK is signed with a throwaway debug
+          # key, and every update needs an uninstall first.
+          RUNEMOBILE_KEYSTORE_B64: ${{ secrets.RUNEMOBILE_KEYSTORE_B64 }}
+          RUNEMOBILE_KEYSTORE_PASSWORD: ${{ secrets.RUNEMOBILE_KEYSTORE_PASSWORD }}
+        run: |
+          python3 android/runemobile/patch.py rm
+          if [ -n "$RUNEMOBILE_KEYSTORE_B64" ]; then
+            umask 077
+            printf '%s' "$RUNEMOBILE_KEYSTORE_B64" | base64 --decode > rm/android/sideload.jks
+            printf 'storeFile=sideload.jks\nstorePassword=%s\nkeyAlias=sideload\nkeyPassword=%s\n' \
+              "$RUNEMOBILE_KEYSTORE_PASSWORD" "$RUNEMOBILE_KEYSTORE_PASSWORD" > rm/android/keystore.properties
+          else
+            echo "::warning::RUNEMOBILE_KEYSTORE_B64 is not set; signing with a throwaway debug key"
+          fi
+
+      - name: Build APK
+        if: steps.check.outputs.skip == 'false'
+        working-directory: rm
+        run: |
+          export PLATFORMS=android
+          export BUILD_NUMBER=$(( 1000000 + GITHUB_RUN_NUMBER ))
+          export GIT_SHA=$(git rev-parse --short HEAD)
+          tools/ci/build-release-artifacts.sh
+          ls -la dist/ci
+
+      - name: Publish the runemobile prerelease
+        if: steps.check.outputs.skip == 'false' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEY: ${{ steps.check.outputs.key }}
+        run: |
+          mkdir -p out
+          cp rm/dist/ci/RuneMobile-*.apk out/RuneMobile-SH.apk
+          echo "$KEY" > out/runemobile-build.txt
+          cp android/runemobile-android.sh out/
+          gh release delete runemobile --cleanup-tag -y 2>/dev/null || true
+          gh release create runemobile out/RuneMobile-SH.apk out/runemobile-build.txt out/runemobile-android.sh \
+            --target "$GITHUB_SHA" --prerelease --latest=false \
+            --title "RuneMobile with Skilling Helper (rolling)" \
+            --notes "RuneMobile (github.com/audaro/RuneMobile @ ${KEY%%-*}) built with the Skilling Helper patches in android/runemobile.
+
+          Unofficial and not on Jagex's approved client list, same as RuneMobile itself: use at your own risk, ideally on a spare account.
+
+          - \`RuneMobile-SH.apk\`: installs next to the official RuneMobile as \"RuneMobile SH\". It downloads the newest Skilling Helper plugin at every start.
+          - \`runemobile-android.sh\`: Termux installer/updater for the APK."
