@@ -44,21 +44,8 @@ need_storage() {
 	fi
 }
 
+# Optional: a token in this file is only needed if the repo goes private again
 token() { [ -f "$TOKEN_FILE" ] && tr -d '[:space:]' < "$TOKEN_FILE" || true; }
-
-ask_token() {
-	[ "$QUIET" = 1 ] && fail "GitHub refused the saved token; run the script once by hand"
-	say "The skilling-helper repo is private, so GitHub needs a token to download releases."
-	say "Make one at https://github.com/settings/personal-access-tokens/new :"
-	say "  Repository access: Only select repositories > skilling-helper"
-	say "  Permissions: Contents > Read-only"
-	local t
-	read -r -p "Paste the token here (or just press Enter to cancel): " t
-	[ -n "$t" ] || exit 1
-	mkdir -p "$STATE"
-	(umask 077; printf '%s\n' "$t" > "$TOKEN_FILE")
-	say "Saved to $TOKEN_FILE"
-}
 
 # gh_get URL OUT [ACCEPT]: curl drops the Authorization header when a download redirects to another host.
 gh_get() {
@@ -73,8 +60,8 @@ latest_release() {
 	local tries=0
 	until gh_get "$API/repos/$REPO/releases/latest" "$1"; do
 		tries=$((tries + 1))
-		[ $tries -le 2 ] || fail "couldn't reach GitHub"
-		ask_token
+		[ $tries -le 2 ] || fail "couldn't reach GitHub; check the internet connection and try again"
+		sleep 5
 	done
 }
 

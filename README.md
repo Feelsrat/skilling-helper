@@ -194,8 +194,8 @@ so it can run the normal Windows RuneLite dev client with these plugins built in
 1. Install [Termux](https://f-droid.org/packages/com.termux/) (and optionally Termux:Widget and Termux:API, same place).
 2. Download `skilling-helper-android.sh` from the latest release, then in Termux run
    `bash ~/storage/downloads/skilling-helper-android.sh` (run `termux-setup-storage` first if `~/storage` is missing).
-   It asks for the same kind of read-only GitHub token as the Steam Deck updater, downloads a Windows Java 21 and the
-   newest `-all.jar` into `Download/skilling-helper-gamenative`, and writes a README there.
+   It downloads a Windows Java 21 and the newest `-all.jar` into `Download/skilling-helper-gamenative`, and writes a
+   README there.
 3. Copy `.runelite/credentials.properties` from your PC or Steam Deck (see
    [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)) into
    `Download/skilling-helper-gamenative/home/.runelite/`.
