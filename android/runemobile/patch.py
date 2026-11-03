@@ -852,6 +852,8 @@ patch(ma,
         if (true) {
             JvmLauncher.click(toGameX(viewX), toGameY(viewY), 3)
             haptic(GameSettings.Haptic.MENU_OPEN)
+            shMenuDrag = true
+            shMenuDragMoved = false
             return
         }
         val gx = toGameX(viewX)
@@ -863,3 +865,36 @@ patch(ma,
 patch(ma,
 	"                ifaceScrollAccum += -distanceY / IFACE_SCROLL_PT_PER_NOTCH\n",
 	"                ifaceScrollAccum += distanceY / IFACE_SCROLL_PT_PER_NOTCH // Skilling Helper build: was -distanceY\n")
+
+# 27. Hold, drag to an option, let go: with the game's own menu (step 25) the rest of the long-press drove nothing,
+# so the menu stayed open and the release did nothing. While the finger stays down after the menu opens, the cursor
+# follows it (highlighting the option under it); letting go after a drag picks that option. Letting go without a
+# drag leaves the menu open for a tap, as before.
+patch(ma,
+	"""            if (menuActive) {
+                // The native menu is hit-tested in the overlay's space""",
+	"""            // Skilling Helper build: drag-to-select on the game's own menu (see patch.py step 27)
+            if (shMenuDrag) {
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_MOVE -> {
+                        if (hypot(event.x - touchOriginX, event.y - touchOriginY) > sceneDragSlopPx) shMenuDragMoved = true
+                        if (shMenuDragMoved) JvmLauncher.move(toGameX(event.x), toGameY(event.y))
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        shMenuDrag = false
+                        // Only while the menu is still up: dragging off it closes it, and a click then would walk
+                        val open = runCatching { JSONObject(JvmLauncher.menuSnapshot()).optBoolean("menuOpen", false) }
+                            .getOrDefault(false)
+                        if (shMenuDragMoved && open) JvmLauncher.click(toGameX(event.x), toGameY(event.y), 1)
+                    }
+                    MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_POINTER_DOWN -> shMenuDrag = false
+                }
+                return@setOnTouchListener true
+            }
+            if (menuActive) {
+                // The native menu is hit-tested in the overlay's space""")
+patch(ma,
+	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n",
+	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n"
+	"    private var shMenuDrag = false // Skilling Helper build: the long-press that opened the game menu is still down\n"
+	"    private var shMenuDragMoved = false\n")
