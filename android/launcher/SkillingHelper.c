@@ -15,6 +15,9 @@
  * android-client.jar over client.jar. Any failure there just starts the client.jar it already has. Then it runs
  * jre\bin\javaw.exe -jar client.jar with RuneLite's settings kept in home\.
  *
+ * Java's output (RuneLite's log) goes to Download/SkillingHelper-log.txt on the phone when GameNative may write
+ * there, otherwise launcher.log next to this .exe.
+ *
  * Built without the C runtime (clang + lld-link, see build.sh), so it is a few KB and needs no MinGW install.
  */
 
@@ -46,6 +49,7 @@ __declspec(dllimport) BOOL __stdcall GetExitCodeProcess(HANDLE, DWORD *);
 __declspec(dllimport) DWORD __stdcall GetFileAttributesW(const WCHAR *);
 __declspec(dllimport) HANDLE __stdcall CreateFileW(const WCHAR *, DWORD, DWORD, void *, DWORD, DWORD, HANDLE);
 __declspec(dllimport) BOOL __stdcall ReadFile(HANDLE, void *, DWORD, DWORD *, void *);
+__declspec(dllimport) BOOL __stdcall WriteFile(HANDLE, const void *, DWORD, DWORD *, void *);
 __declspec(dllimport) BOOL __stdcall CloseHandle(HANDLE);
 __declspec(dllimport) DWORD __stdcall GetFileSize(HANDLE, DWORD *);
 __declspec(dllimport) BOOL __stdcall MoveFileExW(const WCHAR *, const WCHAR *, DWORD);
@@ -60,6 +64,9 @@ __declspec(dllimport) HRESULT __stdcall URLDownloadToFileW(void *, const WCHAR *
 #define INVALID_FILE_ATTRIBUTES 0xFFFFFFFFu
 #define INVALID_HANDLE_VALUE ((HANDLE)(long long)-1)
 #define GENERIC_READ 0x80000000u
+#define GENERIC_WRITE 0x40000000u
+#define CREATE_ALWAYS 2u
+#define STARTF_USESTDHANDLES 0x100u
 #define FILE_SHARE_READ 1u
 #define OPEN_EXISTING 3u
 #define MOVEFILE_REPLACE_EXISTING 1u
@@ -71,6 +78,42 @@ __declspec(dllimport) HRESULT __stdcall URLDownloadToFileW(void *, const WCHAR *
 
 static const WCHAR TITLE[] = L"Skilling Helper";
 static WCHAR dir[1024]; /* folder this .exe is in, with a trailing backslash */
+static HANDLE log_file = INVALID_HANDLE_VALUE;
+static WCHAR *path(WCHAR *out, const WCHAR *name);
+
+typedef struct {
+	DWORD nLength;
+	void *lpSecurityDescriptor;
+	BOOL bInheritHandle;
+} SECURITY_ATTRIBUTES;
+
+static void log_text(const char *s)
+{
+	if (log_file == INVALID_HANDLE_VALUE)
+	{
+		return;
+	}
+	DWORD n = 0, len = 0;
+	while (s[len])
+	{
+		len++;
+	}
+	WriteFile(log_file, s, len, &n, 0);
+}
+
+/* Java's output goes to a log you can open on the phone: the Download folder (drive D:) when GameNative may
+   write there, otherwise launcher.log next to this .exe. The handle is inheritable so Java writes into it. */
+static void open_log(void)
+{
+	static WCHAR local[1100];
+	SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), 0, 1};
+	log_file = CreateFileW(L"D:\\SkillingHelper-log.txt", GENERIC_WRITE, FILE_SHARE_READ, &sa, CREATE_ALWAYS, 0, 0);
+	if (log_file == INVALID_HANDLE_VALUE)
+	{
+		log_file = CreateFileW(path(local, L"launcher.log"), GENERIC_WRITE, FILE_SHARE_READ, &sa, CREATE_ALWAYS, 0, 0);
+	}
+	log_text("SkillingHelper launcher started\r\n");
+}
 
 static WCHAR *append(WCHAR *p, const WCHAR *s)
 {
@@ -161,6 +204,33 @@ static int download(const WCHAR *asset, const WCHAR *dest)
 	return URLDownloadToFileW(0, url, dest, 0, 0) == 0;
 }
 
+/* Swap in the newest SkillingHelper.exe for the next start. A running .exe can be renamed but not overwritten. */
+static void update_self(void)
+{
+	static WCHAR self[1100], new_self[1100], old_self[1100];
+	char head[4];
+	path(self, L"SkillingHelper.exe");
+	path(new_self, L"SkillingHelper.exe.new");
+	path(old_self, L"SkillingHelper.exe.old");
+	DeleteFileW(old_self);
+	if (!download(L"SkillingHelper.exe", new_self) || file_size(new_self) < 1024
+		|| read_small(new_self, head, sizeof head) < 2 || head[0] != 'M' || head[1] != 'Z')
+	{
+		DeleteFileW(new_self);
+		return;
+	}
+	if (MoveFileExW(self, old_self, MOVEFILE_REPLACE_EXISTING))
+	{
+		if (MoveFileExW(new_self, self, MOVEFILE_REPLACE_EXISTING))
+		{
+			log_text("Launcher updated for the next start\r\n");
+			return;
+		}
+		MoveFileExW(old_self, self, MOVEFILE_REPLACE_EXISTING);
+	}
+	DeleteFileW(new_self);
+}
+
 static void update(void)
 {
 	static WCHAR local_ver[1100], new_ver[1100], jar[1100], new_jar[1100];
@@ -173,21 +243,31 @@ static void update(void)
 	if (!download(L"android-version.txt", new_ver) || read_small(new_ver, latest, sizeof latest) <= 0)
 	{
 		DeleteFileW(new_ver);
+		log_text("Update check failed (offline or GitHub unreachable); starting the client already here\r\n");
 		return; /* offline or GitHub unreachable: play what we have */
 	}
 	if (read_small(local_ver, have, sizeof have) > 0 && same(have, latest)
 		&& GetFileAttributesW(jar) != INVALID_FILE_ATTRIBUTES)
 	{
 		DeleteFileW(new_ver);
+		log_text("Client is up to date: ");
+		log_text(have);
+		log_text("\r\n");
 		return;
 	}
+	log_text("Downloading client ");
+	log_text(latest);
+	log_text("\r\n");
 	if (download(L"android-client.jar", new_jar) && file_size(new_jar) >= MIN_JAR_SIZE
 		&& MoveFileExW(new_jar, jar, MOVEFILE_REPLACE_EXISTING))
 	{
 		MoveFileExW(new_ver, local_ver, MOVEFILE_REPLACE_EXISTING);
+		log_text("Client updated\r\n");
+		update_self();
 	}
 	else
 	{
+		log_text("Client download failed; starting the client already here\r\n");
 		DeleteFileW(new_jar);
 		DeleteFileW(new_ver);
 	}
@@ -221,6 +301,7 @@ void start(void)
 	path(jar, L"client.jar");
 	path(home, L"home");
 	CreateDirectoryW(home, 0);
+	open_log();
 
 	if (GetFileAttributesW(java) == INVALID_FILE_ATTRIBUTES)
 	{
@@ -241,12 +322,21 @@ void start(void)
 	p = append(p, home);
 	p = append(p, L"\" -jar \"");
 	p = append(p, jar);
-	append(p, L"\" --developer-mode");
+	append(p, L"\" --developer-mode --debug");
+	log_text("Starting Java\r\n");
 
 	STARTUPINFOW si = {0};
 	PROCESS_INFORMATION pi = {0};
 	si.cb = sizeof(si);
-	if (!CreateProcessW(java, cmd, 0, 0, 0, 0, 0, dir, &si, &pi))
+	BOOL inherit = 0;
+	if (log_file != INVALID_HANDLE_VALUE)
+	{
+		si.dwFlags = STARTF_USESTDHANDLES;
+		si.hStdOutput = log_file;
+		si.hStdError = log_file;
+		inherit = 1;
+	}
+	if (!CreateProcessW(java, cmd, 0, 0, inherit, 0, 0, dir, &si, &pi))
 	{
 		fail(L"Couldn't start Java.");
 	}

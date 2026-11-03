@@ -7,7 +7,7 @@ out="$(realpath -m "${1:-SkillingHelper.exe}")"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 { echo "LIBRARY kernel32.dll"; echo "EXPORTS"; printf '%s\n' GetModuleFileNameW CreateProcessW WaitForSingleObject \
-	GetExitCodeProcess GetFileAttributesW CreateFileW ReadFile CloseHandle GetFileSize MoveFileExW DeleteFileW \
+	GetExitCodeProcess GetFileAttributesW CreateFileW ReadFile WriteFile CloseHandle GetFileSize MoveFileExW DeleteFileW \
 	CreateDirectoryW GetTickCount ExitProcess; } > "$tmp/kernel32.def"
 printf 'LIBRARY urlmon.dll\nEXPORTS\nURLDownloadToFileW\n' > "$tmp/urlmon.def"
 printf 'LIBRARY user32.dll\nEXPORTS\nMessageBoxW\n' > "$tmp/user32.def"
