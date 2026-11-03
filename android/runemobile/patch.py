@@ -298,7 +298,8 @@ ma = "android/app/src/main/java/dev/audaro/runemobile/MainActivity.kt"
 patch(ma,
 	"    private var gameStage: FrameLayout? = null\n",
 	"    private var gameStage: FrameLayout? = null\n"
-	"    private var shSidebarPx = 0 // Skilling Helper build: width the open plugin sidebar takes from the game\n")
+	"    private var shSidebarPx = 0 // Skilling Helper build: width the open plugin sidebar takes from the game\n"
+	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n")
 patch(ma,
 	"""        val (w, h) = stageSize(root.width, root.height, canvasW, canvasH)
         val lp = stage.layoutParams as FrameLayout.LayoutParams
@@ -308,21 +309,24 @@ patch(ma,
 """,
 	"""        val reserve = shReservePx()
         val availW = (root.width - reserve).coerceAtLeast(1)
+        // The space above the soft keyboard while it is up for a game field (0 otherwise), so nothing hides under it
+        val availH = (root.height - shImePx).coerceAtLeast(1)
         var (w, h) = stageSize(availW, root.height, canvasW, canvasH)
         if (reserve > 0 && canvasW > 0 && canvasH > 0) {
             // Fit the canvas's own shape into the space left of the bar (never stretch it, e.g. at the login screen
             // before a resize applies); fill it exactly once the canvas matches.
             val ca = canvasW.toFloat() / canvasH
-            val wa = availW.toFloat() / root.height
+            val wa = availW.toFloat() / availH
             when {
-                abs(ca / wa - 1f) <= 0.01f -> { w = availW; h = root.height }
+                abs(ca / wa - 1f) <= 0.01f -> { w = availW; h = availH }
                 ca > wa -> { w = availW; h = Math.round(availW / ca) }
-                else -> { w = Math.round(root.height * ca); h = root.height }
+                else -> { w = Math.round(availH * ca); h = availH }
             }
         } else if (reserve > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) {
             w = availW
         }
-        val grav = if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
+        val grav = if (shImePx > 0) Gravity.CENTER_HORIZONTAL or Gravity.TOP
+            else if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
         val lp = stage.layoutParams as FrameLayout.LayoutParams
         if (lp.width != w || lp.height != h || lp.gravity != grav) {
             lp.width = w
@@ -547,3 +551,35 @@ patch(mb,
 			return;
 		}
 		final Thread t = new Thread(() ->""")
+
+# 14. Typing into the game with the sidebar open. The stock poll only hands the keyboard to the game's hidden input
+# view when it raises the keyboard; with the sidebar open during play another view can hold focus while the
+# keyboard is already up, so typed text went nowhere (GE, bank and fairy ring searches). Take focus back whenever
+# the game wants the keyboard. And while the keyboard is up for the game, fit the game into the space above it
+# (scaled, no canvas resize), so menus like the fairy ring dial aren't hidden under the keyboard.
+patch(ma,
+	"""                        if (want != imeShown) {
+                            if (want != keyboardShown) {""",
+	"""                        // Skilling Helper build: the game's input view must hold focus whenever the game wants the keyboard
+                        if (want && imeShown && !keyboardView.isFocused && keyboardView.requestFocus()) {
+                            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).restartInput(keyboardView)
+                            Log.i(TAG, "sh: game input view took focus back")
+                        }
+                        if (want != imeShown) {
+                            if (want != keyboardShown) {""")
+patch(ma,
+	"""                    updatePasteButton(imeShown && !textActivePanel && keyboardShown)
+""",
+	"""                    updatePasteButton(imeShown && !textActivePanel && keyboardShown)
+                    // Skilling Helper build: keep the game above the keyboard while it is up for a game field
+                    val shIme =
+                        if (imeShown && !textActivePanel && keyboardShown && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            surfaceView.rootWindowInsets?.getInsets(WindowInsets.Type.ime())?.bottom ?: 0
+                        } else {
+                            0
+                        }
+                    if (shIme != shImePx) {
+                        shImePx = shIme
+                        fitGameStage()
+                    }
+""")
