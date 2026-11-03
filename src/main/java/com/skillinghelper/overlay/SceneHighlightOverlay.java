@@ -1,6 +1,7 @@
 package com.skillinghelper.overlay;
 
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.GuideHost;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.TargetTracker;
 import com.skillinghelper.data.Target;
@@ -34,13 +35,22 @@ public class SceneHighlightOverlay extends Overlay
 	private static final int MAX_DISTANCE = 24;
 
 	private final Client client;
-	private final SkillingHelperPlugin plugin;
+	private final GuideHost plugin;
 	private final SkillingHelperConfig config;
 	private final TargetTracker tracker;
 	private final ModelOutlineRenderer outlines;
 
 	@Inject
 	SceneHighlightOverlay(Client client, SkillingHelperPlugin plugin, SkillingHelperConfig config, TargetTracker tracker,
+		ModelOutlineRenderer outlines)
+	{
+		this(client, (GuideHost) plugin, config, tracker, outlines);
+	}
+
+	/**
+	 * For another plugin in this jar that runs its own guide, with its own target tracker.
+	 */
+	public SceneHighlightOverlay(Client client, GuideHost plugin, SkillingHelperConfig config, TargetTracker tracker,
 		ModelOutlineRenderer outlines)
 	{
 		this.client = client;

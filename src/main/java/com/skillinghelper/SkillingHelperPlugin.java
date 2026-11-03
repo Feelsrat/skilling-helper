@@ -69,7 +69,7 @@ import net.runelite.client.util.LinkBrowser;
 		"smithing", "herblore", "runecraft", "agility", "thieving", "prayer", "magic", "construction", "hunter",
 		"farming", "slayer", "sailing", "combat"}
 )
-public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.Listener
+public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.Listener, GuideHost
 {
 	private static final String WIKI_URL = "https://oldschool.runescape.wiki/w/";
 	private static final int QUEST_REFRESH_TICKS = 50;

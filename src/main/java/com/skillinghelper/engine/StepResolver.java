@@ -62,7 +62,17 @@ public final class StepResolver
 		{
 			return goalReachedStep(m, targetLevel);
 		}
+		return resolveActions(m, s, actionsLeft(m, s, targetLevel), drop, reqs);
+	}
 
+	/**
+	 * Picks the next step when the number of actions left is known exactly rather than from a goal level, e.g. using
+	 * up the items in the bank (Banked XP). The caller decides when it's finished.
+	 *
+	 * @param actionsLeft actions still to do, used to size trips and how many inputs to make
+	 */
+	public GuideStep resolveActions(Method m, PlayerState s, long actionsLeft, boolean drop, List<Requirement> reqs)
+	{
 		// With a Slayer task, the task is the training: the master is only needed again once it's done
 		if (SlayerTaskStep.applies(m, s))
 		{
@@ -101,7 +111,6 @@ public final class StepResolver
 
 		// Inputs made from parts (baskets of apples, unfinished potions): make them as soon as the parts are carried,
 		// and otherwise fetch only the parts so they fit in the inventory
-		long actionsLeft = actionsLeft(m, s, targetLevel);
 		List<ItemReq> toMake = recipes.toMake(m, s, actionsLeft);
 		for (ItemReq input : toMake)
 		{

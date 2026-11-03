@@ -2,6 +2,7 @@ package com.skillinghelper.overlay;
 
 import com.skillinghelper.ActiveGuide;
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.GuideHost;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.ItemHighlight;
@@ -20,12 +21,20 @@ import net.runelite.client.ui.overlay.WidgetItemOverlay;
  */
 public class ItemHighlightOverlay extends WidgetItemOverlay
 {
-	private final SkillingHelperPlugin plugin;
+	private final GuideHost plugin;
 	private final SkillingHelperConfig config;
 	private final ItemManager itemManager;
 
 	@Inject
 	ItemHighlightOverlay(SkillingHelperPlugin plugin, SkillingHelperConfig config, ItemManager itemManager)
+	{
+		this((GuideHost) plugin, config, itemManager);
+	}
+
+	/**
+	 * For another plugin in this jar that runs its own guide.
+	 */
+	public ItemHighlightOverlay(GuideHost plugin, SkillingHelperConfig config, ItemManager itemManager)
 	{
 		this.plugin = plugin;
 		this.config = config;

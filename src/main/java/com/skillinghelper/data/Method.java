@@ -16,7 +16,7 @@ import net.runelite.api.coords.WorldPoint;
  * OSRS wiki training guides (see {@link #wikiPage}).
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class Method
 {
 	@NonNull

@@ -19,7 +19,6 @@ import net.runelite.client.events.PluginMessage;
 public class ShortestPathBridge
 {
 	private static final String NAMESPACE = "shortestpath";
-	private static final String QUERY_PREFIX = "skillinghelper:";
 
 	/**
 	 * Transports that only get used when the player meets their requirements, which Shortest Path checks itself.
@@ -34,6 +33,10 @@ public class ShortestPathBridge
 
 	private final EventBus eventBus;
 	private final SkillingHelperConfig config;
+	/**
+	 * Starts this bridge's query ids, so two plugins in this jar don't take each other's answers.
+	 */
+	private final String queryPrefix;
 
 	private Route shown;
 	private int queryCount;
@@ -43,8 +46,17 @@ public class ShortestPathBridge
 	@Inject
 	ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config)
 	{
+		this(eventBus, config, "skillinghelper:");
+	}
+
+	/**
+	 * For another plugin in this jar that shows its own paths.
+	 */
+	public ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config, String queryPrefix)
+	{
 		this.eventBus = eventBus;
 		this.config = config;
+		this.queryPrefix = queryPrefix;
 	}
 
 	/**
@@ -86,7 +98,7 @@ public class ShortestPathBridge
 			pendingQuery = null;
 			return;
 		}
-		pendingQuery = QUERY_PREFIX + (++queryCount);
+		pendingQuery = queryPrefix + (++queryCount);
 		Map<String, Object> query = new HashMap<>();
 		query.put("id", pendingQuery);
 		query.put("target", route.pathTargets());

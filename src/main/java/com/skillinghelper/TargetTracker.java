@@ -85,8 +85,11 @@ public class TargetTracker
 
 	private static final Match NO_MATCH = new Match(null, null);
 
+	/**
+	 * Public so another plugin in this jar can keep its own tracker: the injected one is shared by every plugin.
+	 */
 	@Inject
-	TargetTracker(Client client)
+	public TargetTracker(Client client)
 	{
 		this.client = client;
 	}

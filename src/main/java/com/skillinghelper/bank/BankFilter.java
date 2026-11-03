@@ -1,11 +1,14 @@
 package com.skillinghelper.bank;
 
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.GuideHost;
 import com.skillinghelper.SkillingHelperPlugin;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
+import lombok.Value;
 import net.runelite.api.Client;
 import net.runelite.api.ScriptID;
 import net.runelite.api.Skill;
@@ -38,9 +41,9 @@ public class BankFilter
 	private final ClientThread clientThread;
 	private final BankSearch bankSearch;
 	private final ItemManager itemManager;
-	private final SkillingHelperPlugin plugin;
-	private final SkillingHelperConfig config;
+	private final GuideHost plugin;
 	private final ConfigManager configManager;
+	private final Options options;
 
 	@Getter
 	private boolean active;
@@ -50,14 +53,47 @@ public class BankFilter
 	BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
 		SkillingHelperPlugin plugin, SkillingHelperConfig config, ConfigManager configManager)
 	{
+		this(client, clientThread, bankSearch, itemManager, plugin, configManager,
+			new Options(SkillingHelperConfig.GROUP, 0, "Skilling Helper items", config::showBankButton,
+				config::bankFilterOn));
+	}
+
+	/**
+	 * For another plugin in this jar that runs its own guide, with its own button slot and saved setting.
+	 */
+	public BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
+		GuideHost plugin, ConfigManager configManager, Options options)
+	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.bankSearch = bankSearch;
 		this.itemManager = itemManager;
 		this.plugin = plugin;
-		this.config = config;
 		this.configManager = configManager;
-		this.active = config.bankFilterOn();
+		this.options = options;
+		this.active = options.getSavedOn().getAsBoolean();
+	}
+
+	/**
+	 * Where a plugin's button goes and where its on/off setting is saved.
+	 */
+	@Value
+	public static class Options
+	{
+		/**
+		 * Config group the "bankFilterOn" setting is saved in.
+		 */
+		String configGroup;
+		/**
+		 * Which button this is, counting from 0 next to the bank's tutorial button.
+		 */
+		int slot;
+		/**
+		 * The button's name in its menu option.
+		 */
+		String label;
+		BooleanSupplier showButton;
+		BooleanSupplier savedOn;
 	}
 
 	/**
@@ -65,7 +101,7 @@ public class BankFilter
 	 */
 	public void startUp()
 	{
-		active = config.bankFilterOn();
+		active = options.getSavedOn().getAsBoolean();
 	}
 
 	public void toggle()
@@ -76,7 +112,7 @@ public class BankFilter
 	public void setActive(boolean active)
 	{
 		this.active = active;
-		configManager.setConfiguration(SkillingHelperConfig.GROUP, "bankFilterOn", active);
+		configManager.setConfiguration(options.getConfigGroup(), "bankFilterOn", active);
 		updateButton();
 		if (client.getItemContainer(InventoryID.BANK) != null)
 		{
@@ -151,7 +187,7 @@ public class BankFilter
 
 	private void addButton()
 	{
-		if (!config.showBankButton())
+		if (!options.getShowButton().getAsBoolean())
 		{
 			return;
 		}
@@ -162,7 +198,7 @@ public class BankFilter
 		}
 		Widget parent = tut.getParent();
 		button = parent.createChild(-1, WidgetType.GRAPHIC);
-		button.setOriginalX(tut.getOriginalX() + tut.getOriginalWidth() + 4);
+		button.setOriginalX(tut.getOriginalX() + tut.getOriginalWidth() + 4 + options.getSlot() * (BUTTON_SIZE + 4));
 		button.setOriginalY(tut.getOriginalY());
 		button.setOriginalWidth(BUTTON_SIZE);
 		button.setOriginalHeight(BUTTON_SIZE);
@@ -170,7 +206,7 @@ public class BankFilter
 		button.setYPositionMode(tut.getYPositionMode());
 		button.setHasListener(true);
 		button.setAction(0, "Toggle");
-		button.setName("<col=ff9040>Skilling Helper items</col>");
+		button.setName("<col=ff9040>" + options.getLabel() + "</col>");
 		button.setOnOpListener((JavaScriptCallback) ev -> setActive(!active));
 		updateButton();
 		button.revalidate();

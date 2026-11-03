@@ -1,6 +1,7 @@
 package com.skillinghelper.bank;
 
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.GuideHost;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.StepType;
@@ -33,12 +34,20 @@ import net.runelite.client.util.Text;
 public class BankAmountSwapper
 {
 	private final Client client;
-	private final SkillingHelperPlugin plugin;
+	private final GuideHost plugin;
 	private final SkillingHelperConfig config;
 	private final ItemManager itemManager;
 
 	@Inject
 	BankAmountSwapper(Client client, SkillingHelperPlugin plugin, SkillingHelperConfig config, ItemManager itemManager)
+	{
+		this(client, (GuideHost) plugin, config, itemManager);
+	}
+
+	/**
+	 * For another plugin in this jar that runs its own guide.
+	 */
+	public BankAmountSwapper(Client client, GuideHost plugin, SkillingHelperConfig config, ItemManager itemManager)
 	{
 		this.client = client;
 		this.plugin = plugin;

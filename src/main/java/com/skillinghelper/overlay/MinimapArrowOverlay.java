@@ -1,6 +1,7 @@
 package com.skillinghelper.overlay;
 
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.GuideHost;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.engine.GuideStep;
 import java.awt.BasicStroke;
@@ -31,11 +32,19 @@ public class MinimapArrowOverlay extends Overlay
 	private static final int ARROW_TILES = 15;
 
 	private final Client client;
-	private final SkillingHelperPlugin plugin;
+	private final GuideHost plugin;
 	private final SkillingHelperConfig config;
 
 	@Inject
 	MinimapArrowOverlay(Client client, SkillingHelperPlugin plugin, SkillingHelperConfig config)
+	{
+		this(client, (GuideHost) plugin, config);
+	}
+
+	/**
+	 * For another plugin in this jar that runs its own guide.
+	 */
+	public MinimapArrowOverlay(Client client, GuideHost plugin, SkillingHelperConfig config)
 	{
 		this.client = client;
 		this.plugin = plugin;

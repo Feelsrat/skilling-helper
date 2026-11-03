@@ -14,7 +14,7 @@ import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
  * plugin's route. Runs on the client thread.
  */
 @Singleton
-class PathDisplay
+public class PathDisplay
 {
 	private final Client client;
 	private final SkillingHelperConfig config;
@@ -26,7 +26,7 @@ class PathDisplay
 	private WorldMapPoint mapPoint;
 
 	@Inject
-	PathDisplay(Client client, SkillingHelperConfig config, WorldMapPointManager worldMapPointManager,
+	public PathDisplay(Client client, SkillingHelperConfig config, WorldMapPointManager worldMapPointManager,
 		ShortestPathBridge shortestPath)
 	{
 		this.client = client;
@@ -38,7 +38,7 @@ class PathDisplay
 	/**
 	 * Points everything at this route, or clears it all when null. Does nothing if it's already shown.
 	 */
-	void show(Route route)
+	public void show(Route route)
 	{
 		if (Objects.equals(route, shown))
 		{
@@ -54,7 +54,7 @@ class PathDisplay
 	/**
 	 * Clears everything, including a hint arrow left from before the settings changed.
 	 */
-	void clear()
+	public void clear()
 	{
 		Route previous = shown;
 		show(null);
@@ -67,7 +67,7 @@ class PathDisplay
 	/**
 	 * Whether Shortest Path said it can't complete this route with the player's unlocks.
 	 */
-	boolean isUnreachable(Route route)
+	public boolean isUnreachable(Route route)
 	{
 		return shortestPath.isUnreachable(route);
 	}

@@ -32,7 +32,7 @@ import net.runelite.api.gameval.VarbitID;
  * Reads everything the guide engine needs from the client into a {@link PlayerState}. Runs on the client thread.
  */
 @Singleton
-class PlayerSnapshot
+public class PlayerSnapshot
 {
 	private static final int INVENTORY_SIZE = 28;
 
@@ -61,7 +61,7 @@ class PlayerSnapshot
 		this.slayerTask = slayerTask;
 	}
 
-	PlayerState take(Mooring boatMooring, Set<Quest> completedQuests, Set<Quest> startedQuests)
+	public PlayerState take(Mooring boatMooring, Set<Quest> completedQuests, Set<Quest> startedQuests)
 	{
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
 		Map<Integer, Integer> slots = slotsUsed(inv);
