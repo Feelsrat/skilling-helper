@@ -306,6 +306,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		Skill activeSkill = settings.getActiveSkill();
 		plunder.setSwapEnabled(config.plunderSwapUrns());
+		plunder.setCharmOn(config.plunderSnakeCharm());
 		plunder.tick(plunderGuideOpen(activeSkill), config.plunderSceptreHunt());
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
@@ -888,7 +889,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			return base;
 		}
-		if (!PyramidPlunder.needsCharm(state.level(Skill.THIEVING),
+		if (!PyramidPlunder.needsCharm(state.level(Skill.THIEVING), config.plunderSnakeCharm(),
 			state.bankKnown(), state.owned(PyramidPlunder.SNAKE_CHARM)))
 		{
 			return base;

@@ -90,12 +90,25 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "plunderSwapUrns",
-		name = "Left-click snake options",
-		description = "While the guide has you charming snakes, make \"Check for Snakes\" and \"Charm Snake\" the "
-			+ "left-click on urns (hold Shift for the normal menu)",
+		keyName = "plunderSnakeCharm",
+		name = "Use a snake charm",
+		description = "Below 51 Thieving, check urns for snakes and charm them before searching. Off by default: "
+			+ "by the wiki's success rates just searching is faster and gives full xp; this only helps on low hitpoints",
 		section = plunderSection,
 		position = 3
+	)
+	default boolean plunderSnakeCharm()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "plunderSwapUrns",
+		name = "Left-click snake options",
+		description = "With \"Use a snake charm\" on, make \"Check for Snakes\" and \"Charm Snake\" the left-click on "
+			+ "urns (hold Shift for the normal menu)",
+		section = plunderSection,
+		position = 4
 	)
 	default boolean plunderSwapUrns()
 	{

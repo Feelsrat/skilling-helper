@@ -100,8 +100,8 @@ final class ThievingGuide
 				.instruction("Search the pyramid door that leads to the Guardian mummy and start a round. The guide "
 					+ "then outlines one thing at a time: trap, urns, chest, door")
 				.notes("Per the wiki: skip the early rooms' urns, search every urn in your last two rooms, keep 90 "
-					+ "seconds for the last one. A lockpick helps doors a lot at low levels; a snake charm helps "
-					+ "urns below 51.")
+					+ "seconds for the last one. A lockpick helps doors a lot at low levels. Just search urns: "
+					+ "checking and charming snakes is slower.")
 				.wikiPage("Pyramid_Plunder")
 				// Wiki Thieving training (with a sceptre): 125k at 71-80, 190k at 81-90, 270k at 91+. Below 71 the wiki only
 				// says it's much lower; halved after in-game play came in at about half the old estimate

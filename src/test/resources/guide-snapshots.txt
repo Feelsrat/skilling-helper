@@ -8016,13 +8016,13 @@ thieve_pyramid_plunder strong bank-unknown	1197e7efc471a252
 thieve_pyramid_plunder strong full-of-products	064d0ec7725205a6
 thieve_pyramid_plunder strong gear-carried	0d4bd596f9bf80eb
 thieve_pyramid_plunder strong goal-reached	c9e9fc586d71f2d9
-thieve_pyramid_plunder strong in-instance	5cecffd8878dfd36
-thieve_pyramid_plunder strong kit-at-spot	5cecffd8878dfd36
+thieve_pyramid_plunder strong in-instance	a9779d5cdb20eb7f
+thieve_pyramid_plunder strong kit-at-spot	a9779d5cdb20eb7f
 thieve_pyramid_plunder strong kit-away	8f1186b0ae4d9210
-thieve_pyramid_plunder strong kit-worn-at-spot	5cecffd8878dfd36
+thieve_pyramid_plunder strong kit-worn-at-spot	a9779d5cdb20eb7f
 thieve_pyramid_plunder strong owns-all-at-bank	8f1186b0ae4d9210
 thieve_pyramid_plunder strong owns-all-in-bank	8f1186b0ae4d9210
-thieve_pyramid_plunder strong parts-carried	5cecffd8878dfd36
+thieve_pyramid_plunder strong parts-carried	a9779d5cdb20eb7f
 thieve_pyramid_plunder strong parts-carried-away	8f1186b0ae4d9210
 thieve_pyramid_plunder strong parts-in-bank	8f1186b0ae4d9210
 thieve_pyramid_plunder weak bank-empty	8d63da94d19aaa1d

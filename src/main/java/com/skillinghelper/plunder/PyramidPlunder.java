@@ -193,6 +193,10 @@ public final class PyramidPlunder
 		boolean sarcophagusOpen;
 		int doorsClosed;
 		boolean carriesCharm;
+		/**
+		 * The player turned on using the snake charm.
+		 */
+		boolean charmOn;
 		boolean carriesLockpick;
 		boolean exitInView;
 		boolean inventoryFull;
@@ -219,9 +223,14 @@ public final class PyramidPlunder
 		return 21 + (room - 1) * 10;
 	}
 
-	public static boolean useCharm(int level)
+	/**
+	 * Whether to check and charm urn snakes: only when the player turned it on, and only below 51. By the wiki's
+	 * success rates (Urn page: search 100/180, check 160/250, charming always works) plain searching takes fewer
+	 * clicks at every level, and charming gives less xp, so it's only for players short on hitpoints.
+	 */
+	public static boolean useCharm(int level, boolean charmOn)
 	{
-		return level < SNAKE_CHARM_BELOW;
+		return charmOn && level < SNAKE_CHARM_BELOW;
 	}
 
 	public static boolean useLockpick(int level)
@@ -267,7 +276,7 @@ public final class PyramidPlunder
 	public static List<RoomPlan> plan(int level, int room, boolean trapDone, int urnsLeft, boolean chestDone,
 		boolean sarcophagusDone, int ticksLeft, boolean sceptreHunt, boolean charming)
 	{
-		int urnTicks = charming && useCharm(level) ? CHARMED_URN_TICKS : URN_TICKS;
+		int urnTicks = charming ? CHARMED_URN_TICKS : URN_TICKS;
 		int top = Math.max(1, maxRoom(level));
 		int start = room < 1 ? 1 : Math.min(room, top);
 		boolean fresh = room < 1;
@@ -347,7 +356,8 @@ public final class PyramidPlunder
 	static List<RoomPlan> plan(Situation s)
 	{
 		return plan(s.level, Math.max(1, s.room), !s.trapActive, s.urnsLeft, !s.chestClosed,
-			!s.sarcophagusClosed && !s.sarcophagusOpen, s.ticksLeft, s.sceptreHunt, s.carriesCharm);
+			!s.sarcophagusClosed && !s.sarcophagusOpen, s.ticksLeft, s.sceptreHunt,
+			s.carriesCharm && useCharm(s.level, s.charmOn));
 	}
 
 	/**
@@ -366,7 +376,7 @@ public final class PyramidPlunder
 		}
 		if (here.urns > 0 && s.nextUrn != null && s.nextUrn != UrnState.OPEN)
 		{
-			if (useCharm(s.level) && s.carriesCharm)
+			if (useCharm(s.level, s.charmOn) && s.carriesCharm)
 			{
 				switch (s.nextUrn)
 				{
@@ -441,14 +451,15 @@ public final class PyramidPlunder
 				b.title("Search the urn");
 				b.line("Click \"Search\" on the outlined urn (" + URN_XP[r - 1] + " xp). " + here.urns
 					+ (here.urns == 1 ? " urn" : " urns") + " to search here; the numbers show the shortest walk.");
-				if (s.nextUrn == UrnState.CLOSED && useCharm(s.level) && !s.carriesCharm)
+				if (s.nextUrn == UrnState.CLOSED && useCharm(s.level, s.charmOn) && !s.carriesCharm)
 				{
 					b.line("Tip: a snake charm from Ali in Pollnivneach makes urns safer below "
 						+ SNAKE_CHARM_BELOW + " Thieving.");
 				}
-				else if (s.nextUrn == UrnState.CLOSED && !useCharm(s.level))
+				else if (s.nextUrn == UrnState.CLOSED && !useCharm(s.level, s.charmOn))
 				{
-					b.line("Just search: at your level checking for snakes is slower than the odd bite.");
+					b.line("Just search, even if a snake bites: it takes fewer clicks than checking and charming, and "
+						+ "gives full xp.");
 				}
 				break;
 			case OPEN_CHEST:
@@ -599,7 +610,8 @@ public final class PyramidPlunder
 	/**
 	 * The player is in the lobby: start a round.
 	 */
-	public static GuideStep startStep(int level, boolean carriesCharm, boolean carriesLockpick, boolean sceptreHunt,
+	public static GuideStep startStep(int level, boolean charmOn, boolean carriesCharm, boolean carriesLockpick,
+		boolean sceptreHunt,
 		boolean canCharge, int freeSlots, int hitpoints, int prayerLevel)
 	{
 		GuideStep.GuideStepBuilder b = GuideStep.builder()
@@ -613,7 +625,7 @@ public final class PyramidPlunder
 				+ "you straight back here each round.");
 			b.itemHighlight(UNCHARGED_SCEPTRE, ItemHighlight.USE);
 		}
-		prepLines(b, level, carriesCharm, carriesLockpick);
+		prepLines(b, level, charmOn, carriesCharm, carriesLockpick);
 		List<RoomPlan> fresh = freshPlan(level, sceptreHunt);
 		int searches = 0;
 		for (RoomPlan p : fresh)
@@ -633,9 +645,9 @@ public final class PyramidPlunder
 		{
 			b.line("Tip: at your level the lockpick halves door xp for few saved tries; you can leave it in the bank.");
 		}
-		if (carriesCharm && !useCharm(level))
+		if (carriesCharm && !useCharm(level, charmOn))
 		{
-			b.line("Tip: from " + SNAKE_CHARM_BELOW + " Thieving the snake charm only slows you down; leave it.");
+			b.line("Tip: leave the snake charm in the bank: just searching urns is faster and gives full xp.");
 		}
 		if (prayerLevel >= 43)
 		{
@@ -654,7 +666,7 @@ public final class PyramidPlunder
 	 *
 	 * @param knownDoor whether the right door is known (seen within the last 25 minutes)
 	 */
-	public static GuideStep enterStep(int level, boolean carriesCharm, boolean carriesLockpick, int sceptreId,
+	public static GuideStep enterStep(int level, boolean charmOn, boolean carriesCharm, boolean carriesLockpick, int sceptreId,
 		boolean knownDoor)
 	{
 		GuideStep.GuideStepBuilder b = GuideStep.builder().type(StepType.TRAIN);
@@ -676,7 +688,7 @@ public final class PyramidPlunder
 				.line("If you land in an empty room, leave and the next door gets outlined. The right door stays the "
 					+ "same for about 25 minutes.");
 		}
-		prepLines(b, level, carriesCharm, carriesLockpick);
+		prepLines(b, level, charmOn, carriesCharm, carriesLockpick);
 		return b.build();
 	}
 
@@ -693,10 +705,10 @@ public final class PyramidPlunder
 			.build();
 	}
 
-	private static void prepLines(GuideStep.GuideStepBuilder b, int level, boolean carriesCharm,
+	private static void prepLines(GuideStep.GuideStepBuilder b, int level, boolean charmOn, boolean carriesCharm,
 		boolean carriesLockpick)
 	{
-		if (useCharm(level) && !carriesCharm)
+		if (useCharm(level, charmOn) && !carriesCharm)
 		{
 			b.line("Bring: a snake charm. Below " + SNAKE_CHARM_BELOW + " Thieving it makes urns faster and safer. "
 				+ "Just carry it; the guide tells you when to charm.");
@@ -731,9 +743,9 @@ public final class PyramidPlunder
 	/**
 	 * Below 51 Thieving without a snake charm anywhere: Ali in Pollnivneach gives one for a coin, on the way.
 	 */
-	public static boolean needsCharm(int level, boolean bankKnown, int owned)
+	public static boolean needsCharm(int level, boolean charmOn, boolean bankKnown, int owned)
 	{
-		return useCharm(level) && bankKnown && owned == 0;
+		return useCharm(level, charmOn) && bankKnown && owned == 0;
 	}
 
 	public static GuideStep charmSourceStep(boolean atAli)

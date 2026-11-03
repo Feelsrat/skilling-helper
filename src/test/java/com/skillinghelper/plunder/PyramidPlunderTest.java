@@ -69,7 +69,7 @@ public class PyramidPlunderTest
 	@Test
 	public void snakeCharmBelow51()
 	{
-		PyramidPlunder.Situation.SituationBuilder low = at(45, 3).carriesCharm(true).urnsLeft(5);
+		PyramidPlunder.Situation.SituationBuilder low = at(45, 3).charmOn(true).carriesCharm(true).urnsLeft(5);
 		assertEquals(PyramidPlunder.Action.CHECK_URN,
 			PyramidPlunder.decide(low.nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
 		assertEquals(PyramidPlunder.Action.CHARM_URN,
@@ -79,7 +79,9 @@ public class PyramidPlunderTest
 		// Without the charm, or at 51+, just search
 		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(low.carriesCharm(false)
 			.nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
-		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(55, 4).carriesCharm(true)
+		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(45, 3).carriesCharm(true)
+			.urnsLeft(5).nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
+		assertEquals(PyramidPlunder.Action.SEARCH_URN, PyramidPlunder.decide(at(55, 4).charmOn(true).carriesCharm(true)
 			.urnsLeft(5).nextUrn(PyramidPlunder.UrnState.CLOSED).build()));
 	}
 
@@ -188,10 +190,11 @@ public class PyramidPlunderTest
 	@Test
 	public void charmOnlyWhenUseful()
 	{
-		assertTrue(PyramidPlunder.needsCharm(30, true, 0));
-		assertFalse(PyramidPlunder.needsCharm(30, true, 1));
-		assertFalse(PyramidPlunder.needsCharm(30, false, 0));
-		assertFalse(PyramidPlunder.needsCharm(51, true, 0));
+		assertTrue(PyramidPlunder.needsCharm(30, true, true, 0));
+		assertFalse(PyramidPlunder.needsCharm(30, false, true, 0));
+		assertFalse(PyramidPlunder.needsCharm(30, true, true, 1));
+		assertFalse(PyramidPlunder.needsCharm(30, true, false, 0));
+		assertFalse(PyramidPlunder.needsCharm(51, true, true, 0));
 	}
 
 	@Test

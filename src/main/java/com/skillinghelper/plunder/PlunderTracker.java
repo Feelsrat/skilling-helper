@@ -173,6 +173,7 @@ public class PlunderTracker
 	 */
 	private boolean swapUrns;
 	private boolean swapEnabled = true;
+	private boolean charmOn;
 
 	@Inject
 	public PlunderTracker(Client client)
@@ -274,7 +275,7 @@ public class PlunderTracker
 		int level = client.getRealSkillLevel(Skill.THIEVING);
 		boolean charm = carries(PyramidPlunder.SNAKE_CHARM);
 		boolean lockpick = carries(PyramidPlunder.LOCKPICK);
-		swapUrns = inRound && swapEnabled && charm && PyramidPlunder.useCharm(level);
+		swapUrns = inRound && swapEnabled && charm && PyramidPlunder.useCharm(level, charmOn);
 		if (inRound)
 		{
 			roundTick(me, level, charm, lockpick, timer, sceptreHunt);
@@ -282,7 +283,7 @@ public class PlunderTracker
 		else if (lobby)
 		{
 			ItemContainer inv = client.getItemContainer(InventoryID.INV);
-			step = PyramidPlunder.startStep(level, charm, lockpick, sceptreHunt,
+			step = PyramidPlunder.startStep(level, charmOn, charm, lockpick, sceptreHunt,
 				PyramidPlunder.canCharge(carries(PyramidPlunder.UNCHARGED_SCEPTRE), count(PyramidPlunder.GOLD_ARTEFACTS),
 					count(PyramidPlunder.STONE_ARTEFACTS), count(PyramidPlunder.POTTERY_ARTEFACTS)),
 				inv == null ? 28 : 28 - inv.count(), client.getBoostedSkillLevel(Skill.HITPOINTS),
@@ -298,7 +299,7 @@ public class PlunderTracker
 			int sceptre = sceptre();
 			TileObject door = sceptre > 0 ? null : entrance(me);
 			pick(door, "Search");
-			step = PyramidPlunder.enterStep(level, charm, lockpick, sceptre, door != null && knownCorrect(door));
+			step = PyramidPlunder.enterStep(level, charmOn, charm, lockpick, sceptre, door != null && knownCorrect(door));
 		}
 	}
 
@@ -373,6 +374,7 @@ public class PlunderTracker
 			.sarcophagusOpen(sarcState == ObjectID.NTK_SARCOPHAGUS_OPEN && !sarcophagusSearched)
 			.doorsClosed(doorsClosed)
 			.carriesCharm(charm)
+			.charmOn(charmOn)
 			.carriesLockpick(lockpick)
 			.exitInView(exit != null)
 			.inventoryFull(inventoryFull())
@@ -841,6 +843,11 @@ public class PlunderTracker
 	public void setSwapEnabled(boolean on)
 	{
 		swapEnabled = on;
+	}
+
+	public void setCharmOn(boolean on)
+	{
+		charmOn = on;
 	}
 
 	/**
