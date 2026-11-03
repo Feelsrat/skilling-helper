@@ -709,27 +709,41 @@ patch(ma,
                 addView(
                     devBar,""")
 
-# 21. S Pen (and mouse) hover, like a desktop mouse: a pen held over the screen moves the game's cursor without
+# 21. S Pen (and mouse) hover, like a desktop mouse: a pen held over the game moves the game's cursor without
 # clicking, so hover highlights, the top-left action text and plugin tooltips show. Leaving the screen parks it.
+# Read at the activity, before any view: the overlays stacked over the game view would otherwise take the hover.
 patch(ma,
-	"""        surfaceView.setOnTouchListener { _, event ->
-""",
-	"""        // Skilling Helper build: stylus/mouse hover moves the game cursor (see patch.py step 21)
-        surfaceView.setOnHoverListener { _, e ->
-            val tool = e.getToolType(0)
-            if (tool != MotionEvent.TOOL_TYPE_STYLUS && tool != MotionEvent.TOOL_TYPE_MOUSE) {
-                false
-            } else {
-                when (e.actionMasked) {
-                    MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_MOVE ->
-                        JvmLauncher.move(toGameX(e.x), toGameY(e.y))
-                    MotionEvent.ACTION_HOVER_EXIT -> JvmLauncher.clearHover()
+	"""    private fun toGameX(viewX: Float): Int {""",
+	"""    // Skilling Helper build: stylus/mouse hover moves the game cursor (see patch.py step 21)
+    private val shHoverLoc = IntArray(2)
+    private var shHovering = false
+
+    override fun dispatchGenericMotionEvent(ev: MotionEvent): Boolean {
+        val tool = ev.getToolType(0)
+        if ((tool == MotionEvent.TOOL_TYPE_STYLUS || tool == MotionEvent.TOOL_TYPE_MOUSE) && ::surfaceView.isInitialized) {
+            when (ev.actionMasked) {
+                MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_MOVE -> {
+                    surfaceView.getLocationInWindow(shHoverLoc)
+                    val x = ev.x - shHoverLoc[0]
+                    val y = ev.y - shHoverLoc[1]
+                    if (x >= 0 && y >= 0 && x < surfaceView.width && y < surfaceView.height) {
+                        JvmLauncher.move(toGameX(x), toGameY(y))
+                        shHovering = true
+                    } else if (shHovering) {
+                        JvmLauncher.clearHover()
+                        shHovering = false
+                    }
                 }
-                true
+                MotionEvent.ACTION_HOVER_EXIT -> if (shHovering) {
+                    JvmLauncher.clearHover()
+                    shHovering = false
+                }
             }
         }
-        surfaceView.setOnTouchListener { _, event ->
-""")
+        return super.dispatchGenericMotionEvent(ev)
+    }
+
+    private fun toGameX(viewX: Float): Int {""")
 patch(ma,
 	"""                "-Dsh.panelScale=""",
 	"""                "-Drunelite.hover.text=true", // Skilling Helper build: the desktop's top-left action text
@@ -776,3 +790,29 @@ patch(ma,
                     val shPenButton = event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS &&
                         (event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) != 0
                     surfaceView.postDelayed(holdRunnable, if (shPenButton) 0L else GameSettings.longPressMs(this).toLong())""")
+
+# 24. Double-tap in plugin panels. Some panels act only on a double-click (RuneLite's World Switcher hops on a
+# double-click of a world), and every tap was sent as a lone single click. A second tap on the same component soon
+# after the first now arrives as a double-click.
+mbp = "runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java"
+patch(mbp,
+	"	private static final AtomicInteger panelSeq = new AtomicInteger();\n",
+	"	private static final AtomicInteger panelSeq = new AtomicInteger();\n"
+	"	private static java.awt.Component shLastTapTarget; // Skilling Helper build: double-tap detection (EDT only)\n"
+	"	private static long shLastTapAt;\n")
+patch(mbp,
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_ENTERED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_MOVED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, when, mods, p.x, p.y, 1, false, MouseEvent.BUTTON1));""",
+	"""			final long shNow = System.currentTimeMillis();
+			final int shCount = target == shLastTapTarget && shNow - shLastTapAt < 500 ? 2 : 1;
+			shLastTapTarget = shCount == 2 ? null : target;
+			shLastTapAt = shNow;
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_ENTERED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_MOVED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, when, mods, p.x, p.y, shCount, false, MouseEvent.BUTTON1));""")
+patch(mbp,
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, when + 1, 0, p.x, p.y, 1, false, MouseEvent.BUTTON1));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, 1, false, MouseEvent.BUTTON1));""",
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_RELEASED, when + 1, 0, p.x, p.y, shCount, false, MouseEvent.BUTTON1));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, shCount, false, MouseEvent.BUTTON1));""")
