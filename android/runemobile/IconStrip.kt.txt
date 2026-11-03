@@ -5,6 +5,19 @@
 object ShUi {
     const val STRIP_DP = 40
     val active = mutableStateOf<Int?>(null)
+
+    /** The sidebar width the user dragged to (px), null = default; the host saves it and resizes the game. */
+    val widthPx = mutableStateOf<Float?>(null)
+    var onWidthCommitted: ((Float) -> Unit)? = null
+
+    /** The plugin panels' exact width on this screen (242 Swing px at the integer sh.panelScale), so they show 1:1. */
+    fun defaultWidthPx(density: Float): Float = Math.round(280f * density / 242f).coerceIn(1, 6) * 242f
+
+    fun clampWidth(
+        px: Float,
+        fullW: Float,
+        density: Float,
+    ): Float = px.coerceIn(minOf(200f * density, fullW * 0.6f), fullW * 0.6f)
 }
 
 /** Desktop-style icon bar, always on the right edge in landscape like RuneLite's: ≡ opens the plugin launcher, and

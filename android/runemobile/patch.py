@@ -71,6 +71,7 @@ if start < 0 or end < 0:
 	sys.exit("patch.py: SheetScaffold not found in PluginPanel.kt")
 s = s[:start] + (pathlib.Path(__file__).parent / "SidePanel.kt.txt").read_text() + s[end:]
 imports = [
+	"androidx.compose.foundation.gestures.detectHorizontalDragGestures",
 	"androidx.compose.foundation.layout.fillMaxHeight",
 	"androidx.compose.foundation.layout.offset",
 	"androidx.compose.foundation.layout.statusBars",
@@ -256,16 +257,6 @@ patch(pv, """            delay(400)
         }""", """            delay(150) // Skilling Helper build (was 400)
         }""")
 
-# 6d. Sidebar width to match the narrower panel column.
-pp2 = root / "android/app/src/main/java/dev/audaro/runemobile/PluginPanel.kt"
-t = pp2.read_text()
-old_w = "val maxW = with(density) { 380.dp.toPx() }"
-if old_w not in t:
-	sys.exit("patch.py: sidebar width anchor missing")
-pp2.write_text(t.replace(old_w, "val maxW = with(density) { 300.dp.toPx() }").replace(
-	"val minW = with(density) { 280.dp.toPx() }", "val minW = with(density) { 280.dp.toPx() }"))
-print("patched PluginPanel.kt (sidebar width)")
-
 # 6e. Compact hub rows: name on one line, then author / version / installs on one line, description 2 lines.
 patch(hub,
 	"""            Row(verticalAlignment = Alignment.CenterVertically) {
@@ -348,7 +339,7 @@ patch(ma,
 	"    private fun fitGameStage() {\n",
 	"""    /** Skilling Helper build: reserve (or give back) the plugin sidebar's width beside the game. Landscape only: in
      *  portrait the sidebar would leave the game too narrow, so it overlays as before. Matches SidePanel's width
-     *  (42% of the window, 280-300dp). */
+     *  (ShUi: the dragged width, else the panels' exact width). */
     private fun shReservePx(): Int {
         val root = rootContainer ?: return 0
         if (root.width <= root.height) return 0
@@ -361,8 +352,7 @@ patch(ma,
         val rw = root.width
         shSidebarPx =
             if (open && rw > root.height) {
-                val panel = (rw * 0.42f).coerceIn(minOf(280 * d, rw.toFloat()), minOf(300 * d, rw.toFloat()))
-                Math.round(panel)
+                Math.round(ShUi.clampWidth(ShUi.widthPx.value ?: ShUi.defaultWidthPx(d), rw.toFloat(), d))
             } else {
                 0
             }
@@ -431,6 +421,11 @@ patch(pp3,
 patch(ma,
 	"        fun openLauncher() {\n            pluginPanel.setContent {\n                PluginPanel(\n",
 	"        fun openLauncher(start: Pair<Int, String>? = null) {\n            ShUi.active.value = start?.first ?: -1\n"
+	"            // Skilling Helper build: a fresh composition, so a different icon really opens its own panel.\n"
+	"            pluginPanel.disposeComposition()\n"
+	"            val shPrefs = getSharedPreferences(\"sh_ui\", MODE_PRIVATE)\n"
+	"            if (ShUi.widthPx.value == null && shPrefs.getFloat(\"sidebar_w\", -1f) > 0f) ShUi.widthPx.value = shPrefs.getFloat(\"sidebar_w\", -1f)\n"
+	"            ShUi.onWidthCommitted = { px -> shPrefs.edit().putFloat(\"sidebar_w\", px).apply(); shApplySidebar(true) }\n"
 	"            pluginPanel.setContent {\n                PluginPanel(\n                    startPanel = start,\n")
 t = (root / ma).read_text()
 t = t.replace(" shApplySidebar(false)\n", " shApplySidebar(false)\n ShUi.active.value = null\n")
@@ -513,8 +508,8 @@ patch(pv,
 	"                    val colW = if (maxWidth < PANEL_MAX_DP) maxWidth else PANEL_MAX_DP\n",
 	"""                    // Skilling Helper build: show the buffer pixel for pixel when it fits (sharp, like desktop).
                     val exactW = with(androidx.compose.ui.platform.LocalDensity.current) { pw.toDp() }
-                    val oneToOne = pw > 0 && exactW <= maxWidth
-                    val colW = if (oneToOne) exactW else if (maxWidth < PANEL_MAX_DP) maxWidth else PANEL_MAX_DP
+                    val oneToOne = pw > 0 && kotlin.math.abs((exactW - maxWidth).value) < 1f
+                    val colW = maxWidth // the panel scales with the sidebar width (sharp at the default width)
 """)
 patch(pv,
 	"                            contentScale = ContentScale.FillWidth,\n",

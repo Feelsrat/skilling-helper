@@ -11,9 +11,8 @@ private fun SheetScaffold(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val density = LocalDensity.current
         val fullW = with(density) { maxWidth.toPx() }
-        val minW = with(density) { 280.dp.toPx() }
-        val maxW = with(density) { 380.dp.toPx() }
-        val panelPx = (fullW * 0.42f).coerceIn(minOf(minW, fullW), minOf(maxW, fullW))
+        // Width: dragged by the grip on the left edge and kept; by default the plugin panels' exact pixel width.
+        val panelPx = ShUi.clampWidth(ShUi.widthPx.value ?: ShUi.defaultWidthPx(density.density), fullW, density.density)
         val panelW = with(density) { panelPx.toDp() }
         val slide = remember { Animatable(panelPx) }
         LaunchedEffect(panelPx) { slide.animateTo(0f) }
@@ -28,29 +27,55 @@ private fun SheetScaffold(
                     // Taps on the panel's empty space must not fall through to the game behind it.
                     .pointerInput(Unit) { detectTapGestures { } },
         ) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(
-                        WindowInsets.displayCutout
-                            .union(WindowInsets.navigationBars)
-                            .union(WindowInsets.statusBars)
-                            .only(WindowInsetsSides.End + WindowInsetsSides.Top + WindowInsetsSides.Bottom),
-                    ),
-            ) {
-                // A slim bar with a small ✕ at the top right closes the sidebar.
-                Box(Modifier.fillMaxWidth().height(26.dp)) {
+            Box(Modifier.fillMaxSize()) {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(
+                            WindowInsets.displayCutout
+                                .union(WindowInsets.navigationBars)
+                                .union(WindowInsets.statusBars)
+                                .only(WindowInsetsSides.End + WindowInsetsSides.Top + WindowInsetsSides.Bottom),
+                        ),
+                ) {
+                    // A slim bar with a small ✕ at the top right closes the sidebar.
+                    Box(Modifier.fillMaxWidth().height(26.dp)) {
+                        Box(
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .size(26.dp)
+                                .pointerInput(Unit) { detectTapGestures { onDismiss() } },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text("✕", color = Color(0xFFCCCCCC), fontSize = 15.sp)
+                        }
+                    }
+                    Box(Modifier.weight(1f).fillMaxWidth()) { content() }
+                }
+                // Drag grip on the left edge: drag to resize the sidebar; the game is resized when you let go.
+                Box(
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .width(12.dp)
+                        .fillMaxHeight()
+                        .pointerInput(fullW) {
+                            detectHorizontalDragGestures(
+                                onDragEnd = { ShUi.widthPx.value?.let { ShUi.onWidthCommitted?.invoke(it) } },
+                            ) { change, dx ->
+                                change.consume()
+                                val cur = ShUi.widthPx.value ?: panelPx
+                                ShUi.widthPx.value = ShUi.clampWidth(cur - dx, fullW, density.density)
+                            }
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
                     Box(
                         Modifier
-                            .align(Alignment.CenterEnd)
-                            .size(26.dp)
-                            .pointerInput(Unit) { detectTapGestures { onDismiss() } },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text("✕", color = Color(0xFFCCCCCC), fontSize = 15.sp)
-                    }
+                            .size(width = 3.dp, height = 40.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(Color(0x55FFFFFF)),
+                    )
                 }
-                Box(Modifier.weight(1f).fillMaxWidth()) { content() }
             }
         }
     }

@@ -92,6 +92,11 @@
 					open.setSelectedIndex(i);
 				}
 			}
+			// A plugin may skip refreshing while its dropdown reports an open popup; make sure none is left open.
+			if (open.isPopupVisible())
+			{
+				open.setPopupVisible(false);
+			}
 			return true;
 		}
 		for (Component c = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly); c != null && c != wrapped; c = c.getParent())
@@ -101,6 +106,7 @@
 				final javax.swing.JComboBox<?> cb = (javax.swing.JComboBox<?>) c;
 				if (cb.isEnabled() && cb.getItemCount() > 0)
 				{
+					cb.setPopupVisible(false);
 					shCombo = cb;
 					return true;
 				}
