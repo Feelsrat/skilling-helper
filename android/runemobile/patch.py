@@ -735,12 +735,24 @@ patch(ma,
                     }
                 }
                 MotionEvent.ACTION_HOVER_EXIT -> if (shHovering) {
-                    JvmLauncher.clearHover()
+                    // A pen touching the screen also ends its hover, just before the touch. Parking the cursor then
+                    // would land after the tap started and spoil it, so only park once the pen has really left.
                     shHovering = false
+                    val exitAt = SystemClock.uptimeMillis()
+                    surfaceView.postDelayed({
+                        if (!shHovering && shLastDownAt < exitAt) JvmLauncher.clearHover()
+                    }, 250)
                 }
             }
         }
         return super.dispatchGenericMotionEvent(ev)
+    }
+
+    private var shLastDownAt = 0L
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) shLastDownAt = SystemClock.uptimeMillis()
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun toGameX(viewX: Float): Int {""")
