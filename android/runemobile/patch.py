@@ -7,7 +7,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   1. RuneLite loads ~/.runelite/sideloaded-plugins without --developer-mode (RuneMobile never passes it).
   2. Before RuneLite starts, the boot class downloads the latest Skilling Helper plugin jar from this repo's
      GitHub release into that folder (keeps the old jar when offline).
-  3. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  3. The plugin panel is a desktop-style sidebar on the right edge (SidePanel.kt.txt) instead of a bottom sheet.
+  4. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -51,3 +52,27 @@ patch("android/app/build.gradle.kts",
 patch("android/app/src/main/res/values/strings.xml",
 	'<string name="app_name">RuneMobile</string>',
 	'<string name="app_name">RuneMobile SH</string>')
+
+# 3. Right-hand sidebar instead of the bottom sheet: replace the whole SheetScaffold function.
+pp = root / "android/app/src/main/java/dev/audaro/runemobile/PluginPanel.kt"
+s = pp.read_text()
+start = s.find("@Composable\nprivate fun SheetScaffold(")
+end = s.find("/**\n * §4 increment 2", start)
+if start < 0 or end < 0:
+	sys.exit("patch.py: SheetScaffold not found in PluginPanel.kt")
+s = s[:start] + (pathlib.Path(__file__).parent / "SidePanel.kt.txt").read_text() + s[end:]
+imports = [
+	"androidx.compose.foundation.layout.fillMaxHeight",
+	"androidx.compose.foundation.layout.offset",
+	"androidx.compose.foundation.layout.statusBars",
+	"androidx.compose.foundation.layout.width",
+	"androidx.compose.ui.unit.IntOffset",
+	"kotlin.math.roundToInt",
+]
+anchor = "import androidx.compose.foundation.layout.Row\n"
+if anchor not in s:
+	sys.exit("patch.py: import anchor not found in PluginPanel.kt")
+extra = "".join(f"import {i}\n" for i in imports if f"import {i}\n" not in s)
+s = s.replace(anchor, anchor + extra, 1)
+pp.write_text(s)
+print("patched PluginPanel.kt (right-hand sidebar)")

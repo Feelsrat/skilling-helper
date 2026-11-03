@@ -1,0 +1,60 @@
+@Composable
+private fun SheetScaffold(
+    atPeek: Boolean,
+    onDismiss: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    // Skilling Helper build: a desktop-style sidebar docked to the RIGHT edge instead of the bottom sheet. Nothing
+    // is drawn or hit-tested over the rest of the screen, so the game stays visible and playable beside the panel,
+    // like RuneLite's sidebar on desktop. Close it with the › tab on its left edge or BACK. [atPeek] is unused.
+    @Suppress("UNUSED_VARIABLE") val unusedPeek = atPeek
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val density = LocalDensity.current
+        val fullW = with(density) { maxWidth.toPx() }
+        val minW = with(density) { 280.dp.toPx() }
+        val maxW = with(density) { 380.dp.toPx() }
+        val panelPx = (fullW * 0.42f).coerceIn(minOf(minW, fullW), minOf(maxW, fullW))
+        val panelW = with(density) { panelPx.toDp() }
+        val slide = remember { Animatable(panelPx) }
+        LaunchedEffect(panelPx) { slide.animateTo(0f) }
+        Row(
+            Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+                .offset { IntOffset(slide.value.roundToInt(), 0) },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                Modifier
+                    .size(width = 30.dp, height = 76.dp)
+                    .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                    .background(Color(0xF0141414))
+                    .pointerInput(Unit) { detectTapGestures { onDismiss() } },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("›", color = Color.White, fontSize = 24.sp)
+            }
+            Surface(
+                color = Color(0xFF141414),
+                modifier =
+                    Modifier
+                        .width(panelW)
+                        .fillMaxHeight()
+                        // Taps on the panel's empty space must not fall through to the game behind it.
+                        .pointerInput(Unit) { detectTapGestures { } },
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(
+                            WindowInsets.displayCutout
+                                .union(WindowInsets.navigationBars)
+                                .union(WindowInsets.statusBars)
+                                .only(WindowInsetsSides.End + WindowInsetsSides.Top + WindowInsetsSides.Bottom),
+                        ),
+                ) { content() }
+            }
+        }
+    }
+}
+
