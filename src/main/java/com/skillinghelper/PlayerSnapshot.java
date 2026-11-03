@@ -61,7 +61,8 @@ public class PlayerSnapshot
 		this.slayerTask = slayerTask;
 	}
 
-	public PlayerState take(Mooring boatMooring, Set<Quest> completedQuests, Set<Quest> startedQuests)
+	public PlayerState take(Mooring boatMooring, Set<Quest> completedQuests, Set<Quest> startedQuests,
+		boolean preferShops)
 	{
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
 		Map<Integer, Integer> slots = slotsUsed(inv);
@@ -85,6 +86,7 @@ public class PlayerSnapshot
 			.completedQuests(copy(completedQuests))
 			.startedQuests(copy(startedQuests))
 			.slayerTask(slayerTask.read(location))
+			.preferShops(preferShops)
 			.build();
 	}
 

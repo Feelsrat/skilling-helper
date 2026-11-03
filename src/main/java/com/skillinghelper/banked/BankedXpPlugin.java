@@ -23,6 +23,7 @@ import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
+import com.skillinghelper.shops.Shops;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -159,6 +160,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			methods.add(a.getMethod());
 		}
 		tracker.setInterestingTargets(methods);
+		tracker.addInterestingTargets(Shops.targets());
 		shortestPath = new ShortestPathBridge(eventBus, displayConfig, "bankedxp:");
 		path = new PathDisplay(client, displayConfig, worldMapPointManager, shortestPath);
 		bankFilter = new BankFilter(client, clientThread, bankSearch, itemManager, this, configManager,
@@ -359,7 +361,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			return;
 		}
 
-		PlayerState state = snapshot.take(null, completedQuests, completedQuests);
+		PlayerState state = snapshot.take(null, completedQuests, completedQuests, displayConfig.preferShops());
 		BankedView.BankedViewBuilder view = BankedView.builder()
 			.loggedIn(true)
 			.bankKnown(state.bankKnown());

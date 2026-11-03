@@ -59,6 +59,19 @@ public interface MoneyMakingConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "preferShops",
+		name = "Buy from shops when cheaper",
+		description = "When an NPC shop sells what you need for less than the Grand Exchange (e.g. feathers, vials of water, "
+			+ "tools), send you there instead. Only shops anyone can enter are used",
+		section = guideSection,
+		position = 3
+	)
+	default boolean preferShops()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "livePrices",
 		name = "Live OSRS Wiki prices",
 		description = "Cost supplies at the real-time instant-buy price and products at the instant-sell price from the"

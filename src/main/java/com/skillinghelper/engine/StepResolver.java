@@ -6,12 +6,15 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Stop;
+import com.skillinghelper.shops.ShopPlan;
+import com.skillinghelper.shops.ShopPlanner;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.runelite.api.Experience;
+import net.runelite.api.gameval.ItemID;
 import static com.skillinghelper.engine.Format.gp;
 
 /**
@@ -268,6 +271,11 @@ public final class StepResolver
 
 	private GuideStep buyStep(Method m, PlayerState s, List<Requirement> missing)
 	{
+		ShopPlan shop = s.isPreferShops() ? shopPlan(missing, s) : null;
+		if (shop != null)
+		{
+			return shopStep(shop, s);
+		}
 		long total = missing.stream().mapToLong(Requirement::getBuyCost).sum();
 		GuideStep.GuideStepBuilder b = GuideStep.builder()
 			.type(StepType.GET_ITEMS)
@@ -285,6 +293,47 @@ public final class StepResolver
 		if (!GRAND_EXCHANGE.contains(s.getLocation()))
 		{
 			b.travel(Route.to(s, GRAND_EXCHANGE));
+		}
+		return b.build();
+	}
+
+	/**
+	 * An NPC shop that sells some of the missing items for less than the GE, or null.
+	 */
+	private ShopPlan shopPlan(List<Requirement> missing, PlayerState s)
+	{
+		List<ShopPlanner.Want> wants = new ArrayList<>();
+		for (Requirement r : missing)
+		{
+			if (r.getBuyCount() > 0 && r.getItemIds().length > 0)
+			{
+				int id = r.getItemIds()[0];
+				wants.add(new ShopPlanner.Want(id, null, (int) Math.min(Integer.MAX_VALUE, r.getBuyCount()),
+					prices.price(id)));
+			}
+		}
+		return wants.isEmpty() ? null : ShopPlanner.plan(wants, s.getLocation(), s.isMembersWorld());
+	}
+
+	private static GuideStep shopStep(ShopPlan plan, PlayerState s)
+	{
+		GuideStep.GuideStepBuilder b = GuideStep.builder()
+			.type(StepType.GET_ITEMS)
+			.title(plan.title())
+			.highlight(plan.getShop().target())
+			.highlightBank(false);
+		for (String line : plan.describe())
+		{
+			b.line(line);
+		}
+		if (plan.getCost() > s.carried(new int[]{ItemID.COINS}))
+		{
+			b.line("Bring ~" + gp(plan.getCost()) + " in coins: take them out of the bank first.");
+		}
+		Location shop = plan.getShop().getLocation();
+		if (!shop.contains(s.getLocation()))
+		{
+			b.travel(Route.to(s, shop));
 		}
 		return b.build();
 	}

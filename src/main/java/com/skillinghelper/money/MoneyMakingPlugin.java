@@ -503,6 +503,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			.members(player.isMembers())
 			.stackable(stackableSupplies(running))
 			.suppliesDone(suppliesDone)
+			.preferShops(config.preferShops())
+			.buyPrice(prices::price)
 			.build());
 		MoneyStep previous = step;
 		step = next;

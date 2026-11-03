@@ -71,6 +71,10 @@ public class PlayerState
 	 * The current Slayer task, or null when the player has none.
 	 */
 	SlayerTask slayerTask;
+	/**
+	 * Buy from an NPC shop instead of the Grand Exchange when it's cheaper.
+	 */
+	boolean preferShops;
 
 	public int level(Skill skill)
 	{

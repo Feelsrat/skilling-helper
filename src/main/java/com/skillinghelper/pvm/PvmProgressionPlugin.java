@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
 import com.skillinghelper.data.Location;
+import com.skillinghelper.data.Target;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.pvm.data.ItemNeed;
 import com.skillinghelper.pvm.data.PvmContent;
@@ -192,6 +193,11 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	// ---- The running guide ----
 
 	private PvmContent guideContent;
+	/**
+	 * NPC and object names the scene overlay is tracking for the running guide.
+	 */
+	private Set<String> trackedNpcs = Set.of();
+	private Set<String> trackedObjects = Set.of();
 	private PvmGuide guide;
 	/**
 	 * What to do right now, read by the overlays. Null when no guide is running.
@@ -645,12 +651,32 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			clearPath();
 			guide = g;
 			guideContent = content;
-			Set<String> npcs = new HashSet<>();
-			Set<String> objects = new HashSet<>();
-			GuideResolver.addNames(g, npcs, objects);
-			targets.track(npcs, objects);
+			trackTargets(null);
 			refresh();
 		});
+	}
+
+	/**
+	 * Outlines what the guide clicks, plus anyone the step itself names, such as a shopkeeper to buy from.
+	 */
+	private void trackTargets(PvmStep current)
+	{
+		Set<String> npcs = new HashSet<>();
+		Set<String> objects = new HashSet<>();
+		GuideResolver.addNames(guide, npcs, objects);
+		if (current != null)
+		{
+			for (Target t : current.getHighlights())
+			{
+				(t.getKind() == Target.Kind.NPC ? npcs : objects).addAll(t.getNames());
+			}
+		}
+		if (!npcs.equals(trackedNpcs) || !objects.equals(trackedObjects))
+		{
+			trackedNpcs = npcs;
+			trackedObjects = objects;
+			targets.track(npcs, objects);
+		}
 	}
 
 	@Override
@@ -679,6 +705,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		step = null;
 		guideFlags.clear();
 		barrowsCrypt = -1;
+		trackedNpcs = Set.of();
+		trackedObjects = Set.of();
 		targets.track(Set.of(), Set.of());
 		showRoute(null);
 	}
@@ -722,6 +750,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		}
 		PvmStep previous = step;
 		step = next;
+		trackTargets(next);
 		// The panel only shows the text: don't redraw it every tick just because the marked path moved
 		if (previous != null && Objects.equals(previous.getTitle(), next.getTitle()) && previous.getLines().equals(next.getLines())
 			&& Objects.equals(previous.getWave(), next.getWave()))
@@ -818,6 +847,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	{
 		GuideState.GuideStateBuilder b = GuideState.builder()
 			.members(client.getWorldType().contains(WorldType.MEMBERS))
+			.preferShops(config.preferShops())
 			.bank(bankSeen ? new HashMap<>(bankCounts) : null)
 			.bankOpen(bankOpen)
 			.hitpoints(client.getBoostedSkillLevel(Skill.HITPOINTS))

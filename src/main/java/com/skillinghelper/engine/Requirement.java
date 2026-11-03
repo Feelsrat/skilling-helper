@@ -56,4 +56,23 @@ public class Requirement
 	 * GP needed to buy what's missing, 0 if nothing to buy.
 	 */
 	long buyCost;
+	/**
+	 * How many to buy, 0 if nothing to buy.
+	 */
+	long buyCount;
+
+	public Requirement(String text, Status status, int[] itemIds, int quantity, long buyCost)
+	{
+		this(text, status, itemIds, quantity, buyCost, 0);
+	}
+
+	public Requirement(String text, Status status, int[] itemIds, int quantity, long buyCost, long buyCount)
+	{
+		this.text = text;
+		this.status = status;
+		this.itemIds = itemIds;
+		this.quantity = quantity;
+		this.buyCost = buyCost;
+		this.buyCount = buyCount;
+	}
 }

@@ -209,6 +209,19 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "preferShops",
+		name = "Buy from shops when cheaper",
+		description = "When an NPC shop sells what you need for less than the Grand Exchange (e.g. feathers, vials of water, "
+			+ "tools), send you there instead. Only shops anyone can enter are used",
+		section = guideSection,
+		position = 5
+	)
+	default boolean preferShops()
+	{
+		return true;
+	}
+
+	@ConfigItem(
 		keyName = "highlightStyle",
 		name = "Highlight style",
 		description = "How objects and NPCs to click are highlighted",

@@ -226,7 +226,7 @@ final class RequirementChecker
 		String buy = toBuy > 1
 			? String.format(" - buy %,d x ~%s = ~%s", toBuy, gp(unit), gp(cost))
 			: " - buy for ~" + gp(cost);
-		return new Requirement(name + counts + buy, Requirement.Status.MISSING, req.getIds(), trip, cost);
+		return new Requirement(name + counts + buy, Requirement.Status.MISSING, req.getIds(), trip, cost, toBuy);
 	}
 
 	/**
@@ -248,7 +248,7 @@ final class RequirementChecker
 		int toBuy = want - carried - banked;
 		int unit = prices.price(req.primaryId());
 		return new Requirement(name + String.format(" (you have %d) - buy %d x ~%s", carried + banked, toBuy, gp(unit)),
-			Requirement.Status.MISSING, req.getIds(), want - carried, (long) toBuy * unit);
+			Requirement.Status.MISSING, req.getIds(), want - carried, (long) toBuy * unit, toBuy);
 	}
 
 	/**

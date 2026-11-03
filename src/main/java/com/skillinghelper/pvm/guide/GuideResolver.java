@@ -4,6 +4,8 @@ import com.skillinghelper.data.Banks;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.engine.ItemHighlight;
+import com.skillinghelper.shops.ShopPlan;
+import com.skillinghelper.shops.ShopPlanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -210,6 +212,7 @@ public final class GuideResolver
 	private static PvmStep buyStep(LoadoutPlan plan, GuideState s)
 	{
 		List<String> lines = new ArrayList<>();
+		List<ShopPlanner.Want> wants = new ArrayList<>();
 		long total = 0;
 		// Before setting off everything has to be there in full. Once under way, only a missing weapon, tool or food
 		// is worth a trip; the rest is bought on the next one
@@ -219,6 +222,7 @@ public final class GuideResolver
 			if (g.getHave() == LoadoutPlan.Have.BUY && required(g))
 			{
 				lines.add("• 1 x " + g.getGear().getName() + gp(g.getPrice()));
+				wants.add(new ShopPlanner.Want(g.getItemId(), g.getGear().getName(), 1, g.getPrice()));
 				total += g.getPrice();
 				blocking = true;
 			}
@@ -228,6 +232,8 @@ public final class GuideResolver
 			if (l.isShort(s.isTripStocked()) && l.getToBuy() > 0)
 			{
 				lines.add("• " + l.getToBuy() + " x " + l.buyName() + gp((long) l.getPrice() * l.getToBuy()));
+				wants.add(new ShopPlanner.Want(l.getSupply().getOptions().get(0).getIds()[0], l.buyName(), l.getToBuy(),
+					l.getPrice()));
 				total += (long) l.getPrice() * l.getToBuy();
 				blocking |= !s.isTripStocked() || l.getSupply().isRequired() || l.getSupply().getAmount() == Supply.FILL;
 			}
@@ -235,6 +241,17 @@ public final class GuideResolver
 		if (!blocking)
 		{
 			return null;
+		}
+		ShopPlan shop = s.isPreferShops() ? ShopPlanner.plan(wants, s.getLocation(), s.isMembers()) : null;
+		if (shop != null)
+		{
+			PvmStep.PvmStepBuilder b = PvmStep.builder()
+				.kind(PvmStep.Kind.BUY)
+				.title(shop.title())
+				.destination(shop.getShop().getLocation())
+				.highlight(shop.getShop().target());
+			shop.describe().forEach(b::line);
+			return b.line("Then bank and I'll tell you exactly what to take.").build();
 		}
 		PvmStep.PvmStepBuilder b = PvmStep.builder()
 			.kind(PvmStep.Kind.BUY)

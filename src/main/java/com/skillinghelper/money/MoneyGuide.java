@@ -5,6 +5,8 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
+import com.skillinghelper.shops.ShopPlan;
+import com.skillinghelper.shops.ShopPlanner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntUnaryOperator;
 import lombok.Builder;
 import lombok.Value;
 import net.runelite.api.coords.WorldPoint;
@@ -73,6 +76,15 @@ public final class MoneyGuide
 		 * input runs out.
 		 */
 		boolean suppliesDone;
+		/**
+		 * Buy from an NPC shop instead of the Grand Exchange when it's cheaper.
+		 */
+		boolean preferShops;
+		/**
+		 * Today's price to buy one on the GE.
+		 */
+		@Builder.Default
+		IntUnaryOperator buyPrice = id -> 0;
 	}
 
 	public static MoneyStep resolve(MoneyOption option, Player p)
@@ -217,6 +229,11 @@ public final class MoneyGuide
 		Map<Integer, Integer> withdraw = new LinkedHashMap<>();
 		missing.forEach((item, n) -> withdraw.put(itemId(item), n));
 
+		ShopPlan shop = toBuy.isEmpty() || !p.isPreferShops() ? null : shopPlan(toBuy, p);
+		if (shop != null && !p.isBankOpen())
+		{
+			return shopStep(shop, withdraw, p, warning);
+		}
 		if (!toBuy.isEmpty() && !p.isBankOpen())
 		{
 			return buyStep(toBuy, withdraw, p, warning, option.getTripCost());
@@ -251,7 +268,13 @@ public final class MoneyGuide
 		missing.forEach((item, n) -> b.line("- " + amount(item, n)));
 		b.line("To take an exact number, right-click the item and choose Withdraw-X, then type it.");
 		b.line("Tip: the coin button at the top of the bank shows only these items.");
-		if (!toBuy.isEmpty())
+		if (shop != null)
+		{
+			b.line("You don't have enough " + names(toBuy) + ". Take out ~" + Format.gp(shop.getCost())
+				+ " in coins: " + shop.getShop().getName() + " sells " + (shop.getRest().isEmpty() ? "them" : "some")
+				+ " for less than the Grand Exchange.");
+		}
+		else if (!toBuy.isEmpty())
 		{
 			b.line("You don't have enough " + names(toBuy) + ". Take out coins and buy them at the Grand Exchange.");
 		}
@@ -259,6 +282,35 @@ public final class MoneyGuide
 		{
 			b.line(warning);
 		}
+		return b.build();
+	}
+
+	private static ShopPlan shopPlan(Map<MoneyItem, Integer> toBuy, Player p)
+	{
+		List<ShopPlanner.Want> wants = new ArrayList<>();
+		toBuy.forEach((item, n) -> wants.add(new ShopPlanner.Want(itemId(item), item.getName(), n,
+			p.getBuyPrice().applyAsInt(itemId(item)))));
+		return ShopPlanner.plan(wants, p.getLocation(), p.isMembers());
+	}
+
+	private static MoneyStep shopStep(ShopPlan plan, Map<Integer, Integer> withdraw, Player p, String warning)
+	{
+		Location shop = plan.getShop().getLocation();
+		MoneyStep.MoneyStepBuilder b = MoneyStep.builder().kind(MoneyStep.Kind.BUY)
+			.title(plan.title())
+			.withdraw(withdraw)
+			.npcs(new HashSet<>(plan.getShop().getNpcs()));
+		if (!shop.contains(p.getLocation()))
+		{
+			b.destination(shop).line("Walk to " + shop.getName() + " (follow the arrow).");
+		}
+		if (warning != null)
+		{
+			b.line(warning);
+		}
+		plan.describe().forEach(b::line);
+		b.line("Have the coins in your inventory (take them out of a bank first).");
+		b.line("Then open the bank and the guide moves on.");
 		return b.build();
 	}
 

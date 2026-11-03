@@ -55,6 +55,10 @@ public class GuideState
 	@Singular
 	Map<Integer, Integer> varbits;
 	boolean members;
+	/**
+	 * Buy from an NPC shop instead of the Grand Exchange when it's cheaper.
+	 */
+	boolean preferShops;
 	int hitpoints;
 	int maxHitpoints;
 	int prayer;

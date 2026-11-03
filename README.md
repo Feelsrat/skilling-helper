@@ -21,6 +21,13 @@ Withdraw/Deposit options (like Menu Entry Swapper), and that can be turned off w
   live instant-buy/sell prices from the OSRS Wiki if you turn that on). Product values have the 2% GE tax taken off.
   When buying, each item shows quantity × price, and if you can't afford the whole goal the guide says how many
   actions your gold covers and whether selling the products pays for the next batch.
+- **Shops when cheaper**: with "Buy from shops when cheaper" on (the default, in all three guide plugins), a buy step
+  sends you to an NPC shop instead of the GE when it sells what you need for less: farming tools at Sarah's, a chisel
+  at the nearest general store, raw sharks at Frankie's in Piscarilius. The guide knows each shop's stock and how its
+  price climbs as the stock runs down, so it says how many to buy per world and only picks a shop that stays cheaper
+  within 3 worlds. A detour has to save at least 1,000 gp (more for far-away shops), unless the shop has everything
+  and is closer than the GE. Only shops anyone can enter are used (no quest, guild or Wilderness shops). The shop list
+  comes from the OSRS Wiki (`tools/shops/build_shops.py`); the plugin doesn't go online for it.
 - **Supplies**: every guide lists what to bring and withdraw first (e.g. logs, clockworks and seeds for birdhouse
   runs, enough traps for hunting, gardener payments for tree runs), plus optional extras like food, stamina
   potions and compost with their GE price.

@@ -21,6 +21,7 @@ import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
+import com.skillinghelper.shops.Shops;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
 import com.skillinghelper.tog.TogTracker;
@@ -161,6 +162,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		resolver = new StepResolver(prices);
 		tracker.setInterestingTargets(guides.all());
 		tracker.addInterestingTargets(TearsOfGuthix.TARGETS);
+		tracker.addInterestingTargets(Shops.targets());
 		settings.useDefaultPreference();
 		prices.updateRefresh();
 
@@ -482,7 +484,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				guided.add(s);
 			}
 		}
-		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests,
+			config.preferShops());
 		Skill lowest = MethodPlanner.lowestSkill(guided, state);
 		if (lowest != null)
 		{
@@ -504,7 +507,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		Set<Quest> done = EnumSet.noneOf(Quest.class);
 		Set<Quest> started = EnumSet.noneOf(Quest.class);
 		readQuests(allQuests, done, started);
-		PlayerState state = snapshot.take(settings.getBoatMooring(), done, started);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), done, started, config.preferShops());
 		planner.setPace(config.ratePace());
 		MethodOption best = planner.mostProfitable(guides.all(), state, s ->
 		{
@@ -737,7 +740,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private ActiveGuide buildTearsGuide()
 	{
-		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests,
+			config.preferShops());
 		TearsOfGuthix.Situation sit = TearsOfGuthix.Situation.builder()
 			.status(tog.getStatus())
 			.now(Instant.now().getEpochSecond())
@@ -768,7 +772,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 
 	private ActiveGuide buildGuide(Skill skill)
 	{
-		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests,
+			config.preferShops());
 		int level = state.level(skill);
 		Integer saved = settings.getTarget(skill);
 		int target = saved != null ? saved : Math.min(Experience.MAX_REAL_LEVEL, level + config.defaultTargetOffset());
