@@ -9,11 +9,13 @@
 #   skilling-helper-android --reinstall-java   set the game up in GameNative again (after removing it there)
 #
 # What goes where:
-#   GameNative/CustomGames/Skilling Helper   SkillingHelper.exe and a Windows Java 21 (jre\). GameNative finds the
-#                                             folder by itself, lists it as a game, picks SkillingHelper.exe as the
-#                                             program (the only .exe it looks at) and moves the folder into its own
-#                                             storage on first start. SkillingHelper.exe starts Java with the right
-#                                             arguments, so nothing needs setting in GameNative.
+#   Download/SkillingHelper                  SkillingHelper.exe and a Windows Java 21 (jre\). You import this folder
+#                                             into GameNative once (Add Custom Game). GameNative copies it into its
+#                                             own storage and, on the first Play, picks SkillingHelper.exe as the
+#                                             program (the only .exe it looks at). SkillingHelper.exe starts Java with
+#                                             the right arguments, so nothing needs setting in GameNative.
+#                                             (Not GameNative/CustomGames: GameNative can't delete or move files that
+#                                             Termux made there, so the game couldn't be removed.)
 #   Download/skilling-helper                  skilling-helper-all.jar and RuneLite's settings (home/.runelite).
 #                                             GameNative shows the Download folder to Windows as drive D:.
 # It also adds "Play Skilling Helper" and "Update Skilling Helper" buttons for the Termux:Widget app.
@@ -23,14 +25,15 @@ REPO="${SKILLING_HELPER_REPO:-Feelsrat/skilling-helper}"
 API="https://api.github.com"
 STORAGE="${SKILLING_HELPER_STORAGE:-/storage/emulated/0}"
 DATA="$STORAGE/Download/skilling-helper"
-GAME="$STORAGE/GameNative/CustomGames/Skilling Helper"
+GAME="$STORAGE/Download/SkillingHelper"
+OLD_GAME="$STORAGE/GameNative/CustomGames/Skilling Helper"
 GN_PKG=app.gamenative
 GN_REPO=utkarshdalal/GameNative
 GN_FALLBACK_APK="https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3.0.apk"
 # Fixed custom-game id, written to the game folder's .gamenative file, so the Play button can start it
 # (742011 was the first layout, with java.exe and no launcher)
 APP_ID=742012
-SETUP_MARK="java-installed-v2"
+SETUP_MARK="java-installed-v3"
 STATE="$HOME/.config/skilling-helper-android"
 TOKEN_FILE="$STATE/token"
 SELF="$HOME/.local/bin/skilling-helper-android"
@@ -101,6 +104,16 @@ install_gamenative() {
 	exit 0
 }
 
+# Earlier versions put the game in GameNative/CustomGames, where GameNative can't delete Termux's files, so
+# "Delete" in GameNative never removed it. Termux made those files, so it can.
+remove_old_game() {
+	if [ -d "$OLD_GAME" ]; then
+		rm -rf "$OLD_GAME"
+		say "Removed the old \"Skilling Helper\" folder from GameNative/CustomGames."
+		say "If GameNative still lists it, delete it there now; it will stay gone."
+	fi
+}
+
 install_java() {
 	mkdir -p "$STATE"
 	# GameNative moves the folder into its own storage on first start, so remember that it was done
@@ -129,11 +142,12 @@ install_java() {
 	rm -rf "$tmp"
 	printf '{"appId":%s}\n' "$APP_ID" > "$GAME/.gamenative"
 	date > "$STATE/$SETUP_MARK"
-	say "Added \"Skilling Helper\" to GameNative's library."
-	if [ -f "$STATE/java-installed" ]; then
-		rm -f "$STATE/java-installed"
-		say "If GameNative also lists an older \"Skilling Helper\" from the first setup, remove that one."
-	fi
+	rm -f "$STATE/java-installed" "$STATE/java-installed-v2"
+	say ""
+	say "One step in GameNative (only this once):"
+	say "  Library > Add Custom Game > Continue > pick Download/SkillingHelper > Use this folder."
+	say "  GameNative copies it in. Then press Play: it picks SkillingHelper.exe by itself on the first start."
+	IMPORT_NEEDED=1
 }
 
 update_jar() {
@@ -255,6 +269,8 @@ install_gamenative
 mkdir -p "$DATA/home/.runelite"
 install_shortcuts
 import_phone_kit
+IMPORT_NEEDED=0
+remove_old_game
 if [ "$MODE" = --reinstall-java ]; then install_java force; else install_java; fi
 if [ "$MODE" = --play ]; then
 	# Don't block playing on a failed update check
@@ -270,4 +286,8 @@ if [ ! -f "$DATA/home/.runelite/credentials.properties" ]; then
 	say "Still needed: your Jagex login. On the Steam Deck double-click \"Skilling Helper phone kit\","
 	say "copy skilling-helper-phone.zip into this phone's Download folder and run this again."
 fi
-say "All set. Add the Termux:Widget widget to your home screen and tap \"Play Skilling Helper\"."
+if [ "$IMPORT_NEEDED" = 1 ]; then
+	say "Do the GameNative import above, then start Skilling Helper from GameNative or the Termux widget."
+else
+	say "All set. Start Skilling Helper from GameNative, or tap \"Play Skilling Helper\" on the Termux widget."
+fi

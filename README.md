@@ -195,10 +195,11 @@ so it can run the normal Windows RuneLite dev client with these plugins built in
 2. Download `skilling-helper-android.sh` from the latest release and in Termux run
    `bash /sdcard/Download/skilling-helper-android.sh`. If GameNative isn't installed it downloads it and opens the
    installer; open GameNative once, then run the script again. It then puts `SkillingHelper.exe` and a Windows
-   Java 21 in `GameNative/CustomGames/Skilling Helper` and the newest `-all.jar` in `Download/skilling-helper`.
-   GameNative lists the folder as a game by itself and picks `SkillingHelper.exe` (a tiny launcher built from
-   `android/launcher/`) as its program, which starts Java with the right arguments, so nothing needs typing into
-   GameNative's settings.
+   Java 21 in `Download/SkillingHelper` and the newest `-all.jar` in `Download/skilling-helper`.
+   Once, in GameNative: **Add Custom Game > Continue >** pick `Download/SkillingHelper`. GameNative copies it into
+   its own storage and on the first Play picks `SkillingHelper.exe` (a tiny launcher built from `android/launcher/`)
+   as the program; it starts Java with the right arguments, so nothing needs typing into GameNative's settings.
+   (The game isn't put in `GameNative/CustomGames` directly because GameNative can't delete files Termux made there.)
 3. Your Jagex login: on the Steam Deck double-click **Skilling Helper phone kit** on the Desktop (added by the Deck
    updater). It makes `skilling-helper-phone.zip` with your saved login (see
    [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)) and the Android
