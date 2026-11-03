@@ -12,7 +12,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   5. Taps in rendered plugin panels reach the component that listens for them, like desktop AWT does.
   6. Panels: hover events before a tap, faster and cheaper refresh, a narrower desktop-sized panel; compact hub rows.
   7. In landscape the open sidebar takes its width from the game, which resizes like desktop instead of being covered.
-  8. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  8. Dropdowns (JComboBox) in plugin panels open as a list drawn into the panel image (ComboHook.java.txt).
+  9. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -330,7 +331,7 @@ patch(ma,
 	"    private fun fitGameStage() {\n",
 	"""    /** Skilling Helper build: reserve (or give back) the plugin sidebar's width beside the game. Landscape only: in
      *  portrait the sidebar would leave the game too narrow, so it overlays as before. Matches SidePanel's width
-     *  (42% of the window, 280-300dp) plus its 30dp close tab. */
+     *  (42% of the window, 280-300dp). */
     private fun shApplySidebar(open: Boolean) {
         val root = rootContainer ?: return
         val d = resources.displayMetrics.density
@@ -338,7 +339,7 @@ patch(ma,
         shSidebarPx =
             if (open && rw > root.height) {
                 val panel = (rw * 0.42f).coerceIn(minOf(280 * d, rw.toFloat()), minOf(300 * d, rw.toFloat()))
-                Math.round(panel + 30 * d)
+                Math.round(panel)
             } else {
                 0
             }
@@ -356,3 +357,29 @@ t = t.replace("pluginPanel.visibility = View.GONE\n", "pluginPanel.visibility = 
 t = t.replace("pluginPanel.visibility = View.VISIBLE\n", "pluginPanel.visibility = View.VISIBLE\n shApplySidebar(true)\n")
 (root / ma).write_text(t)
 print("patched MainActivity.kt (sidebar open/close)")
+
+# 8. Dropdowns in panels.
+mb = "runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java"
+patch(mb,
+	"	private static volatile String panelTextValue = \"\";\n",
+	"	private static volatile String panelTextValue = \"\";\n" + (pathlib.Path(__file__).parent / "ComboHook.java.txt").read_text())
+patch(mb,
+	"		final int logicalH = Math.max(1, Math.min(PANEL_MAX_H, pp.getPreferredSize().height + 12));\n",
+	"		final int logicalH = shComboExtend(Math.max(1, Math.min(PANEL_MAX_H, pp.getPreferredSize().height + 12)));\n")
+patch(mb,
+	"		wrapped.printAll(g); // wrapped is PANEL_W x PANEL_MAX_H showing the content from the top\n",
+	"		wrapped.printAll(g); // wrapped is PANEL_W x PANEL_MAX_H showing the content from the top\n"
+	"		shPaintCombo(g); // Skilling Helper build: an open dropdown's list\n")
+patch(mb,
+	"""			final int ly = y / s;
+			Component target = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly);""",
+	"""			final int ly = y / s;
+			if (shComboTap(wrapped, lx, ly))
+			{
+				renderActiveOnEdt();
+				return;
+			}
+			Component target = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly);""")
+patch(mb,
+	"	public static String openPanel(int index)\n	{\n",
+	"	public static String openPanel(int index)\n	{\n		shCombo = null; // Skilling Helper build: no dropdown carries over to another panel\n")

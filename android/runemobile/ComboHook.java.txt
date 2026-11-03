@@ -1,0 +1,113 @@
+
+	// ---- Skilling Helper build (inserted by skilling-helper android/runemobile/patch.py) ----
+	// Dropdowns: a JComboBox opens its list in a popup outside the rendered panel, so it never showed and taps could
+	// not reach it. Instead, a tap on a combo box opens its list drawn into the panel image right below it; the next
+	// tap picks the row under it (setSelectedIndex fires the plugin's listeners) or, anywhere else, just closes it.
+	private static volatile javax.swing.JComboBox<?> shCombo;
+	private static volatile java.awt.Rectangle shComboList;
+	private static volatile int shComboRowH = 20;
+	private static JPanel shRendererHost;
+
+	private static int shComboExtend(int logicalH)
+	{
+		final javax.swing.JComboBox<?> cb = shCombo;
+		final JPanel wrapped = activeWrapped;
+		if (cb == null || wrapped == null || cb.getParent() == null)
+		{
+			shComboList = null;
+			return logicalH;
+		}
+		final java.awt.Rectangle r = SwingUtilities.convertRectangle(cb.getParent(), cb.getBounds(), wrapped);
+		final int rowH = Math.max(18, Math.min(30, cb.getHeight()));
+		final int w = Math.min(PANEL_W, Math.max(r.width, 140));
+		final int x = Math.max(0, Math.min(r.x, PANEL_W - w));
+		final java.awt.Rectangle list = new java.awt.Rectangle(x, r.y + r.height, w, cb.getItemCount() * rowH);
+		shComboRowH = rowH;
+		shComboList = list;
+		return Math.max(logicalH, list.y + list.height + 4);
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void shPaintCombo(Graphics2D g)
+	{
+		final javax.swing.JComboBox cb = shCombo;
+		final java.awt.Rectangle lr = shComboList;
+		if (cb == null || lr == null)
+		{
+			return;
+		}
+		if (shRendererHost == null)
+		{
+			shRendererHost = new JPanel(null);
+		}
+		final javax.swing.JList list = new javax.swing.JList();
+		list.setBackground(new java.awt.Color(0x1E1E1E));
+		list.setForeground(java.awt.Color.WHITE);
+		list.setSelectionBackground(new java.awt.Color(0x3C3C3C));
+		list.setSelectionForeground(java.awt.Color.WHITE);
+		g.setColor(new java.awt.Color(0x1E1E1E));
+		g.fillRect(lr.x, lr.y, lr.width, lr.height);
+		final javax.swing.ListCellRenderer rend = cb.getRenderer();
+		final int rowH = shComboRowH;
+		for (int i = 0; i < cb.getItemCount(); i++)
+		{
+			final int y = lr.y + i * rowH;
+			Component c = null;
+			try
+			{
+				c = rend == null ? null : rend.getListCellRendererComponent(list, cb.getItemAt(i), i, i == cb.getSelectedIndex(), false);
+			}
+			catch (RuntimeException ignored)
+			{
+				// fall back to plain text below
+			}
+			if (c != null)
+			{
+				SwingUtilities.paintComponent(g, c, shRendererHost, lr.x, y, lr.width, rowH);
+			}
+			else
+			{
+				g.setColor(java.awt.Color.WHITE);
+				g.drawString(String.valueOf(cb.getItemAt(i)), lr.x + 4, y + rowH - 5);
+			}
+		}
+		g.setColor(new java.awt.Color(0x5A5A5A));
+		g.drawRect(lr.x, lr.y, lr.width - 1, lr.height - 1);
+	}
+
+	/** True if the tap was taken by a dropdown: opened one, picked a row, or closed an open one. EDT only. */
+	private static boolean shComboTap(JPanel wrapped, int lx, int ly)
+	{
+		final javax.swing.JComboBox<?> open = shCombo;
+		if (open != null)
+		{
+			final java.awt.Rectangle lr = shComboList;
+			shCombo = null;
+			shComboList = null;
+			if (lr != null && lr.contains(lx, ly))
+			{
+				final int i = (ly - lr.y) / Math.max(1, shComboRowH);
+				if (i >= 0 && i < open.getItemCount())
+				{
+					open.setSelectedIndex(i);
+				}
+			}
+			return true;
+		}
+		for (Component c = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly); c != null && c != wrapped; c = c.getParent())
+		{
+			if (c instanceof javax.swing.JComboBox)
+			{
+				final javax.swing.JComboBox<?> cb = (javax.swing.JComboBox<?>) c;
+				if (cb.isEnabled() && cb.getItemCount() > 0)
+				{
+					shCombo = cb;
+					return true;
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+	// ---- end Skilling Helper build ----
+
