@@ -187,30 +187,26 @@ or GitHub is slow, the game just starts with the jar it has; what happened is lo
 
 ## Android (GameNative)
 
-Untested on a phone so far. [GameNative](https://github.com/utkarshdalal/GameNative) runs Windows programs on Android,
-so it can run the normal Windows RuneLite dev client with these plugins built in. Every release includes
-`skilling-helper-android.sh`, which sets it all up from [Termux](https://f-droid.org/packages/com.termux/):
+[GameNative](https://github.com/utkarshdalal/GameNative) runs Windows programs on Android, so it can run the normal
+Windows RuneLite dev client with these plugins built in. Every release includes `skilling-helper-android.sh`,
+which sets it up from [Termux](https://f-droid.org/packages/com.termux/):
 
-1. Install Termux and Termux:Widget from F-Droid (Termux:API too if you want the daily update check).
-2. Download `skilling-helper-android.sh` from the latest release and in Termux run
-   `bash /sdcard/Download/skilling-helper-android.sh`. If GameNative isn't installed it downloads it and opens the
-   installer; open GameNative once, then run the script again. It then puts `SkillingHelper.exe` and a Windows
-   Java 21 in `Download/SkillingHelper` and the newest `-all.jar` in `Download/skilling-helper`.
-   Once, in GameNative: **Add Custom Game > Continue >** pick `Download/SkillingHelper`. GameNative copies it into
-   its own storage and on the first Play picks `SkillingHelper.exe` (a tiny launcher built from `android/launcher/`)
-   as the program; it starts Java with the right arguments, so nothing needs typing into GameNative's settings.
-   (The game isn't put in `GameNative/CustomGames` directly because GameNative can't delete files Termux made there.)
-3. Your Jagex login: on the Steam Deck double-click **Skilling Helper phone kit** on the Desktop (added by the Deck
+1. Your Jagex login: on the Steam Deck double-click **Skilling Helper phone kit** on the Desktop (added by the Deck
    updater). It makes `skilling-helper-phone.zip` with your saved login (see
-   [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)) and the Android
-   installer. Copy the zip into the phone's Download folder and run the installer again: it moves the login into
-   place and deletes the zip.
-4. Start **Skilling Helper** from GameNative's library, or tap **Play Skilling Helper** on the Termux widget (it
-   updates to the newest release first). The first time, turn on **Touchscreen Mode** in GameNative's in-game
-   quick menu so taps act as mouse clicks; GameNative remembers it.
+   [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)). Copy it into the phone's
+   Download folder.
+2. In Termux run
+   `curl -fLo sh-android.sh https://github.com/Feelsrat/skilling-helper/releases/latest/download/skilling-helper-android.sh && bash sh-android.sh`.
+   If GameNative isn't installed it downloads it and opens the installer; open GameNative once, then run
+   `skilling-helper-android`. It builds `Download/SkillingHelper`: `SkillingHelper.exe`, a Windows Java 21, the
+   client and your login.
+3. In GameNative: **Add Custom Game > Continue >** pick `Download/SkillingHelper`. GameNative copies it into its own
+   storage (it isn't allowed to read other apps' files, so the game has to carry everything).
+4. Press Play. GameNative picks `SkillingHelper.exe` (the only `.exe`, a tiny launcher built from
+   `android/launcher/`) by itself. Turn on **Touchscreen Mode** in GameNative's quick menu once.
 
-`skilling-helper-android --daily` also checks for updates once a day in the background, with a notification when
-it updated. The script updates itself from each release too.
+Updates are automatic: on every start the launcher compares the newest release's `android-version.txt` with its own
+and downloads `android-client.jar` if it changed. Only a new Jagex login needs steps 1 to 3 again.
 
 ## Adding a method
 

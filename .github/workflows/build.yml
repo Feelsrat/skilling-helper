@@ -47,12 +47,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Fixed names the Android launcher downloads from releases/latest/download/
+          cp "build/libs/skilling-helper-$VERSION-all.jar" build/android-client.jar
+          echo "v$VERSION" > build/android-version.txt
           gh release create "v$VERSION" \
             build/libs/skilling-helper-$VERSION.jar \
             build/libs/skilling-helper-$VERSION-all.jar \
             steamdeck/skilling-helper-update.sh \
             android/skilling-helper-android.sh \
             build/libs/SkillingHelper.exe \
+            build/android-client.jar \
+            build/android-version.txt \
             --target "$GITHUB_SHA" \
             --title "Skilling Helper v$VERSION" \
             --generate-notes \
@@ -61,4 +66,5 @@ jobs:
           - \`skilling-helper-$VERSION.jar\`: Skilling Helper and PvM Progression on their own, for sideloading into RuneLite.
           - \`skilling-helper-$VERSION-all.jar\`: standalone dev client with both plugins bundled (\`java -jar skilling-helper-$VERSION-all.jar\`).
           - \`skilling-helper-update.sh\`: Steam Deck updater. It finds your RuneLite Steam shortcut and swaps in the newest jar (see the README).
-          - \`skilling-helper-android.sh\`: Android installer/updater, run in Termux. Sets up the GameNative folder and keeps the jar current (see the README)."
+          - \`skilling-helper-android.sh\`: Android installer/updater, run in Termux. Sets up the GameNative game (see the README).
+          - \`SkillingHelper.exe\`, \`android-client.jar\`, \`android-version.txt\`: used by the Android game; its launcher updates itself to the newest client on every start."
