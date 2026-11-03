@@ -318,7 +318,12 @@ void start(void)
 
 	WCHAR *p = append(cmd, L"\"");
 	p = append(p, java);
-	p = append(p, L"\" -ea -Xmx1g \"-Duser.home=");
+	/* Java's compiled code crashed under GameNative's x86 emulation (EXCEPTION_ACCESS_VIOLATION in C1 code).
+	   HotSpot normally turns null checks into deliberate memory faults, which an emulator can mishandle, so use
+	   explicit checks, and the simpler C1 compiler only. Crash reports go next to the log in Download. */
+	p = append(p, L"\" -ea -Xmx1g -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockDiagnosticVMOptions"
+		L" -XX:-ImplicitNullChecks -XX:TieredStopAtLevel=1 -XX:ErrorFile=D:\\SkillingHelper-crash-%p.log"
+		L" \"-Duser.home=");
 	p = append(p, home);
 	p = append(p, L"\" -jar \"");
 	p = append(p, jar);
