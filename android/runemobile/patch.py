@@ -14,7 +14,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   7. In landscape the open sidebar takes its width from the game, which resizes like desktop instead of being covered.
   8. Dropdowns (JComboBox) in plugin panels open as a list drawn into the panel image (ComboHook.java.txt).
   9. A desktop-style icon bar always on the right edge in landscape (IconStrip.kt.txt); the game sits left of it.
-  10. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  10. In landscape the icon bar's ≡ replaces the floating "≡ Plugins" button at the bottom centre.
+  11. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -458,3 +459,12 @@ patch(ma,
 patch(ma,
 	"val worth = abs(w.toFloat() / oldW - 1f) > STAGE_ASPECT_SLACK || abs(h.toFloat() / oldH - 1f) > STAGE_ASPECT_SLACK",
 	"val worth = abs(w.toFloat() / oldW - 1f) > 0.01f || abs(h.toFloat() / oldH - 1f) > 0.01f // Skilling Helper build")
+
+# 10. The bottom-centre "≡ Plugins" button only in portrait; landscape has the icon bar.
+patch(ma,
+	"""        if (v == null || lp == null || host == null) return
+        var margin = handleBaseBottom + handleInsetBottom""",
+	"""        if (v == null || lp == null || host == null) return
+        val shVis = if (host.width > host.height) View.GONE else View.VISIBLE // Skilling Helper build
+        if (v.visibility != shVis) v.visibility = shVis
+        var margin = handleBaseBottom + handleInsetBottom""")
