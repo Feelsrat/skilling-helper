@@ -23,6 +23,7 @@ public final class MethodPlanner
 {
 	private final PriceLookup prices;
 	private RatePace pace = RatePace.EFFICIENT;
+	private boolean allowWilderness;
 
 	public MethodPlanner(PriceLookup prices)
 	{
@@ -35,6 +36,15 @@ public final class MethodPlanner
 	public void setPace(RatePace pace)
 	{
 		this.pace = pace == null ? RatePace.EFFICIENT : pace;
+	}
+
+	/**
+	 * Whether the player opted in to Wilderness methods. When not, they're ranked after every other usable method
+	 * and never put in a plan unless the player picks one.
+	 */
+	public void setAllowWilderness(boolean allowWilderness)
+	{
+		this.allowWilderness = allowWilderness;
 	}
 
 	/**
@@ -61,7 +71,7 @@ public final class MethodPlanner
 			int level = state.level(skill);
 			long xpNeeded = xpBetween(state.xp(skill), Math.max(level + 1, goal.applyAsInt(skill)));
 			MethodOption option = evaluate(m, state, TrainingPreference.PROFIT, level, xpNeeded);
-			if (!option.isAvailable() || !option.isAffordable() || option.gpPerHour() <= 0)
+			if (!option.isPickable() || !option.isAffordable() || option.gpPerHour() <= 0)
 			{
 				continue;
 			}
@@ -128,7 +138,7 @@ public final class MethodPlanner
 			int startXp = Math.max(currentXp, Experience.getXpForLevel(from));
 			long xp = xpBetween(startXp, to);
 			List<MethodOption> ranked = rankAt(methods, state, pref, from, xp);
-			if (!ranked.isEmpty() && ranked.get(0).isAvailable())
+			if (!ranked.isEmpty() && ranked.get(0).isPickable())
 			{
 				addSegment(plan, state, pref, new PlanSegment(from, to, xp, ranked.get(0)));
 			}
@@ -229,9 +239,15 @@ public final class MethodPlanner
 			// Rank methods the player can't pay for after every affordable one
 			score -= 1e9;
 		}
+		boolean wildernessSkipped = !allowWilderness && m.isWilderness();
+		if (wildernessSkipped)
+		{
+			// And Wilderness ones after everything else, unless the player opted in
+			score -= 2e9;
+		}
 
 		return new MethodOption(m, blockers(m, state, level), gpPerAction, actions, inputs.buyCost, affordable,
-			inputs.ownedFraction, inputs.unownedCostPerAction, xpHr, xpPerAction, score);
+			inputs.ownedFraction, inputs.unownedCostPerAction, xpHr, xpPerAction, score, wildernessSkipped);
 	}
 
 	/**

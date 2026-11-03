@@ -1,8 +1,11 @@
 package com.skillinghelper.money.data;
 
 import com.skillinghelper.data.Location;
+import com.skillinghelper.data.Wilderness;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Value;
 import net.runelite.api.Skill;
@@ -75,6 +78,35 @@ public class MoneyMethod
 	 * The wiki's "Details" text: how to do it.
 	 */
 	String details;
+
+	/**
+	 * Whether the method is done in the Wilderness: its spot is there, or the wiki's location names it (Revenant
+	 * Caves, Lava Maze...), or it runs through the Abyss, whose way in is in the Wilderness.
+	 */
+	public boolean isWilderness()
+	{
+		if ((spot != null && Wilderness.contains(spot)) || page.contains("through the Abyss"))
+		{
+			return true;
+		}
+		if (spot != null || SAFE_PAGES.contains(page))
+		{
+			// The wiki's spot is outside: other places named in the text are alternatives
+			return false;
+		}
+		String where = (locationName == null ? "" : locationName.toLowerCase(Locale.ROOT));
+		String title = page.toLowerCase(Locale.ROOT);
+		return (where.contains("wilderness") && !where.contains("except the wilderness"))
+			|| where.contains("revenant") || where.contains("lava maze") || where.contains("hunter's end")
+			|| where.contains("king black dragon") || where.contains("earth obelisk") || where.contains("fire obelisk")
+			|| title.contains("wilderness") || title.contains("revenant")
+			|| title.contains("callisto") || title.contains("chaos elemental");
+	}
+
+	/**
+	 * Pages whose location mentions the Wilderness but that are done somewhere else.
+	 */
+	private static final Set<String> SAFE_PAGES = Set.of("Money making guide/Killing Bryophyta (free-to-play)");
 
 	public boolean isRecurring()
 	{

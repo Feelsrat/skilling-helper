@@ -96,6 +96,11 @@ public final class SlayerTaskStep
 			.orElse(choices.get(0));
 		Route route = Route.to(s, destinations(best));
 		b.type(StepType.WALK).title(route.title()).line(left);
+		if (!task.isWilderness() && inWilderness(best))
+		{
+			b.line("The only spots I know for this task are in the Wilderness. Cancel it at a Slayer master if "
+				+ "you'd rather not go there.");
+		}
 		konarLine(b, task);
 		if (best.getSpots().isEmpty())
 		{

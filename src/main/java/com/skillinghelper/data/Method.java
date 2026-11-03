@@ -214,6 +214,32 @@ public class Method
 		return fromRate;
 	}
 
+	/**
+	 * Whether training happens in the Wilderness: the spot, any stop or any other place it counts.
+	 */
+	public boolean isWilderness()
+	{
+		if (Wilderness.contains(location))
+		{
+			return true;
+		}
+		for (Location l : alsoAt)
+		{
+			if (Wilderness.contains(l))
+			{
+				return true;
+			}
+		}
+		for (Stop s : stops)
+		{
+			if (Wilderness.contains(s.getLocation()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean hasTag(MethodTag tag)
 	{
 		return tags.contains(tag);

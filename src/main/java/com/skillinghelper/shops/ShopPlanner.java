@@ -1,6 +1,7 @@
 package com.skillinghelper.shops;
 
 import com.skillinghelper.data.Banks;
+import com.skillinghelper.data.Wilderness;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,7 +72,8 @@ public final class ShopPlanner
 			wanted++;
 			for (ShopOffer offer : Shops.selling(w.getItemId()))
 			{
-				if (offer.getShop().isMembers() && !members)
+				// Never send anyone into the Wilderness just to save a few coins
+				if ((offer.getShop().isMembers() && !members) || Wilderness.contains(offer.getShop().getLocation()))
 				{
 					continue;
 				}

@@ -45,10 +45,23 @@ public class MethodOption
 	 */
 	double xpPerAction;
 	double score;
+	/**
+	 * In the Wilderness while the player hasn't opted in: listed and usable when picked by hand, but never chosen
+	 * automatically.
+	 */
+	boolean wildernessSkipped;
 
 	public boolean isAvailable()
 	{
 		return blockers.isEmpty();
+	}
+
+	/**
+	 * Whether the guide may choose this method by itself.
+	 */
+	public boolean isPickable()
+	{
+		return isAvailable() && !wildernessSkipped;
 	}
 
 	public double hours(long xpNeeded)

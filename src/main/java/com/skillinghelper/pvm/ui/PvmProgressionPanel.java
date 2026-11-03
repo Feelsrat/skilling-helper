@@ -1,5 +1,6 @@
 package com.skillinghelper.pvm.ui;
 
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.pvm.PlayerView;
 import com.skillinghelper.pvm.Readiness;
 import com.skillinghelper.pvm.data.ItemNeed;
@@ -18,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,11 @@ public class PvmProgressionPanel extends PluginPanel
 		void onStartGuide(PvmContent content);
 
 		void onStopGuide();
+
+		/**
+		 * Let every guide pick Wilderness bosses and methods, or leave them out again.
+		 */
+		void onAllowWilderness(boolean allow);
 	}
 
 	/**
@@ -102,6 +109,7 @@ public class PvmProgressionPanel extends PluginPanel
 	private String pickedId;
 	private boolean updating;
 	private List<Readiness> ladder;
+	private boolean wildernessAllowed;
 	private PlayerView view;
 	private String pathId;
 	private GuideView guides = GuideView.NONE;
@@ -137,7 +145,7 @@ public class PvmProgressionPanel extends PluginPanel
 			Readiness r = (Readiness) picker.getSelectedItem();
 			if (!updating && r != null)
 			{
-				Readiness first = Readiness.next(ladder);
+				Readiness first = Readiness.next(ladder, wildernessAllowed);
 				pickedId = first != null && first.getContent().getId().equals(r.getContent().getId())
 					? null : r.getContent().getId();
 				showDetail();
@@ -180,11 +188,26 @@ public class PvmProgressionPanel extends PluginPanel
 		if (guides.getActiveId() != null && !guides.getActiveId().equals(shownGuideId))
 		{
 			// Jump to a guide when it starts
-			Readiness first = Readiness.next(ladder);
+			Readiness first = Readiness.next(ladder, wildernessAllowed);
 			pickedId = first != null && first.getContent().getId().equals(guides.getActiveId())
 				? null : guides.getActiveId();
 		}
 		rebuild();
+	}
+
+	/**
+	 * Follows the shared Wilderness setting. Runs on the Swing thread.
+	 */
+	public void setWildernessAllowed(boolean allowed)
+	{
+		if (wildernessAllowed != allowed)
+		{
+			wildernessAllowed = allowed;
+			if (ladder != null)
+			{
+				rebuild();
+			}
+		}
 	}
 
 	/**
@@ -229,7 +252,7 @@ public class PvmProgressionPanel extends PluginPanel
 		if (shown == null)
 		{
 			pickedId = null;
-			shown = Readiness.next(ladder);
+			shown = Readiness.next(ladder, wildernessAllowed);
 		}
 		picker.setSelectedItem(shown);
 		updating = false;
@@ -240,17 +263,52 @@ public class PvmProgressionPanel extends PluginPanel
 	{
 		content.removeAll();
 		Readiness shown = (Readiness) picker.getSelectedItem();
-		if (Readiness.next(ladder) == null)
+		if (Readiness.next(ladder, wildernessAllowed) == null)
 		{
 			content.add(text("You've done everything on the list. Nice work!", GOOD));
 			content.add(Box.createVerticalStrut(8));
 		}
+		wildernessNote();
 		if (shown != null)
 		{
 			detail(shown);
 		}
 		content.revalidate();
 		content.repaint();
+	}
+
+	/**
+	 * Says which Wilderness entries the list skipped over, with the switch to include them.
+	 */
+	private void wildernessNote()
+	{
+		if (wildernessAllowed)
+		{
+			return;
+		}
+		Readiness next = Readiness.next(ladder, false);
+		List<String> skipped = new ArrayList<>();
+		for (Readiness r : ladder)
+		{
+			if (r == next)
+			{
+				break;
+			}
+			if (r.getContent().isWilderness() && r.getStatus() != Readiness.Status.DONE)
+			{
+				skipped.add(r.getContent().getName());
+			}
+		}
+		if (skipped.isEmpty())
+		{
+			return;
+		}
+		content.add(text("☠ Skipped because " + (skipped.size() == 1 ? "it's" : "they're") + " in the Wilderness: "
+			+ String.join(", ", skipped) + ". Pick " + (skipped.size() == 1 ? "it" : "one")
+			+ " in the list to do it anyway.", Wilderness.COLOR));
+		content.add(Box.createVerticalStrut(3));
+		content.add(button("Include Wilderness bosses", () -> listener.onAllowWilderness(true)));
+		content.add(Box.createVerticalStrut(8));
 	}
 
 	private Readiness find(String id)
@@ -269,6 +327,14 @@ public class PvmProgressionPanel extends PluginPanel
 		content.add(left(name));
 		content.add(text(r.getStatus().getLabel() + " · needs about level " + c.getLevel() + " · "
 			+ c.getTier().getLabel(), statusColor(r.getStatus())));
+		if (c.isWilderness())
+		{
+			content.add(text(Wilderness.TAG + ": " + Wilderness.WARNING, Wilderness.COLOR));
+			if (!wildernessAllowed && r != Readiness.next(ladder, true))
+			{
+				content.add(text("The list skips Wilderness bosses unless you include them.", MUTED));
+			}
+		}
 		content.add(Box.createVerticalStrut(4));
 		content.add(text(c.getWhy(), Color.LIGHT_GRAY));
 
@@ -563,7 +629,8 @@ public class PvmProgressionPanel extends PluginPanel
 				// A star for anything killed at least once, a tick for things only marked done by hand
 				String mark = r.getKillCount() > 0 ? "★ " : r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
 				setText(mark + r.getContent().getLevel() + "  " + r.getContent().getName() + " ("
-					+ r.getStatus().getLabel().toLowerCase() + ")");
+					+ r.getStatus().getLabel().toLowerCase() + ")"
+					+ (r.getContent().isWilderness() ? " " + Wilderness.TAG : ""));
 				if (!selected)
 				{
 					setForeground(statusColor(r.getStatus()));

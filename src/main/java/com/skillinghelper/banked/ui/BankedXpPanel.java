@@ -3,6 +3,7 @@ package com.skillinghelper.banked.ui;
 import com.skillinghelper.banked.BankedPlanner;
 import com.skillinghelper.banked.BankedView;
 import com.skillinghelper.banked.data.BankedActivity;
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.Requirement;
@@ -228,6 +229,10 @@ public class BankedXpPanel extends PluginPanel
 		JPanel card = GuideUi.card(GOOD);
 		GuideStep step = view.getStep();
 		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
+		if (step != null && step.getRoute() != null && step.getRoute().entersWilderness())
+		{
+			lines.add(Wilderness.TAG + ": " + Wilderness.WARNING);
+		}
 		GuideUi.fillStep(card, "Now: " + a.getName(), GOOD, step == null ? a.getName() : step.getTitle(), lines);
 		card.add(Box.createVerticalStrut(5));
 		card.add(GuideUi.stat("Left", String.format("%,d", current.getActions()), GuideUi.BRIGHT));

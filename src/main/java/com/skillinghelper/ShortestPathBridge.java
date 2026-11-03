@@ -75,10 +75,8 @@ public class ShortestPathBridge
 		Map<String, Object> overrides = new HashMap<>();
 		// Arriving anywhere in the spot counts, not just on its exact centre tile
 		overrides.put("unreachableTargetDistanceThreshold", route.reachDistance());
-		if (route.entersWilderness())
-		{
-			overrides.put("avoidWilderness", false);
-		}
+		// Only path into the Wilderness when the place itself is there, even if Shortest Path's own setting allows it
+		overrides.put("avoidWilderness", !route.entersWilderness());
 		if (config.shortestPathTransports())
 		{
 			for (String key : TRANSPORTS)

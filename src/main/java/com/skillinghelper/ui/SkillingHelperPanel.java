@@ -5,6 +5,7 @@ import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.TrainingPreference;
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.MethodOption;
@@ -102,6 +103,11 @@ public class SkillingHelperPanel extends PluginPanel
 		void onToggleBankFilter();
 
 		void onOpenWiki(String page);
+
+		/**
+		 * Let every guide pick Wilderness methods, or leave them out again.
+		 */
+		void onAllowWilderness(boolean allow);
 	}
 
 	private final Listener listener;
@@ -570,6 +576,12 @@ public class SkillingHelperPanel extends PluginPanel
 				lines.add("➜ Follow the arrow on the minimap or world map to " + step.getDestinationName() + ".");
 			}
 			GuideUi.fillStep(stepBox, "Current step", ColorScheme.BRAND_ORANGE, step.getTitle(), lines);
+			if (step.getRoute() != null && step.getRoute().entersWilderness())
+			{
+				stepBox.add(Box.createVerticalStrut(4));
+				stepBox.add(GuideUi.line(Wilderness.TAG + ": " + Wilderness.WARNING, Wilderness.COLOR,
+					GuideUi.CARD_WIDTH));
+			}
 		}
 		content.add(full(stepBox));
 		content.add(Box.createVerticalStrut(6));
@@ -626,12 +638,35 @@ public class SkillingHelperPanel extends PluginPanel
 			content.add(button("Let the guide choose for me", () -> listener.onMethodChosen(null)));
 			content.add(Box.createVerticalStrut(4));
 		}
+		addWildernessChoice(guide.getOptions());
 		for (MethodOption o : guide.getOptions())
 		{
 			content.add(methodRow(o, o.getMethod() == guide.getMethod(), guide.getXpRemaining(),
 				guide.getTargetLevel(), guide.getPlayer()));
 			content.add(Box.createVerticalStrut(4));
 		}
+	}
+
+	/**
+	 * When the skill has Wilderness methods: says whether the guide may pick them, with a switch to change it.
+	 */
+	private void addWildernessChoice(List<MethodOption> options)
+	{
+		long wild = options.stream().filter(o -> o.getMethod().isWilderness()).count();
+		if (wild == 0)
+		{
+			return;
+		}
+		boolean skipped = options.stream().anyMatch(MethodOption::isWildernessSkipped);
+		content.add(GuideUi.line(skipped
+			? "☠ " + wild + (wild == 1 ? " method is" : " methods are") + " in the Wilderness, so the guide won't "
+			+ "pick " + (wild == 1 ? "it" : "them") + " for you. You can still choose one below."
+			: "☠ Wilderness methods can be picked (the setting is on for all guides).", Wilderness.COLOR,
+			TEXT_WIDTH));
+		content.add(Box.createVerticalStrut(3));
+		content.add(button(skipped ? "Include Wilderness methods" : "Leave out Wilderness methods",
+			() -> listener.onAllowWilderness(skipped)));
+		content.add(Box.createVerticalStrut(4));
 	}
 
 	private JPanel methodRow(MethodOption o, boolean current, long xpRemaining, int targetLevel, PlayerState player)
@@ -656,6 +691,11 @@ public class SkillingHelperPanel extends PluginPanel
 			row.add(GuideUi.text("Current method", ColorScheme.BRAND_ORANGE, w));
 		}
 		row.add(GuideUi.text(methodInfo(o), MUTED, w));
+		if (m.isWilderness())
+		{
+			row.add(GuideUi.text(Wilderness.TAG + (o.isWildernessSkipped() ? " · only if you choose it" : ""),
+				Wilderness.COLOR, w));
+		}
 		row.add(Box.createVerticalStrut(2));
 		row.add(GuideUi.stat("XP/hr", String.format("~%,d", Math.round(o.getXpPerHour())), TEXT));
 		if (xpRemaining > 0)
@@ -827,7 +867,8 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		for (MethodOption o : g.getOptions())
 		{
-			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.gpPerHour() / 1000)
+			sb.append('|').append(o.getMethod().getId()).append(o.isAvailable()).append(o.isWildernessSkipped())
+				.append(o.gpPerHour() / 1000)
 				.append(o.isAffordable()).append(Math.round(o.getXpPerHour() / 1000));
 		}
 		if (g.getPlayer() != null)

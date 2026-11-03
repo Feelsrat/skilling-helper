@@ -7,6 +7,7 @@ import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.money.data.MoneyItem;
@@ -97,6 +98,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private GuideRepository skillGuides;
 	@Inject
 	private MoneyMakingConfig config;
+	@Inject
+	private ConfigManager configManager;
 	@Inject
 	private MoneyTargets targets;
 	@Inject
@@ -225,6 +228,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		panel = new MoneyMakingPanel(this);
+		panel.setWildernessAllowed(Wilderness.allowed(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Money Making")
@@ -315,6 +319,16 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	@Subscribe
 	public void onConfigChanged(ConfigChanged e)
 	{
+		if (Wilderness.isSettingChange(e))
+		{
+			boolean allowed = Wilderness.allowed(configManager);
+			MoneyMakingPanel p = panel;
+			if (p != null)
+			{
+				SwingUtilities.invokeLater(() -> p.setWildernessAllowed(allowed));
+			}
+			return;
+		}
 		if (MoneyMakingConfig.GROUP.equals(e.getGroup()))
 		{
 			if ("livePrices".equals(e.getKey()))
@@ -587,13 +601,10 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			Map<String, Object> data = new HashMap<>();
 			data.put("target", target);
-			String where = (m.getLocationName() + " " + m.getCategory()).toLowerCase(Locale.ROOT);
-			if (where.contains("wilderness") || where.contains("revenant"))
-			{
-				Map<String, Object> overrides = new HashMap<>();
-				overrides.put("avoidWilderness", false);
-				data.put("config", overrides);
-			}
+			// Only path through the Wilderness when the place itself is there, whatever Shortest Path's setting says
+			Map<String, Object> overrides = new HashMap<>();
+			overrides.put("avoidWilderness", !Wilderness.contains(target));
+			data.put("config", overrides);
 			eventBus.post(new PluginMessage("shortestpath", "path", data));
 		}
 	}
@@ -692,6 +703,12 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			suppliesDone = true;
 			updateGuide();
 		});
+	}
+
+	@Override
+	public void onAllowWilderness(boolean allow)
+	{
+		Wilderness.setAllowed(configManager, allow);
 	}
 
 	@Override

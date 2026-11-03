@@ -9,6 +9,7 @@ import com.skillinghelper.data.Mooring;
 import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.SlayerPlaces;
 import com.skillinghelper.data.TrainingPreference;
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.MethodOption;
@@ -86,6 +87,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private ClientThread clientThread;
 	@Inject
 	private SkillingHelperConfig config;
+	@Inject
+	private ConfigManager configManager;
 	@Inject
 	private EventBus eventBus;
 	@Inject
@@ -509,6 +512,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		readQuests(allQuests, done, started);
 		PlayerState state = snapshot.take(settings.getBoatMooring(), done, started, config.preferShops());
 		planner.setPace(config.ratePace());
+		planner.setAllowWilderness(config.allowWilderness());
 		MethodOption best = planner.mostProfitable(guides.all(), state, s ->
 		{
 			Integer saved = settings.getTarget(s);
@@ -589,6 +593,13 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				refresh();
 			}
 		});
+	}
+
+	@Override
+	public void onAllowWilderness(boolean allow)
+	{
+		// Saved in the shared setting; the config change refreshes this guide and the other plugins
+		Wilderness.setAllowed(configManager, allow);
 	}
 
 	@Override
@@ -797,6 +808,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		Method forced = forcedId == null ? null : guides.byId(forcedId);
 		TrainingPreference pref = settings.getPreference();
 		planner.setPace(config.ratePace());
+		planner.setAllowWilderness(config.allowWilderness());
 		List<MethodOption> options = planner.rank(methods, state, pref, target);
 		List<PlanSegment> plan = planner.plan(methods, state, pref, target, forced);
 		b.options(options).plan(plan).hasGuide(true);
@@ -829,7 +841,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			return plan.get(0).getOption();
 		}
-		if (!options.isEmpty() && options.get(0).isAvailable())
+		if (!options.isEmpty() && options.get(0).isPickable())
 		{
 			return options.get(0);
 		}

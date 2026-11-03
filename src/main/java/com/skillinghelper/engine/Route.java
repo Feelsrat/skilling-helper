@@ -2,6 +2,7 @@ package com.skillinghelper.engine;
 
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Mooring;
+import com.skillinghelper.data.Wilderness;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,14 +38,6 @@ public class Route
 	 * Most targets sent to Shortest Path per stop, per axis.
 	 */
 	private static final int GRID = 7;
-
-	// The Wilderness, above ground and in its dungeons
-	private static final int WILDERNESS_MIN_X = 2944;
-	private static final int WILDERNESS_MAX_X = 3391;
-	private static final int WILDERNESS_MIN_Y = 3520;
-	private static final int WILDERNESS_MAX_Y = 3967;
-	private static final int WILDERNESS_UNDERGROUND_MIN_Y = 9920;
-	private static final int WILDERNESS_UNDERGROUND_MAX_Y = 10367;
 
 	Kind kind;
 	/**
@@ -272,11 +265,7 @@ public class Route
 
 	static boolean inWilderness(WorldPoint wp)
 	{
-		int x = wp.getX();
-		int y = wp.getY();
-		return x >= WILDERNESS_MIN_X && x <= WILDERNESS_MAX_X
-			&& ((y >= WILDERNESS_MIN_Y && y <= WILDERNESS_MAX_Y)
-			|| (y >= WILDERNESS_UNDERGROUND_MIN_Y && y <= WILDERNESS_UNDERGROUND_MAX_Y));
+		return Wilderness.contains(wp);
 	}
 
 	private static int distance(WorldPoint a, WorldPoint b)

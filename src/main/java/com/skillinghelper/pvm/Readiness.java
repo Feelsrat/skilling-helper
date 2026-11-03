@@ -127,8 +127,21 @@ public class Readiness
 	 * The next thing to work on: the first piece of content on the ladder that isn't done yet, or null when
 	 * everything is.
 	 */
+	/**
+	 * The lowest-level entry not done yet, leaving out the Wilderness ones.
+	 */
 	public static Readiness next(List<Readiness> ladder)
 	{
-		return ladder.stream().filter(r -> r.getStatus() != Status.DONE).findFirst().orElse(null);
+		return next(ladder, false);
+	}
+
+	/**
+	 * The lowest-level entry not done yet. Wilderness ones only count when the player opted in to them.
+	 */
+	public static Readiness next(List<Readiness> ladder, boolean allowWilderness)
+	{
+		return ladder.stream()
+			.filter(r -> r.getStatus() != Status.DONE && (allowWilderness || !r.getContent().isWilderness()))
+			.findFirst().orElse(null);
 	}
 }

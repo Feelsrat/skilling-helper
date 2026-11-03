@@ -59,7 +59,8 @@ public final class Banks
 
 	/**
 	 * The closest bank to a point as the crow flies, or null if none is on the same part of the map (e.g. deep
-	 * underground).
+	 * underground). Banks in the Wilderness (Ferox Enclave) only count when the player is already in it, so no guide
+	 * sends them walking through it to bank.
 	 */
 	public static Location nearest(WorldPoint from, boolean members)
 	{
@@ -69,10 +70,15 @@ public final class Banks
 		}
 		Location best = null;
 		int bestDistance = Integer.MAX_VALUE;
+		boolean inWilderness = Wilderness.contains(from);
 		for (List<Location> banks : members ? List.of(F2P, MEMBERS) : List.of(F2P))
 		{
 			for (Location bank : banks)
 			{
+				if (!inWilderness && Wilderness.contains(bank))
+				{
+					continue;
+				}
 				// Upstairs banks (Lumbridge Castle, Gnome Stronghold) take a while to reach
 				int d = distance(from, bank.getPoint()) + (bank.getPoint().getPlane() != from.getPlane() ? 15 : 0);
 				if (d < bestDistance)

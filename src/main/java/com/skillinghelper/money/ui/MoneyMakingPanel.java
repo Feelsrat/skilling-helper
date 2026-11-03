@@ -1,5 +1,6 @@
 package com.skillinghelper.money.ui;
 
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.money.MoneyGuide;
 import com.skillinghelper.money.MoneyOption;
@@ -69,6 +70,11 @@ public class MoneyMakingPanel extends PluginPanel
 		void onHaveSupplies();
 
 		void onOpenWiki(String path);
+
+		/**
+		 * Let every guide pick Wilderness methods, or leave them out again.
+		 */
+		void onAllowWilderness(boolean allow);
 	}
 
 	private final Listener listener;
@@ -76,6 +82,7 @@ public class MoneyMakingPanel extends PluginPanel
 	private final JComboBox<String> effort = new JComboBox<>(new String[]{ANY_EFFORT, "Low", "Moderate", "High"});
 	private final JCheckBox showLocked = new JCheckBox("Show ones I can't do or afford yet");
 	private final JCheckBox showLosing = new JCheckBox("Show ones losing money or not selling");
+	private final JCheckBox showWilderness = new JCheckBox(Wilderness.TOGGLE_LABEL);
 	private final JTextField search = new JTextField();
 	private final JPanel guideBox = new JPanel();
 	private final JPanel list = new JPanel();
@@ -119,6 +126,18 @@ public class MoneyMakingPanel extends PluginPanel
 		showLosing.setForeground(Color.LIGHT_GRAY);
 		showLosing.setFont(FontManager.getRunescapeSmallFont());
 		showLosing.addActionListener(e -> filtersChanged());
+		showWilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		showWilderness.setForeground(Wilderness.COLOR);
+		showWilderness.setFont(FontManager.getRunescapeSmallFont());
+		showWilderness.setToolTipText("Off: Wilderness methods are hidden. Shared with the other guides in this plugin pack.");
+		showWilderness.addActionListener(e ->
+		{
+			if (!updating)
+			{
+				listener.onAllowWilderness(showWilderness.isSelected());
+				filtersChanged();
+			}
+		});
 		search.setToolTipText("Search by name, item or skill");
 		search.getDocument().addDocumentListener(new DocumentListener()
 		{
@@ -149,6 +168,7 @@ public class MoneyMakingPanel extends PluginPanel
 		header.add(full(search));
 		header.add(left(showLocked));
 		header.add(left(showLosing));
+		header.add(left(showWilderness));
 		add(header, BorderLayout.NORTH);
 
 		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
@@ -202,6 +222,20 @@ public class MoneyMakingPanel extends PluginPanel
 	}
 
 	/**
+	 * Follows the shared Wilderness setting. Runs on the Swing thread.
+	 */
+	public void setWildernessAllowed(boolean allowed)
+	{
+		if (showWilderness.isSelected() != allowed)
+		{
+			updating = true;
+			showWilderness.setSelected(allowed);
+			updating = false;
+			filtersChanged();
+		}
+	}
+
+	/**
 	 * Shows the running guide's step, or hides the guide box when {@code step} is null. Runs on the Swing thread.
 	 */
 	public void updateStep(String page, MoneyStep step)
@@ -228,6 +262,12 @@ public class MoneyMakingPanel extends PluginPanel
 		if (step != null)
 		{
 			GuideUi.fillStep(guideBox, "Now", HINT, step.getTitle(), step.getLines());
+			if (isWilderness(running))
+			{
+				guideBox.add(Box.createVerticalStrut(4));
+				guideBox.add(GuideUi.line(Wilderness.TAG + ": " + Wilderness.WARNING, Wilderness.COLOR,
+					GuideUi.CARD_WIDTH));
+			}
 			guideBox.add(Box.createVerticalStrut(6));
 			if (step.isSupplyStep())
 			{
@@ -237,6 +277,12 @@ public class MoneyMakingPanel extends PluginPanel
 		}
 		guideBox.revalidate();
 		guideBox.repaint();
+	}
+
+	private boolean isWilderness(String page)
+	{
+		return page != null && options.stream().anyMatch(o -> o.getMethod().getPage().equals(page)
+			&& o.getMethod().isWilderness());
 	}
 
 	private void filtersChanged()
@@ -274,6 +320,17 @@ public class MoneyMakingPanel extends PluginPanel
 				? ", " + (visible.size() - good) + " others" : "") + ":", MUTED));
 			list.add(Box.createVerticalStrut(4));
 		}
+		if (!showWilderness.isSelected())
+		{
+			long hidden = options.stream().filter(o -> o.getMethod().isWilderness() && o.isGood()).count();
+			if (hidden > 0)
+			{
+				list.add(text("☠ " + hidden + " more you can do " + (hidden == 1 ? "is" : "are")
+					+ " in the Wilderness, hidden. Tick \"Include Wilderness methods\" above to see them.",
+					Wilderness.COLOR));
+				list.add(Box.createVerticalStrut(4));
+			}
+		}
 		for (int i = 0; i < Math.min(shown, visible.size()); i++)
 		{
 			list.add(row(visible.get(i)));
@@ -296,6 +353,10 @@ public class MoneyMakingPanel extends PluginPanel
 		MoneyMethod m = o.getMethod();
 		if (!m.getPage().equals(running))
 		{
+			if (m.isWilderness() && !showWilderness.isSelected())
+			{
+				return false;
+			}
 			if (!o.isAvailable() && !showLocked.isSelected())
 			{
 				return false;
@@ -351,6 +412,10 @@ public class MoneyMakingPanel extends PluginPanel
 		row.add(name);
 		row.add(GuideUi.text(profitText(o), o.getProfit() > 0 ? GOOD : BAD, TEXT_WIDTH - 15));
 		row.add(GuideUi.text(summary(m), MUTED, TEXT_WIDTH - 15));
+		if (m.isWilderness())
+		{
+			row.add(text(Wilderness.TAG, Wilderness.COLOR, TEXT_WIDTH - 15));
+		}
 		if (o.isHardToSell())
 		{
 			row.add(text("⚠ Hard to sell", BAD, TEXT_WIDTH - 15));

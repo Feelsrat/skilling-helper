@@ -6,6 +6,7 @@ import com.skillinghelper.TrainSkillRequest;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
+import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.pvm.data.ItemNeed;
 import com.skillinghelper.pvm.data.PvmContent;
@@ -64,6 +65,7 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.events.PluginMessage;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
@@ -262,6 +264,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		trackedItems.addAll(AMMO_IDS);
 
 		panel = new PvmProgressionPanel(this);
+		panel.setWildernessAllowed(Wilderness.allowed(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("PvM Progression")
@@ -677,6 +680,26 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	}
 
 	@Override
+	public void onAllowWilderness(boolean allow)
+	{
+		Wilderness.setAllowed(configManager, allow);
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged e)
+	{
+		if (Wilderness.isSettingChange(e))
+		{
+			boolean allowed = Wilderness.allowed(configManager);
+			PvmProgressionPanel p = panel;
+			if (p != null)
+			{
+				SwingUtilities.invokeLater(() -> p.setWildernessAllowed(allowed));
+			}
+		}
+	}
+
+	@Override
 	public void onStopGuide()
 	{
 		clientThread.invokeLater(() ->
@@ -988,12 +1011,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	{
 		Map<String, Object> data = new HashMap<>();
 		data.put("target", target);
-		if (wilderness)
-		{
-			Map<String, Object> overrides = new HashMap<>();
-			overrides.put("avoidWilderness", false);
-			data.put("config", overrides);
-		}
+		// Only path through the Wilderness when the place itself is there, whatever Shortest Path's own setting says
+		Map<String, Object> overrides = new HashMap<>();
+		overrides.put("avoidWilderness", !(wilderness && Wilderness.contains(target)));
+		data.put("config", overrides);
 		eventBus.post(new PluginMessage("shortestpath", "path", data));
 	}
 

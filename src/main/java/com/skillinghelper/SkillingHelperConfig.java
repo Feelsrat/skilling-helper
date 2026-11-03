@@ -2,6 +2,7 @@ package com.skillinghelper;
 
 import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
+import com.skillinghelper.data.Wilderness;
 import java.awt.Color;
 import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
@@ -219,6 +220,20 @@ public interface SkillingHelperConfig extends Config
 	default boolean preferShops()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		keyName = Wilderness.KEY,
+		name = "Include Wilderness methods",
+		description = "Let every guide in this plugin pack (Skilling Helper, PvM Progression, Money Making, Banked XP) "
+			+ "pick methods, bosses and places in the Wilderness. Off by default: they're still listed and flagged, "
+			+ "but only used when you choose them yourself",
+		section = guideSection,
+		position = 6
+	)
+	default boolean allowWilderness()
+	{
+		return false;
 	}
 
 	@ConfigItem(
