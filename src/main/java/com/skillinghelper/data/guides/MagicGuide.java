@@ -89,6 +89,47 @@ final class MagicGuide
 				.notes("Also gives 12.5 Smithing xp per bar, and every bar succeeds unlike a furnace.")
 				.wikiPage(P2P_WIKI)
 				.build(),
+			Method.builder()
+				.id("magic_enchant_opal_bolts")
+				.skill(Skill.MAGIC)
+				.type(MethodType.PROCESS)
+				.name("Enchant opal bolts")
+				.minLevel(4)
+				.xpPerAction(9)
+				.xpPerHour(18_000)
+				.members(true)
+				.tag(MethodTag.FAST)
+				.location(Banks.GRAND_EXCHANGE)
+				.bank(Banks.GRAND_EXCHANGE)
+				.input(ItemReq.stack("Cosmic runes", 1, ItemID.COSMICRUNE))
+				.input(air(2))
+				.input(ItemReq.stack("Opal bolts (10 per cast)", 10, ItemID.OPAL_BOLTS))
+				.instruction("Cast Enchant Crossbow Bolt and pick opal bolts; each cast enchants 10")
+				.notes("Bolts and runes stack, so you can do this while running or questing. Higher gem bolts give "
+					+ "more xp per cast but cost a lot more.")
+				.wikiPage(P2P_WIKI)
+				.build(),
+			Method.builder()
+				.id("magic_low_alch")
+				.skill(Skill.MAGIC)
+				.type(MethodType.PROCESS)
+				.name("Low Level Alchemy (yew longbows)")
+				.minLevel(21)
+				.xpPerAction(31)
+				.xpPerHour(60_000)
+				.coinsPerAction(512)
+				.tag(MethodTag.AFK)
+				.location(Banks.GRAND_EXCHANGE)
+				.bank(Banks.GRAND_EXCHANGE)
+				.input(ItemReq.stack("Nature runes", 1, ItemID.NATURERUNE))
+				.input(fire(3))
+				.input(ItemReq.stack("Yew longbows (noted is fine)", 1, ItemID.YEW_LONGBOW, ItemID.Cert.YEW_LONGBOW))
+				.useItem(ItemID.YEW_LONGBOW).useItem(ItemID.Cert.YEW_LONGBOW)
+				.instruction("Cast Low Level Alchemy on the yew longbows")
+				.notes("Low alching turns items into coins for 31 xp a cast. It loses a little money, but you can do "
+					+ "it while walking or questing.")
+				.wikiPage("Low_Level_Alchemy")
+				.build(),
 			alch("magic_high_alch_yew", "High Alchemy (yew longbows)", "Yew longbows", ItemID.YEW_LONGBOW,
 				ItemID.Cert.YEW_LONGBOW, 768).build(),
 			alch("magic_high_alch_magic", "High Alchemy (magic longbows)", "Magic longbows", ItemID.MAGIC_LONGBOW,
@@ -122,6 +163,29 @@ final class MagicGuide
 			plankMake("magic_plank_make_oak", "Oak", ItemID.OAK_LOGS, ItemID.PLANK_OAK, 175).build(),
 			plankMake("magic_plank_make_teak", "Teak", ItemID.TEAK_LOGS, ItemID.PLANK_TEAK, 350).build(),
 			plankMake("magic_plank_make_mahogany", "Mahogany", ItemID.MAHOGANY_LOGS, ItemID.PLANK_MAHOGANY, 1_050)
+				.build(),
+			Method.builder()
+				.id("magic_string_jewellery")
+				.skill(Skill.MAGIC)
+				.type(MethodType.PROCESS)
+				.name("String Jewellery (gold amulets)")
+				.minLevel(80)
+				.xpPerAction(83)
+				.xpPerHour(140_000)
+				.members(true)
+				.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+				.quest(Quest.LUNAR_DIPLOMACY)
+				.location(Banks.GRAND_EXCHANGE)
+				.bank(Banks.GRAND_EXCHANGE)
+				.input(ItemReq.stack("Astral runes (2 per inventory)", 1, ItemID.ASTRALRUNE))
+				.input(earth(1))
+				.input(water(1))
+				.input(ItemReq.consumed("Unstrung gold amulets", 25, 1, ItemID.UNSTRUNG_GOLD_AMULET))
+				.product(ItemID.STRUNG_GOLD_AMULET)
+				.instruction("Cast String Jewellery once; it strings every amulet in your inventory")
+				.notes("Lunar spellbook. One cast per inventory, so it's very low effort. Also gives a little "
+					+ "Crafting xp. Each cast uses 2 astral, 10 earth and 5 water runes.")
+				.wikiPage("String_Jewellery")
 				.build()
 		);
 	}

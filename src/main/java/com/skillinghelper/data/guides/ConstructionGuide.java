@@ -8,6 +8,7 @@ import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -45,6 +46,31 @@ final class ConstructionGuide
 			build("con_mahogany_tables", "Mahogany tables", 52, 840, 6, "Mahogany planks", ItemID.PLANK_MAHOGANY,
 				"Table space")
 				.tag(MethodTag.FAST)
+				.build(),
+			build("con_mythical_capes", "Mounted mythical capes", 50, 370, 3, "Teak planks", ItemID.PLANK_TEAK,
+				"Guild trophy space")
+				.clearTargets()
+				.target(Target.object("Build", "Guild trophy space"))
+				.target(Target.object("Remove", "Mythical cape"))
+				.quest(Quest.DRAGON_SLAYER_II)
+				.tool(ItemReq.tool("Mythical cape", ItemID.MYTHICAL_CAPE))
+				.notes("More xp per teak plank than other teak furniture; the cape comes back when you remove it. "
+					+ "Built in the Quest hall.")
+				.build(),
+			build("con_teak_benches", "Teak garden benches", 66, 540, 6, "Teak planks", ItemID.PLANK_TEAK,
+				"Seating space")
+				.clearTargets()
+				.target(Target.object("Build", "Seating space"))
+				.target(Target.object("Remove", "Teak garden bench"))
+				.tag(MethodTag.FAST)
+				.notes("Needs a Superior garden. The fastest use of teak planks, but needs precise clicks.")
+				.build(),
+			build("con_oak_doors", "Oak doors", 74, 600, 10, "Oak planks", ItemID.PLANK_OAK, "Door space")
+				.clearTargets()
+				.target(Target.object("Build", "Door space"))
+				.target(Target.object("Remove", "Oak door"))
+				.tag(MethodTag.FAST).tag(MethodTag.CHEAP)
+				.notes("Built in a dungeon room. Cheaper and less click-intensive than mahogany tables.")
 				.build(),
 			Method.builder()
 				.id("con_mahogany_homes")

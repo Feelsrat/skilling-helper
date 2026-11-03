@@ -8,6 +8,7 @@ import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -74,6 +75,30 @@ final class PrayerGuide
 				.notes("Same 350% xp as a gilded altar and half the bones are saved, so it's the cheapest gp/xp. "
 					+ "It's in the Wilderness: player killers visit often, so only bring what you can lose.")
 				.wikiPage("Chaos_Temple_(Wilderness)")
+				.build(),
+			Method.builder()
+				.id("prayer_ectofuntus")
+				.skill(Skill.PRAYER)
+				.type(MethodType.ACTIVITY)
+				.name("Ectofuntus with dragon bones")
+				.minLevel(1)
+				.xpPerAction(288)
+				.xpPerHour(100_000)
+				.members(true)
+				.tag(MethodTag.CHEAP)
+				.quest(Quest.GHOSTS_AHOY)
+				.location(Location.area("Ectofuntus (Port Phasmatys)", 3659, 3519, 12))
+				.bank(Location.of("Port Phasmatys bank", 3688, 3467, 5))
+				.input(ItemReq.consumed("Dragon bones", 9, 1, ItemID.DRAGON_BONES))
+				.input(ItemReq.consumed("Empty pots", 9, 1, ItemID.POT_EMPTY))
+				.input(ItemReq.consumed("Empty buckets", 9, 1, ItemID.BUCKET_EMPTY))
+				.target(Target.object(null, "Ectofuntus", "Loader", "Bin", "Pool of Slime"))
+				.instruction("Fill the buckets at the slime pool in the basement, grind the bones in the loader "
+					+ "upstairs, then worship at the Ectofuntus")
+				.notes("400% of burying xp per bone, so a little cheaper per xp than a gilded altar but slower. "
+					+ "The Morytania diary gives free bonemeal and slime. Only part of Ghosts Ahoy is needed for the "
+					+ "Ectophial teleport.")
+				.wikiPage("Ectofuntus")
 				.build()
 		);
 	}
