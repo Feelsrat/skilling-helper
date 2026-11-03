@@ -31,7 +31,8 @@ GN_FALLBACK_APK="https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3
 APP_ID=742013
 STATE="$HOME/.config/skilling-helper-android"
 TOKEN_FILE="$STATE/token"
-SELF="$HOME/.local/bin/skilling-helper-android"
+# Termux puts $PREFIX/bin on PATH (not ~/.local/bin)
+SELF="${PREFIX:-$HOME/.local}/bin/skilling-helper-android"
 LOGIN="$STATE/credentials.properties"
 JRE_API="https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&image_type=jre&os=windows&vendor=eclipse"
 QUIET=0
@@ -190,7 +191,7 @@ install_shortcuts() {
 	fi
 	printf '#!/data/data/com.termux/files/usr/bin/bash\nexec "%s" --play\n' "$SELF" > "$HOME/.shortcuts/Play Skilling Helper"
 	chmod 755 "$HOME/.shortcuts/Play Skilling Helper"
-	rm -f "$HOME/.shortcuts/Update Skilling Helper"
+	rm -f "$HOME/.shortcuts/Update Skilling Helper" "$HOME/.local/bin/skilling-helper-android"
 }
 
 play() {
