@@ -163,7 +163,16 @@ public class SceneHighlightOverlay extends Overlay
 
 	private void drawObject(Graphics2D g, TileObject obj, Color c)
 	{
-		switch (config.highlightStyle())
+		drawObject(g, obj, c, config.highlightStyle(), outlines);
+	}
+
+	/**
+	 * Draws one object to click in the chosen highlight style. Shared with guides that pick a single object.
+	 */
+	public static void drawObject(Graphics2D g, TileObject obj, Color c, SkillingHelperConfig.HighlightStyle style,
+		ModelOutlineRenderer outlines)
+	{
+		switch (style)
 		{
 			case CLICKBOX:
 				Shape box = obj.getClickbox();

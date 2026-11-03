@@ -16,6 +16,7 @@ import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.MethodPlanner;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
+import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.engine.StepResolver;
 import com.skillinghelper.engine.StepType;
@@ -23,6 +24,9 @@ import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
 import com.skillinghelper.shops.Shops;
+import com.skillinghelper.plunder.PlunderOverlay;
+import com.skillinghelper.plunder.PlunderTracker;
+import com.skillinghelper.plunder.PyramidPlunder;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
 import com.skillinghelper.tog.TogTracker;
@@ -130,6 +134,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private TearsOverlay tearsOverlay;
 	@Inject
+	private PlunderTracker plunder;
+	@Inject
+	private PlunderOverlay plunderOverlay;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -166,6 +174,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		tracker.setInterestingTargets(guides.all());
 		tracker.addInterestingTargets(TearsOfGuthix.TARGETS);
 		tracker.addInterestingTargets(Shops.targets());
+		tracker.addInterestingTargets(List.of(PyramidPlunder.MUMMY, PyramidPlunder.MONEY_POT));
 		settings.useDefaultPreference();
 		prices.updateRefresh();
 
@@ -175,8 +184,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.register(bankAmountSwapper);
 		eventBus.register(shortestPath);
 		eventBus.register(tog);
+		eventBus.register(plunder);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(tearsOverlay);
+		overlayManager.add(plunderOverlay);
 		overlayManager.add(minimapOverlay);
 		overlayManager.add(itemOverlay);
 		addPanel();
@@ -186,6 +197,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
 				tracker.rescan();
+				plunder.rescan();
 				loadProfile();
 				refresh();
 			}
@@ -213,8 +225,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.unregister(bankFilter);
 		eventBus.unregister(bankAmountSwapper);
 		eventBus.unregister(tog);
+		eventBus.unregister(plunder);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(tearsOverlay);
+		overlayManager.remove(plunderOverlay);
 		overlayManager.remove(minimapOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -224,6 +238,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			bankCache.save();
 			path.clear();
 			tracker.clear();
+			plunder.clear();
 			resetRuns();
 			eventBus.unregister(shortestPath);
 		});
@@ -290,6 +305,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			tog.tick(this);
 		}
 		Skill activeSkill = settings.getActiveSkill();
+		plunder.tick(plunderGuideOpen(activeSkill), config.plunderSceptreHunt());
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
 	}
@@ -823,6 +839,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		// Size trips and batches to this leg of the plan, the same span the requirement amounts cover
 		int legTarget = plan.isEmpty() ? target : plan.get(0).getToLevel();
 		GuideStep step = resolver.resolve(method, state, legTarget, dropProduce(method), reqs);
+		if (PyramidPlunder.METHOD_ID.equals(method.getId()) || (skill == Skill.THIEVING && plunder.isInRound()))
+		{
+			step = plunderStep(step, state);
+		}
 		return b.method(method)
 			.forced(forced != null && forced == method)
 			.option(current)
@@ -830,6 +850,51 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.step(step)
 			.bankItems(StepResolver.bankItems(reqs, step))
 			.build();
+	}
+
+	/**
+	 * Whether Pyramid Plunder is the method being shown, or the player is mid-round with the Thieving guide open.
+	 */
+	private boolean plunderGuideOpen(Skill activeSkill)
+	{
+		if (tearsOpen || activeSkill != Skill.THIEVING)
+		{
+			return false;
+		}
+		Method m = guide.getMethod();
+		return plunder.isInRound() || (m != null && PyramidPlunder.METHOD_ID.equals(m.getId()));
+	}
+
+	/**
+	 * At and in the pyramid the round plan takes over; on the way, get a snake charm first while it still helps.
+	 */
+	private GuideStep plunderStep(GuideStep base, PlayerState state)
+	{
+		// Full of artefacts after a round: bank them first, and say what they're for
+		if (!plunder.isInRound() && base.getType() == StepType.BANK)
+		{
+			GuideStep.GuideStepBuilder banked = base.toBuilder();
+			PyramidPlunder.artefactLines().forEach(banked::line);
+			return banked.build();
+		}
+		// Finish a round that's under way even once the goal is reached
+		GuideStep own = plunder.getStep();
+		if (own != null && (plunder.isInRound() || base.getType() != StepType.DONE))
+		{
+			return own;
+		}
+		if (base.getType() == StepType.DONE)
+		{
+			return base;
+		}
+		if (!PyramidPlunder.needsCharm(state.level(Skill.THIEVING),
+			state.bankKnown(), state.owned(PyramidPlunder.SNAKE_CHARM)))
+		{
+			return base;
+		}
+		boolean atAli = PyramidPlunder.ALI.contains(state.getLocation());
+		GuideStep charm = PyramidPlunder.charmSourceStep(atAli);
+		return atAli ? charm : charm.toBuilder().travel(Route.to(state, PyramidPlunder.ALI)).build();
 	}
 
 	/**

@@ -49,6 +49,34 @@ public interface SkillingHelperConfig extends Config
 	@ConfigSection(name = "Tears of Guthix", description = "The weekly Tears of Guthix minigame", position = 5)
 	String togSection = "tearsOfGuthix";
 
+	@ConfigSection(name = "Pyramid Plunder", description = "The Pyramid Plunder Thieving guide", position = 6)
+	String plunderSection = "pyramidPlunder";
+
+	@ConfigItem(
+		keyName = "plunderSceptreHunt",
+		name = "Hunt the sceptre",
+		description = "Also open every gold chest and the sarcophagi from room 4 for more Pharaoh's sceptre chances, "
+			+ "at some cost to Thieving xp/hr",
+		section = plunderSection,
+		position = 0
+	)
+	default boolean plunderSceptreHunt()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "plunderOptionText",
+		name = "Show option to click",
+		description = "Write the menu option to pick (Search, Pick-lock...) above the outlined object",
+		section = plunderSection,
+		position = 1
+	)
+	default boolean plunderOptionText()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		keyName = "togInfobox",
 		name = "Ready indicator",

@@ -1,6 +1,7 @@
 package com.skillinghelper.data.guides;
 
 import com.skillinghelper.data.Banks;
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -87,16 +88,22 @@ final class ThievingGuide
 				.members(true)
 				.tag(MethodTag.MINIGAME).tag(MethodTag.FAST)
 				.quest(Quest.ICTHLARINS_LITTLE_HELPER)
-				.location(Location.of("Pyramid Plunder (Sophanem)", 3288, 2787, 15))
-				.target(Target.object(null, "Urn", "Grand Gold Chest", "Speartrap", "Tomb Door", "Sarcophagus"))
-				.target(Target.npc(null, "Guardian mummy"))
+				.location(Location.of("Pyramid Plunder (Sophanem)", 3288, 2794, 15))
+				.target(Target.npc("Start-minigame", "Guardian mummy"))
+				.bank(Location.of("Nardah bank", 3428, 2892, 5))
+				.product(ItemID.NTK_IVORY_COMB).product(ItemID.NTK_SCARAB_POTTERY).product(ItemID.NTK_STATUETTE_POTTERY)
+				.product(ItemID.NTK_SEAL_STONE).product(ItemID.NTK_SCARAB_STONE).product(ItemID.NTK_STATUETTE_STONE)
+				.product(ItemID.NTK_SEAL_GOLD).product(ItemID.NTK_SCARAB_GOLD).product(ItemID.NTK_STATUETTE_GOLD)
+				.supply(ItemReq.supply("Lockpick", 1, ItemID.LOCKPICK))
 				.supply(Supplies.food(5))
 				.supply(Supplies.STAMINA)
-				.instruction("Talk to the Guardian mummy to start, then loot urns and the gold chest in each room and "
-					+ "find the right tomb door")
-				.notes("Xp per hour rises a lot as you unlock deeper rooms every 10 levels.")
+				.instruction("Search the pyramid door that leads to the Guardian mummy and start a round. The guide "
+					+ "then outlines one thing at a time: trap, urns, chest, door")
+				.notes("Per the wiki: skip the early rooms' urns, search every urn in your last two rooms, keep 90 "
+					+ "seconds for the last one. A lockpick helps doors a lot at low levels; a snake charm helps "
+					+ "urns below 51.")
 				.wikiPage("Pyramid_Plunder")
-				.rateAt(51, 80_000).rateAt(71, 150_000).rateAt(91, 220_000)
+				.rateAt(51, 80_000).rateAt(71, 120_000).rateAt(91, 275_000)
 				.build(),
 			Method.builder()
 				.id("thieve_rogues_den")
