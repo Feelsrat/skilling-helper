@@ -28,6 +28,36 @@ agility_al_kharid weak owns-all-in-bank	f54f54e9976b5cf7
 agility_al_kharid weak parts-carried	727cf157946ed113
 agility_al_kharid weak parts-carried-away	f54f54e9976b5cf7
 agility_al_kharid weak parts-in-bank	f54f54e9976b5cf7
+agility_ape_atoll strong bank-empty	80ac94b8b8b434ec
+agility_ape_atoll strong bank-empty-rich	80ac94b8b8b434ec
+agility_ape_atoll strong bank-unknown	80ac94b8b8b434ec
+agility_ape_atoll strong full-of-products	ff3d2305b85ebbe7
+agility_ape_atoll strong gear-carried	ff3d2305b85ebbe7
+agility_ape_atoll strong goal-reached	aeda69b98ec68f09
+agility_ape_atoll strong in-instance	ff3d2305b85ebbe7
+agility_ape_atoll strong kit-at-spot	ff3d2305b85ebbe7
+agility_ape_atoll strong kit-away	6f4ffa020e9cdc61
+agility_ape_atoll strong kit-worn-at-spot	ff3d2305b85ebbe7
+agility_ape_atoll strong owns-all-at-bank	6f4ffa020e9cdc61
+agility_ape_atoll strong owns-all-in-bank	6f4ffa020e9cdc61
+agility_ape_atoll strong parts-carried	ff3d2305b85ebbe7
+agility_ape_atoll strong parts-carried-away	6f4ffa020e9cdc61
+agility_ape_atoll strong parts-in-bank	6f4ffa020e9cdc61
+agility_ape_atoll weak bank-empty	80ac94b8b8b434ec
+agility_ape_atoll weak bank-empty-rich	80ac94b8b8b434ec
+agility_ape_atoll weak bank-unknown	80ac94b8b8b434ec
+agility_ape_atoll weak full-of-products	ff3d2305b85ebbe7
+agility_ape_atoll weak gear-carried	ff3d2305b85ebbe7
+agility_ape_atoll weak goal-reached	aeda69b98ec68f09
+agility_ape_atoll weak in-instance	ff3d2305b85ebbe7
+agility_ape_atoll weak kit-at-spot	ff3d2305b85ebbe7
+agility_ape_atoll weak kit-away	6f4ffa020e9cdc61
+agility_ape_atoll weak kit-worn-at-spot	ff3d2305b85ebbe7
+agility_ape_atoll weak owns-all-at-bank	6f4ffa020e9cdc61
+agility_ape_atoll weak owns-all-in-bank	6f4ffa020e9cdc61
+agility_ape_atoll weak parts-carried	ff3d2305b85ebbe7
+agility_ape_atoll weak parts-carried-away	6f4ffa020e9cdc61
+agility_ape_atoll weak parts-in-bank	6f4ffa020e9cdc61
 agility_ardougne strong bank-empty	53ae614300c1dc13
 agility_ardougne strong bank-empty-rich	53ae614300c1dc13
 agility_ardougne strong bank-unknown	53ae614300c1dc13
@@ -58,6 +88,36 @@ agility_ardougne weak owns-all-in-bank	67ba2a6818e35c11
 agility_ardougne weak parts-carried	6392db1bb55204e7
 agility_ardougne weak parts-carried-away	67ba2a6818e35c11
 agility_ardougne weak parts-in-bank	67ba2a6818e35c11
+agility_brimhaven strong bank-empty	5dc1f90ca8594e45
+agility_brimhaven strong bank-empty-rich	136a5abe76ea6095
+agility_brimhaven strong bank-unknown	9a0e583e5235c1aa
+agility_brimhaven strong full-of-products	78e8171c724c468f
+agility_brimhaven strong gear-carried	78e8171c724c468f
+agility_brimhaven strong goal-reached	fd9824feb6ab33f0
+agility_brimhaven strong in-instance	78e8171c724c468f
+agility_brimhaven strong kit-at-spot	78e8171c724c468f
+agility_brimhaven strong kit-away	d2df77dabc38576f
+agility_brimhaven strong kit-worn-at-spot	78e8171c724c468f
+agility_brimhaven strong owns-all-at-bank	d2df77dabc38576f
+agility_brimhaven strong owns-all-in-bank	d2df77dabc38576f
+agility_brimhaven strong parts-carried	78e8171c724c468f
+agility_brimhaven strong parts-carried-away	d2df77dabc38576f
+agility_brimhaven strong parts-in-bank	d2df77dabc38576f
+agility_brimhaven weak bank-empty	5dc1f90ca8594e45
+agility_brimhaven weak bank-empty-rich	136a5abe76ea6095
+agility_brimhaven weak bank-unknown	9a0e583e5235c1aa
+agility_brimhaven weak full-of-products	78e8171c724c468f
+agility_brimhaven weak gear-carried	78e8171c724c468f
+agility_brimhaven weak goal-reached	fd9824feb6ab33f0
+agility_brimhaven weak in-instance	78e8171c724c468f
+agility_brimhaven weak kit-at-spot	78e8171c724c468f
+agility_brimhaven weak kit-away	d2df77dabc38576f
+agility_brimhaven weak kit-worn-at-spot	78e8171c724c468f
+agility_brimhaven weak owns-all-at-bank	d2df77dabc38576f
+agility_brimhaven weak owns-all-in-bank	d2df77dabc38576f
+agility_brimhaven weak parts-carried	78e8171c724c468f
+agility_brimhaven weak parts-carried-away	d2df77dabc38576f
+agility_brimhaven weak parts-in-bank	d2df77dabc38576f
 agility_canifis strong bank-empty	7a0a065fcc10aaea
 agility_canifis strong bank-empty-rich	7a0a065fcc10aaea
 agility_canifis strong bank-unknown	7a0a065fcc10aaea
@@ -208,6 +268,36 @@ agility_pollnivneach weak owns-all-in-bank	c577f0f98561791d
 agility_pollnivneach weak parts-carried	251304cdbece49a1
 agility_pollnivneach weak parts-carried-away	c577f0f98561791d
 agility_pollnivneach weak parts-in-bank	c577f0f98561791d
+agility_prifddinas strong bank-empty	1e41745f8d6172b6
+agility_prifddinas strong bank-empty-rich	1e41745f8d6172b6
+agility_prifddinas strong bank-unknown	1e41745f8d6172b6
+agility_prifddinas strong full-of-products	1d72f97ed5138c02
+agility_prifddinas strong gear-carried	1d72f97ed5138c02
+agility_prifddinas strong goal-reached	452ec253da68790b
+agility_prifddinas strong in-instance	1d72f97ed5138c02
+agility_prifddinas strong kit-at-spot	1d72f97ed5138c02
+agility_prifddinas strong kit-away	f9234beea1a1bc69
+agility_prifddinas strong kit-worn-at-spot	1d72f97ed5138c02
+agility_prifddinas strong owns-all-at-bank	f9234beea1a1bc69
+agility_prifddinas strong owns-all-in-bank	f9234beea1a1bc69
+agility_prifddinas strong parts-carried	1d72f97ed5138c02
+agility_prifddinas strong parts-carried-away	f9234beea1a1bc69
+agility_prifddinas strong parts-in-bank	f9234beea1a1bc69
+agility_prifddinas weak bank-empty	d8cbbd5d2018c6b6
+agility_prifddinas weak bank-empty-rich	d8cbbd5d2018c6b6
+agility_prifddinas weak bank-unknown	d8cbbd5d2018c6b6
+agility_prifddinas weak full-of-products	fadecb61ac28a935
+agility_prifddinas weak gear-carried	fadecb61ac28a935
+agility_prifddinas weak goal-reached	4f16aa14fec12917
+agility_prifddinas weak in-instance	fadecb61ac28a935
+agility_prifddinas weak kit-at-spot	fadecb61ac28a935
+agility_prifddinas weak kit-away	fadecb61ac28a935
+agility_prifddinas weak kit-worn-at-spot	fadecb61ac28a935
+agility_prifddinas weak owns-all-at-bank	fadecb61ac28a935
+agility_prifddinas weak owns-all-in-bank	fadecb61ac28a935
+agility_prifddinas weak parts-carried	fadecb61ac28a935
+agility_prifddinas weak parts-carried-away	fadecb61ac28a935
+agility_prifddinas weak parts-in-bank	fadecb61ac28a935
 agility_pyramid strong bank-empty	4e2c76399ec0f0e1
 agility_pyramid strong bank-empty-rich	4e2c76399ec0f0e1
 agility_pyramid strong bank-unknown	4e2c76399ec0f0e1
@@ -298,6 +388,66 @@ agility_seers weak owns-all-in-bank	d6c388f9ee212153
 agility_seers weak parts-carried	67f55549314b569a
 agility_seers weak parts-carried-away	d6c388f9ee212153
 agility_seers weak parts-in-bank	d6c388f9ee212153
+agility_sepulchre strong bank-empty	fbea478eea6de790
+agility_sepulchre strong bank-empty-rich	fbea478eea6de790
+agility_sepulchre strong bank-unknown	fbea478eea6de790
+agility_sepulchre strong full-of-products	92aba35cb22073eb
+agility_sepulchre strong gear-carried	92aba35cb22073eb
+agility_sepulchre strong goal-reached	8e5b813c46adf4dd
+agility_sepulchre strong in-instance	92aba35cb22073eb
+agility_sepulchre strong kit-at-spot	92aba35cb22073eb
+agility_sepulchre strong kit-away	c9e67127855de6dd
+agility_sepulchre strong kit-worn-at-spot	92aba35cb22073eb
+agility_sepulchre strong owns-all-at-bank	c9e67127855de6dd
+agility_sepulchre strong owns-all-in-bank	c9e67127855de6dd
+agility_sepulchre strong parts-carried	92aba35cb22073eb
+agility_sepulchre strong parts-carried-away	c9e67127855de6dd
+agility_sepulchre strong parts-in-bank	c9e67127855de6dd
+agility_sepulchre weak bank-empty	a9e426e13117b208
+agility_sepulchre weak bank-empty-rich	a9e426e13117b208
+agility_sepulchre weak bank-unknown	a9e426e13117b208
+agility_sepulchre weak full-of-products	e19a7160487f4c19
+agility_sepulchre weak gear-carried	e19a7160487f4c19
+agility_sepulchre weak goal-reached	dbbffe6073127b3e
+agility_sepulchre weak in-instance	e19a7160487f4c19
+agility_sepulchre weak kit-at-spot	e19a7160487f4c19
+agility_sepulchre weak kit-away	e19a7160487f4c19
+agility_sepulchre weak kit-worn-at-spot	e19a7160487f4c19
+agility_sepulchre weak owns-all-at-bank	e19a7160487f4c19
+agility_sepulchre weak owns-all-in-bank	e19a7160487f4c19
+agility_sepulchre weak parts-carried	e19a7160487f4c19
+agility_sepulchre weak parts-carried-away	e19a7160487f4c19
+agility_sepulchre weak parts-in-bank	e19a7160487f4c19
+agility_shayzien_advanced strong bank-empty	1e07d5907fbec92c
+agility_shayzien_advanced strong bank-empty-rich	7e7ef6776acd25e3
+agility_shayzien_advanced strong bank-unknown	2a15132e09b757cf
+agility_shayzien_advanced strong full-of-products	f997a393add344a8
+agility_shayzien_advanced strong gear-carried	f997a393add344a8
+agility_shayzien_advanced strong goal-reached	a33ff7d9379983b8
+agility_shayzien_advanced strong in-instance	f997a393add344a8
+agility_shayzien_advanced strong kit-at-spot	f997a393add344a8
+agility_shayzien_advanced strong kit-away	eda02c64142a85b0
+agility_shayzien_advanced strong kit-worn-at-spot	f997a393add344a8
+agility_shayzien_advanced strong owns-all-at-bank	0751fa9fc81c6d2f
+agility_shayzien_advanced strong owns-all-in-bank	0751fa9fc81c6d2f
+agility_shayzien_advanced strong parts-carried	f997a393add344a8
+agility_shayzien_advanced strong parts-carried-away	eda02c64142a85b0
+agility_shayzien_advanced strong parts-in-bank	0751fa9fc81c6d2f
+agility_shayzien_advanced weak bank-empty	1e07d5907fbec92c
+agility_shayzien_advanced weak bank-empty-rich	7e7ef6776acd25e3
+agility_shayzien_advanced weak bank-unknown	2a15132e09b757cf
+agility_shayzien_advanced weak full-of-products	f997a393add344a8
+agility_shayzien_advanced weak gear-carried	f997a393add344a8
+agility_shayzien_advanced weak goal-reached	a33ff7d9379983b8
+agility_shayzien_advanced weak in-instance	f997a393add344a8
+agility_shayzien_advanced weak kit-at-spot	f997a393add344a8
+agility_shayzien_advanced weak kit-away	eda02c64142a85b0
+agility_shayzien_advanced weak kit-worn-at-spot	f997a393add344a8
+agility_shayzien_advanced weak owns-all-at-bank	0751fa9fc81c6d2f
+agility_shayzien_advanced weak owns-all-in-bank	0751fa9fc81c6d2f
+agility_shayzien_advanced weak parts-carried	f997a393add344a8
+agility_shayzien_advanced weak parts-carried-away	eda02c64142a85b0
+agility_shayzien_advanced weak parts-in-bank	0751fa9fc81c6d2f
 agility_varrock strong bank-empty	2aabe8794477c516
 agility_varrock strong bank-empty-rich	2aabe8794477c516
 agility_varrock strong bank-unknown	2aabe8794477c516
@@ -328,6 +478,126 @@ agility_varrock weak owns-all-in-bank	e7f0c28c23c1b974
 agility_varrock weak parts-carried	d1fd405afd7c7e34
 agility_varrock weak parts-carried-away	e7f0c28c23c1b974
 agility_varrock weak parts-in-bank	e7f0c28c23c1b974
+agility_werewolf strong bank-empty	cae374595c1ae379
+agility_werewolf strong bank-empty-rich	cae374595c1ae379
+agility_werewolf strong bank-unknown	cae374595c1ae379
+agility_werewolf strong full-of-products	de123a01deaa8737
+agility_werewolf strong gear-carried	de123a01deaa8737
+agility_werewolf strong goal-reached	e43706e70f4c9455
+agility_werewolf strong in-instance	de123a01deaa8737
+agility_werewolf strong kit-at-spot	de123a01deaa8737
+agility_werewolf strong kit-away	564a43420e5b9ae4
+agility_werewolf strong kit-worn-at-spot	de123a01deaa8737
+agility_werewolf strong owns-all-at-bank	564a43420e5b9ae4
+agility_werewolf strong owns-all-in-bank	564a43420e5b9ae4
+agility_werewolf strong parts-carried	de123a01deaa8737
+agility_werewolf strong parts-carried-away	564a43420e5b9ae4
+agility_werewolf strong parts-in-bank	564a43420e5b9ae4
+agility_werewolf weak bank-empty	2db30d7a4ed8369e
+agility_werewolf weak bank-empty-rich	2db30d7a4ed8369e
+agility_werewolf weak bank-unknown	2db30d7a4ed8369e
+agility_werewolf weak full-of-products	5ac8e2165c1c9d4a
+agility_werewolf weak gear-carried	5ac8e2165c1c9d4a
+agility_werewolf weak goal-reached	293c11e804ac97a9
+agility_werewolf weak in-instance	5ac8e2165c1c9d4a
+agility_werewolf weak kit-at-spot	5ac8e2165c1c9d4a
+agility_werewolf weak kit-away	5ac8e2165c1c9d4a
+agility_werewolf weak kit-worn-at-spot	5ac8e2165c1c9d4a
+agility_werewolf weak owns-all-at-bank	5ac8e2165c1c9d4a
+agility_werewolf weak owns-all-in-bank	5ac8e2165c1c9d4a
+agility_werewolf weak parts-carried	5ac8e2165c1c9d4a
+agility_werewolf weak parts-carried-away	5ac8e2165c1c9d4a
+agility_werewolf weak parts-in-bank	5ac8e2165c1c9d4a
+agility_wilderness strong bank-empty	95ddc3ba528f3819
+agility_wilderness strong bank-empty-rich	95ddc3ba528f3819
+agility_wilderness strong bank-unknown	95ddc3ba528f3819
+agility_wilderness strong full-of-products	a65016d4c58ae84a
+agility_wilderness strong gear-carried	a65016d4c58ae84a
+agility_wilderness strong goal-reached	b5768ef0aad35e99
+agility_wilderness strong in-instance	a65016d4c58ae84a
+agility_wilderness strong kit-at-spot	a65016d4c58ae84a
+agility_wilderness strong kit-away	491c6036f83021de
+agility_wilderness strong kit-worn-at-spot	a65016d4c58ae84a
+agility_wilderness strong owns-all-at-bank	491c6036f83021de
+agility_wilderness strong owns-all-in-bank	491c6036f83021de
+agility_wilderness strong parts-carried	a65016d4c58ae84a
+agility_wilderness strong parts-carried-away	491c6036f83021de
+agility_wilderness strong parts-in-bank	491c6036f83021de
+agility_wilderness weak bank-empty	95ddc3ba528f3819
+agility_wilderness weak bank-empty-rich	95ddc3ba528f3819
+agility_wilderness weak bank-unknown	95ddc3ba528f3819
+agility_wilderness weak full-of-products	a65016d4c58ae84a
+agility_wilderness weak gear-carried	a65016d4c58ae84a
+agility_wilderness weak goal-reached	b5768ef0aad35e99
+agility_wilderness weak in-instance	a65016d4c58ae84a
+agility_wilderness weak kit-at-spot	a65016d4c58ae84a
+agility_wilderness weak kit-away	491c6036f83021de
+agility_wilderness weak kit-worn-at-spot	a65016d4c58ae84a
+agility_wilderness weak owns-all-at-bank	491c6036f83021de
+agility_wilderness weak owns-all-in-bank	491c6036f83021de
+agility_wilderness weak parts-carried	a65016d4c58ae84a
+agility_wilderness weak parts-carried-away	491c6036f83021de
+agility_wilderness weak parts-in-bank	491c6036f83021de
+agility_wyrm_advanced strong bank-empty	acf8a27d06285c9d
+agility_wyrm_advanced strong bank-empty-rich	acf8a27d06285c9d
+agility_wyrm_advanced strong bank-unknown	acf8a27d06285c9d
+agility_wyrm_advanced strong full-of-products	c05ce0db5dcb6e22
+agility_wyrm_advanced strong gear-carried	c05ce0db5dcb6e22
+agility_wyrm_advanced strong goal-reached	b5768ef0aad35e99
+agility_wyrm_advanced strong in-instance	c05ce0db5dcb6e22
+agility_wyrm_advanced strong kit-at-spot	c05ce0db5dcb6e22
+agility_wyrm_advanced strong kit-away	eb13d67991eab4bc
+agility_wyrm_advanced strong kit-worn-at-spot	c05ce0db5dcb6e22
+agility_wyrm_advanced strong owns-all-at-bank	eb13d67991eab4bc
+agility_wyrm_advanced strong owns-all-in-bank	eb13d67991eab4bc
+agility_wyrm_advanced strong parts-carried	c05ce0db5dcb6e22
+agility_wyrm_advanced strong parts-carried-away	eb13d67991eab4bc
+agility_wyrm_advanced strong parts-in-bank	eb13d67991eab4bc
+agility_wyrm_advanced weak bank-empty	acf8a27d06285c9d
+agility_wyrm_advanced weak bank-empty-rich	acf8a27d06285c9d
+agility_wyrm_advanced weak bank-unknown	acf8a27d06285c9d
+agility_wyrm_advanced weak full-of-products	c05ce0db5dcb6e22
+agility_wyrm_advanced weak gear-carried	c05ce0db5dcb6e22
+agility_wyrm_advanced weak goal-reached	b5768ef0aad35e99
+agility_wyrm_advanced weak in-instance	c05ce0db5dcb6e22
+agility_wyrm_advanced weak kit-at-spot	c05ce0db5dcb6e22
+agility_wyrm_advanced weak kit-away	eb13d67991eab4bc
+agility_wyrm_advanced weak kit-worn-at-spot	c05ce0db5dcb6e22
+agility_wyrm_advanced weak owns-all-at-bank	eb13d67991eab4bc
+agility_wyrm_advanced weak owns-all-in-bank	eb13d67991eab4bc
+agility_wyrm_advanced weak parts-carried	c05ce0db5dcb6e22
+agility_wyrm_advanced weak parts-carried-away	eb13d67991eab4bc
+agility_wyrm_advanced weak parts-in-bank	eb13d67991eab4bc
+agility_wyrm_basic strong bank-empty	f3d5f79f58471505
+agility_wyrm_basic strong bank-empty-rich	f3d5f79f58471505
+agility_wyrm_basic strong bank-unknown	f3d5f79f58471505
+agility_wyrm_basic strong full-of-products	e57374edd646a786
+agility_wyrm_basic strong gear-carried	e57374edd646a786
+agility_wyrm_basic strong goal-reached	b5768ef0aad35e99
+agility_wyrm_basic strong in-instance	e57374edd646a786
+agility_wyrm_basic strong kit-at-spot	e57374edd646a786
+agility_wyrm_basic strong kit-away	87ad0f4512d33c5b
+agility_wyrm_basic strong kit-worn-at-spot	e57374edd646a786
+agility_wyrm_basic strong owns-all-at-bank	87ad0f4512d33c5b
+agility_wyrm_basic strong owns-all-in-bank	87ad0f4512d33c5b
+agility_wyrm_basic strong parts-carried	e57374edd646a786
+agility_wyrm_basic strong parts-carried-away	87ad0f4512d33c5b
+agility_wyrm_basic strong parts-in-bank	87ad0f4512d33c5b
+agility_wyrm_basic weak bank-empty	f3d5f79f58471505
+agility_wyrm_basic weak bank-empty-rich	f3d5f79f58471505
+agility_wyrm_basic weak bank-unknown	f3d5f79f58471505
+agility_wyrm_basic weak full-of-products	e57374edd646a786
+agility_wyrm_basic weak gear-carried	e57374edd646a786
+agility_wyrm_basic weak goal-reached	b5768ef0aad35e99
+agility_wyrm_basic weak in-instance	e57374edd646a786
+agility_wyrm_basic weak kit-at-spot	e57374edd646a786
+agility_wyrm_basic weak kit-away	87ad0f4512d33c5b
+agility_wyrm_basic weak kit-worn-at-spot	e57374edd646a786
+agility_wyrm_basic weak owns-all-at-bank	87ad0f4512d33c5b
+agility_wyrm_basic weak owns-all-in-bank	87ad0f4512d33c5b
+agility_wyrm_basic weak parts-carried	e57374edd646a786
+agility_wyrm_basic weak parts-carried-away	87ad0f4512d33c5b
+agility_wyrm_basic weak parts-in-bank	87ad0f4512d33c5b
 attack_al_kharid_warriors strong bank-empty	7743dc0d03aea014
 attack_al_kharid_warriors strong bank-empty-rich	7743dc0d03aea014
 attack_al_kharid_warriors strong bank-unknown	08dbdd5295a23a3a
@@ -5220,46 +5490,46 @@ mine_motherlode weak owns-all-in-bank	e3f91a41e1a7cee6
 mine_motherlode weak parts-carried	670984b67248c203
 mine_motherlode weak parts-carried-away	67a94370a697f513
 mine_motherlode weak parts-in-bank	e3f91a41e1a7cee6
-plan AGILITY 1 poor AFK	78f9d96dca984cf3
-plan AGILITY 1 poor Cheapest	813273a1fa0b1faf
-plan AGILITY 1 poor Fastest	813273a1fa0b1faf
-plan AGILITY 1 poor Profit	a8a848cbf689fa93
-plan AGILITY 1 poor Recommended	813273a1fa0b1faf
-plan AGILITY 1 rich AFK	790b81a90b3d6571
-plan AGILITY 1 rich Cheapest	09b7cebb12a93cc7
-plan AGILITY 1 rich Fastest	09b7cebb12a93cc7
-plan AGILITY 1 rich Profit	9111bfa3a0eea732
-plan AGILITY 1 rich Recommended	09b7cebb12a93cc7
-plan AGILITY 30 poor AFK	aff4336d1e6ba191
-plan AGILITY 30 poor Cheapest	035e5f17b19a4bb5
-plan AGILITY 30 poor Fastest	035e5f17b19a4bb5
-plan AGILITY 30 poor Profit	18fd70e1285bc2f3
-plan AGILITY 30 poor Recommended	035e5f17b19a4bb5
-plan AGILITY 30 rich AFK	c32039c1d49b3956
-plan AGILITY 30 rich Cheapest	dbb7b915675252d1
-plan AGILITY 30 rich Fastest	dbb7b915675252d1
-plan AGILITY 30 rich Profit	b309377a46a199c4
-plan AGILITY 30 rich Recommended	dbb7b915675252d1
-plan AGILITY 60 poor AFK	7730bc2a0477d76f
-plan AGILITY 60 poor Cheapest	2a2c85ecb98e8a20
-plan AGILITY 60 poor Fastest	2a2c85ecb98e8a20
-plan AGILITY 60 poor Profit	da8d6e9f40e3694b
-plan AGILITY 60 poor Recommended	2a2c85ecb98e8a20
-plan AGILITY 60 rich AFK	56fc05ed53213ef0
-plan AGILITY 60 rich Cheapest	a27f4b5d0c05e0cd
-plan AGILITY 60 rich Fastest	a27f4b5d0c05e0cd
-plan AGILITY 60 rich Profit	a81936b2ef5f150c
-plan AGILITY 60 rich Recommended	a27f4b5d0c05e0cd
-plan AGILITY 90 poor AFK	cecc4fb08a309533
-plan AGILITY 90 poor Cheapest	2cc9cb74d09fc9d6
-plan AGILITY 90 poor Fastest	2cc9cb74d09fc9d6
-plan AGILITY 90 poor Profit	eece55ed705e0541
-plan AGILITY 90 poor Recommended	2cc9cb74d09fc9d6
-plan AGILITY 90 rich AFK	196c0c70cc5f45ba
-plan AGILITY 90 rich Cheapest	5f19f5425f0e9447
-plan AGILITY 90 rich Fastest	5f19f5425f0e9447
-plan AGILITY 90 rich Profit	3f6a4435fd9bd60c
-plan AGILITY 90 rich Recommended	5f19f5425f0e9447
+plan AGILITY 1 poor AFK	6d2cfbdf49d780e3
+plan AGILITY 1 poor Cheapest	c4890afd67a94dcf
+plan AGILITY 1 poor Fastest	c4890afd67a94dcf
+plan AGILITY 1 poor Profit	f452d473d548e429
+plan AGILITY 1 poor Recommended	c4890afd67a94dcf
+plan AGILITY 1 rich AFK	339b04e865309bcc
+plan AGILITY 1 rich Cheapest	0a092db34aed3f1e
+plan AGILITY 1 rich Fastest	0a092db34aed3f1e
+plan AGILITY 1 rich Profit	f60a0b110bcb8275
+plan AGILITY 1 rich Recommended	0a092db34aed3f1e
+plan AGILITY 30 poor AFK	200168f8c93329c1
+plan AGILITY 30 poor Cheapest	d0fa28dde613ae5d
+plan AGILITY 30 poor Fastest	d0fa28dde613ae5d
+plan AGILITY 30 poor Profit	b582780ab2cd8731
+plan AGILITY 30 poor Recommended	d0fa28dde613ae5d
+plan AGILITY 30 rich AFK	da3cb2b47346a5de
+plan AGILITY 30 rich Cheapest	00594101be3e108c
+plan AGILITY 30 rich Fastest	00594101be3e108c
+plan AGILITY 30 rich Profit	a53fd40afc6df1bf
+plan AGILITY 30 rich Recommended	00594101be3e108c
+plan AGILITY 60 poor AFK	434ac86a4779a3e9
+plan AGILITY 60 poor Cheapest	b299135d9dcebce0
+plan AGILITY 60 poor Fastest	b299135d9dcebce0
+plan AGILITY 60 poor Profit	47447bf965522b54
+plan AGILITY 60 poor Recommended	b299135d9dcebce0
+plan AGILITY 60 rich AFK	9975b90fa1976ba8
+plan AGILITY 60 rich Cheapest	b046a90945b1ce2e
+plan AGILITY 60 rich Fastest	b046a90945b1ce2e
+plan AGILITY 60 rich Profit	0be668410443a094
+plan AGILITY 60 rich Recommended	b046a90945b1ce2e
+plan AGILITY 90 poor AFK	8a19b728cb37cc8b
+plan AGILITY 90 poor Cheapest	5f9722b9fd780b45
+plan AGILITY 90 poor Fastest	5f9722b9fd780b45
+plan AGILITY 90 poor Profit	496b11ba83ad67fb
+plan AGILITY 90 poor Recommended	5f9722b9fd780b45
+plan AGILITY 90 rich AFK	70278b27e6787931
+plan AGILITY 90 rich Cheapest	f7d8a68db29fa8cd
+plan AGILITY 90 rich Fastest	f7d8a68db29fa8cd
+plan AGILITY 90 rich Profit	31a682be94430a4d
+plan AGILITY 90 rich Recommended	f7d8a68db29fa8cd
 plan ATTACK 1 poor AFK	64acc2333ac8860f
 plan ATTACK 1 poor Cheapest	38078ec52cbfe491
 plan ATTACK 1 poor Fastest	38078ec52cbfe491
