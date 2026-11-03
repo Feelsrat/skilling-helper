@@ -231,7 +231,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.unregister(tog);
 		eventBus.unregister(plunder);
 		eventBus.unregister(blackjack);
-		blackjack.setActive(false);
+		blackjack.setActive(false, false);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(tearsOverlay);
 		overlayManager.remove(plunderOverlay);
@@ -314,7 +314,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		plunder.setSwapEnabled(config.plunderSwapUrns());
 		plunder.setCharmOn(config.plunderSnakeCharm());
 		plunder.tick(plunderGuideOpen(activeSkill), config.plunderSceptreHunt());
-		blackjack.setActive(config.blackjackSwap() && blackjackGuideOpen(activeSkill));
+		blackjack.setActive(blackjackGuideOpen(activeSkill), config.blackjackSwap());
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
 	}
@@ -851,6 +851,16 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (PyramidPlunder.METHOD_ID.equals(method.getId()) || (skill == Skill.THIEVING && plunder.isInRound()))
 		{
 			step = plunderStep(step, state);
+		}
+		if (BlackjackSwapper.METHOD_ID.equals(method.getId()) && blackjack.getAttacker() != null
+			&& step.getType() != StepType.DONE)
+		{
+			GuideStep.GuideStepBuilder combat = step.toBuilder().title("Get out of combat").clearDetails();
+			for (String line : BlackjackSwapper.combatLines())
+			{
+				combat.line(line);
+			}
+			step = combat.build();
 		}
 		return b.method(method)
 			.forced(forced != null && forced == method)

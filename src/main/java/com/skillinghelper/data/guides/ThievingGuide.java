@@ -191,7 +191,7 @@ final class ThievingGuide
 				.name("Blackjacking (Pollnivneach)")
 				.minLevel(45)
 				.xpPerAction(65)
-				.xpPerHour(60_000)
+				.xpPerHour(86_000)
 				.members(true)
 				.tag(MethodTag.FAST)
 				.location(Location.of("Pollnivneach", 3350, 2960, 25))
@@ -200,13 +200,24 @@ final class ThievingGuide
 				.requirementText("A blackjack (any kind)")
 				.supply(Supplies.food(15))
 				.target(Target.npc(null, "Bandit", "Menaphite Thug"))
-				.instruction("Lure a bandit into an empty house, knock it out, then pickpocket it twice while it's out. "
-					+ "With \"Left-click Knock-Out/Pickpocket\" on (the default), just left-click it: the plugin "
-					+ "switches between the two for you (hold Shift for the normal menu)")
-				.notes("Bearded bandits from 45, beardless from 55, Menaphite Thugs from 65. Quit and re-lure when a "
-					+ "knock-out fails. Only part of The Feud is needed. " + POUCHES)
+				.instruction("Lure a bandit into an empty house and shut the curtain. Click Knock-Out, then Pickpocket "
+					+ "straight away, then Pickpocket again the moment the first xp drop shows: two guaranteed "
+					+ "pickpockets while it's out. If a knock-out fails, click Knock-Out again at once. With "
+					+ "\"Left-click Knock-Out/Pickpocket\" on (the default), the left-click follows this for you "
+					+ "(hold Shift for the normal menu)")
+				.notes("Failed knock-outs are a plain roll on your Thieving level (about 59% success at 45, 72% at 65, "
+					+ "94% at 99); the blackjack and the target don't change it, so failing a lot at low levels is "
+					+ "normal. What costs xp is combat: a failed knock-out makes it aggressive, and Knock-Out again "
+					+ "straight away resets that before it hits. Keep your inventory full with inventory-blocking "
+					+ "food (jugs of wine from Faisal at the bar, or noted food unnoted at the Banknote Exchange "
+					+ "Merchant), so a mistimed Pickpocket on an awake bandit does nothing instead of stunning you. "
+					+ "If it does start attacking, unequip the blackjack and click Knock-Out to stop it; no need to "
+					+ "run. Bearded bandits from 45, beardless from 55 (Ali the Dyer's house in the north has a "
+					+ "ladder to reset), Menaphite Thugs from 65 (the house next to the bar). Rogue equipment "
+					+ "doubles the coins. Only part of The Feud is needed.")
 				.wikiPage("Blackjack")
-				.rateAt(55, 90_000).rateAt(65, 150_000).rateAt(85, 200_000)
+				.rateAt(50, 90_000).rateAt(55, 121_000).rateAt(60, 126_000).rateAt(65, 209_000)
+				.rateAt(75, 226_000).rateAt(85, 241_000).rateAt(99, 261_000)
 				.build(),
 			Method.builder()
 				.id("thieve_artefacts")
