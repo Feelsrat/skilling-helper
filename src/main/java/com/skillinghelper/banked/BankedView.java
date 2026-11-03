@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
+import net.runelite.api.Skill;
 
 /**
  * Everything the panel shows, built on the client thread each tick. The panel only redraws when it changes.
@@ -19,6 +20,15 @@ public class BankedView
 	boolean loggedIn;
 	boolean bankKnown;
 	boolean running;
+	/**
+	 * The skill the player wants to train, or null for all of them.
+	 */
+	Skill focus;
+	/**
+	 * Skills with a use for something in the bank, for the picker.
+	 */
+	@Builder.Default
+	List<Skill> skills = Collections.emptyList();
 	@Builder.Default
 	List<BankedPlanner.Group> groups = Collections.emptyList();
 	@Builder.Default

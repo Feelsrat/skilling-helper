@@ -25,6 +25,7 @@ public final class BankedActivities
 	public static final Location AL_KHARID_RANGE = Location.of("Al Kharid range", 3273, 3180, 3);
 	private static final Location EDGEVILLE_FURNACE = Location.of("Edgeville furnace", 3109, 3499, 4);
 	private static final Location VARROCK_ANVIL = Location.of("Varrock West anvils", 3188, 3425, 4);
+	private static final Location SAWMILL = Location.of("Varrock sawmill", 3302, 3491, 5);
 	private static final Location HOUSE_PORTAL = Location.of("Rimmington house portal", 2954, 3224, 8);
 
 	private static final ItemReq KNIFE = ItemReq.tool("Knife", ItemID.KNIFE);
@@ -716,19 +717,29 @@ public final class BankedActivities
 
 	// ---- Construction ----
 
+	/**
+	 * House builds. They join the log groups, so oak, teak and mahogany logs can go to Construction instead of being
+	 * burnt or fletched: the guide has the logs made into planks at the sawmill. Planks already in the bank count too.
+	 */
 	private static void construction(List<BankedActivity> a)
 	{
-		build(a, "banked_con_oak_chairs", "Oak chairs", 19, 120, 2, "Oak planks", ItemID.PLANK_OAK, "Chair space");
-		build(a, "banked_con_oak_larders", "Oak larders", 33, 480, 8, "Oak planks", ItemID.PLANK_OAK, "Larder space");
-		build(a, "banked_con_teak_tables", "Teak tables", 38, 360, 4, "Teak planks", ItemID.PLANK_TEAK,
-			"Table space");
+		build(a, "banked_con_oak_chairs", "Oak chairs", 19, 120, 2, "Oak planks", ItemID.PLANK_OAK, "Oak logs",
+			ItemID.OAK_LOGS, 250, "Chair space");
+		build(a, "banked_con_oak_larders", "Oak larders", 33, 480, 8, "Oak planks", ItemID.PLANK_OAK, "Oak logs",
+			ItemID.OAK_LOGS, 250, "Larder space");
+		build(a, "banked_con_teak_tables", "Teak tables", 38, 360, 4, "Teak planks", ItemID.PLANK_TEAK, "Teak logs",
+			ItemID.TEAK_LOGS, 500, "Table space");
 		build(a, "banked_con_mahogany_tables", "Mahogany tables", 52, 840, 6, "Mahogany planks",
-			ItemID.PLANK_MAHOGANY, "Table space");
+			ItemID.PLANK_MAHOGANY, "Mahogany logs", ItemID.MAHOGANY_LOGS, 1_500, "Table space");
 	}
 
 	private static void build(List<BankedActivity> a, String id, String name, int level, double xp, int planks,
-		String plankName, int plank, String space)
+		String plankName, int plank, String logName, int logs, int fee, String space)
 	{
+		ItemReq sawn = ItemReq.consumed(plankName, 24, planks, plank)
+			.madeFrom("Buy-plank from the sawmill operator: " + logName.toLowerCase() + " and " + fee + " gp per plank",
+				true, ItemReq.part(logName, 1, logs), ItemReq.stack("Coins", fee, ItemID.COINS))
+			.madeAt(SAWMILL, Target.npc("Buy-plank", "Sawmill operator"));
 		Method m = Method.builder()
 			.id(id)
 			.skill(Skill.CONSTRUCTION)
@@ -742,15 +753,25 @@ public final class BankedActivities
 			.instanced(true)
 			.bank(Banks.GRAND_EXCHANGE)
 			.tool(HAMMER).tool(SAW)
-			.input(ItemReq.consumed(plankName, 24, planks, plank))
+			.input(sawn)
 			.target(Target.object("Build", space))
 			.target(Target.object("Remove", name.substring(0, name.length() - 1)))
 			.instruction("Enter your house in build mode, build " + name.toLowerCase() + " in the "
 				+ space.toLowerCase() + ", remove them and build again")
-			.notes("A servant (or Phials in Rimmington for noted planks) saves most of the walking.")
+			.notes("Your " + logName.toLowerCase() + " are made into planks at the sawmill first (" + fee
+				+ " gp each). A servant (or Phials in Rimmington for noted planks) saves most of the walking.")
 			.wikiPage("Construction_training")
 			.build();
-		a.add(activity(m, BankedActivity.Place.FIXED, plankName, plank, planks, 0, plank));
+		a.add(BankedActivity.builder()
+			.method(m)
+			.place(BankedActivity.Place.FIXED)
+			.group(groupKey(logs))
+			.itemName(logName)
+			.iconId(logs)
+			.countIds(new int[]{plank, logs})
+			.perAction(planks)
+			.stage(0)
+			.build());
 	}
 
 	// ---- Helpers ----

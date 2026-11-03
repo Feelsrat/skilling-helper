@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -43,6 +44,7 @@ public class BankedXpPanel extends PluginPanel
 	private static final Color BAD = GuideUi.BAD;
 	private static final Color MUTED = GuideUi.MUTED;
 	private static final String SKIP_LABEL = "Don't use these";
+	private static final String ALL_SKILLS = "All skills";
 
 	public interface Listener
 	{
@@ -54,6 +56,11 @@ public class BankedXpPanel extends PluginPanel
 		 * @param choice an activity id, or {@link BankedPlanner#SKIP}
 		 */
 		void onChoice(String group, String choice);
+
+		/**
+		 * @param skill the skill to train, or null for all of them
+		 */
+		void onFocus(Skill skill);
 
 		void onToggleBankFilter();
 
@@ -67,6 +74,9 @@ public class BankedXpPanel extends PluginPanel
 	private final JPanel list = column();
 
 	private List<BankedPlanner.Group> shownGroups;
+	private final JPanel focusBox = column();
+	private final JComboBox<Object> skillPicker = new JComboBox<>();
+	private List<Skill> shownSkills;
 	private boolean updating;
 
 	public BankedXpPanel(Listener listener, ItemManager itemManager)
@@ -90,6 +100,31 @@ public class BankedXpPanel extends PluginPanel
 		add(header, BorderLayout.NORTH);
 
 		JPanel content = column();
+		focusBox.add(GuideUi.subheading("Train"));
+		skillPicker.setToolTipText("Pick one skill to keep the rest of your bank for other skills, e.g. logs for "
+			+ "Construction instead of burning them");
+		skillPicker.setRenderer(new DefaultListCellRenderer()
+		{
+			@Override
+			public Component getListCellRendererComponent(JList<?> l, Object value, int index, boolean selected,
+				boolean focus)
+			{
+				super.getListCellRendererComponent(l, value, index, selected, focus);
+				setText(value instanceof Skill ? ((Skill) value).getName() + " only" : ALL_SKILLS);
+				return this;
+			}
+		});
+		skillPicker.addActionListener(e ->
+		{
+			if (!updating)
+			{
+				Object picked = skillPicker.getSelectedItem();
+				listener.onFocus(picked instanceof Skill ? (Skill) picked : null);
+			}
+		});
+		focusBox.add(full(skillPicker));
+		focusBox.add(Box.createVerticalStrut(8));
+		content.add(focusBox);
 		content.add(guideBox);
 		content.add(Box.createVerticalStrut(8));
 		content.add(totalsBox);
@@ -115,6 +150,7 @@ public class BankedXpPanel extends PluginPanel
 		updating = true;
 		try
 		{
+			showFocus(view);
 			showGuide(view);
 			showTotals(view);
 			if (!Objects.equals(shownGroups, view.getGroups()))
@@ -129,6 +165,29 @@ public class BankedXpPanel extends PluginPanel
 		}
 		revalidate();
 		repaint();
+	}
+
+	// ---- Skill picker ----
+
+	private void showFocus(BankedView view)
+	{
+		focusBox.setVisible(view.isBankKnown() && (!view.getSkills().isEmpty() || view.getFocus() != null));
+		if (!Objects.equals(shownSkills, view.getSkills()))
+		{
+			shownSkills = view.getSkills();
+			skillPicker.removeAllItems();
+			skillPicker.addItem(ALL_SKILLS);
+			for (Skill skill : view.getSkills())
+			{
+				skillPicker.addItem(skill);
+			}
+		}
+		if (view.getFocus() != null && !view.getSkills().contains(view.getFocus()))
+		{
+			skillPicker.addItem(view.getFocus());
+			shownSkills = null;
+		}
+		skillPicker.setSelectedItem(view.getFocus() == null ? ALL_SKILLS : view.getFocus());
 	}
 
 	// ---- The guide ----
@@ -151,7 +210,9 @@ public class BankedXpPanel extends PluginPanel
 			List<BankedPlanner.Option> queue = view.getQueue();
 			if (queue.isEmpty())
 			{
-				guideBox.add(text("Nothing in your bank can be used for xp at your levels right now.", MUTED));
+				guideBox.add(text(view.getFocus() == null
+					? "Nothing in your bank can be used for xp at your levels right now."
+					: "Nothing in your bank trains " + view.getFocus().getName() + " at your level right now.", MUTED));
 				return;
 			}
 			long xp = queue.stream().mapToLong(BankedPlanner.Option::getXp).sum();

@@ -40,6 +40,7 @@ import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
+import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -79,6 +80,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 {
 	private static final String WIKI_URL = "https://oldschool.runescape.wiki/w/";
 	private static final String CHOICE_PREFIX = "choice.";
+	private static final String FOCUS_KEY = "focusSkill";
 	private static final String SKILLING_HELPER_BANK_TIP = "Tip: press the Skilling Helper button";
 	private static final String BANK_TIP = "Tip: press the Banked XP button in the bank to show only these items.";
 	private static final int QUEST_REFRESH_TICKS = 100;
@@ -132,6 +134,10 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 
 	private final Set<Quest> completedQuests = EnumSet.noneOf(Quest.class);
 	private final Map<String, String> choices = new HashMap<>();
+	/**
+	 * The skill the player picked to train, or null for every skill.
+	 */
+	private Skill focus;
 	private int questCountdown;
 	private boolean profileLoaded;
 	/**
@@ -312,6 +318,15 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 				choices.put(a.getGroup(), saved);
 			}
 		}
+		String savedFocus = configManager.getRSProfileConfiguration(BankedXpConfig.GROUP, FOCUS_KEY);
+		focus = null;
+		for (Skill skill : Skill.values())
+		{
+			if (skill.name().equals(savedFocus))
+			{
+				focus = skill;
+			}
+		}
 		refreshQuests();
 		profileLoaded = true;
 	}
@@ -373,7 +388,8 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			return;
 		}
 
-		List<BankedPlanner.Group> groups = planner.groups(state, choices);
+		List<BankedPlanner.Group> groups = planner.groups(state, choices, focus);
+		view.focus(focus).skills(planner.skillsWithUses(state));
 		List<BankedPlanner.Option> queue = BankedPlanner.queue(groups);
 		view.groups(groups).queue(queue).totals(BankedPlanner.totals(queue, state));
 
@@ -530,6 +546,31 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
 				configManager.setRSProfileConfiguration(BankedXpConfig.GROUP, CHOICE_PREFIX + group, choice);
+			}
+			refresh();
+		});
+	}
+
+	@Override
+	public void onFocus(Skill skill)
+	{
+		clientThread.invokeLater(() ->
+		{
+			if (focus == skill)
+			{
+				return;
+			}
+			focus = skill;
+			if (client.getGameState() == GameState.LOGGED_IN)
+			{
+				if (skill == null)
+				{
+					configManager.unsetRSProfileConfiguration(BankedXpConfig.GROUP, FOCUS_KEY);
+				}
+				else
+				{
+					configManager.setRSProfileConfiguration(BankedXpConfig.GROUP, FOCUS_KEY, skill.name());
+				}
 			}
 			refresh();
 		});

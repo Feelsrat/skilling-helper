@@ -71,6 +71,31 @@ public class BankedPlannerTest
 	}
 
 	@Test
+	public void aSkillFocusKeepsItemsForThatSkill()
+	{
+		Map<Integer, Integer> bank = new HashMap<>();
+		bank.put(ItemID.OAK_LOGS, 80);
+		bank.put(ItemID.PLANK_OAK, 16);
+		bank.put(ItemID.DRAGON_BONES, 10);
+		PlayerState s = state(bank, 99);
+
+		List<BankedPlanner.Group> construction = planner.groups(s, Collections.emptyMap(), Skill.CONSTRUCTION);
+		BankedPlanner.Group oak = only(construction);
+		assertEquals(96, oak.getCount());
+		assertEquals("banked_con_oak_larders", oak.getChosen().getActivity().getId());
+		assertEquals(12, oak.getChosen().getActions());
+
+		List<BankedPlanner.Group> firemaking = planner.groups(s, Collections.emptyMap(), Skill.FIREMAKING);
+		assertEquals("banked_burn_oak_logs", only(firemaking).getChosen().getActivity().getId());
+
+		// A saved choice for another skill doesn't apply while focused
+		Map<String, String> choices = Map.of(oak.getKey(), "banked_burn_oak_logs");
+		assertEquals("banked_con_oak_larders",
+			only(planner.groups(s, choices, Skill.CONSTRUCTION)).getChosen().getActivity().getId());
+		assertEquals(2, planner.groups(s, choices, null).size());
+	}
+
+	@Test
 	public void lockedActivitiesAreNotChosen()
 	{
 		PlayerState s = state(Map.of(ItemID.YEW_LOGS, 10), 30);

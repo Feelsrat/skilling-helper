@@ -13,6 +13,9 @@ import com.skillinghelper.engine.StepResolver;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,12 +87,19 @@ public final class BankedPlanner
 		int levelAfter;
 	}
 
+	public List<Group> groups(PlayerState s, Map<String, String> choices)
+	{
+		return groups(s, choices, null);
+	}
+
 	/**
 	 * Every group with at least one item in the bank or inventory, biggest xp first.
 	 *
 	 * @param choices saved activity id (or {@link #SKIP}) per group key
+	 * @param focus   only use items for this skill, so items another skill needs aren't used up (logs kept for
+	 *                Construction instead of burnt); null for every skill
 	 */
-	public List<Group> groups(PlayerState s, Map<String, String> choices)
+	public List<Group> groups(PlayerState s, Map<String, String> choices, Skill focus)
 	{
 		Map<String, List<BankedActivity>> byGroup = new LinkedHashMap<>();
 		for (BankedActivity a : BankedActivities.all())
@@ -100,7 +110,7 @@ public final class BankedPlanner
 		for (Map.Entry<String, List<BankedActivity>> e : byGroup.entrySet())
 		{
 			BankedActivity first = e.getValue().get(0);
-			int count = first.itemCount(s);
+			int count = s.owned(allIds(e.getValue()));
 			if (count <= 0)
 			{
 				continue;
@@ -108,7 +118,14 @@ public final class BankedPlanner
 			List<Option> options = new ArrayList<>();
 			for (BankedActivity a : e.getValue())
 			{
-				options.add(new Option(a, a.actions(s), a.xp(s), lockReason(a, s)));
+				if (focus == null || a.getSkill() == focus)
+				{
+					options.add(new Option(a, a.actions(s), a.xp(s), lockReason(a, s)));
+				}
+			}
+			if (options.isEmpty())
+			{
+				continue;
 			}
 			String saved = choices.get(e.getKey());
 			boolean skipped = SKIP.equals(saved);
@@ -119,6 +136,35 @@ public final class BankedPlanner
 		groups.sort(Comparator.comparingLong((Group g) -> g.getChosen() == null ? -1 : g.getChosen().getXp())
 			.reversed());
 		return groups;
+	}
+
+	/**
+	 * Skills that have a use for something in the bank, for the skill picker.
+	 */
+	public List<Skill> skillsWithUses(PlayerState s)
+	{
+		Set<Skill> skills = EnumSet.noneOf(Skill.class);
+		for (BankedActivity a : BankedActivities.all())
+		{
+			if (!skills.contains(a.getSkill()) && a.itemCount(s) > 0)
+			{
+				skills.add(a.getSkill());
+			}
+		}
+		return new ArrayList<>(skills);
+	}
+
+	private static int[] allIds(List<BankedActivity> activities)
+	{
+		Set<Integer> ids = new LinkedHashSet<>();
+		for (BankedActivity a : activities)
+		{
+			for (int id : a.getCountIds())
+			{
+				ids.add(id);
+			}
+		}
+		return ids.stream().mapToInt(Integer::intValue).toArray();
 	}
 
 	/**
