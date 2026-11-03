@@ -10,7 +10,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   3. The plugin panel is a desktop-style sidebar on the right edge (SidePanel.kt.txt) instead of a bottom sheet.
   4. Plugin Hub search works like desktop: ranked results, tags, install counts (HubSearch.kt.txt).
   5. Taps in rendered plugin panels reach the component that listens for them, like desktop AWT does.
-  6. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  6. Panels: hover events before a tap, faster and cheaper refresh, a narrower desktop-sized panel; compact hub rows.
+  7. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -173,9 +174,20 @@ patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge
 			}
 			// Skilling Helper build: retarget like AWT's LightweightDispatcher, to the nearest component that
 			// listens for mouse events (a label inside a clickable row hands the click to the row).
+			// A listener that is only Swing's ToolTipManager (any component with a tooltip has one) does not count,
+			// else a label with a tooltip inside a clickable row would swallow the row's click.
 			for (Component c = target; c != null; c = c.getParent())
 			{
-				if (c.getMouseListeners().length > 0)
+				boolean listens = false;
+				for (java.awt.event.MouseListener ml : c.getMouseListeners())
+				{
+					if (!(ml instanceof javax.swing.ToolTipManager))
+					{
+						listens = true;
+						break;
+					}
+				}
+				if (listens)
 				{
 					target = c;
 					break;
@@ -191,3 +203,93 @@ patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge
 patch("android/app/src/main/java/dev/audaro/runemobile/PanelView.kt",
 	"    val cy = originY + ((off.y + scrollY) - originY - pan.y) / scale\n",
 	"    val cy = originY + (off.y - originY - pan.y) / scale // Skilling Helper build: off.y already includes the scroll\n")
+
+# 6a. Send MOUSE_ENTERED before the press (some panels only act on a row the mouse is over) and MOUSE_EXITED after.
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, when, mods, p.x, p.y, 1, false, MouseEvent.BUTTON1));""",
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_ENTERED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_MOVED, when, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_PRESSED, when, mods, p.x, p.y, 1, false, MouseEvent.BUTTON1));""")
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, 1, false, MouseEvent.BUTTON1));""",
+	"""			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_CLICKED, when + 2, 0, p.x, p.y, 1, false, MouseEvent.BUTTON1));
+			target.dispatchEvent(new MouseEvent(target, MouseEvent.MOUSE_EXITED, when + 3, 0, p.x, p.y, 0, false, MouseEvent.NOBUTTON));""")
+
+pv = "android/app/src/main/java/dev/audaro/runemobile/PanelView.kt"
+# 6b. Narrower panel column: ~1.15 dp per Swing px instead of ~1.4, so more of a panel fits on screen.
+patch(pv, "private val PANEL_MAX_DP = 340.dp", "private val PANEL_MAX_DP = 280.dp // Skilling Helper build (was 340)")
+# 6c. Poll the frame counter and copy the (large) pixel buffer only when it changed, and poll faster so a tap shows.
+patch(pv,
+	"""            val s =
+                withContext(Dispatchers.IO) {
+                    JvmLauncher
+                        .onBridge {
+                            PanelSnap(
+                                JvmLauncher.panelWidth(),
+                                JvmLauncher.panelHeight(),
+                                JvmLauncher.panelFrameSeq(),
+                                JvmLauncher.panelPixels(),
+                            )
+                        }.get()
+                }""",
+	"""            val s =
+                withContext(Dispatchers.IO) {
+                    JvmLauncher
+                        .onBridge {
+                            // Skilling Helper build: skip the pixel copy when nothing was redrawn.
+                            val seqNow = JvmLauncher.panelFrameSeq()
+                            PanelSnap(
+                                JvmLauncher.panelWidth(),
+                                JvmLauncher.panelHeight(),
+                                seqNow,
+                                if (seqNow != lastSeq) JvmLauncher.panelPixels() else null,
+                            )
+                        }.get()
+                }""")
+patch(pv, """            delay(400)
+        }""", """            delay(150) // Skilling Helper build (was 400)
+        }""")
+
+# 6d. Sidebar width to match the narrower panel column.
+pp2 = root / "android/app/src/main/java/dev/audaro/runemobile/PluginPanel.kt"
+t = pp2.read_text()
+old_w = "val maxW = with(density) { 380.dp.toPx() }"
+if old_w not in t:
+	sys.exit("patch.py: sidebar width anchor missing")
+pp2.write_text(t.replace(old_w, "val maxW = with(density) { 300.dp.toPx() }").replace(
+	"val minW = with(density) { 280.dp.toPx() }", "val minW = with(density) { 280.dp.toPx() }"))
+print("patched PluginPanel.kt (sidebar width)")
+
+# 6e. Compact hub rows: name on one line, then author / version / installs on one line, description 2 lines.
+patch(hub,
+	"""            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(p.displayName, color = if (unavailable) Color(0xFF9E9E9E) else Color.White, fontSize = 15.sp)
+                if (!p.author.isNullOrBlank()) {
+                    Text("  by ${p.author}", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+                if (!p.version.isNullOrBlank()) {
+                    Text("  v${p.version}", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+                if (p.installs > 0) {
+                    Text("  ${formatInstalls(p.installs)} installs", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+            }
+""",
+	"""            // Skilling Helper build: one line each, so a long name or author never stacks the row up word by word.
+            Text(
+                p.displayName,
+                color = if (unavailable) Color(0xFF9E9E9E) else Color.White,
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            val meta =
+                listOfNotNull(
+                    p.author?.takeIf { it.isNotBlank() },
+                    p.version?.takeIf { it.isNotBlank() }?.let { "v$it" },
+                    p.installs.takeIf { it > 0 }?.let { "${formatInstalls(it)} installs" },
+                ).joinToString(" · ")
+            if (meta.isNotEmpty()) {
+                Text(meta, color = Color(0xFF9A9A9A), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+""")
