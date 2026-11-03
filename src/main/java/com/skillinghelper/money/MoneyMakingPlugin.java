@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.OpenMethodRequest;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartPvmGuideRequest;
+import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.guides.GuideRepository;
@@ -301,14 +302,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			return;
 		}
-		Map<Integer, Integer> counts = new HashMap<>();
-		for (Item item : e.getItemContainer().getItems())
-		{
-			if (item.getId() > 0)
-			{
-				counts.merge(itemManager.canonicalize(item.getId()), item.getQuantity(), Integer::sum);
-			}
-		}
+		Map<Integer, Integer> counts = BankItems.count(e.getItemContainer(), itemManager);
 		boolean first = bankCounts == null;
 		bankCounts = counts;
 		if (first)

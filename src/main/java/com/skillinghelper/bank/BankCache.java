@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
@@ -49,16 +48,7 @@ public class BankCache
 
 	public void update(ItemContainer container)
 	{
-		Map<Integer, Integer> counts = new HashMap<>();
-		for (Item item : container.getItems())
-		{
-			if (item.getId() <= 0 || item.getQuantity() <= 0)
-			{
-				continue;
-			}
-			counts.merge(itemManager.canonicalize(item.getId()), item.getQuantity(), Integer::sum);
-		}
-		bank = new ItemCounts(counts);
+		bank = new ItemCounts(BankItems.count(container, itemManager));
 		dirty = true;
 	}
 

@@ -3,6 +3,7 @@ package com.skillinghelper.pvm;
 import com.google.inject.Provides;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
+import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.engine.PriceLookup;
@@ -439,18 +440,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			bankOwned.clear();
 			bankCounts.clear();
-			for (Item item : e.getItemContainer().getItems())
+			BankItems.count(e.getItemContainer(), itemManager).forEach((canon, qty) ->
 			{
-				if (item.getId() > 0)
+				if (trackedItems.contains(canon))
 				{
-					int canon = itemManager.canonicalize(item.getId());
-					if (trackedItems.contains(canon))
-					{
-						bankOwned.add(canon);
-						bankCounts.merge(canon, item.getQuantity(), Integer::sum);
-					}
+					bankOwned.add(canon);
+					bankCounts.put(canon, qty);
 				}
-			}
+			});
 			bankSeen = true;
 			configManager.setRSProfileConfiguration(GROUP, KEY_BANK, bankOwned.stream().map(String::valueOf)
 				.collect(Collectors.joining(",")));
@@ -1137,6 +1134,12 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			{
 				log.debug("Bad bank count entry {}", entry);
 			}
+		}
+		if (counts != null)
+		{
+			// Saves from before placeholders were skipped can list an item with 0 left
+			bankOwned.removeIf(id -> bankCounts.getOrDefault(id, 0) <= 0);
+			bankCounts.values().removeIf(q -> q <= 0);
 		}
 		// Older saves only have what's owned, not how many: the bank needs opening once for exact amounts
 		bankSeen = counts != null;
