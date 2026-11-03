@@ -47,6 +47,7 @@ class MoneyBankFilter
 	@Getter
 	private boolean active;
 	private Widget button;
+	private long lastTap;
 
 	@Inject
 	MoneyBankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
@@ -97,12 +98,29 @@ class MoneyBankFilter
 		}
 	}
 
+	/**
+	 * A tap on the bank button. Runs after the click is done rather than inside it, and ignores a second op for
+	 * the same tap, in case a touch client delivers one tap twice (that would switch the filter on and off again).
+	 */
+	private void buttonTapped()
+	{
+		long now = System.currentTimeMillis();
+		if (now - lastTap < 400)
+		{
+			return;
+		}
+		lastTap = now;
+		setActive(!active);
+	}
+
 	private void setActive(boolean on)
 	{
 		active = on;
 		configManager.setConfiguration(MoneyMakingConfig.GROUP, KEY_ON, on);
 		updateButton();
 		relayout();
+		// Once more after this tick's scripts, in case the first layout ran too early to show
+		clientThread.invokeLater(this::relayout);
 	}
 
 	@Subscribe
@@ -178,7 +196,7 @@ class MoneyBankFilter
 		button.setItemQuantityMode(ItemQuantityMode.NEVER);
 		button.setHasListener(true);
 		button.setName("<col=ff9040>Money Making supplies</col>");
-		button.setOnOpListener((JavaScriptCallback) ev -> setActive(!active));
+		button.setOnOpListener((JavaScriptCallback) ev -> clientThread.invokeLater(this::buttonTapped));
 		updateButton();
 		button.revalidate();
 	}

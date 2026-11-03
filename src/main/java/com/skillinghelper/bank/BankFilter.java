@@ -48,6 +48,7 @@ public class BankFilter
 	@Getter
 	private boolean active;
 	private Widget button;
+	private long lastTap;
 
 	@Inject
 	BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
@@ -114,10 +115,33 @@ public class BankFilter
 		this.active = active;
 		configManager.setConfiguration(options.getConfigGroup(), "bankFilterOn", active);
 		updateButton();
-		if (client.getItemContainer(InventoryID.BANK) != null)
+		if (client.getItemContainer(InventoryID.BANK) != null && client.getWidget(InterfaceID.Bankmain.ITEMS) != null)
 		{
 			bankSearch.layoutBank();
+			// Once more after this tick's scripts, in case the first layout ran too early to show
+			clientThread.invokeLater(() ->
+			{
+				if (client.getWidget(InterfaceID.Bankmain.ITEMS) != null)
+				{
+					bankSearch.layoutBank();
+				}
+			});
 		}
+	}
+
+	/**
+	 * A tap on the bank button. Runs after the click is done rather than inside it, and ignores a second op for
+	 * the same tap, in case a touch client delivers one tap twice (that would switch the filter on and off again).
+	 */
+	private void buttonTapped()
+	{
+		long now = System.currentTimeMillis();
+		if (now - lastTap < 400)
+		{
+			return;
+		}
+		lastTap = now;
+		setActive(!active);
 	}
 
 	public void shutDown()
@@ -207,7 +231,7 @@ public class BankFilter
 		button.setHasListener(true);
 		button.setAction(0, "Toggle");
 		button.setName("<col=ff9040>" + options.getLabel() + "</col>");
-		button.setOnOpListener((JavaScriptCallback) ev -> setActive(!active));
+		button.setOnOpListener((JavaScriptCallback) ev -> clientThread.invokeLater(this::buttonTapped));
 		updateButton();
 		button.revalidate();
 	}
