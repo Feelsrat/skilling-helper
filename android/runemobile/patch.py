@@ -583,3 +583,23 @@ patch(ma,
                         fitGameStage()
                     }
 """)
+
+# 15. Closing the keyboard. The poll re-raised it on the next frame while a game field stayed open, so it could not
+# be closed (e.g. to see the whole fairy ring dial). A close by the user now holds until that field closes; the ⌨
+# button brings the keyboard back.
+patch(ma,
+	"""                        imeWasShown = imeShown
+                        val want = manualKeyboard || mapSearchKeyboard || JvmLauncher.isTextInputOpen()""",
+	"""                        // Skilling Helper build: respect a close while a game field is open (see patch.py step 15)
+                        val shField = JvmLauncher.isTextInputOpen()
+                        if (imeWasShown && !imeShown && keyboardShown && shField && !manualKeyboard && !mapSearchKeyboard) {
+                            shImeDismissed = true
+                            Log.i(TAG, "sh: user closed the keyboard over a game field -> stay closed until it closes")
+                        }
+                        if (!shField || manualKeyboard) shImeDismissed = false
+                        imeWasShown = imeShown
+                        val want = manualKeyboard || mapSearchKeyboard || (shField && !shImeDismissed)""")
+patch(ma,
+	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n",
+	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n"
+	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n")
