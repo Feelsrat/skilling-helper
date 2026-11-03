@@ -320,9 +320,13 @@ void start(void)
 	p = append(p, java);
 	/* Java's compiled code crashed under GameNative's x86 emulation (EXCEPTION_ACCESS_VIOLATION in C1 code).
 	   HotSpot normally turns null checks into deliberate memory faults, which an emulator can mishandle, so use
-	   explicit checks, and the simpler C1 compiler only. Crash reports go next to the log in Download. */
+	   explicit checks, and the simpler C1 compiler only. Crash reports go next to the log in Download.
+	   The next crash was in a vtable stub decoding a compressed class pointer, so use full 64-bit pointers.
+	   Serial GC keeps Java to one GC thread (less emulation work), and Java2D's Direct3D path is off. */
 	p = append(p, L"\" -ea -Xmx1g -XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockDiagnosticVMOptions"
-		L" -XX:-ImplicitNullChecks -XX:TieredStopAtLevel=1 -XX:ErrorFile=D:\\SkillingHelper-crash-%p.log"
+		L" -XX:-ImplicitNullChecks -XX:TieredStopAtLevel=1 -XX:-UseCompressedOops -XX:-UseCompressedClassPointers"
+		L" -XX:+UseSerialGC -Dsun.java2d.d3d=false -Dsun.java2d.noddraw=true"
+		L" -XX:ErrorFile=D:\\SkillingHelper-crash-%p.log"
 		L" \"-Duser.home=");
 	p = append(p, home);
 	p = append(p, L"\" -jar \"");
