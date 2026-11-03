@@ -6,6 +6,7 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
+import com.skillinghelper.data.guides.GuideRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -77,6 +78,7 @@ public final class BankedActivities
 		crafting(a);
 		smithing(a);
 		construction(a);
+		fromSkillGuides(a);
 		return Collections.unmodifiableList(a);
 	}
 
@@ -84,25 +86,25 @@ public final class BankedActivities
 
 	private static void prayer(List<BankedActivity> a)
 	{
-		bury(a, "Bones", ItemID.BONES, 4.5, false);
-		bury(a, "Wolf bones", ItemID.WOLF_BONES, 4.5, true);
-		bury(a, "Bat bones", ItemID.BAT_BONES, 5.3, true);
-		bury(a, "Big bones", ItemID.BIG_BONES, 15, false);
-		bury(a, "Jogre bones", ItemID.TBWT_JOGRE_BONES, 15, true);
-		bury(a, "Zogre bones", ItemID.ZOGRE_BONES, 22.5, true);
-		bury(a, "Babydragon bones", ItemID.BABYDRAGON_BONES, 30, true);
-		bury(a, "Wyrmling bones", ItemID.BABYWYRM_BONES, 21, true);
-		bury(a, "Wyrm bones", ItemID.WYRM_BONES, 50, true);
-		bury(a, "Dragon bones", ItemID.DRAGON_BONES, 72, false);
-		bury(a, "Wyvern bones", ItemID.WYVERN_BONES, 72, true);
-		bury(a, "Drake bones", ItemID.DRAKE_BONES, 80, true);
-		bury(a, "Fayrg bones", ItemID.ZOGRE_ANCESTRAL_BONES_FAYG, 84, true);
-		bury(a, "Lava dragon bones", ItemID.LAVA_DRAGON_BONES, 85, true);
-		bury(a, "Raurg bones", ItemID.ZOGRE_ANCESTRAL_BONES_RAURG, 96, true);
-		bury(a, "Hydra bones", ItemID.HYDRA_BONES, 110, true);
-		bury(a, "Dagannoth bones", ItemID.DAGANNOTH_KING_BONES, 125, true);
-		bury(a, "Ourg bones", ItemID.ZOGRE_ANCESTRAL_BONES_OURG, 140, true);
-		bury(a, "Superior dragon bones", ItemID.DRAGON_BONES_SUPERIOR, 150, true);
+		bury(a, "Bones", ItemID.BONES, ItemID.Cert.BONES, 4.5, false);
+		bury(a, "Wolf bones", ItemID.WOLF_BONES, ItemID.Cert.WOLF_BONES, 4.5, true);
+		bury(a, "Bat bones", ItemID.BAT_BONES, ItemID.Cert.BAT_BONES, 5.3, true);
+		bury(a, "Big bones", ItemID.BIG_BONES, ItemID.Cert.BIG_BONES, 15, false);
+		bury(a, "Jogre bones", ItemID.TBWT_JOGRE_BONES, ItemID.Cert.TBWT_JOGRE_BONES, 15, true);
+		bury(a, "Zogre bones", ItemID.ZOGRE_BONES, ItemID.Cert.ZOGRE_BONES, 22.5, true);
+		bury(a, "Babydragon bones", ItemID.BABYDRAGON_BONES, ItemID.Cert.BABYDRAGON_BONES, 30, true);
+		bury(a, "Wyrmling bones", ItemID.BABYWYRM_BONES, ItemID.Cert.BABYWYRM_BONES, 21, true);
+		bury(a, "Wyrm bones", ItemID.WYRM_BONES, ItemID.Cert.WYRM_BONES, 50, true);
+		bury(a, "Dragon bones", ItemID.DRAGON_BONES, ItemID.Cert.DRAGON_BONES, 72, false);
+		bury(a, "Wyvern bones", ItemID.WYVERN_BONES, ItemID.Cert.WYVERN_BONES, 72, true);
+		bury(a, "Drake bones", ItemID.DRAKE_BONES, ItemID.Cert.DRAKE_BONES, 80, true);
+		bury(a, "Fayrg bones", ItemID.ZOGRE_ANCESTRAL_BONES_FAYG, ItemID.Cert.ZOGRE_ANCESTRAL_BONES_FAYG, 84, true);
+		bury(a, "Lava dragon bones", ItemID.LAVA_DRAGON_BONES, ItemID.Cert.LAVA_DRAGON_BONES, 85, true);
+		bury(a, "Raurg bones", ItemID.ZOGRE_ANCESTRAL_BONES_RAURG, ItemID.Cert.ZOGRE_ANCESTRAL_BONES_RAURG, 96, true);
+		bury(a, "Hydra bones", ItemID.HYDRA_BONES, ItemID.Cert.HYDRA_BONES, 110, true);
+		bury(a, "Dagannoth bones", ItemID.DAGANNOTH_KING_BONES, ItemID.Cert.DAGANNOTH_KING_BONES, 125, true);
+		bury(a, "Ourg bones", ItemID.ZOGRE_ANCESTRAL_BONES_OURG, ItemID.Cert.ZOGRE_ANCESTRAL_BONES_OURG, 140, true);
+		bury(a, "Superior dragon bones", ItemID.DRAGON_BONES_SUPERIOR, ItemID.Cert.DRAGON_BONES_SUPERIOR, 150, true);
 		scatter(a, "Fiendish ashes", ItemID.FIENDISH_ASHES, 10);
 		scatter(a, "Vile ashes", ItemID.VILE_ASHES, 25);
 		scatter(a, "Malicious ashes", ItemID.MALICIOUS_ASHES, 65);
@@ -110,8 +112,9 @@ public final class BankedActivities
 		scatter(a, "Infernal ashes", ItemID.INFERNAL_ASHES, 110);
 	}
 
-	private static void bury(List<BankedActivity> a, String name, int id, double xp, boolean members)
+	private static void bury(List<BankedActivity> a, String name, int id, int noted, double xp, boolean members)
 	{
+		gildedAltar(a, name, id, noted, xp);
 		Method m = bankMethod("banked_bury_" + key(name), Skill.PRAYER, "Bury " + lower(name), 1, xp, 1_800)
 			.members(members)
 			.input(ItemReq.consumed(name, 28, 1, id))
@@ -121,7 +124,42 @@ public final class BankedActivities
 				+ "Skilling Helper's Prayer guide covers those.")
 			.wikiPage("Prayer_training")
 			.build();
-		a.add(activity(m, BankedActivity.Place.ANY_BANK, name, id, 1, 0, id));
+		a.add(activity(m, BankedActivity.Place.ANY_BANK, name, id, 1, 0, id, noted).toBuilder()
+			.method(m.toBuilder().clearInputs().input(ItemReq.consumed(name, 28, 1, id, noted)).build()).build());
+	}
+
+	/**
+	 * Bones offered at a gilded altar with both burners lit: 3.5x the xp. In the player's own house, or a house party
+	 * through the Rimmington portal; Phials next to the portal unnotes more bones.
+	 */
+	private static void gildedAltar(List<BankedActivity> a, String name, int id, int noted, double buryXp)
+	{
+		Method m = Method.builder()
+			.id("banked_altar_" + key(name))
+			.skill(Skill.PRAYER)
+			.type(MethodType.PROCESS)
+			.name("Offer " + lower(name) + " at a gilded altar")
+			.minLevel(1)
+			.xpPerAction(buryXp * 3.5)
+			.xpPerHour((int) (buryXp * 3.5 * 1_600))
+			.members(true)
+			.location(HOUSE_PORTAL)
+			.instanced(true)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.stack(name + " (withdraw as notes)", 1, id, noted))
+			.supply(ItemReq.supply("Coins for Phials (5 gp a bone)", 0, ItemID.COINS))
+			.useItem(id)
+			.target(Target.object(null, "Altar"))
+			.target(Target.object(null, "Portal"))
+			.target(Target.npc("Exchange", "Phials"))
+			.instruction("Use the " + lower(name) + " on the gilded altar with both incense burners lit; when you run "
+				+ "out, leave the house and give the noted bones to Phials to unnote them")
+			.notes("3.5x the xp of burying. Withdraw the bones as notes (the Note button in the bank).")
+			.requirementText("A gilded altar with lit burners: your own house (75 Construction) or a house party "
+				+ "(world 330 is the usual one)")
+			.wikiPage("Gilded_altar")
+			.build();
+		a.add(activity(m, BankedActivity.Place.FIXED, name, id, 1, 0, id, noted));
 	}
 
 	private static void scatter(List<BankedActivity> a, String name, int id, double xp)
@@ -772,6 +810,73 @@ public final class BankedActivities
 			.perAction(planks)
 			.stage(0)
 			.build());
+	}
+
+	// ---- Runecraft and Magic, from Skilling Helper's own guides ----
+
+	private static void fromSkillGuides(List<BankedActivity> a)
+	{
+		GuideRepository guides = new GuideRepository();
+		int[] essence = {ItemID.BLANKRUNE, ItemID.BLANKRUNE_HIGH};
+		for (String id : new String[]{"rc_air", "rc_earth", "rc_fire"})
+		{
+			guide(a, guides, id, BankedActivity.Place.FIXED, "Rune or pure essence", ItemID.BLANKRUNE_HIGH, 0,
+				essence);
+		}
+		guide(a, guides, "magic_superheat_iron", BankedActivity.Place.ANY_BANK, "Iron ore", ItemID.IRON_ORE, 0,
+			ItemID.IRON_ORE);
+		guide(a, guides, "magic_plank_make_oak", BankedActivity.Place.ANY_BANK, "Oak logs", ItemID.OAK_LOGS, 0,
+			ItemID.OAK_LOGS);
+		guide(a, guides, "magic_plank_make_teak", BankedActivity.Place.ANY_BANK, "Teak logs", ItemID.TEAK_LOGS, 0,
+			ItemID.TEAK_LOGS);
+		guide(a, guides, "magic_plank_make_mahogany", BankedActivity.Place.ANY_BANK, "Mahogany logs",
+			ItemID.MAHOGANY_LOGS, 0, ItemID.MAHOGANY_LOGS);
+		guide(a, guides, "magic_enchant_recoil", BankedActivity.Place.ANY_BANK, "Sapphire rings",
+			ItemID.SAPPHIRE_RING, 0, ItemID.SAPPHIRE_RING);
+		guide(a, guides, "magic_enchant_power", BankedActivity.Place.ANY_BANK, "Diamond amulets",
+			ItemID.STRUNG_DIAMOND_AMULET, 0, ItemID.STRUNG_DIAMOND_AMULET);
+		guide(a, guides, "magic_enchant_glory", BankedActivity.Place.ANY_BANK, "Dragonstone amulets",
+			ItemID.STRUNG_DRAGONSTONE_AMULET, 0, ItemID.STRUNG_DRAGONSTONE_AMULET);
+		// Strung bows come from stringing, so these go after it
+		guide(a, guides, "magic_high_alch_yew", BankedActivity.Place.ANY_BANK, "Yew longbows", ItemID.YEW_LONGBOW, 2,
+			ItemID.YEW_LONGBOW, ItemID.Cert.YEW_LONGBOW);
+		guide(a, guides, "magic_high_alch_magic", BankedActivity.Place.ANY_BANK, "Magic longbows",
+			ItemID.MAGIC_LONGBOW, 2, ItemID.MAGIC_LONGBOW, ItemID.Cert.MAGIC_LONGBOW);
+	}
+
+	/**
+	 * One of Skilling Helper's methods as a banked activity, with the banked item moved to the first input.
+	 */
+	private static void guide(List<BankedActivity> a, GuideRepository guides, String methodId,
+		BankedActivity.Place place, String itemName, int iconId, int stage, int... countIds)
+	{
+		Method m = guides.byId(methodId);
+		if (m == null)
+		{
+			throw new IllegalStateException("No Skilling Helper method " + methodId);
+		}
+		ItemReq key = null;
+		List<ItemReq> rest = new ArrayList<>();
+		for (ItemReq input : m.getInputs())
+		{
+			if (key == null && input.matches(countIds[0]))
+			{
+				key = input;
+			}
+			else
+			{
+				rest.add(input);
+			}
+		}
+		if (key == null)
+		{
+			throw new IllegalStateException(methodId + " doesn't use item " + countIds[0]);
+		}
+		Method banked = m.toBuilder()
+			.id("banked_" + methodId)
+			.clearInputs().input(key).inputs(rest)
+			.build();
+		a.add(activity(banked, place, itemName, iconId, Math.max(1, key.getPerAction()), stage, countIds));
 	}
 
 	// ---- Helpers ----

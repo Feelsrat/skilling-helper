@@ -129,8 +129,9 @@ public class BankedPlannerTest
 		List<BankedPlanner.SkillTotal> totals = BankedPlanner.totals(
 			BankedPlanner.queue(planner.groups(s, Collections.emptyMap())), s);
 		assertEquals(1, totals.size());
-		assertEquals(72_000, totals.get(0).getXp());
-		assertEquals(Experience.getLevelForXp(Experience.getXpForLevel(1) + 72_000), totals.get(0).getLevelAfter());
+		// A gilded altar gives 3.5x the 72 xp for burying
+		assertEquals(252_000, totals.get(0).getXp());
+		assertEquals(Experience.getLevelForXp(Experience.getXpForLevel(1) + 252_000), totals.get(0).getLevelAfter());
 	}
 
 	/**

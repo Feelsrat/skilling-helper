@@ -14,7 +14,7 @@ import net.runelite.api.Skill;
  * buying any missing secondaries; this adds which items count as banked and how the place is picked.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class BankedActivity
 {
 	/**
