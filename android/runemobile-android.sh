@@ -52,9 +52,17 @@ curl -fL --retry 3 "$BASE/RuneMobile-SH.apk" -o "$APK"
 echo "$latest" > "$STATE/runemobile-build.txt"
 
 say "Opening the installer. Tap Install (allow Termux to install apps if Android asks)."
-# Android only lets Termux pop up the installer when Termux may "Display over other apps"
-# (Settings > Apps > Termux). Without it nothing appears, so also say where the APK is.
-termux-open --content-type application/vnd.android.package-archive "$APK" 2>/dev/null || true
+# Android only lets Termux pop up the installer when Termux may "Display over other apps" ("Appear on top" on
+# Samsung). Send the APK to the system package installer by name, so an "Always" default picked for another app
+# can't swallow it, and fall back to termux-open.
+uri="content://com.termux.files$(realpath "$APK")"
+inst=$(pm list packages 2>/dev/null | sed -n 's/^package://p' | grep -E '(^|\.)packageinstaller$' | head -1 || true)
+opened=no
+if [ -n "$inst" ] && am start -a android.intent.action.VIEW -t application/vnd.android.package-archive \
+	-d "$uri" --grant-read-uri-permission -p "$inst" >/dev/null 2>&1; then
+	opened=yes
+fi
+[ "$opened" = yes ] || termux-open --content-type application/vnd.android.package-archive "$APK" 2>/dev/null || true
 cat <<EOF2
 If no installer appeared: open Download/RuneMobile-SH.apk in your Files app and tap it, or allow
 Termux to "Display over other apps" (Settings > Apps > Termux) and run runemobile-sh again.
