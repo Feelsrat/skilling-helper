@@ -515,3 +515,35 @@ patch(pv,
 	"                            contentScale = ContentScale.FillWidth,\n",
 	"                            contentScale = ContentScale.FillWidth,\n"
 	"                            filterQuality = if (oneToOne) androidx.compose.ui.graphics.FilterQuality.None else androidx.compose.ui.graphics.FilterQuality.High,\n")
+
+# 13. Live panels. The stock repaint loop is a thread that quits as soon as no panel is active, and openPanel only
+# starts a new one when the old one has already quit. Switching or reopening a panel (close + open, with the
+# active panel briefly null on the EDT) leaves no loop running, so the panel only redraws on a tap (XP Tracker
+# numbers froze until an entry was collapsed). One Swing timer that runs for the whole session instead.
+patch(mb,
+	"""		if (panelRepainterRunning)
+		{
+			return;
+		}
+		panelRepainterRunning = true;
+		final Thread t = new Thread(() ->""",
+	"""		if (panelRepainterRunning)
+		{
+			return;
+		}
+		panelRepainterRunning = true;
+		// Skilling Helper build: one EDT timer for the whole session (see patch.py step 13)
+		final javax.swing.Timer shTimer = new javax.swing.Timer(500, ev ->
+		{
+			if (activePanel != null)
+			{
+				renderActiveOnEdt();
+			}
+		});
+		shTimer.setCoalesce(true);
+		shTimer.start();
+		if (shTimer.isRunning()) // always: skips the stock thread below
+		{
+			return;
+		}
+		final Thread t = new Thread(() ->""")
