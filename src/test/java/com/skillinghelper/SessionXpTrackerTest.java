@@ -33,7 +33,43 @@ public class SessionXpTrackerTest
 		}
 		int afterBreak = t.xpPerHour(Skill.FISHING);
 		assertEquals(30_000, rate, 1_000);
-		assertEquals(rate * 590 / 690.0, afterBreak, 500);
+		// At most a minute of idle time is added to ten minutes of training
+		org.junit.Assert.assertTrue(afterBreak >= rate * 590 / 690.0 - 500);
+	}
+
+	@Test
+	public void holdsTheShownRateBetweenRefreshes()
+	{
+		SessionXpTracker t = new SessionXpTracker();
+		int xp = 0;
+		t.tick(Skill.FISHING, xp);
+		for (int i = 1; i <= 200; i++)
+		{
+			xp += i % 10 == 0 ? 50 : 0;
+			t.tick(Skill.FISHING, xp);
+		}
+		int shown = t.xpPerHour(Skill.FISHING);
+		// A slightly faster stretch doesn't change the number until a minute of training has passed
+		for (int i = 1; i <= 50; i++)
+		{
+			xp += i % 8 == 0 ? 50 : 0;
+			t.tick(Skill.FISHING, xp);
+			assertEquals(shown, t.xpPerHour(Skill.FISHING));
+		}
+		for (int i = 1; i <= 60; i++)
+		{
+			xp += i % 8 == 0 ? 50 : 0;
+			t.tick(Skill.FISHING, xp);
+		}
+		org.junit.Assert.assertNotEquals(shown, t.xpPerHour(Skill.FISHING));
+		// A big jump in pace shows straight away
+		int before = t.xpPerHour(Skill.FISHING);
+		for (int i = 0; i < 20; i++)
+		{
+			xp += 400;
+			t.tick(Skill.FISHING, xp);
+		}
+		org.junit.Assert.assertTrue(t.xpPerHour(Skill.FISHING) > before * 1.15);
 	}
 
 	@Test

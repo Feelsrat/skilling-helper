@@ -26,11 +26,20 @@ class SessionXpTracker
 	 * Bigger single jumps are lamps, quest rewards and the like, not training.
 	 */
 	private static final int MAX_DROP = 50_000;
+	/**
+	 * How often the shown rate is refreshed (one minute), unless it drifts by more than {@link #BIG_CHANGE}.
+	 */
+	private static final long SHOW_EVERY_TICKS = 100;
+	private static final double BIG_CHANGE = 0.15;
 
 	/**
 	 * Xp gained and training ticks this session, by skill.
 	 */
 	private final Map<Skill, long[]> totals = new EnumMap<>(Skill.class);
+	/**
+	 * The rate last shown and the training tick it was shown at, by skill.
+	 */
+	private final Map<Skill, long[]> shown = new EnumMap<>(Skill.class);
 	private Skill skill;
 	private int lastXp = -1;
 	private int ticksSinceXp = ACTIVE_TICKS;
@@ -38,6 +47,7 @@ class SessionXpTracker
 	void reset()
 	{
 		totals.clear();
+		shown.clear();
 		skill = null;
 		lastXp = -1;
 		ticksSinceXp = ACTIVE_TICKS;
@@ -75,6 +85,8 @@ class SessionXpTracker
 
 	/**
 	 * This session's xp per hour in the skill, 0 before any xp, or -1 while there's xp but too little time to tell.
+	 * The number holds steady between refreshes (once a minute of training, or sooner if it moves a lot), so the
+	 * panel isn't rebuilt for every small wobble.
 	 */
 	int xpPerHour(Skill s)
 	{
@@ -87,6 +99,22 @@ class SessionXpTracker
 		{
 			return -1;
 		}
+		long[] last = shown.get(s);
+		if (last != null && t[1] - last[1] < SHOW_EVERY_TICKS)
+		{
+			int live = rate(t);
+			if (Math.abs(live - last[0]) <= last[0] * BIG_CHANGE)
+			{
+				return (int) last[0];
+			}
+		}
+		int live = rate(t);
+		shown.put(s, new long[]{live, t[1]});
+		return live;
+	}
+
+	private static int rate(long[] t)
+	{
 		return (int) Math.round(t[0] / (t[1] * TICK_SECONDS) * 3600);
 	}
 }
