@@ -8,7 +8,9 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   2. Before RuneLite starts, the boot class downloads the latest Skilling Helper plugin jar from this repo's
      GitHub release into that folder (keeps the old jar when offline).
   3. The plugin panel is a desktop-style sidebar on the right edge (SidePanel.kt.txt) instead of a bottom sheet.
-  4. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  4. Plugin Hub search works like desktop: ranked results, tags, install counts (HubSearch.kt.txt).
+  5. Taps in rendered plugin panels reach the component that listens for them, like desktop AWT does.
+  6. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -76,3 +78,116 @@ extra = "".join(f"import {i}\n" for i in imports if f"import {i}\n" not in s)
 s = s.replace(anchor, anchor + extra, 1)
 pp.write_text(s)
 print("patched PluginPanel.kt (right-hand sidebar)")
+
+# 4. Plugin Hub search: the bridge also sends tags and install counts; the screen ranks results like desktop.
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"	private static volatile List<PluginHubManifest.DisplayData> hubDisplay;\n",
+	"	private static volatile List<PluginHubManifest.DisplayData> hubDisplay;\n"
+	"	private static volatile java.util.Map<String, Integer> hubCounts = java.util.Collections.emptyMap();\n")
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"hubDisplay = extPluginClient.downloadManifestFull().getDisplay();",
+	"final List<PluginHubManifest.DisplayData> fetched = extPluginClient.downloadManifestFull().getDisplay();\n"
+	"						try\n"
+	"						{\n"
+	"							hubCounts = extPluginClient.getPluginCounts();\n"
+	"						}\n"
+	"						catch (Throwable cex)\n"
+	"						{\n"
+	"							log.warn(\"[mobileui] hub install counts failed\", cex);\n"
+	"						}\n"
+	"						hubDisplay = fetched;")
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"""				.kb("installed", installed.contains(d.getInternalName()))
+				.end();""",
+	"""				.kb("installed", installed.contains(d.getInternalName()))
+				.ki("installs", hubCounts.getOrDefault(d.getInternalName(), 0))
+				.key("tags").arr();
+			if (d.getTags() != null)
+			{
+				for (String tag : d.getTags())
+				{
+					out.val(tag);
+				}
+			}
+			out.end().end();""")
+hub = "android/app/src/main/java/dev/audaro/runemobile/PluginHubScreen.kt"
+patch(hub,
+	"""    val installed: Boolean,
+    val installing: Boolean = false,
+)
+""",
+	"""    val installed: Boolean,
+    val installing: Boolean = false,
+    val tags: List<String> = emptyList(),
+    val installs: Int = 0,
+)
+""" + (pathlib.Path(__file__).parent / "HubSearch.kt.txt").read_text())
+patch(hub,
+	"""                val shown =
+                    rows.filter {
+                        // Match name, author, and description (parity with iOS's three-field hub search) — a
+                        // user often recalls a plugin by its author.
+                        filter.isBlank() || it.displayName.contains(filter, ignoreCase = true) ||
+                            (it.author?.contains(filter, ignoreCase = true) == true) ||
+                            (it.description?.contains(filter, ignoreCase = true) == true)
+                    }
+""",
+	"""                val shown = remember(rows, filter) { hubSearch(rows, filter) }
+""")
+patch(hub,
+	"""                if (!p.version.isNullOrBlank()) {
+                    Text("  v${p.version}", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+""",
+	"""                if (!p.version.isNullOrBlank()) {
+                    Text("  v${p.version}", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+                if (p.installs > 0) {
+                    Text("  ${formatInstalls(p.installs)} installs", color = Color(0xFF9A9A9A), fontSize = 12.sp)
+                }
+""")
+patch(hub,
+	"""                        installed = o.optBoolean("installed"),
+                    )""",
+	"""                        installed = o.optBoolean("installed"),
+                        tags =
+                            o.optJSONArray("tags")?.let { a -> (0 until a.length()).map { a.optString(it) } }
+                                ?: emptyList(),
+                        installs = o.optInt("installs", 0),
+                    )""")
+
+# 5. Plugin panel taps. Desktop AWT sends a click to the deepest component that has mouse listeners, so a click on a
+# label inside a clickable panel reaches the panel. The bridge sent it to the deepest component of any kind, where a
+# plain JLabel just drops it, so most custom plugin rows and buttons did nothing.
+patch("runelite-client/src/main/java/net/runelite/client/headless/MobileUiBridge.java",
+	"""			final Component target = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly);
+			if (target == null)
+			{
+				return;
+			}
+""",
+	"""			Component target = SwingUtilities.getDeepestComponentAt(wrapped, lx, ly);
+			if (target == null)
+			{
+				return;
+			}
+			// Skilling Helper build: retarget like AWT's LightweightDispatcher, to the nearest component that
+			// listens for mouse events (a label inside a clickable row hands the click to the row).
+			for (Component c = target; c != null; c = c.getParent())
+			{
+				if (c.getMouseListeners().length > 0)
+				{
+					target = c;
+					break;
+				}
+				if (c == wrapped)
+				{
+					break;
+				}
+			}
+""")
+# The tap offset from a pointerInput placed after verticalScroll is already in scrolled content coordinates, so
+# adding the scroll offset again sent every tap on a scrolled panel too far down.
+patch("android/app/src/main/java/dev/audaro/runemobile/PanelView.kt",
+	"    val cy = originY + ((off.y + scrollY) - originY - pan.y) / scale\n",
+	"    val cy = originY + (off.y - originY - pan.y) / scale // Skilling Helper build: off.y already includes the scroll\n")

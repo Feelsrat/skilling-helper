@@ -1,0 +1,63 @@
+
+// ---- Skilling Helper build (inserted by skilling-helper android/runemobile/patch.py) ----
+// Desktop-style hub search, like RuneLite's PluginSearch: every word of the query must match the name, a tag, the
+// author or the description. Name matches rank above tag, author and description matches, an exact or prefix name
+// match ranks first, and ties go to the most installed. With no query: installed first, then most installed.
+internal fun hubSearch(
+    rows: List<HubRow>,
+    query: String,
+): List<HubRow> {
+    val terms = query.lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
+    if (terms.isEmpty()) {
+        return rows.sortedWith(
+            compareByDescending<HubRow> { it.installed }
+                .thenByDescending { it.installs }
+                .thenBy { it.displayName.lowercase() },
+        )
+    }
+    val whole = terms.joinToString(" ")
+    val scored = ArrayList<Pair<HubRow, Int>>()
+    for (r in rows) {
+        val name = r.displayName.lowercase()
+        val compact = name.replace(" ", "")
+        val words = name.split(' ', '-', '_')
+        val tags = r.tags.map { it.lowercase() }
+        val author = r.author?.lowercase().orEmpty()
+        val desc = r.description?.lowercase().orEmpty()
+        var score = 0
+        var all = true
+        for (t in terms) {
+            val s =
+                when {
+                    words.any { it.startsWith(t) } -> 120
+                    name.contains(t) || compact.contains(t) -> 100
+                    tags.any { it.startsWith(t) } -> 50
+                    author.contains(t) -> 30
+                    desc.contains(t) -> 8
+                    else -> 0
+                }
+            if (s == 0) {
+                all = false
+                break
+            }
+            score += s
+        }
+        if (!all) continue
+        when {
+            name == whole || compact == whole.replace(" ", "") -> score += 1000
+            name.startsWith(whole) || compact.startsWith(whole.replace(" ", "")) -> score += 300
+        }
+        scored.add(r to score)
+    }
+    return scored
+        .sortedWith(compareByDescending<Pair<HubRow, Int>> { it.second }.thenByDescending { it.first.installs })
+        .map { it.first }
+}
+
+internal fun formatInstalls(n: Int): String =
+    when {
+        n >= 1_000_000 -> String.format(java.util.Locale.US, "%.1fM", n / 1_000_000.0)
+        n >= 1_000 -> String.format(java.util.Locale.US, "%.1fk", n / 1_000.0)
+        else -> n.toString()
+    }
+// ---- end Skilling Helper build ----
