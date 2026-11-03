@@ -18,6 +18,7 @@ final class WoodcuttingGuide
 {
 	private static final String F2P_WIKI = "Free-to-play_Woodcutting_training";
 	private static final String P2P_WIKI = "Pay-to-play_Woodcutting_training";
+	private static final Location HARDWOOD_GROVE = Location.of("Hardwood Grove (Tai Bwo Wannai)", 2823, 3083, 7);
 	private static final Location WC_GUILD_BANK = Location.of("Woodcutting Guild bank chest", 1591, 3476, 5);
 
 	static List<Method> methods()
@@ -42,6 +43,15 @@ final class WoodcuttingGuide
 				.wikiPage(F2P_WIKI)
 				.rateAt(45, 38_000).rateAt(60, 48_000).rateAt(75, 55_000)
 				.build(),
+			tree("wc_teak_grove", "Teak trees (Hardwood Grove)", 35, 85, 30_000, "Teak tree",
+				HARDWOOD_GROVE, null, ItemID.TEAK_LOGS)
+				.members(true).tag(MethodTag.POWER).tag(MethodTag.FAST).dropByDefault(true)
+				.requirementText("100 trading sticks to enter the Hardwood Grove (Tai Bwo Wannai)")
+				.notes("The fastest Woodcutting xp from 35. Drop the logs as you go. "
+					+ "Trading sticks come from helping clean up the Tai Bwo Wannai village.")
+				.wikiPage(P2P_WIKI)
+				.rateAt(50, 45_000).rateAt(65, 55_000).rateAt(80, 62_000).rateAt(99, 70_000)
+				.build(),
 			tree("wc_maples_seers", "Maple trees (Seers' Village)", 45, 100, 28_000, "Maple tree",
 				Location.of("Seers' Village maples", 2727, 3499, 6), Banks.SEERS, ItemID.MAPLE_LOGS)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.CHEAP)
@@ -63,12 +73,30 @@ final class WoodcuttingGuide
 				.wikiPage(P2P_WIKI)
 				.rateAt(75, 31_000).rateAt(90, 38_000).rateAt(99, 41_000)
 				.build(),
+			tree("wc_mahogany_grove", "Mahogany trees (Hardwood Grove)", 50, 125, 22_000, "Mahogany tree",
+				HARDWOOD_GROVE, Banks.SHILO, ItemID.MAHOGANY_LOGS)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
+				.requirementText("100 trading sticks to enter the Hardwood Grove (Tai Bwo Wannai)")
+				.notes("Mahogany logs sell well for Construction planks. Shilo Village bank is a short walk south-east.")
+				.wikiPage(P2P_WIKI)
+				.rateAt(70, 35_000).rateAt(90, 45_000)
+				.build(),
 			tree("wc_magic_guild", "Magic trees (Woodcutting Guild)", 75, 250, 20_000, "Magic tree",
 				Location.of("Woodcutting Guild magic trees", 1578, 3488, 6), WC_GUILD_BANK, ItemID.MAGIC_LOGS)
 				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
 				.requirementText("60 Woodcutting to enter the guild")
 				.wikiPage(P2P_WIKI)
 				.rateAt(90, 28_000).rateAt(99, 32_000)
+				.build(),
+			tree("wc_redwood_guild", "Redwood trees (Woodcutting Guild)", 90, 380, 55_000, "Redwood tree",
+				Location.area("Woodcutting Guild redwoods", 1571, 3488, 8), WC_GUILD_BANK, ItemID.REDWOOD_LOGS)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.FAST)
+				.target(Target.object("Climb", "Rope ladder"))
+				.requirementText("60 Woodcutting to enter the guild")
+				.notes("Climb the rope ladders up the redwood platforms. Very AFK; dropping the logs is fastest, "
+					+ "or bank them at the guild bank chest.")
+				.wikiPage(P2P_WIKI)
+				.rateAt(99, 65_000)
 				.build()
 		);
 	}

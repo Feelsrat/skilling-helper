@@ -23,6 +23,9 @@ public final class Banks
 	public static final Location CASTLE_WARS = Location.of("Castle Wars bank chest", 2443, 3083, 5);
 	public static final Location CANIFIS = Location.of("Canifis bank", 3512, 3480, 5);
 	public static final Location HOSIDIUS_KITCHEN = Location.of("Hosidius kitchen bank", 1676, 3617, 5);
+	public static final Location SHILO = Location.of("Shilo Village bank", 2852, 2954, 5);
+	public static final Location PISCATORIS = Location.of("Piscatoris bank", 2330, 3689, 5);
+	public static final Location PISCARILIUS = Location.of("Piscarilius bank", 1803, 3790, 5);
 	public static final Location LUMBRIDGE = Location.of("Lumbridge Castle bank", 3208, 3220, 2, 5);
 
 	/**
@@ -41,7 +44,7 @@ public final class Banks
 		Location.of("Yanille bank", 2613, 3093, 5),
 		Location.of("Gnome Stronghold bank", 2449, 3482, 1, 5),
 		Location.of("Barbarian Outpost bank", 2536, 3573, 5),
-		Location.of("Shilo Village bank", 2852, 2954, 5),
+		SHILO,
 		Location.of("Port Phasmatys bank", 3688, 3467, 5),
 		Location.of("Burgh de Rott bank", 3496, 3211, 5),
 		Location.of("Nardah bank", 3428, 2892, 5),
@@ -49,11 +52,11 @@ public final class Banks
 		Location.of("Neitiznot bank", 2337, 3807, 5),
 		Location.of("Jatizso bank", 2416, 3801, 5),
 		Location.of("Museum Camp bank (Fossil Island)", 3739, 3804, 5),
-		Location.of("Piscatoris bank", 2330, 3689, 5),
+		PISCATORIS,
 		Location.of("Lletya bank", 2353, 3163, 5),
 		Location.of("Zanaris bank", 2383, 4458, 5),
 		Location.of("Arceuus bank", 1625, 3745, 5),
-		Location.of("Piscarilius bank", 1803, 3790, 5),
+		PISCARILIUS,
 		Location.of("Lovakengj bank", 1533, 3740, 5),
 		Location.of("Wintertodt bank chest", 1640, 3944, 5));
 
