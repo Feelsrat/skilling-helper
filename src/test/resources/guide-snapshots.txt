@@ -208,6 +208,36 @@ agility_pollnivneach weak owns-all-in-bank	c577f0f98561791d
 agility_pollnivneach weak parts-carried	251304cdbece49a1
 agility_pollnivneach weak parts-carried-away	c577f0f98561791d
 agility_pollnivneach weak parts-in-bank	c577f0f98561791d
+agility_pyramid strong bank-empty	4e2c76399ec0f0e1
+agility_pyramid strong bank-empty-rich	4e2c76399ec0f0e1
+agility_pyramid strong bank-unknown	4e2c76399ec0f0e1
+agility_pyramid strong full-of-products	7e9aa18c9ee9e33e
+agility_pyramid strong gear-carried	7e9aa18c9ee9e33e
+agility_pyramid strong goal-reached	890574fc11c8833a
+agility_pyramid strong in-instance	7e9aa18c9ee9e33e
+agility_pyramid strong kit-at-spot	7e9aa18c9ee9e33e
+agility_pyramid strong kit-away	6539e265dda623a6
+agility_pyramid strong kit-worn-at-spot	7e9aa18c9ee9e33e
+agility_pyramid strong owns-all-at-bank	6539e265dda623a6
+agility_pyramid strong owns-all-in-bank	6539e265dda623a6
+agility_pyramid strong parts-carried	7e9aa18c9ee9e33e
+agility_pyramid strong parts-carried-away	6539e265dda623a6
+agility_pyramid strong parts-in-bank	6539e265dda623a6
+agility_pyramid weak bank-empty	4e2c76399ec0f0e1
+agility_pyramid weak bank-empty-rich	4e2c76399ec0f0e1
+agility_pyramid weak bank-unknown	4e2c76399ec0f0e1
+agility_pyramid weak full-of-products	7e9aa18c9ee9e33e
+agility_pyramid weak gear-carried	7e9aa18c9ee9e33e
+agility_pyramid weak goal-reached	890574fc11c8833a
+agility_pyramid weak in-instance	7e9aa18c9ee9e33e
+agility_pyramid weak kit-at-spot	7e9aa18c9ee9e33e
+agility_pyramid weak kit-away	6539e265dda623a6
+agility_pyramid weak kit-worn-at-spot	7e9aa18c9ee9e33e
+agility_pyramid weak owns-all-at-bank	6539e265dda623a6
+agility_pyramid weak owns-all-in-bank	6539e265dda623a6
+agility_pyramid weak parts-carried	7e9aa18c9ee9e33e
+agility_pyramid weak parts-carried-away	6539e265dda623a6
+agility_pyramid weak parts-in-bank	6539e265dda623a6
 agility_rellekka strong bank-empty	2797590d0e9e5638
 agility_rellekka strong bank-empty-rich	2797590d0e9e5638
 agility_rellekka strong bank-unknown	2797590d0e9e5638
@@ -5190,46 +5220,46 @@ mine_motherlode weak owns-all-in-bank	e3f91a41e1a7cee6
 mine_motherlode weak parts-carried	670984b67248c203
 mine_motherlode weak parts-carried-away	67a94370a697f513
 mine_motherlode weak parts-in-bank	e3f91a41e1a7cee6
-plan AGILITY 1 poor AFK	dfedde38777e137d
-plan AGILITY 1 poor Cheapest	13f31fd5d2df6376
-plan AGILITY 1 poor Fastest	13f31fd5d2df6376
-plan AGILITY 1 poor Profit	57dfdd10ac067267
-plan AGILITY 1 poor Recommended	13f31fd5d2df6376
-plan AGILITY 1 rich AFK	f22b26188c5f8c25
-plan AGILITY 1 rich Cheapest	a9d634b57a96c507
-plan AGILITY 1 rich Fastest	a9d634b57a96c507
-plan AGILITY 1 rich Profit	d708214b00631229
-plan AGILITY 1 rich Recommended	a9d634b57a96c507
-plan AGILITY 30 poor AFK	9d3d54cd67032a9b
-plan AGILITY 30 poor Cheapest	ee6015ec55925504
-plan AGILITY 30 poor Fastest	ee6015ec55925504
-plan AGILITY 30 poor Profit	b06191c07d3e27dd
-plan AGILITY 30 poor Recommended	ee6015ec55925504
-plan AGILITY 30 rich AFK	29bfc863c26864f6
-plan AGILITY 30 rich Cheapest	8e6f943db609235a
-plan AGILITY 30 rich Fastest	8e6f943db609235a
-plan AGILITY 30 rich Profit	8bddbc0b7ddfe8c9
-plan AGILITY 30 rich Recommended	8e6f943db609235a
-plan AGILITY 60 poor AFK	35080aa3c7b1c46c
-plan AGILITY 60 poor Cheapest	ad03090ac3057ac9
-plan AGILITY 60 poor Fastest	ad03090ac3057ac9
-plan AGILITY 60 poor Profit	f325ac53b29bcad3
-plan AGILITY 60 poor Recommended	ad03090ac3057ac9
-plan AGILITY 60 rich AFK	6715a6ce7520cf9e
-plan AGILITY 60 rich Cheapest	944e0bfafce464e0
-plan AGILITY 60 rich Fastest	944e0bfafce464e0
-plan AGILITY 60 rich Profit	fb66f1791d79d3b9
-plan AGILITY 60 rich Recommended	944e0bfafce464e0
-plan AGILITY 90 poor AFK	b5cc154aa3feab80
-plan AGILITY 90 poor Cheapest	553c90d50eb07d71
-plan AGILITY 90 poor Fastest	553c90d50eb07d71
-plan AGILITY 90 poor Profit	5825a65abf91d048
-plan AGILITY 90 poor Recommended	553c90d50eb07d71
-plan AGILITY 90 rich AFK	0bdb786dacbc9b1d
-plan AGILITY 90 rich Cheapest	0086031098e3959d
-plan AGILITY 90 rich Fastest	0086031098e3959d
-plan AGILITY 90 rich Profit	61f3752cc3a05c30
-plan AGILITY 90 rich Recommended	0086031098e3959d
+plan AGILITY 1 poor AFK	78f9d96dca984cf3
+plan AGILITY 1 poor Cheapest	813273a1fa0b1faf
+plan AGILITY 1 poor Fastest	813273a1fa0b1faf
+plan AGILITY 1 poor Profit	a8a848cbf689fa93
+plan AGILITY 1 poor Recommended	813273a1fa0b1faf
+plan AGILITY 1 rich AFK	790b81a90b3d6571
+plan AGILITY 1 rich Cheapest	09b7cebb12a93cc7
+plan AGILITY 1 rich Fastest	09b7cebb12a93cc7
+plan AGILITY 1 rich Profit	9111bfa3a0eea732
+plan AGILITY 1 rich Recommended	09b7cebb12a93cc7
+plan AGILITY 30 poor AFK	aff4336d1e6ba191
+plan AGILITY 30 poor Cheapest	035e5f17b19a4bb5
+plan AGILITY 30 poor Fastest	035e5f17b19a4bb5
+plan AGILITY 30 poor Profit	18fd70e1285bc2f3
+plan AGILITY 30 poor Recommended	035e5f17b19a4bb5
+plan AGILITY 30 rich AFK	c32039c1d49b3956
+plan AGILITY 30 rich Cheapest	dbb7b915675252d1
+plan AGILITY 30 rich Fastest	dbb7b915675252d1
+plan AGILITY 30 rich Profit	b309377a46a199c4
+plan AGILITY 30 rich Recommended	dbb7b915675252d1
+plan AGILITY 60 poor AFK	7730bc2a0477d76f
+plan AGILITY 60 poor Cheapest	2a2c85ecb98e8a20
+plan AGILITY 60 poor Fastest	2a2c85ecb98e8a20
+plan AGILITY 60 poor Profit	da8d6e9f40e3694b
+plan AGILITY 60 poor Recommended	2a2c85ecb98e8a20
+plan AGILITY 60 rich AFK	56fc05ed53213ef0
+plan AGILITY 60 rich Cheapest	a27f4b5d0c05e0cd
+plan AGILITY 60 rich Fastest	a27f4b5d0c05e0cd
+plan AGILITY 60 rich Profit	a81936b2ef5f150c
+plan AGILITY 60 rich Recommended	a27f4b5d0c05e0cd
+plan AGILITY 90 poor AFK	cecc4fb08a309533
+plan AGILITY 90 poor Cheapest	2cc9cb74d09fc9d6
+plan AGILITY 90 poor Fastest	2cc9cb74d09fc9d6
+plan AGILITY 90 poor Profit	eece55ed705e0541
+plan AGILITY 90 poor Recommended	2cc9cb74d09fc9d6
+plan AGILITY 90 rich AFK	196c0c70cc5f45ba
+plan AGILITY 90 rich Cheapest	5f19f5425f0e9447
+plan AGILITY 90 rich Fastest	5f19f5425f0e9447
+plan AGILITY 90 rich Profit	3f6a4435fd9bd60c
+plan AGILITY 90 rich Recommended	5f19f5425f0e9447
 plan ATTACK 1 poor AFK	64acc2333ac8860f
 plan ATTACK 1 poor Cheapest	38078ec52cbfe491
 plan ATTACK 1 poor Fastest	38078ec52cbfe491

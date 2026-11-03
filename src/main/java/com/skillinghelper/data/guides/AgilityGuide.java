@@ -1,5 +1,6 @@
 package com.skillinghelper.data.guides;
 
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodTag;
@@ -8,6 +9,7 @@ import com.skillinghelper.data.Target;
 import java.util.List;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Based on the OSRS wiki "Agility training" guide. Lap xp matches RuneLite's Agility plugin; course start points match
@@ -34,6 +36,39 @@ final class AgilityGuide
 				.build(),
 			course("agility_varrock", "Varrock Rooftop", 30, 270, 14_000, 3219, 3414,
 				"Rough wall", "Clothes line", "Gap", "Ledge", "Edge")
+				.build(),
+			Method.builder()
+				.id("agility_pyramid")
+				.skill(Skill.AGILITY)
+				.type(MethodType.ACTIVITY)
+				.name("Agility Pyramid")
+				.minLevel(30)
+				// Obstacles give 722 xp, plus a top bonus of 300 + 8 per Agility level (capped at 1,000 from 88).
+				.xpPerAction(1_262)
+				.xpAt(new int[]{40, 1_342}).xpAt(new int[]{50, 1_422}).xpAt(new int[]{60, 1_502})
+				.xpAt(new int[]{70, 1_582}).xpAt(new int[]{80, 1_662}).xpAt(new int[]{88, 1_722})
+				.xpPerHour(18_000)
+				.rateAt(50, 25_000).rateAt(60, 30_000).rateAt(70, 36_000).rateAt(75, 42_100).rateAt(88, 44_700)
+				.coinsPerAction(10_000)
+				.members(true)
+				.tag(MethodTag.PROFIT)
+				.location(Location.area("Agility Pyramid", 3360, 2838, 30))
+				.alsoAt(Location.area("Agility Pyramid (top floor)", 3043, 4697, 15))
+				.target(Target.object(null, "Stairs", "Low wall", "Ledge", "Plank", "Gap", "Climbing rocks", "Doorway"))
+				.target(Target.npc(null, "Simon Templeton"))
+				.supply(ItemReq.supply("Waterskins (desert heat)", 4, ItemID.WATER_SKIN4, ItemID.WATER_SKIN3,
+					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1))
+				.supply(Supplies.food(5))
+				.supply(Supplies.STAMINA)
+				.instruction("Climb the pyramid floor by floor, clicking each highlighted obstacle. At the top, climb the "
+					+ "rocks to take the pyramid top before you enter the doorway, then sell it to Simon Templeton")
+				.notes("Each pyramid top sells to Simon Templeton for 10,000 gp. "
+					+ "Grab the top first: the doorway sends you back down with nothing. "
+					+ "Sell every top straight away, it weighs 11 kg. "
+					+ "Time the moving pyramid blocks or they push you down a floor. "
+					+ "Expect lots of falls below 60 Agility; nothing fails from 75. "
+					+ "Bring waterskins for the desert heat, or wear a desert amulet 4 or a charged circlet of water.")
+				.wikiPage("Agility_Pyramid")
 				.build(),
 			course("agility_canifis", "Canifis Rooftop", 40, 240, 19_000, 3506, 3490,
 				"Tall tree", "Gap", "Pole-vault")
