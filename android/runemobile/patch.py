@@ -708,3 +708,29 @@ patch(ma,
                 }
                 addView(
                     devBar,""")
+
+# 21. S Pen (and mouse) hover, like a desktop mouse: a pen held over the screen moves the game's cursor without
+# clicking, so hover highlights, the top-left action text and plugin tooltips show. Leaving the screen parks it.
+patch(ma,
+	"""        surfaceView.setOnTouchListener { _, event ->
+""",
+	"""        // Skilling Helper build: stylus/mouse hover moves the game cursor (see patch.py step 21)
+        surfaceView.setOnHoverListener { _, e ->
+            val tool = e.getToolType(0)
+            if (tool != MotionEvent.TOOL_TYPE_STYLUS && tool != MotionEvent.TOOL_TYPE_MOUSE) {
+                false
+            } else {
+                when (e.actionMasked) {
+                    MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_MOVE ->
+                        JvmLauncher.move(toGameX(e.x), toGameY(e.y))
+                    MotionEvent.ACTION_HOVER_EXIT -> JvmLauncher.clearHover()
+                }
+                true
+            }
+        }
+        surfaceView.setOnTouchListener { _, event ->
+""")
+patch(ma,
+	"""                "-Dsh.panelScale=""",
+	"""                "-Drunelite.hover.text=true", // Skilling Helper build: the desktop's top-left action text
+                "-Dsh.panelScale=""")
