@@ -7,6 +7,8 @@
 #   skilling-helper-update.sh                 update now (asks which shortcut if there are several)
 #   skilling-helper-update.sh --install       copy this updater to ~/.local/bin and add a
 #                                             "Update Skilling Helper" launcher to the Desktop and menu
+#   skilling-helper-update.sh --phone-kit     put skilling-helper-phone.zip on the Desktop: your Jagex login and the
+#                                             Android installer, to copy to the phone (Download folder)
 #   skilling-helper-update.sh --auto %command% <the shortcut's usual launch options>
 #                                             for Steam launch options: update quietly, then start the game
 #
@@ -507,6 +509,84 @@ except (KeyboardInterrupt, EOFError):
 PY
 )
 
+desktop_terminal() {
+	if command -v konsole >/dev/null 2>&1; then echo "konsole --hold -e"; else echo "xterm -hold -e"; fi
+}
+
+install_phone_kit_launcher() {
+	mkdir -p "$HOME/.local/share/applications"
+	local entry
+	entry="[Desktop Entry]
+Type=Application
+Name=Skilling Helper phone kit
+Comment=Zip your Jagex login and the Android installer to copy to your phone
+Exec=$(desktop_terminal) \"$INSTALL_PATH\" --phone-kit
+Icon=smartphone
+Terminal=false
+Categories=Game;"
+	printf '%s\n' "$entry" > "$HOME/.local/share/applications/skilling-helper-phone-kit.desktop"
+	if [ -d "$HOME/Desktop" ]; then
+		printf '%s\n' "$entry" > "$HOME/Desktop/skilling-helper-phone-kit.desktop"
+		chmod +x "$HOME/Desktop/skilling-helper-phone-kit.desktop"
+	fi
+}
+
+# Builds ~/Desktop/skilling-helper-phone.zip: the Jagex login file the dev client needs, plus the Android
+# installer. The Android installer picks the zip up from the phone's Download folder by itself.
+make_phone_kit() {
+	local creds="$HOME/.runelite/credentials.properties"
+	if [ ! -f "$creds" ]; then
+		echo "No saved Jagex login found at $creds."
+		echo "Make one first: https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts"
+		echo "(start RuneLite once from the Jagex Launcher with --insecure-write-credentials), then run this again."
+		return 1
+	fi
+	local out_dir="$HOME/Desktop"
+	[ -d "$out_dir" ] || out_dir="$HOME"
+	local out="$out_dir/skilling-helper-phone.zip"
+	local tmp; tmp="$(mktemp -d)"
+	mkdir -p "$tmp/home/.runelite"
+	cp "$creds" "$tmp/home/.runelite/"
+	if ! curl -fsSL --retry 2 -o "$tmp/skilling-helper-android.sh" \
+		"https://github.com/$REPO/releases/latest/download/skilling-helper-android.sh"; then
+		echo "Couldn't download the Android installer; the zip only has your login. Is the Deck online?"
+		rm -f "$tmp/skilling-helper-android.sh"
+	fi
+	cat > "$tmp/README.txt" <<'EOF'
+Skilling Helper phone kit
+=========================
+Copy skilling-helper-phone.zip (don't unzip it) into the phone's Download folder, then in Termux run:
+
+  curl -fLo sh-android.sh https://github.com/Feelsrat/skilling-helper/releases/latest/download/skilling-helper-android.sh && bash sh-android.sh
+
+(or, if you unzipped it: bash /sdcard/Download/skilling-helper-phone/skilling-helper-android.sh)
+
+It finds this zip, puts your Jagex login in place and deletes the zip.
+The zip holds your Jagex login: don't share it, and delete any other copies once it's on the phone.
+EOF
+	rm -f "$out"
+	(cd "$tmp" && umask 077 && python3 -c 'import sys,zipfile,os
+z=zipfile.ZipFile(sys.argv[1],"w",zipfile.ZIP_DEFLATED)
+for root,dirs,files in os.walk("."):
+    for f in files:
+        p=os.path.join(root,f)
+        z.write(p,os.path.relpath(p,"."))
+z.close()' "$out")
+	rm -rf "$tmp"
+	echo "Made $out"
+	echo
+	echo "Copy it into the phone's Download folder (USB cable, KDE Connect, or adb push \"$out\" /sdcard/Download/)."
+	echo "Then run the Android installer in Termux; it uses the zip by itself. The zip holds your login,"
+	echo "so delete this copy once it's on the phone."
+	if command -v adb >/dev/null 2>&1 && adb get-state >/dev/null 2>&1; then
+		echo
+		read -r -p "A phone is connected over adb. Copy it there now? [Y/n] " a
+		if [ "${a:-y}" != n ] && [ "${a:-y}" != N ]; then
+			adb push "$out" /sdcard/Download/ && echo "Copied to the phone's Download folder."
+		fi
+	fi
+}
+
 install_launcher() {
 	mkdir -p "$INSTALL_DIR" "$HOME/.local/share/applications"
 	if [ "$SELF" != "$INSTALL_PATH" ]; then
@@ -530,6 +610,7 @@ Categories=Game;"
 		printf '%s\n' "$entry" > "$HOME/Desktop/skilling-helper-update.desktop"
 		chmod +x "$HOME/Desktop/skilling-helper-update.desktop"
 	fi
+	install_phone_kit_launcher
 	echo "Installed to $INSTALL_PATH"
 	echo "Double-click \"Update Skilling Helper\" on the Desktop (or find it in the app menu) to update."
 	echo
@@ -541,6 +622,17 @@ Categories=Game;"
 if [ "${1:-}" = "--install" ]; then
 	install_launcher
 	exit 0
+fi
+
+if [ "${1:-}" = "--phone-kit" ]; then
+	make_phone_kit
+	exit $?
+fi
+
+# Installed copies made before the phone kit existed: add its Desktop icon on the next run
+if [ "$SELF" = "$INSTALL_PATH" ] && [ ! -f "$HOME/.local/share/applications/skilling-helper-phone-kit.desktop" ]; then
+	install_phone_kit_launcher
+	echo "Added a \"Skilling Helper phone kit\" icon to the Desktop."
 fi
 
 if [ "${1:-}" = "--auto" ]; then

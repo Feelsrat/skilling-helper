@@ -192,6 +192,29 @@ schedule() {
 		&& say "Will check for updates once a day." || fail "couldn't schedule; is the Termux:API app installed?"
 }
 
+# The Steam Deck updater's --phone-kit makes skilling-helper-phone.zip with the Jagex login in it.
+# Pick it up from Download (zipped, or already unzipped), put the login in place and delete the copy.
+import_phone_kit() {
+	local dest="$DATA/home/.runelite/credentials.properties" kit dir
+	for kit in "$STORAGE"/Download/skilling-helper-phone*.zip; do
+		[ -f "$kit" ] || continue
+		local tmp; tmp="$(mktemp -d)"
+		if unzip -q -o "$kit" home/.runelite/credentials.properties -d "$tmp" 2>/dev/null; then
+			install -m 600 "$tmp/home/.runelite/credentials.properties" "$dest"
+			rm -f "$kit"
+			say "Imported your Jagex login from $(basename "$kit") (and deleted the zip)."
+		fi
+		rm -rf "$tmp"
+	done
+	for dir in "$STORAGE"/Download/skilling-helper-phone*/; do
+		[ -f "$dir/home/.runelite/credentials.properties" ] || continue
+		install -m 600 "$dir/home/.runelite/credentials.properties" "$dest"
+		rm -rf "$dir"
+		say "Imported your Jagex login from $(basename "$dir") (and deleted the folder)."
+	done
+	return 0
+}
+
 play() {
 	if [ ! -f "$DATA/home/.runelite/credentials.properties" ]; then
 		say "Heads up: no Jagex login file yet, so the game will ask for one. See $DATA/README.txt"
@@ -216,6 +239,7 @@ need_storage
 install_gamenative
 mkdir -p "$DATA/home/.runelite"
 install_shortcuts
+import_phone_kit
 if [ "$MODE" = --reinstall-java ]; then install_java force; else install_java; fi
 if [ "$MODE" = --play ]; then
 	# Don't block playing on a failed update check
@@ -228,6 +252,7 @@ write_readme
 [ "$MODE" = --daily ] && schedule
 say ""
 if [ ! -f "$DATA/home/.runelite/credentials.properties" ]; then
-	say "Still needed: your Jagex login file. See $DATA/README.txt"
+	say "Still needed: your Jagex login. On the Steam Deck double-click \"Skilling Helper phone kit\","
+	say "copy skilling-helper-phone.zip into this phone's Download folder and run this again."
 fi
 say "All set. Add the Termux:Widget widget to your home screen and tap \"Play Skilling Helper\"."
