@@ -50,7 +50,14 @@ private fun SheetScaffold(
                             Text("✕", color = Color(0xFFCCCCCC), fontSize = 15.sp)
                         }
                     }
-                    Box(Modifier.weight(1f).fillMaxWidth()) { content() }
+                    // Desktop-like density: everything in the sidebar a little smaller than phone defaults
+                    val d0 = androidx.compose.ui.platform.LocalDensity.current
+                    androidx.compose.runtime.CompositionLocalProvider(
+                        androidx.compose.ui.platform.LocalDensity provides
+                            androidx.compose.ui.unit.Density(d0.density * 0.9f, d0.fontScale * 0.9f),
+                    ) {
+                        Box(Modifier.weight(1f).fillMaxWidth()) { content() }
+                    }
                 }
                 // Drag grip on the left edge: drag to resize the sidebar; the game is resized when you let go.
                 Box(

@@ -734,3 +734,32 @@ patch(ma,
 	"""                "-Dsh.panelScale=""",
 	"""                "-Drunelite.hover.text=true", // Skilling Helper build: the desktop's top-left action text
                 "-Dsh.panelScale=""")
+
+# 22. Sidebar clean-up. Screen titles were 18-22sp in the RuneScape font next to text buttons, so in the narrow
+# sidebar the title got squeezed to a letter per line ("Plu / gin / s"). Titles are now 16sp on one line (cut with
+# "..."), back buttons are a plain "‹", and the launcher drops its "Close" (the sidebar's ✕ does that). SidePanel
+# also draws its content at 90% density.
+import re
+kt_dir = root / "android/app/src/main/java/dev/audaro/runemobile"
+one_line = "maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, "
+title_hits = 0
+for f in sorted(kt_dir.glob("*.kt")):
+	s = f.read_text()
+	n0 = s
+	s, a = re.subn(r"fontSize = (?:1[89]|2[0-9])\.sp, modifier = Modifier\.weight\(1f\)",
+		"fontSize = 16.sp, " + one_line + "modifier = Modifier.weight(1f)", s)
+	s, b = re.subn(r"fontSize = (?:1[89]|2[0-9])\.sp,(\n\s*)modifier = Modifier\.weight\(1f\),",
+		lambda m: "fontSize = 16.sp," + m.group(1) + one_line.rstrip() + m.group(1) + "modifier = Modifier.weight(1f),", s)
+	s = s.replace('{ Text("‹ Back") }', '{ Text("‹", fontSize = 18.sp) }')
+	title_hits += a + b
+	if s != n0:
+		f.write_text(s)
+		print(f"patched {f.relative_to(root)} ({a + b} titles)")
+if title_hits < 8:
+	sys.exit(f"patch.py: step 22 found only {title_hits} screen titles")
+pp = "android/app/src/main/java/dev/audaro/runemobile/PluginPanel.kt"
+patch(pp, '}) { Text("‹ Grid") }', '}) { Text("‹", fontSize = 18.sp) }')
+patch(pp,
+	"""                            TextButton(onClick = { hubOpen = true }) { Text("Hub") }
+                            TextButton(onClick = onClose) { Text("Close") }""",
+	"""                            TextButton(onClick = { hubOpen = true }) { Text("Hub") }""")
