@@ -6,11 +6,12 @@ import com.skillinghelper.banked.data.BankedActivity;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.Requirement;
+import com.skillinghelper.ui.GuideUi;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.Box;
@@ -24,9 +25,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -38,11 +37,11 @@ import net.runelite.client.ui.PluginPanel;
  */
 public class BankedXpPanel extends PluginPanel
 {
-	private static final int TEXT_WIDTH = 165;
-	private static final Color GOOD = new Color(80, 200, 80);
-	private static final Color WARN = new Color(255, 170, 0);
-	private static final Color BAD = new Color(230, 80, 80);
-	private static final Color MUTED = new Color(150, 150, 150);
+	private static final int TEXT_WIDTH = GuideUi.WIDTH;
+	private static final Color GOOD = GuideUi.GOOD;
+	private static final Color WARN = GuideUi.WARN;
+	private static final Color BAD = GuideUi.BAD;
+	private static final Color MUTED = GuideUi.MUTED;
 	private static final String SKIP_LABEL = "Don't use these";
 
 	public interface Listener
@@ -165,22 +164,14 @@ public class BankedXpPanel extends PluginPanel
 
 		BankedPlanner.Option current = view.getCurrent();
 		BankedActivity a = current.getActivity();
-		JPanel card = card();
-		card.add(text("Now: " + a.getName(), GOOD));
-		card.add(text(String.format("%,d left · %,d xp · about %s", current.getActions(), current.getXp(),
-			Format.hours(hours(List.of(current)))), MUTED));
+		JPanel card = GuideUi.card(GOOD);
 		GuideStep step = view.getStep();
-		if (step != null)
-		{
-			card.add(Box.createVerticalStrut(6));
-			JLabel stepTitle = text(step.getTitle(), Color.WHITE);
-			stepTitle.setFont(FontManager.getRunescapeBoldFont());
-			card.add(stepTitle);
-			for (String line : step.getDetails())
-			{
-				card.add(text(line, Color.LIGHT_GRAY));
-			}
-		}
+		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
+		GuideUi.fillStep(card, "Now: " + a.getName(), GOOD, step == null ? a.getName() : step.getTitle(), lines);
+		card.add(Box.createVerticalStrut(5));
+		card.add(GuideUi.stat("Left", String.format("%,d", current.getActions()), GuideUi.BRIGHT));
+		card.add(GuideUi.stat("Xp", String.format("%,d", current.getXp()), GOOD));
+		card.add(GuideUi.stat("Time", "about " + Format.hours(hours(List.of(current))), GuideUi.TEXT));
 		addRequirements(card, view.getRequirements());
 		guideBox.add(card);
 		guideBox.add(Box.createVerticalStrut(6));
@@ -241,7 +232,7 @@ public class BankedXpPanel extends PluginPanel
 					mark = "✔ ";
 					break;
 				case IN_BANK:
-					color = Color.LIGHT_GRAY;
+					color = null;
 					mark = "• ";
 					break;
 				case MISSING:
@@ -253,11 +244,11 @@ public class BankedXpPanel extends PluginPanel
 			}
 			if (!header)
 			{
-				card.add(Box.createVerticalStrut(6));
-				card.add(text("You need:", Color.WHITE));
+				card.add(GuideUi.subheading("You need"));
 				header = true;
 			}
-			card.add(text(mark + r.getText(), color));
+			card.add(color == BAD ? GuideUi.line(mark + r.getText(), BAD, GuideUi.CARD_WIDTH)
+				: GuideUi.line(mark + r.getText(), color, GuideUi.TEXT, GuideUi.CARD_WIDTH));
 		}
 	}
 
@@ -270,13 +261,13 @@ public class BankedXpPanel extends PluginPanel
 		{
 			return;
 		}
-		totalsBox.add(heading("Banked xp per skill"));
+		totalsBox.add(GuideUi.section("Banked xp per skill"));
 		for (BankedPlanner.SkillTotal t : view.getTotals())
 		{
 			String levels = t.getLevelAfter() > t.getLevelNow()
-				? t.getLevelNow() + " → " + t.getLevelAfter() : "level " + t.getLevelNow();
-			totalsBox.add(text(String.format("%s: +%,d xp (%s)", t.getSkill().getName(), t.getXp(), levels),
-				Color.LIGHT_GRAY));
+				? t.getLevelNow() + " → " + t.getLevelAfter() : "lvl " + t.getLevelNow();
+			totalsBox.add(GuideUi.stat(t.getSkill().getName(), String.format("+%,d xp (%s)", t.getXp(), levels),
+				t.getLevelAfter() > t.getLevelNow() ? GOOD : GuideUi.TEXT));
 		}
 	}
 
@@ -289,7 +280,7 @@ public class BankedXpPanel extends PluginPanel
 		{
 			return;
 		}
-		list.add(heading("Your banked items"));
+		list.add(GuideUi.section("Your banked items"));
 		list.add(text("Pick how to use each one. The guide does them top to bottom in the order that makes sense "
 			+ "(clean herbs before potions, smelt before smithing).", MUTED));
 		list.add(Box.createVerticalStrut(4));
@@ -302,7 +293,7 @@ public class BankedXpPanel extends PluginPanel
 
 	private JComponent groupRow(BankedPlanner.Group g)
 	{
-		JPanel row = card();
+		JPanel row = GuideUi.card(ColorScheme.BRAND_ORANGE);
 		JLabel name = text(String.format("%s × %,d", g.getItemName(), g.getCount()), Color.WHITE);
 		itemManager.getImage(g.getIconId()).addTo(name);
 		row.add(name);
@@ -364,7 +355,8 @@ public class BankedXpPanel extends PluginPanel
 		BankedPlanner.Option chosen = g.getChosen();
 		if (chosen != null)
 		{
-			row.add(text(String.format("%,d xp · about %s", chosen.getXp(), Format.hours(hours(List.of(chosen)))),
+			row.add(Box.createVerticalStrut(3));
+			row.add(GuideUi.stat(String.format("%,d xp", chosen.getXp()), "about " + Format.hours(hours(List.of(chosen))),
 				GOOD));
 		}
 		else if (!g.isSkipped())
@@ -404,55 +396,23 @@ public class BankedXpPanel extends PluginPanel
 		return p;
 	}
 
-	private static JPanel card()
-	{
-		JPanel p = column();
-		p.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		p.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, ColorScheme.BRAND_ORANGE),
-			new EmptyBorder(6, 6, 6, 6)));
-		return p;
-	}
-
-	private static JLabel heading(String s)
-	{
-		JLabel l = new JLabel(s);
-		l.setFont(FontManager.getRunescapeBoldFont());
-		l.setForeground(Color.WHITE);
-		l.setBorder(new EmptyBorder(4, 0, 2, 0));
-		return left(l);
-	}
-
 	private static JLabel text(String s, Color color)
 	{
-		JLabel l = new JLabel("<html><body style='width:" + TEXT_WIDTH + "px'>" + escape(s) + "</body></html>");
-		l.setForeground(color);
-		l.setFont(FontManager.getRunescapeSmallFont());
-		l.setAlignmentX(Component.LEFT_ALIGNMENT);
-		return l;
-	}
-
-	private static String escape(String s)
-	{
-		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+		return GuideUi.text(s, color, TEXT_WIDTH);
 	}
 
 	private static JButton button(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
-		b.addActionListener(e -> action.run());
-		return full(b);
+		return GuideUi.button(label, action);
 	}
 
 	private static <T extends JComponent> T left(T c)
 	{
-		c.setAlignmentX(Component.LEFT_ALIGNMENT);
-		return c;
+		return GuideUi.left(c);
 	}
 
 	private static <T extends JComponent> T full(T c)
 	{
-		c.setAlignmentX(Component.LEFT_ALIGNMENT);
-		c.setMaximumSize(new Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
-		return c;
+		return GuideUi.full(c);
 	}
 }
