@@ -25,10 +25,23 @@ public interface BankedXpConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "buyMissing",
+		name = "Buy missing secondaries",
+		description = "Count only the banked item itself and have the guide buy runes and secondaries that run short "
+			+ "(nature runes, snape grass, coal...). Off: only use what's already in your bank, and stop when anything "
+			+ "runs out",
+		position = 1
+	)
+	default boolean buyMissing()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "showBankButton",
 		name = "Bank button",
 		description = "Add a button to the bank that shows only the items the Banked XP guide needs right now",
-		position = 1
+		position = 2
 	)
 	default boolean showBankButton()
 	{

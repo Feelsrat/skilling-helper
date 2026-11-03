@@ -37,6 +37,11 @@ public class BankedPlannerTest
 
 	private final BankedPlanner planner = new BankedPlanner(id -> 100);
 
+	{
+		// The playthrough starts from just the banked item, so it needs the guide to buy the rest
+		planner.setBuyMissing(true);
+	}
+
 	@Test
 	public void everyActivityCountsItsOwnFirstInput()
 	{
@@ -93,6 +98,40 @@ public class BankedPlannerTest
 		assertEquals("banked_con_oak_larders",
 			only(planner.groups(s, choices, Skill.CONSTRUCTION)).getChosen().getActivity().getId());
 		assertEquals(2, planner.groups(s, choices, null).size());
+	}
+
+	@Test
+	public void withoutBuyingOnlyWhatsOwnedCounts()
+	{
+		BankedPlanner owned = new BankedPlanner(id -> 100);
+		Map<Integer, Integer> bank = new HashMap<>();
+		bank.put(ItemID.IRON_ORE, 500);
+		bank.put(ItemID.NATURERUNE, 40);
+		bank.put(ItemID.FIRE_BATTLESTAFF, 1);
+		PlayerState s = state(bank, 99);
+		BankedPlanner.Group ore = only(owned.groups(s, Collections.emptyMap(), Skill.MAGIC));
+		BankedPlanner.Option superheat = ore.getChosen();
+		assertEquals(40, superheat.getActions());
+		assertEquals("Nature runes", superheat.getLimitedBy());
+
+		// The guide for it never asks to buy anything but tools
+		BankedPlanner.Plan plan = owned.plan(superheat.getActivity(), s);
+		assertEquals(40, plan.getActions());
+		for (Requirement r : plan.getRequirements())
+		{
+			assertTrue(r.getText(), r.getStatus() != Requirement.Status.MISSING);
+		}
+
+		// Herbs without vials make no potions; with 10 vials, 10 more
+		bank.clear();
+		bank.put(ItemID.RANARR_WEED, 30);
+		bank.put(ItemID.RANARRVIAL, 5);
+		bank.put(ItemID.SNAPE_GRASS, 100);
+		BankedPlanner.Group herbs = only(owned.groups(state(bank, 99), Collections.emptyMap(), Skill.HERBLORE));
+		assertEquals(5, herbs.getChosen().getActions());
+		bank.put(ItemID.VIAL_WATER, 10);
+		herbs = only(owned.groups(state(bank, 99), Collections.emptyMap(), Skill.HERBLORE));
+		assertEquals(15, herbs.getChosen().getActions());
 	}
 
 	@Test

@@ -388,6 +388,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			return;
 		}
 
+		planner.setBuyMissing(config.buyMissing());
 		List<BankedPlanner.Group> groups = planner.groups(state, choices, focus);
 		view.focus(focus).skills(planner.skillsWithUses(state));
 		List<BankedPlanner.Option> queue = BankedPlanner.queue(groups);

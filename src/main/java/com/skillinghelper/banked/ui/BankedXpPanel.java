@@ -236,6 +236,11 @@ public class BankedXpPanel extends PluginPanel
 		GuideUi.fillStep(card, "Now: " + a.getName(), GOOD, step == null ? a.getName() : step.getTitle(), lines);
 		card.add(Box.createVerticalStrut(5));
 		card.add(GuideUi.stat("Left", String.format("%,d", current.getActions()), GuideUi.BRIGHT));
+		if (current.getLimitedBy() != null)
+		{
+			card.add(GuideUi.line("Stops when your " + current.getLimitedBy().toLowerCase() + " run out", WARN,
+				GuideUi.CARD_WIDTH));
+		}
 		card.add(GuideUi.stat("Xp", String.format("%,d", current.getXp()), GOOD));
 		card.add(GuideUi.stat("Time", "about " + Format.hours(hours(List.of(current))), GuideUi.TEXT));
 		addRequirements(card, view.getRequirements());
@@ -424,14 +429,32 @@ public class BankedXpPanel extends PluginPanel
 			row.add(Box.createVerticalStrut(3));
 			row.add(GuideUi.stat(String.format("%,d xp", chosen.getXp()), "about " + Format.hours(hours(List.of(chosen))),
 				GOOD));
+			if (chosen.getLimitedBy() != null)
+			{
+				row.add(text(String.format("Only %,d: that's all your %s cover", chosen.getActions(),
+					chosen.getLimitedBy().toLowerCase()), WARN));
+			}
 		}
 		else if (!g.isSkipped())
 		{
-			BankedPlanner.Option first = g.getOptions().get(0);
-			row.add(text(first.getLocked() != null ? "Can't use yet: " + first.getLocked().toLowerCase()
-				: "Not enough for one action", WARN));
+			row.add(text(whyNotUsed(g), WARN));
 		}
 		return row;
+	}
+
+	private static String whyNotUsed(BankedPlanner.Group g)
+	{
+		for (BankedPlanner.Option o : g.getOptions())
+		{
+			if (o.getLocked() == null && o.getLimitedBy() != null)
+			{
+				return "You have none of the " + o.getLimitedBy().toLowerCase() + " this needs (or turn on \"Buy "
+					+ "missing secondaries\" in the settings)";
+			}
+		}
+		BankedPlanner.Option first = g.getOptions().get(0);
+		return first.getLocked() != null ? "Can't use yet: " + first.getLocked().toLowerCase()
+			: "Not enough for one action";
 	}
 
 	// ---- Helpers ----

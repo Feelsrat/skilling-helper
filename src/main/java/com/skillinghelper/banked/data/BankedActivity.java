@@ -115,10 +115,84 @@ public class BankedActivity
 	}
 
 	/**
+	 * Actions possible with what the player owns.
+	 *
+	 * @param buyMissing true to count only the banked item and buy whatever else runs short (runes, secondaries);
+	 *                   false to stop when anything the activity uses runs out
+	 */
+	public int actions(PlayerState s, boolean buyMissing)
+	{
+		int actions = actions(s);
+		if (buyMissing)
+		{
+			return actions;
+		}
+		for (ItemReq input : method.getInputs())
+		{
+			actions = Math.min(actions, actionsFrom(input, s));
+		}
+		return actions;
+	}
+
+	/**
+	 * The input that runs out before the banked item does, or null when nothing else limits it.
+	 */
+	public ItemReq limitedBy(PlayerState s)
+	{
+		int banked = actions(s);
+		ItemReq limit = null;
+		int fewest = banked;
+		for (ItemReq input : method.getInputs())
+		{
+			int n = actionsFrom(input, s);
+			if (n < fewest)
+			{
+				fewest = n;
+				limit = input;
+			}
+		}
+		return limit;
+	}
+
+	/**
+	 * How many actions an input's owned amount covers, counting what its parts can make (herbs and vials into
+	 * unfinished potions) and treating a substitute (a fire staff for fire runes) as unlimited.
+	 */
+	private static int actionsFrom(ItemReq input, PlayerState s)
+	{
+		if (input.getPerAction() <= 0 || s.ownsSubstitute(input))
+		{
+			return Integer.MAX_VALUE;
+		}
+		long owned = s.owned(input.getIds());
+		if (input.hasRecipe())
+		{
+			long makeable = Long.MAX_VALUE;
+			for (ItemReq part : input.getRecipe())
+			{
+				if (part.getPerAction() > 0)
+				{
+					makeable = Math.min(makeable, s.owned(part.getIds()) / part.getPerAction());
+				}
+			}
+			if (makeable != Long.MAX_VALUE)
+			{
+				owned += makeable;
+			}
+		}
+		return (int) Math.min(Integer.MAX_VALUE, owned / input.getPerAction());
+	}
+
+	/**
 	 * Xp for using up every banked item at the player's current level.
 	 */
 	public long xp(PlayerState s)
 	{
-		return (long) Math.floor(actions(s) * method.xpPerAction(s.level(method.getSkill())));
+		return xp(s, true);
+	}
+
+	public long xp(PlayerState s, boolean buyMissing)
+	{
+		return (long) Math.floor(actions(s, buyMissing) * method.xpPerAction(s.level(method.getSkill())));
 	}
 }

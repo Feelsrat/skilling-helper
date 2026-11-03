@@ -19,7 +19,9 @@ import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Setter;
 import lombok.Value;
+import com.skillinghelper.data.ItemReq;
 import net.runelite.api.Experience;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
@@ -36,6 +38,11 @@ public final class BankedPlanner
 	public static final String SKIP = "skip";
 
 	private final StepResolver resolver;
+	/**
+	 * Buy runes and secondaries that run short instead of stopping when they run out.
+	 */
+	@Setter
+	private boolean buyMissing;
 
 	public BankedPlanner(PriceLookup prices)
 	{
@@ -73,6 +80,10 @@ public final class BankedPlanner
 		 * Why the player can't do it yet, or null.
 		 */
 		String locked;
+		/**
+		 * What runs out before the banked item does (e.g. nature runes), or null.
+		 */
+		String limitedBy;
 	}
 
 	/**
@@ -120,7 +131,9 @@ public final class BankedPlanner
 			{
 				if (focus == null || a.getSkill() == focus)
 				{
-					options.add(new Option(a, a.actions(s), a.xp(s), lockReason(a, s)));
+					ItemReq limit = buyMissing ? null : a.limitedBy(s);
+					options.add(new Option(a, a.actions(s, buyMissing), a.xp(s, buyMissing), lockReason(a, s),
+						limit == null ? null : limit.getName()));
 				}
 			}
 			if (options.isEmpty())
@@ -309,7 +322,7 @@ public final class BankedPlanner
 	public Plan plan(BankedActivity a, PlayerState s)
 	{
 		Method m = placed(a, s);
-		int actions = a.actions(s);
+		int actions = a.actions(s, buyMissing);
 		List<Requirement> reqs = resolver.requirements(m, s, actions);
 		GuideStep step = resolver.resolveActions(m, s, actions, false, reqs);
 		return new Plan(m, actions, reqs, step);
