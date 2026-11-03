@@ -16,7 +16,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   9. A desktop-style icon bar always on the right edge in landscape (IconStrip.kt.txt); the game sits left of it.
   10. In landscape the icon bar's ≡ replaces the floating "≡ Plugins" button at the bottom centre.
   11. Landscape only: portrait and auto-rotate are gone, and so is their setting.
-  12. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  12. Sharp panels: rendered at the integer scale that matches ~280dp on this screen and shown 1:1, unfiltered.
+  13. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -317,7 +318,19 @@ patch(ma,
 	"""        val reserve = shReservePx()
         val availW = (root.width - reserve).coerceAtLeast(1)
         var (w, h) = stageSize(availW, root.height, canvasW, canvasH)
-        if (reserve > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) w = availW
+        if (reserve > 0 && canvasW > 0 && canvasH > 0) {
+            // Fit the canvas's own shape into the space left of the bar (never stretch it, e.g. at the login screen
+            // before a resize applies); fill it exactly once the canvas matches.
+            val ca = canvasW.toFloat() / canvasH
+            val wa = availW.toFloat() / root.height
+            when {
+                abs(ca / wa - 1f) <= 0.01f -> { w = availW; h = root.height }
+                ca > wa -> { w = availW; h = Math.round(availW / ca) }
+                else -> { w = Math.round(root.height * ca); h = root.height }
+            }
+        } else if (reserve > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) {
+            w = availW
+        }
         val grav = if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
         val lp = stage.layoutParams as FrameLayout.LayoutParams
         if (lp.width != w || lp.height != h || lp.gravity != grav) {
@@ -481,3 +494,29 @@ patch(ss,
 patch(ss,
 	"internal fun GsScreenSection() {\n",
 	"internal fun GsScreenSection() {\n    if (ScreenSetting.portrait(LocalContext.current) == false) return // Skilling Helper build: no Screen choice\n")
+
+# 12. Sharp plugin panels, like desktop at an integer UI scale. The JVM learns the device's panel scale at boot
+# (sh.panelScale = round(280dp in px / 242)); the panel buffer is drawn at that scale and shown pixel for pixel.
+patch(ma,
+	"""                "-Xmx${MAX_HEAP_MB}m",
+                // Fail fast""",
+	"""                "-Xmx${MAX_HEAP_MB}m",
+                "-Dsh.panelScale=${Math.round(280f * resources.displayMetrics.density / 242f).coerceIn(1, 6)}", // Skilling Helper build
+                // Fail fast""")
+patch(mb,
+	"	private static final int RENDER_SCALE = 4;",
+	"	private static final int RENDER_SCALE = Math.max(1, Math.min(6, Integer.getInteger(\"sh.panelScale\", 4))); // Skilling Helper build")
+patch(mb,
+	"	private static final long MAX_BUFFER_PX = 3_000_000L;",
+	"	private static final long MAX_BUFFER_PX = 4_500_000L; // Skilling Helper build (was 3M): tall panels keep full scale")
+patch(pv,
+	"                    val colW = if (maxWidth < PANEL_MAX_DP) maxWidth else PANEL_MAX_DP\n",
+	"""                    // Skilling Helper build: show the buffer pixel for pixel when it fits (sharp, like desktop).
+                    val exactW = with(androidx.compose.ui.platform.LocalDensity.current) { pw.toDp() }
+                    val oneToOne = pw > 0 && exactW <= maxWidth
+                    val colW = if (oneToOne) exactW else if (maxWidth < PANEL_MAX_DP) maxWidth else PANEL_MAX_DP
+""")
+patch(pv,
+	"                            contentScale = ContentScale.FillWidth,\n",
+	"                            contentScale = ContentScale.FillWidth,\n"
+	"                            filterQuality = if (oneToOne) androidx.compose.ui.graphics.FilterQuality.None else androidx.compose.ui.graphics.FilterQuality.High,\n")
