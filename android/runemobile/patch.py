@@ -15,7 +15,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   8. Dropdowns (JComboBox) in plugin panels open as a list drawn into the panel image (ComboHook.java.txt).
   9. A desktop-style icon bar always on the right edge in landscape (IconStrip.kt.txt); the game sits left of it.
   10. In landscape the icon bar's ≡ replaces the floating "≡ Plugins" button at the bottom centre.
-  11. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  11. Landscape only: portrait and auto-rotate are gone, and so is their setting.
+  12. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -468,3 +469,15 @@ patch(ma,
         val shVis = if (host.width > host.height) View.GONE else View.VISIBLE // Skilling Helper build
         if (v.visibility != shVis) v.visibility = shVis
         var margin = handleBaseBottom + handleInsetBottom""")
+
+# 11. Landscape only, like a desktop window.
+ss = "android/app/src/main/java/dev/audaro/runemobile/ScreenSetting.kt"
+patch(ss,
+	"fun portrait(ctx: Context): Boolean = prefs(ctx).getBoolean(KEY_PORTRAIT, false)",
+	"fun portrait(ctx: Context): Boolean = false // Skilling Helper build: landscape only")
+patch(ss,
+	"fun autoRotate(ctx: Context): Boolean = prefs(ctx).getBoolean(KEY_AUTO, false)",
+	"fun autoRotate(ctx: Context): Boolean = false // Skilling Helper build: landscape only")
+patch(ss,
+	"internal fun GsScreenSection() {\n",
+	"internal fun GsScreenSection() {\n    if (ScreenSetting.portrait(LocalContext.current) == false) return // Skilling Helper build: no Screen choice\n")
