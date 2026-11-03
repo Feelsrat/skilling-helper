@@ -116,6 +116,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private RunTimers runTimers;
 	@Inject
+	private SessionXpTracker sessionXp;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -260,6 +262,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		trackBoat();
 		updateRuns();
+		Skill activeSkill = settings.getActiveSkill();
+		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
 	}
 
@@ -346,6 +350,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		birdhouses.reset();
 		patches.reset();
 		runTimers.clear();
+		sessionXp.reset();
 	}
 
 	/**
@@ -699,6 +704,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.xpRemaining(MethodPlanner.xpBetween(state.xp(skill), target))
 			.player(state)
 			.priceSource(prices.sourceText())
+			.sessionXpPerHour(sessionXp.xpPerHour(skill))
 			.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()));
 
 		List<Method> methods = guides.methods(skill);

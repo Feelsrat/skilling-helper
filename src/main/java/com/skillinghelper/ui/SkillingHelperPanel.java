@@ -435,6 +435,25 @@ public class SkillingHelperPanel extends PluginPanel
 				guide.getXpRemaining()), duration(guide.getMethod().getCycleMinutes() / 60.0)), Color.LIGHT_GRAY));
 		}
 		content.add(text(String.format("Guide estimate ~%,d xp/hr", Math.round(option.getXpPerHour())), HINT));
+		addSessionRate(guide);
+	}
+
+	/**
+	 * The xp/hr the player is really getting this session, and the time to the goal if they keep it up.
+	 */
+	private void addSessionRate(ActiveGuide guide)
+	{
+		int rate = guide.getSessionXpPerHour();
+		if (rate < 0)
+		{
+			content.add(text("Your xp/hr this session: measuring...", Color.LIGHT_GRAY));
+		}
+		else if (rate > 0)
+		{
+			content.add(text(String.format("Your xp/hr this session: ~%,d", rate), Color.WHITE));
+			content.add(text("At that rate: " + duration((double) guide.getXpRemaining() / rate) + " to level "
+				+ guide.getTargetLevel(), Color.LIGHT_GRAY));
+		}
 	}
 
 	/**
@@ -717,13 +736,21 @@ public class SkillingHelperPanel extends PluginPanel
 	/**
 	 * Everything the panel shows, so it's only rebuilt when something visible changed.
 	 */
+	/**
+	 * Rounds the session rate so the panel isn't rebuilt every tick while it wobbles.
+	 */
+	private static int sessionRateBucket(int rate)
+	{
+		return rate <= 0 ? rate : rate / 500;
+	}
+
 	private static String signature(ActiveGuide g, TrainingPreference pref, boolean bankFilterOn)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(g.getSkill()).append('|').append(g.getLevel()).append('|').append(g.getTargetLevel()).append('|')
 			.append(g.getXpRemaining() / 500).append('|').append(pref).append('|').append(bankFilterOn).append('|')
 			.append(g.isForced()).append('|').append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
-			.append(g.getPriceSource());
+			.append(g.getPriceSource()).append('|').append(sessionRateBucket(g.getSessionXpPerHour()));
 		GuideStep s = g.getStep();
 		if (s != null)
 		{

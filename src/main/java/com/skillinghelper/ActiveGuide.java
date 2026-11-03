@@ -49,6 +49,10 @@ public class ActiveGuide
 	 * Where the GE prices shown come from, for the panel.
 	 */
 	String priceSource;
+	/**
+	 * Xp per hour the player is actually getting in this skill this session: 0 before any xp, -1 while measuring.
+	 */
+	int sessionXpPerHour;
 
 	public boolean isActive()
 	{
