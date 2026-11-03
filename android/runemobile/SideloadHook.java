@@ -16,7 +16,8 @@
             java.io.File mark = new java.io.File(dir, "skilling-helper.version");
             String latest = new String(skillingHelperFetch(SKILLING_HELPER_RELEASE + "android-version.txt"),
                 java.nio.charset.StandardCharsets.UTF_8).trim();
-            String have = mark.isFile() ? java.nio.file.Files.readString(mark.toPath()).trim() : "";
+            String have = mark.isFile() ? new String(java.nio.file.Files.readAllBytes(mark.toPath()),
+                java.nio.charset.StandardCharsets.UTF_8).trim() : "";
             if (jar.isFile() && latest.equals(have)) {
                 System.out.println("[skilling-helper] plugin " + have + " is current");
                 return;
@@ -28,7 +29,7 @@
             java.io.File tmp = new java.io.File(dir, "skilling-helper.jar.part");
             java.nio.file.Files.write(tmp.toPath(), data);
             java.nio.file.Files.move(tmp.toPath(), jar.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            java.nio.file.Files.writeString(mark.toPath(), latest);
+            java.nio.file.Files.write(mark.toPath(), latest.getBytes(java.nio.charset.StandardCharsets.UTF_8));
             System.out.println("[skilling-helper] plugin updated to " + latest);
         } catch (Exception e) {
             System.out.println("[skilling-helper] plugin update failed, keeping the current one: " + e);
@@ -46,8 +47,14 @@
             if (code != 200) {
                 throw new java.io.IOException("HTTP " + code + " for " + url);
             }
+            // Java 8 (the boot class is compiled with --release 8): no InputStream.readAllBytes.
             try (java.io.InputStream in = c.getInputStream()) {
-                return in.readAllBytes();
+                java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+                byte[] buf = new byte[65536];
+                for (int n; (n = in.read(buf)) > 0; ) {
+                    out.write(buf, 0, n);
+                }
+                return out.toByteArray();
             }
         } finally {
             c.disconnect();
