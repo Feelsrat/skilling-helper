@@ -299,7 +299,7 @@ patch(ma,
 	"    private var gameStage: FrameLayout? = null\n",
 	"    private var gameStage: FrameLayout? = null\n"
 	"    private var shSidebarPx = 0 // Skilling Helper build: width the open plugin sidebar takes from the game\n"
-	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n")
+	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n")
 patch(ma,
 	"""        val (w, h) = stageSize(root.width, root.height, canvasW, canvasH)
         val lp = stage.layoutParams as FrameLayout.LayoutParams
@@ -309,8 +309,7 @@ patch(ma,
 """,
 	"""        val reserve = shReservePx()
         val availW = (root.width - reserve).coerceAtLeast(1)
-        // The space above the soft keyboard while it is up for a game field (0 otherwise), so nothing hides under it
-        val availH = (root.height - shImePx).coerceAtLeast(1)
+        val availH = root.height
         var (w, h) = stageSize(availW, root.height, canvasW, canvasH)
         if (reserve > 0 && canvasW > 0 && canvasH > 0) {
             // Fit the canvas's own shape into the space left of the bar (never stretch it, e.g. at the login screen
@@ -325,8 +324,7 @@ patch(ma,
         } else if (reserve > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) {
             w = availW
         }
-        val grav = if (shImePx > 0) Gravity.CENTER_HORIZONTAL or Gravity.TOP
-            else if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
+        val grav = if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
         val lp = stage.layoutParams as FrameLayout.LayoutParams
         if (lp.width != w || lp.height != h || lp.gravity != grav) {
             lp.width = w
@@ -554,9 +552,7 @@ patch(mb,
 
 # 14. Typing into the game with the sidebar open. The stock poll only hands the keyboard to the game's hidden input
 # view when it raises the keyboard; with the sidebar open during play another view can hold focus while the
-# keyboard is already up, so typed text went nowhere (GE, bank and fairy ring searches). Take focus back whenever
-# the game wants the keyboard. And while the keyboard is up for the game, fit the game into the space above it
-# (scaled, no canvas resize), so menus like the fairy ring dial aren't hidden under the keyboard.
+# keyboard is already up, so typed text could go nowhere. Take focus back whenever the game wants the keyboard.
 patch(ma,
 	"""                        if (want != imeShown) {
                             if (want != keyboardShown) {""",
@@ -567,23 +563,6 @@ patch(ma,
                         }
                         if (want != imeShown) {
                             if (want != keyboardShown) {""")
-patch(ma,
-	"""                    updatePasteButton(imeShown && !textActivePanel && keyboardShown)
-""",
-	"""                    updatePasteButton(imeShown && !textActivePanel && keyboardShown)
-                    // Skilling Helper build: keep the game above the keyboard while it is up for a game field
-                    val shIme =
-                        if (imeShown && !textActivePanel && keyboardShown && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            surfaceView.rootWindowInsets?.getInsets(WindowInsets.Type.ime())?.bottom ?: 0
-                        } else {
-                            0
-                        }
-                    if (shIme != shImePx) {
-                        shImePx = shIme
-                        fitGameStage()
-                    }
-""")
-
 # 15. Closing the keyboard. The poll re-raised it on the next frame while a game field stayed open, so it could not
 # be closed (e.g. to see the whole fairy ring dial). A close by the user now holds until that field closes; the ⌨
 # button brings the keyboard back.
@@ -599,7 +578,77 @@ patch(ma,
                         if (!shField || manualKeyboard) shImeDismissed = false
                         imeWasShown = imeShown
                         val want = manualKeyboard || mapSearchKeyboard || (shField && !shImeDismissed)""")
+
+# 16. Keyboards that compose. The game's input view only forwarded committed text, but Samsung Keyboard (and Gboard
+# at times) types into a composing region first and never commits each letter, so most typing was lost. Ask for a
+# plain no-suggestion field (visible-password variation, which keyboards treat as "no composing"), and forward
+# composing text too, as the letters it adds or removes.
 patch(ma,
-	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n",
-	"    private var shImePx = 0 // Skilling Helper build: soft keyboard height while it is up for a game text field\n"
-	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n")
+	"                    EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS\n",
+	"                    EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS or\n"
+	"                        EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD // Skilling Helper build\n")
+patch(ma,
+	"""            return object : BaseInputConnection(this, false) {
+                override fun commitText(
+                    text: CharSequence?,
+                    newCursorPosition: Int,
+                ): Boolean {
+                    val s = text?.toString().orEmpty()
+                    if (s.isNotEmpty()) {
+                        JvmLauncher.text(s)
+                    }
+                    return true
+                }
+""",
+	"""            return object : BaseInputConnection(this, false) {
+                // Skilling Helper build: what the keyboard is composing, already sent to the game letter by letter
+                private var shComposing = ""
+
+                private fun shSendDiff(next: String) {
+                    var common = 0
+                    while (common < shComposing.length && common < next.length && shComposing[common] == next[common]) common++
+                    repeat(shComposing.length - common) { JvmLauncher.keyStroke(VK_BACK_SPACE) }
+                    if (common < next.length) JvmLauncher.text(next.substring(common))
+                    shComposing = next
+                }
+
+                override fun setComposingText(
+                    text: CharSequence?,
+                    newCursorPosition: Int,
+                ): Boolean {
+                    shSendDiff(text?.toString().orEmpty())
+                    return true
+                }
+
+                override fun finishComposingText(): Boolean {
+                    shComposing = ""
+                    return true
+                }
+
+                override fun commitText(
+                    text: CharSequence?,
+                    newCursorPosition: Int,
+                ): Boolean {
+                    val s = text?.toString().orEmpty()
+                    if (shComposing.isNotEmpty()) {
+                        shSendDiff(s)
+                        shComposing = ""
+                    } else if (s.isNotEmpty()) {
+                        JvmLauncher.text(s)
+                    }
+                    return true
+                }
+""")
+
+# 17. The game keeps keyboard focus. Keys go straight to the game canvas's listeners, and the game ignores them while
+# it thinks it lost focus. The stock bridge tells the game it has focus only once per session, but our sidebar keeps
+# a plugin panel window showing during play, which can take focus from the canvas; after that every key was ignored.
+# Tell the game it has focus before each burst of typing.
+patch("runelite-client/src/main/java/net/runelite/client/headless/JavaBridge.java",
+	"""		if (focused && canvas == focusedCanvas)
+		{
+			return;
+		}
+		focused = true;""",
+	"""		// Skilling Helper build: always re-assert focus (see patch.py step 17)
+		focused = true;""")
