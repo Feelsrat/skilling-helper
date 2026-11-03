@@ -857,3 +857,9 @@ patch(ma,
         val gx = toGameX(viewX)
         val gy = toGameY(viewY)
         surfaceToOverlay(viewX, viewY)""")
+
+# 26. Swiping a game interface (bank, quest list, chat, ...) scrolled the wrong way: a finger moving up scrolled the
+# list up. It now drags the content with the finger, like the plugin sidebar and the rest of the phone.
+patch(ma,
+	"                ifaceScrollAccum += -distanceY / IFACE_SCROLL_PT_PER_NOTCH\n",
+	"                ifaceScrollAccum += distanceY / IFACE_SCROLL_PT_PER_NOTCH // Skilling Helper build: was -distanceY\n")
