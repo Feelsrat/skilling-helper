@@ -1,0 +1,76 @@
+
+// ---- Skilling Helper build (inserted by skilling-helper android/runemobile/patch.py) ----
+/** Shared state of the desktop-style icon bar: its width, and which entry the open sidebar shows (-1 = the plugin
+ *  launcher, null = closed). */
+object ShUi {
+    const val STRIP_DP = 40
+    val active = mutableStateOf<Int?>(null)
+}
+
+/** Desktop-style icon bar, always on the right edge in landscape like RuneLite's: ≡ opens the plugin launcher, and
+ *  one icon per plugin panel opens that panel in the sidebar. The host toggles: the active icon closes it again. */
+@Composable
+fun ShIconStrip(onOpen: (Pair<Int, String>?) -> Unit) {
+    val conf = androidx.compose.ui.platform.LocalConfiguration.current
+    if (conf.screenWidthDp <= conf.screenHeightDp) return
+    var panels by remember { mutableStateOf<List<PanelEntry>>(emptyList()) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            val json =
+                withContext(Dispatchers.IO) {
+                    runCatching { JvmLauncher.onBridge { JvmLauncher.listPanels() }.get() }.getOrNull()
+                }
+            if (json != null) {
+                val p = parsePanels(json)
+                if (p.map { it.index to it.tooltip } != panels.map { it.index to it.tooltip }) panels = p
+            }
+            delay(if (panels.isEmpty()) 2_000 else 10_000)
+        }
+    }
+    val active = ShUi.active.value
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1B1B1B))
+            .windowInsetsPadding(
+                WindowInsets.displayCutout
+                    .union(WindowInsets.navigationBars)
+                    .union(WindowInsets.statusBars)
+                    .only(WindowInsetsSides.End + WindowInsetsSides.Top + WindowInsetsSides.Bottom),
+            ).verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        ShStripButton(active == -1, "Plugins", { onOpen(null) }) {
+            Text("≡", color = Color.White, fontSize = 20.sp)
+        }
+        for (p in panels) {
+            ShStripButton(active == p.index, p.tooltip, { onOpen(p.index to p.tooltip) }) {
+                val icon = p.icon
+                if (icon != null) {
+                    Image(icon.asImageBitmap(), p.tooltip, Modifier.size(22.dp))
+                } else {
+                    Text(p.tooltip.take(2), color = Color.White, fontSize = 11.sp)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShStripButton(
+    selected: Boolean,
+    label: String,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        Modifier
+            .padding(vertical = 2.dp)
+            .size(36.dp)
+            .clip(RoundedCornerShape(6.dp))
+            .background(if (selected) Color(0xFF3A3A3A) else Color.Transparent)
+            .clickable(onClickLabel = label, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) { content() }
+}
+// ---- end Skilling Helper build ----

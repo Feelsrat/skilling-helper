@@ -13,7 +13,8 @@ Changes, each one checked so an upstream change fails the build loudly instead o
   6. Panels: hover events before a tap, faster and cheaper refresh, a narrower desktop-sized panel; compact hub rows.
   7. In landscape the open sidebar takes its width from the game, which resizes like desktop instead of being covered.
   8. Dropdowns (JComboBox) in plugin panels open as a list drawn into the panel image (ComboHook.java.txt).
-  9. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
+  9. A desktop-style icon bar always on the right edge in landscape (IconStrip.kt.txt); the game sits left of it.
+  10. A separate app id and name, so it installs next to the official RuneMobile instead of replacing it.
 """
 import pathlib
 import sys
@@ -311,10 +312,11 @@ patch(ma,
             lp.width = w
             lp.height = h
 """,
-	"""        val availW = (root.width - shSidebarPx).coerceAtLeast(1)
+	"""        val reserve = shReservePx()
+        val availW = (root.width - reserve).coerceAtLeast(1)
         var (w, h) = stageSize(availW, root.height, canvasW, canvasH)
-        if (shSidebarPx > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) w = availW
-        val grav = if (shSidebarPx > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
+        if (reserve > 0 && w == FrameLayout.LayoutParams.MATCH_PARENT) w = availW
+        val grav = if (reserve > 0) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER
         val lp = stage.layoutParams as FrameLayout.LayoutParams
         if (lp.width != w || lp.height != h || lp.gravity != grav) {
             lp.width = w
@@ -324,7 +326,7 @@ patch(ma,
 patch(ma,
 	"""            val (w, h) = if (root == null) 0 to 0 else canvasFor(root.width, root.height, resources.displayMetrics.density)
             val strip = if (root == null) 0 else stripFor(root.width, root.height, resources.displayMetrics.density)""",
-	"""            val gameW = if (root == null) 0 else (root.width - shSidebarPx).coerceAtLeast(1)
+	"""            val gameW = if (root == null) 0 else (root.width - shReservePx()).coerceAtLeast(1)
             val (w, h) = if (root == null) 0 to 0 else canvasFor(gameW, root.height, resources.displayMetrics.density)
             val strip = if (root == null) 0 else stripFor(gameW, root.height, resources.displayMetrics.density)""")
 patch(ma,
@@ -332,6 +334,12 @@ patch(ma,
 	"""    /** Skilling Helper build: reserve (or give back) the plugin sidebar's width beside the game. Landscape only: in
      *  portrait the sidebar would leave the game too narrow, so it overlays as before. Matches SidePanel's width
      *  (42% of the window, 280-300dp). */
+    private fun shReservePx(): Int {
+        val root = rootContainer ?: return 0
+        if (root.width <= root.height) return 0
+        return Math.round(ShUi.STRIP_DP * resources.displayMetrics.density) + shSidebarPx
+    }
+
     private fun shApplySidebar(open: Boolean) {
         val root = rootContainer ?: return
         val d = resources.displayMetrics.density
@@ -383,3 +391,70 @@ patch(mb,
 patch(mb,
 	"	public static String openPanel(int index)\n	{\n",
 	"	public static String openPanel(int index)\n	{\n		shCombo = null; // Skilling Helper build: no dropdown carries over to another panel\n")
+
+# 9. Icon bar.
+pp3 = "android/app/src/main/java/dev/audaro/runemobile/PluginPanel.kt"
+t = (root / pp3).read_text()
+t = t + (pathlib.Path(__file__).parent / "IconStrip.kt.txt").read_text()
+(root / pp3).write_text(t)
+patch(pp3,
+	"""    onEnterOverlayEdit: () -> Unit = {}, // overlay layout is now edited ON the live game (host drag mode)
+) {""",
+	"""    onEnterOverlayEdit: () -> Unit = {}, // overlay layout is now edited ON the live game (host drag mode)
+    startPanel: Pair<Int, String>? = null, // Skilling Helper build: open straight on this panel (icon bar)
+) {""")
+patch(pp3,
+	"var panelOpen by remember { mutableStateOf<Pair<Int, String>?>(null) }",
+	"var panelOpen by remember { mutableStateOf<Pair<Int, String>?>(startPanel) }")
+# The sidebar sits left of the icon bar in landscape.
+patch(pp3,
+	"""                    .align(Alignment.CenterEnd)
+                    .width(panelW)""",
+	"""                    .align(Alignment.CenterEnd)
+                    .padding(end = if (maxWidth > maxHeight) ShUi.STRIP_DP.dp else 0.dp)
+                    .width(panelW)""")
+patch(ma,
+	"        fun openLauncher() {\n            pluginPanel.setContent {\n                PluginPanel(\n",
+	"        fun openLauncher(start: Pair<Int, String>? = null) {\n            ShUi.active.value = start?.first ?: -1\n"
+	"            pluginPanel.setContent {\n                PluginPanel(\n                    startPanel = start,\n")
+t = (root / ma).read_text()
+t = t.replace(" shApplySidebar(false)\n", " shApplySidebar(false)\n ShUi.active.value = null\n")
+(root / ma).write_text(t)
+patch(ma,
+	"""                            bottomMargin = handleBaseBottom
+                        },
+                )
+""",
+	"""                            bottomMargin = handleBaseBottom
+                        },
+                )
+                // Skilling Helper build: the desktop-style icon bar on the right edge (landscape; empty in portrait).
+                addView(
+                    ComposeView(this@MainActivity).apply {
+                        elevation = 210f
+                        setContent {
+                            ShIconStrip(onOpen = { sel ->
+                                val idx = sel?.first ?: -1
+                                if (pluginPanel.visibility == View.VISIBLE && ShUi.active.value == idx) {
+                                    pluginPanel.visibility = View.GONE
+                                    pluginPanel.disposeComposition()
+                                    JvmLauncher.onBridge { JvmLauncher.flushConfig() }
+                                    shApplySidebar(false)
+                                    ShUi.active.value = null
+                                } else {
+                                    openLauncher(sel)
+                                }
+                            })
+                        }
+                    },
+                    FrameLayout.LayoutParams(
+                        Math.round(ShUi.STRIP_DP * resources.displayMetrics.density),
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        Gravity.END,
+                    ),
+                )
+""")
+# A narrower game area is worth a canvas resize even under the 10% letterbox slack (the strip alone is ~4%).
+patch(ma,
+	"val worth = abs(w.toFloat() / oldW - 1f) > STAGE_ASPECT_SLACK || abs(h.toFloat() / oldH - 1f) > STAGE_ASPECT_SLACK",
+	"val worth = abs(w.toFloat() / oldW - 1f) > 0.01f || abs(h.toFloat() / oldH - 1f) > 0.01f // Skilling Helper build")
