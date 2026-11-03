@@ -451,6 +451,14 @@ public class SkillingHelperPanel extends PluginPanel
 		else if (rate > 0)
 		{
 			content.add(text(String.format("Your xp/hr this session: ~%,d", rate), Color.WHITE));
+			PlayerState player = guide.getPlayer();
+			int next = guide.getLevel() + 1;
+			if (player != null && next < guide.getTargetLevel() && next <= Experience.MAX_REAL_LEVEL)
+			{
+				long toNext = Experience.getXpForLevel(next) - (long) player.xp(guide.getSkill());
+				content.add(text("At that rate: " + duration((double) Math.max(0, toNext) / rate) + " to level "
+					+ next, Color.LIGHT_GRAY));
+			}
 			content.add(text("At that rate: " + duration((double) guide.getXpRemaining() / rate) + " to level "
 				+ guide.getTargetLevel(), Color.LIGHT_GRAY));
 		}
