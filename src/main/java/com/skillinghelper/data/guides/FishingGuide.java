@@ -9,6 +9,7 @@ import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.data.ToolType;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -64,6 +65,16 @@ final class FishingGuide
 				.wikiPage("Barbarian_Fishing")
 				.rateAt(58, 42_000).rateAt(70, 55_000).rateAt(80, 62_000).rateAt(90, 70_000)
 				.build(),
+			fish("fish_monkfish_piscatoris", "Monkfish (Piscatoris)", 62, 120, 30_000,
+				Location.of("Piscatoris fishing spots", 2337, 3702, 8), Banks.PISCATORIS, "Net", "Fishing spot")
+				.tool(ItemReq.tool("Small fishing net", ItemID.NET))
+				.product(ItemID.RAW_MONKFISH)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
+				.quest(Quest.SWAN_SONG)
+				.notes("The bank is right next to the spots, so banking costs little. Monkfish are good food too.")
+				.wikiPage(P2P_WIKI)
+				.rateAt(75, 35_000).rateAt(90, 40_000)
+				.build(),
 			fish("fish_sharks_catherby", "Sharks (Catherby)", 76, 110, 20_000,
 				Location.of("Catherby beach", 2840, 3431, 8), Banks.CATHERBY, "Harpoon", "Fishing spot")
 				.toolType(ToolType.HARPOON)
@@ -72,6 +83,52 @@ final class FishingGuide
 				.notes("Use the spots that offer Net and Harpoon.")
 				.wikiPage(P2P_WIKI)
 				.rateAt(90, 28_000).rateAt(99, 30_000)
+				.build(),
+			Method.builder()
+				.id("fish_tempoross")
+				.skill(Skill.FISHING)
+				.type(MethodType.ACTIVITY)
+				.name("Tempoross")
+				.minLevel(35)
+				.xpPerAction(1_000)
+				.xpPerHour(30_000)
+				.rateAt(50, 45_000).rateAt(70, 60_000).rateAt(90, 70_000)
+				.members(true)
+				.tag(MethodTag.MINIGAME).tag(MethodTag.FAST)
+				.location(Location.of("Tempoross Cove", 3035, 2850, 30))
+				.toolType(ToolType.HARPOON)
+				.target(Target.npc("Harpoon", "Fishing spot"))
+				.target(Target.object(null, "Ammunition crate", "Shrine", "Totem pole", "Mast", "Water pump"))
+				.supply(ItemReq.supply("Bucket of water (for fires)", 2, ItemID.BUCKET_WATER))
+				.instruction("Board the boat at Tempoross Cove. Harpoon fish, cook them at the shrine and load the "
+					+ "ammunition crate. Tether to a totem pole or mast when the storm wave comes, then attack "
+					+ "Tempoross when it's down")
+				.notes("Each round gives reward permits for the Reward pool (fish, Angler outfit pieces, tome of water, "
+					+ "pet). Douse fires with buckets of water; you can fill buckets at the water pump.")
+				.wikiPage("Tempoross")
+				.build(),
+			Method.builder()
+				.id("fish_aerial_molch")
+				.skill(Skill.FISHING)
+				.type(MethodType.ACTIVITY)
+				.name("Aerial fishing (Lake Molch)")
+				.minLevel(43)
+				.xpPerAction(35)
+				.xpPerHour(25_000)
+				.rateAt(60, 32_000).rateAt(80, 40_000).rateAt(99, 45_000)
+				.members(true)
+				.tag(MethodTag.CHEAP)
+				.location(Location.of("Lake Molch", 1370, 3633, 15))
+				.target(Target.npc("Catch", "Fishing spot"))
+				.target(Target.npc(null, "Alry the Angler"))
+				.target(Target.object(null, "Boaty"))
+				.supply(ItemReq.supply("King worms or fish chunks (bait)", 500, ItemID.KING_WORM, ItemID.FISH_CHUNKS))
+				.requirementText("35 Hunter")
+				.instruction("Talk to Alry the Angler for the cormorant's glove, take the boat to the island and send "
+					+ "your cormorant at the fishing spots")
+				.notes("Also gives Hunter xp, and Cooking xp if you cut the fish into chunks with a knife to re-use as "
+					+ "bait. Earns molch pearls for the Angler outfit and pearl rods.")
+				.wikiPage("Aerial_fishing")
 				.build(),
 			Method.builder()
 				.id("fish_trawler")
@@ -91,6 +148,18 @@ final class FishingGuide
 				.notes("Slow xp, but every game is a chance at an Angler piece. The full outfit gives +2.5% Fishing xp "
 					+ "for the rest of the grind.")
 				.wikiPage("Fishing_Trawler")
+				.build(),
+			fish("fish_anglerfish_piscarilius", "Anglerfish (Port Piscarilius)", 82, 120, 15_000,
+				Location.of("Port Piscarilius anglerfish spots", 1830, 3772, 8), Banks.PISCARILIUS, "Bait",
+				"Rod Fishing spot")
+				.tool(ItemReq.tool("Fishing rod", ItemID.FISHING_ROD, ItemID.FISHINGROD_PEARL))
+				.input(ItemReq.consumed("Sandworms", 500, 1, ItemID.PISCARILIUS_SANDWORMS))
+				.product(ItemID.RAW_ANGLERFISH)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.PROFIT)
+				.notes("Slow xp but very profitable and AFK. Sandworms are sold at the tackle shop in Port "
+					+ "Piscarilius or made from Fishing Bait at the Hosidius worm farm.")
+				.wikiPage(P2P_WIKI)
+				.rateAt(90, 18_000).rateAt(99, 20_000)
 				.build()
 		);
 	}
