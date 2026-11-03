@@ -189,22 +189,22 @@ or GitHub is slow, the game just starts with the jar it has; what happened is lo
 
 Untested on a phone so far. [GameNative](https://github.com/utkarshdalal/GameNative) runs Windows programs on Android,
 so it can run the normal Windows RuneLite dev client with these plugins built in. Every release includes
-`skilling-helper-android.sh`, which sets that up and keeps it updated:
+`skilling-helper-android.sh`, which sets it all up from [Termux](https://f-droid.org/packages/com.termux/):
 
-1. Install [Termux](https://f-droid.org/packages/com.termux/) (and optionally Termux:Widget and Termux:API, same place).
-2. Download `skilling-helper-android.sh` from the latest release, then in Termux run
-   `bash ~/storage/downloads/skilling-helper-android.sh` (run `termux-setup-storage` first if `~/storage` is missing).
-   It downloads a Windows Java 21 and the newest `-all.jar` into `Download/skilling-helper-gamenative`, and writes a
-   README there.
+1. Install Termux and Termux:Widget from F-Droid (Termux:API too if you want the daily update check).
+2. Download `skilling-helper-android.sh` from the latest release and in Termux run
+   `bash /sdcard/Download/skilling-helper-android.sh`. If GameNative isn't installed it downloads it and opens the
+   installer; open GameNative once, then run the script again. It then puts a Windows Java 21 in
+   `GameNative/CustomGames/Skilling Helper` (GameNative lists it as a game by itself) and the newest `-all.jar`
+   in `Download/skilling-helper`.
 3. Copy `.runelite/credentials.properties` from your PC or Steam Deck (see
    [Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)) into
-   `Download/skilling-helper-gamenative/home/.runelite/`.
-4. In GameNative add that folder as a custom game, with executable `jre\bin\java.exe` and arguments
-   `-ea -Xmx1g -Duser.home=A:\home -jar A:\skilling-helper-all.jar --developer-mode`.
+   `Download/skilling-helper/home/.runelite/`.
+4. Add the Termux widget to your home screen and tap **Play Skilling Helper**. It updates to the newest release,
+   then starts the game in GameNative with the right arguments.
 
-To update, run `skilling-helper-android` in Termux, tap **Update Skilling Helper** on the Termux widget, or run
-`skilling-helper-android --daily` once to check every day in the background (needs Termux:API; a notification
-says when it updated). Restart the game in GameNative afterwards.
+`skilling-helper-android --daily` also checks for updates once a day in the background, with a notification when
+it updated. The script updates itself from each release too.
 
 ## Adding a method
 

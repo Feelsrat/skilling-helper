@@ -1,18 +1,32 @@
 #!/data/data/com.termux/files/usr/bin/bash
-# Skilling Helper for Android (GameNative custom game), run from Termux.
+# Skilling Helper for Android, run from Termux. Plays the RuneLite dev client with the plugins built in
+# through GameNative (which runs Windows programs on Android).
 #
-#   bash skilling-helper-android.sh            set up the folder, or update it to the newest release
-#   bash skilling-helper-android.sh --daily    also check for updates once a day in the background
-#   bash skilling-helper-android.sh --no-daily stop the daily check
+#   bash skilling-helper-android.sh            install everything, or update to the newest release
+#   skilling-helper-android --play             update, then start the game in GameNative
+#   skilling-helper-android --daily            also check for updates once a day in the background
+#   skilling-helper-android --no-daily         stop the daily check
+#   skilling-helper-android --reinstall-java   set the game up in GameNative again (after removing it there)
 #
-# It keeps /sdcard/Download/skilling-helper-gamenative up to date: a Windows Java 21 (jre\) and
-# skilling-helper-all.jar from the newest GitHub release. GameNative runs that folder as a custom game
-# (see the README in it). It also adds an "Update Skilling Helper" button for the Termux:Widget app.
+# What goes where:
+#   GameNative/CustomGames/Skilling Helper   a Windows Java 21. GameNative finds it there by itself, lists it as a
+#                                             game and moves it into its own storage on first start.
+#   Download/skilling-helper                  skilling-helper-all.jar and RuneLite's settings (home/.runelite).
+#                                             GameNative shows the Download folder to Windows as drive D:.
+# It also adds "Play Skilling Helper" and "Update Skilling Helper" buttons for the Termux:Widget app.
 set -euo pipefail
 
 REPO="${SKILLING_HELPER_REPO:-Feelsrat/skilling-helper}"
 API="https://api.github.com"
-DEST="${SKILLING_HELPER_DIR:-/sdcard/Download/skilling-helper-gamenative}"
+STORAGE="${SKILLING_HELPER_STORAGE:-/storage/emulated/0}"
+DATA="$STORAGE/Download/skilling-helper"
+GAME="$STORAGE/GameNative/CustomGames/Skilling Helper"
+GN_PKG=app.gamenative
+GN_REPO=utkarshdalal/GameNative
+GN_FALLBACK_APK="https://downloads.gamenative.app/releases/1.3.0/gamenative-v1.3.0.apk"
+# Fixed custom-game id, written to the game folder's .gamenative file, so the Play button can start it
+APP_ID=742011
+JAVA_ARGS='-ea -Xmx1g -Duser.home=D:\skilling-helper\home -jar D:\skilling-helper\skilling-helper-all.jar --developer-mode'
 STATE="$HOME/.config/skilling-helper-android"
 TOKEN_FILE="$STATE/token"
 SELF="$HOME/.local/bin/skilling-helper-android"
@@ -20,8 +34,8 @@ JRE_API="https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&i
 QUIET=0
 
 say() { [ "$QUIET" = 1 ] || echo "$@"; }
-fail() { echo "Error: $*" >&2; notify "Skilling Helper update failed" "$*"; exit 1; }
 notify() { command -v termux-notification >/dev/null 2>&1 && termux-notification --title "$1" --content "$2" >/dev/null 2>&1 || true; }
+fail() { echo "Error: $*" >&2; notify "Skilling Helper" "$*"; exit 1; }
 
 need_tools() {
 	local missing=()
@@ -34,13 +48,12 @@ need_tools() {
 }
 
 need_storage() {
-	local parent; parent="$(dirname "$DEST")"
-	if [ ! -w "$parent" ]; then
+	if [ ! -w "$STORAGE/Download" ]; then
 		[ "$QUIET" = 1 ] && fail "no storage access; run the script once by hand"
-		say "Termux needs storage access to write to Download/. Allow it in the prompt."
+		say "Termux needs storage access. Allow it in the prompt."
 		termux-setup-storage
 		sleep 3
-		[ -w "$parent" ] || fail "still no storage access. Run termux-setup-storage and try again."
+		[ -w "$STORAGE/Download" ] || fail "still no storage access. Run termux-setup-storage and try again."
 	fi
 }
 
@@ -56,17 +69,38 @@ gh_get() {
 		"${auth[@]}" -o "$2" "$1"
 }
 
-latest_release() {
-	local tries=0
-	until gh_get "$API/repos/$REPO/releases/latest" "$1"; do
-		tries=$((tries + 1))
-		[ $tries -le 2 ] || fail "couldn't reach GitHub; check the internet connection and try again"
-		sleep 5
-	done
+gamenative_installed() {
+	[ -n "${SKILLING_HELPER_ASSUME_GAMENATIVE:-}" ] && return 0
+	pm path "$GN_PKG" 2>/dev/null | grep -q package: || cmd package path "$GN_PKG" 2>/dev/null | grep -q package:
 }
 
-install_jre() {
-	[ -f "$DEST/jre/bin/java.exe" ] && return 0
+install_gamenative() {
+	gamenative_installed && return 0
+	[ "$QUIET" = 1 ] && fail "GameNative isn't installed; run the script once by hand"
+	say "GameNative isn't installed. Downloading it..."
+	local tmp url apk
+	tmp="$(mktemp -d)"
+	url=""
+	if curl -fsSL --retry 2 -H "User-Agent: skilling-helper-android" -o "$tmp/gn.json" "$API/repos/$GN_REPO/releases/latest"; then
+		url="$(jq -r '[.assets[] | select(.name | test("^gamenative-v[0-9.]+\\.apk$"))][0].browser_download_url // empty' "$tmp/gn.json")"
+	fi
+	[ -n "$url" ] || url="$GN_FALLBACK_APK"
+	apk="$STORAGE/Download/$(basename "$url")"
+	curl -fSL --retry 3 -o "$apk" "$url" || fail "couldn't download GameNative"
+	rm -rf "$tmp"
+	say ""
+	say "Opening the installer. If Android asks, allow Termux to install apps, then tap Install."
+	termux-open "$apk" || say "Couldn't open it. Install $apk with your file manager."
+	say ""
+	say "After it's installed: open GameNative once and finish its first-start setup."
+	say "Then run this script again to finish."
+	exit 0
+}
+
+install_java() {
+	mkdir -p "$STATE"
+	# GameNative moves the folder into its own storage on first start, so remember that it was done
+	if [ -f "$STATE/java-installed" ] && [ "${1:-}" != force ]; then return 0; fi
 	say "Downloading Windows Java 21 (about 50 MB)..."
 	local tmp; tmp="$(mktemp -d)"
 	curl -fsSL --retry 3 -o "$tmp/info.json" "$JRE_API"
@@ -76,31 +110,42 @@ install_jre() {
 	curl -fSL --retry 3 -o "$tmp/jre.zip" "$url"
 	echo "$sum  $tmp/jre.zip" | sha256sum -c --quiet - || fail "Java download is corrupt; try again"
 	unzip -q "$tmp/jre.zip" -d "$tmp/x"
-	rm -rf "$DEST/jre"
-	mv "$tmp"/x/* "$DEST/jre"
+	rm -rf "$GAME"
+	mkdir -p "$(dirname "$GAME")"
+	mv "$tmp"/x/* "$GAME"
 	rm -rf "$tmp"
+	# GameNative picks the program to run by itself only when the folder holds exactly one .exe
+	find "$GAME/bin" -maxdepth 1 -iname '*.exe' ! -iname 'java.exe' -delete
+	printf '{"appId":%s}\n' "$APP_ID" > "$GAME/.gamenative"
+	date > "$STATE/java-installed"
+	say "Added \"Skilling Helper\" to GameNative's library."
 }
 
 update_jar() {
 	local tmp; tmp="$(mktemp -d)"
-	latest_release "$tmp/release.json"
+	local tries=0
+	until gh_get "$API/repos/$REPO/releases/latest" "$tmp/release.json"; do
+		tries=$((tries + 1))
+		[ $tries -le 2 ] || fail "couldn't reach GitHub; check the internet connection and try again"
+		sleep 5
+	done
 	local tag have id size
 	tag="$(jq -r '.tag_name' "$tmp/release.json")"
-	have="$(cat "$DEST/.version" 2>/dev/null || true)"
-	if [ "$tag" = "$have" ] && [ -f "$DEST/skilling-helper-all.jar" ]; then
+	have="$(cat "$DATA/.version" 2>/dev/null || true)"
+	if [ "$tag" = "$have" ] && [ -f "$DATA/skilling-helper-all.jar" ]; then
 		say "Already on the newest release ($tag)."
 	else
 		id="$(jq -r '.assets[] | select(.name | endswith("-all.jar")) | .id' "$tmp/release.json" | head -1)"
 		size="$(jq -r '.assets[] | select(.name | endswith("-all.jar")) | .size' "$tmp/release.json" | head -1)"
 		[ -n "$id" ] || fail "release $tag has no -all.jar"
-		say "Downloading $tag..."
+		say "Downloading Skilling Helper $tag..."
 		gh_get "$API/repos/$REPO/releases/assets/$id" "$tmp/new.jar" "application/octet-stream" || fail "download failed"
 		[ "$(stat -c %s "$tmp/new.jar")" = "$size" ] || fail "download was cut off; try again"
-		[ -f "$DEST/skilling-helper-all.jar" ] && cp "$DEST/skilling-helper-all.jar" "$DEST/skilling-helper-all.jar.bak"
-		mv "$tmp/new.jar" "$DEST/skilling-helper-all.jar"
-		echo "$tag" > "$DEST/.version"
-		say "Updated to $tag. Restart the game in GameNative to use it."
-		notify "Skilling Helper updated" "Now on $tag. Restart it in GameNative."
+		[ -f "$DATA/skilling-helper-all.jar" ] && cp "$DATA/skilling-helper-all.jar" "$DATA/skilling-helper-all.jar.bak"
+		mv "$tmp/new.jar" "$DATA/skilling-helper-all.jar"
+		echo "$tag" > "$DATA/.version"
+		say "Updated to $tag."
+		[ -n "$have" ] && notify "Skilling Helper updated" "Now on $tag."
 	fi
 	# Keep this script current too
 	id="$(jq -r '.assets[] | select(.name == "skilling-helper-android.sh") | .id' "$tmp/release.json" | head -1)"
@@ -113,54 +158,76 @@ update_jar() {
 }
 
 write_readme() {
-	cat > "$DEST/README.txt" <<'EOF'
-Skilling Helper + PvM Progression in GameNative
-================================================
-1. Log in once on a PC or Steam Deck: follow
-   https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts
-   (run RuneLite from the Jagex Launcher with --insecure-write-credentials), then copy
-   .runelite/credentials.properties from that machine into home/.runelite/ in this folder.
-   Keep that file private: it is your login.
-2. In GameNative: add a custom game, pick Download/skilling-helper-gamenative, and in its settings set
-     Executable:  jre\bin\java.exe
-     Arguments:   -ea -Xmx1g -Duser.home=A:\home -jar A:\skilling-helper-all.jar --developer-mode
-3. Press Play. Updates: tap "Update Skilling Helper" on the Termux widget, or turn on the daily check with
-   skilling-helper-android --daily
+	cat > "$DATA/README.txt" <<EOF
+Skilling Helper on Android (GameNative)
+=======================================
+This folder holds the RuneLite dev client with the plugins built in (skilling-helper-all.jar) and its
+settings (home/.runelite). The Termux script skilling-helper-android keeps it up to date.
+
+Login: the dev client reuses a saved Jagex login. On a PC or Steam Deck follow
+https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts (run RuneLite from the Jagex Launcher with
+--insecure-write-credentials), then copy .runelite/credentials.properties from that machine into
+home/.runelite/ here. Keep that file private: it is your login.
+
+Play: tap "Play Skilling Helper" on the Termux widget (or run: skilling-helper-android --play).
+Starting it from GameNative's library instead? Set its arguments (game settings) to:
+  $JAVA_ARGS
 EOF
 }
 
-install_self() {
+install_shortcuts() {
 	mkdir -p "$(dirname "$SELF")" "$HOME/.shortcuts"
 	if [ "$(readlink -f "$0")" != "$(readlink -f "$SELF")" ]; then
 		install -m 755 "$0" "$SELF"
 	fi
-	printf '#!/data/data/com.termux/files/usr/bin/bash\nexec "%s" "$@"\n' "$SELF" > "$HOME/.shortcuts/Update Skilling Helper"
-	chmod 755 "$HOME/.shortcuts/Update Skilling Helper"
+	printf '#!/data/data/com.termux/files/usr/bin/bash\nexec "%s" --play\n' "$SELF" > "$HOME/.shortcuts/Play Skilling Helper"
+	printf '#!/data/data/com.termux/files/usr/bin/bash\nexec "%s"\n' "$SELF" > "$HOME/.shortcuts/Update Skilling Helper"
+	chmod 755 "$HOME/.shortcuts/Play Skilling Helper" "$HOME/.shortcuts/Update Skilling Helper"
 }
 
 schedule() {
 	command -v termux-job-scheduler >/dev/null 2>&1 || pkg install -y termux-api
-	say "Daily check needs the Termux:API app too (from the same place you got Termux)."
+	say "The daily check needs the Termux:API app too (from the same place you got Termux)."
 	termux-job-scheduler --job-id 4207 --script "$SELF" --period-ms 86400000 --network any --persisted true >/dev/null \
 		&& say "Will check for updates once a day." || fail "couldn't schedule; is the Termux:API app installed?"
 }
 
-case "${1:-}" in
-	--no-daily) termux-job-scheduler --cancel --job-id 4207; say "Daily check stopped."; exit 0 ;;
+play() {
+	if [ ! -f "$DATA/home/.runelite/credentials.properties" ]; then
+		say "Heads up: no Jagex login file yet, so the game will ask for one. See $DATA/README.txt"
+	fi
+	say "Starting Skilling Helper in GameNative..."
+	am start -n "$GN_PKG/.MainActivity" -a "$GN_PKG.LAUNCH_GAME" \
+		--ei app_id "$APP_ID" --es game_source CUSTOM_GAME --es exec_args "$JAVA_ARGS" >/dev/null \
+		|| fail "couldn't start GameNative. Open it and start \"Skilling Helper\" from its library."
+}
+
+MODE="${1:-}"
+case "$MODE" in
+	--no-daily) termux-job-scheduler --cancel --job-id 4207; echo "Daily check stopped."; exit 0 ;;
+	""|--play|--daily|--reinstall-java) ;;
+	*) echo "Unknown option $MODE"; exit 1 ;;
 esac
-# No terminal (widget in background or scheduled job): keep quiet, report through a notification
+# No terminal (scheduled job): keep quiet, report through a notification
 [ -t 1 ] || QUIET=1
 
 need_tools
 need_storage
-mkdir -p "$DEST/home/.runelite"
-install_self
-install_jre
+install_gamenative
+mkdir -p "$DATA/home/.runelite"
+install_shortcuts
+if [ "$MODE" = --reinstall-java ]; then install_java force; else install_java; fi
+if [ "$MODE" = --play ]; then
+	# Don't block playing on a failed update check
+	( update_jar ) || say "Update check failed; starting the version you have."
+	play
+	exit 0
+fi
 update_jar
 write_readme
-[ "${1:-}" = "--daily" ] && schedule
-if [ ! -f "$DEST/home/.runelite/credentials.properties" ]; then
-	say ""
-	say "Still needed: your Jagex login file. See step 1 of $DEST/README.txt"
+[ "$MODE" = --daily ] && schedule
+say ""
+if [ ! -f "$DATA/home/.runelite/credentials.properties" ]; then
+	say "Still needed: your Jagex login file. See $DATA/README.txt"
 fi
-say "Folder ready: $DEST"
+say "All set. Add the Termux:Widget widget to your home screen and tap \"Play Skilling Helper\"."
