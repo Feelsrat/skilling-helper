@@ -11,6 +11,7 @@ import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
+import com.skillinghelper.tog.TearsOfGuthix;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -68,7 +69,9 @@ public class SkillingHelperPanel extends PluginPanel
 	public enum QuickPick
 	{
 		BEST_GOLD("Best gold/hr", "Opens the guide that earns the most gold per hour with your current stats"),
-		LOWEST_SKILL("Lowest skill", "Opens the guide for your lowest-level skill");
+		LOWEST_SKILL("Lowest skill", "Opens the guide for your lowest-level skill"),
+		TEARS_OF_GUTHIX("Tears of Guthix (weekly)",
+			"Opens the guide to the weekly Tears of Guthix minigame, which gives xp in your lowest skill");
 
 		private final String label;
 		private final String description;
@@ -300,9 +303,14 @@ public class SkillingHelperPanel extends PluginPanel
 
 		syncControls(guide, preference);
 		content.removeAll();
-		if (!guide.isActive())
+		if (guide.getActivity() != null)
+		{
+			showActivity(guide, bankFilterOn);
+		}
+		else if (!guide.isActive())
 		{
 			showIntro();
+			addWeekly(guide);
 		}
 		else if (!guide.isHasGuide())
 		{
@@ -324,16 +332,17 @@ public class SkillingHelperPanel extends PluginPanel
 		updating = true;
 		try
 		{
-			if (!Objects.equals(skillBox.getSelectedItem(), guide.getSkill()))
+			Object selected = guide.getActivity() != null ? QuickPick.TEARS_OF_GUTHIX : guide.getSkill();
+			if (!Objects.equals(skillBox.getSelectedItem(), selected))
 			{
-				skillBox.setSelectedItem(guide.getSkill());
+				skillBox.setSelectedItem(selected);
 			}
-			stopButton.setEnabled(guide.getSkill() != null);
+			stopButton.setEnabled(guide.isActive());
 			if (prefBox.getSelectedItem() != preference)
 			{
 				prefBox.setSelectedItem(preference);
 			}
-			if (guide.isActive())
+			if (guide.getSkill() != null)
 			{
 				int min = Math.min(guide.getLevel() + 1, Experience.MAX_REAL_LEVEL);
 				targetModel.setMinimum(min);
@@ -360,6 +369,56 @@ public class SkillingHelperPanel extends PluginPanel
 			MUTED, TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(6));
 		content.add(GuideUi.line("➜ Open your bank once so the guide knows what you own.", HINT, TEXT, TEXT_WIDTH));
+	}
+
+	/**
+	 * Whether the weekly Tears of Guthix is up, with a button to open its guide.
+	 */
+	private void addWeekly(ActiveGuide guide)
+	{
+		if (guide.getWeeklyState() == null || guide.getWeeklyState() == TearsOfGuthix.State.LOCKED)
+		{
+			return;
+		}
+		section("Weekly");
+		content.add(GuideUi.stat("Tears of Guthix", guide.getWeeklyState() == TearsOfGuthix.State.READY ? "Ready"
+			: guide.getWeeklyState() == TearsOfGuthix.State.UNKNOWN ? "?" : "Not yet", weeklyColor(guide)));
+		content.add(Box.createVerticalStrut(2));
+		content.add(GuideUi.line(guide.getWeeklyStatus(), MUTED, TEXT_WIDTH));
+		content.add(Box.createVerticalStrut(6));
+		content.add(button("Open Tears of Guthix guide", () -> listener.onQuickPick(QuickPick.TEARS_OF_GUTHIX)));
+	}
+
+	private static Color weeklyColor(ActiveGuide guide)
+	{
+		if (guide.getWeeklyState() == TearsOfGuthix.State.READY)
+		{
+			return GOOD;
+		}
+		return guide.getWeeklyState() == TearsOfGuthix.State.UNKNOWN ? GOLD : WARN;
+	}
+
+	/**
+	 * A guide that isn't about one skill: Tears of Guthix.
+	 */
+	private void showActivity(ActiveGuide guide, boolean bankFilterOn)
+	{
+		addCurrentStep(guide.getStep(), bankFilterOn);
+		section(guide.getActivity());
+		if (guide.getWeeklyState() != null && guide.getWeeklyState() != TearsOfGuthix.State.LOCKED)
+		{
+			content.add(GuideUi.stat("Status", guide.getWeeklyState() == TearsOfGuthix.State.READY ? "Ready"
+				: guide.getWeeklyState() == TearsOfGuthix.State.UNKNOWN ? "Unknown" : "Not yet", weeklyColor(guide)));
+			content.add(Box.createVerticalStrut(2));
+			content.add(GuideUi.line(guide.getWeeklyStatus(), MUTED, TEXT_WIDTH));
+			content.add(Box.createVerticalStrut(6));
+		}
+		GuideUi.lines(content, guide.getActivityInfo(), TEXT_WIDTH);
+		if (guide.getWikiPage() != null)
+		{
+			content.add(Box.createVerticalStrut(6));
+			content.add(button("Open wiki guide", () -> listener.onOpenWiki(guide.getWikiPage())));
+		}
 	}
 
 	private void showNoGuide(ActiveGuide guide)
@@ -751,7 +810,8 @@ public class SkillingHelperPanel extends PluginPanel
 		sb.append(g.getSkill()).append('|').append(g.getLevel()).append('|').append(g.getTargetLevel()).append('|')
 			.append(g.getXpRemaining() / 500).append('|').append(pref).append('|').append(bankFilterOn).append('|')
 			.append(g.isForced()).append('|').append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
-			.append(g.getPriceSource()).append('|').append(g.getSessionXpPerHour());
+			.append(g.getPriceSource()).append('|').append(g.getSessionXpPerHour()).append('|')
+			.append(g.getActivity()).append(g.getActivityInfo()).append(g.getWeeklyState()).append(g.getWeeklyStatus());
 		GuideStep s = g.getStep();
 		if (s != null)
 		{

@@ -7,6 +7,7 @@ import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
+import com.skillinghelper.tog.TearsOfGuthix;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +54,23 @@ public class ActiveGuide
 	 * Xp per hour the player is actually getting in this skill this session: 0 before any xp, -1 while measuring.
 	 */
 	int sessionXpPerHour;
+	/**
+	 * The open activity guide that isn't about one skill (Tears of Guthix), or null.
+	 */
+	String activity;
+	/**
+	 * Extra facts about the activity for the panel, e.g. its reward.
+	 */
+	@Builder.Default
+	List<String> activityInfo = Collections.emptyList();
+	/**
+	 * Whether the weekly Tears of Guthix is up, shown even with no guide open.
+	 */
+	TearsOfGuthix.State weeklyState;
+	String weeklyStatus;
 
 	public boolean isActive()
 	{
-		return skill != null;
+		return skill != null || activity != null;
 	}
 }

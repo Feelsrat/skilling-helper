@@ -45,6 +45,45 @@ public interface SkillingHelperConfig extends Config
 	@ConfigSection(name = "Run timers", description = "Countdowns for bird house and farming runs", position = 4)
 	String birdhouseSection = "birdhouses";
 
+	@ConfigSection(name = "Tears of Guthix", description = "The weekly Tears of Guthix minigame", position = 5)
+	String togSection = "tearsOfGuthix";
+
+	@ConfigItem(
+		keyName = "togInfobox",
+		name = "Ready indicator",
+		description = "Show an infobox saying whether Juna will let you into Tears of Guthix yet",
+		section = togSection,
+		position = 0
+	)
+	default boolean togInfobox()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "togNotification",
+		name = "Notify when up",
+		description = "Send a notification when Tears of Guthix becomes available again",
+		section = togSection,
+		position = 1
+	)
+	default Notification togNotification()
+	{
+		return Notification.ON;
+	}
+
+	@ConfigItem(
+		keyName = "togStreams",
+		name = "Highlight tears",
+		description = "In the cave, outline the blue streams to collect and the green ones to avoid",
+		section = togSection,
+		position = 2
+	)
+	default boolean togStreams()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		keyName = "birdhouseTimer",
 		name = "Bird house timer",

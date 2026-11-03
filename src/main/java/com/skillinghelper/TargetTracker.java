@@ -118,6 +118,14 @@ public class TargetTracker
 		addNames(BANK_TARGETS);
 	}
 
+	/**
+	 * Also tracks these, e.g. for guides that aren't skill methods. Call after {@link #setInterestingTargets}.
+	 */
+	public void addInterestingTargets(List<Target> targets)
+	{
+		addNames(targets);
+	}
+
 	private void addItemNames(ItemReq req)
 	{
 		for (Target t : new Target[]{req.getSourceTarget(), req.getMakeTarget()})

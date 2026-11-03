@@ -21,8 +21,12 @@ import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
+import com.skillinghelper.tog.TearsOfGuthix;
+import com.skillinghelper.tog.TearsOverlay;
+import com.skillinghelper.tog.TogTracker;
 import com.skillinghelper.ui.SkillingHelperPanel;
 import java.awt.image.BufferedImage;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -118,6 +122,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Inject
 	private SessionXpTracker sessionXp;
 	@Inject
+	private TogTracker tog;
+	@Inject
+	private TearsOverlay tearsOverlay;
+	@Inject
 	private SceneHighlightOverlay sceneOverlay;
 	@Inject
 	private MinimapArrowOverlay minimapOverlay;
@@ -141,6 +149,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	 * The player stopped the guide with the Stop button, so gaining xp shouldn't open one again.
 	 */
 	private boolean autoSelectPaused;
+	/**
+	 * The Tears of Guthix guide is open instead of a skill.
+	 */
+	private boolean tearsOpen;
 
 	@Override
 	protected void startUp()
@@ -148,6 +160,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		planner = new MethodPlanner(prices);
 		resolver = new StepResolver(prices);
 		tracker.setInterestingTargets(guides.all());
+		tracker.addInterestingTargets(TearsOfGuthix.TARGETS);
 		settings.useDefaultPreference();
 		prices.updateRefresh();
 
@@ -156,7 +169,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.register(bankFilter);
 		eventBus.register(bankAmountSwapper);
 		eventBus.register(shortestPath);
+		eventBus.register(tog);
 		overlayManager.add(sceneOverlay);
+		overlayManager.add(tearsOverlay);
 		overlayManager.add(minimapOverlay);
 		overlayManager.add(itemOverlay);
 		addPanel();
@@ -192,7 +207,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		eventBus.unregister(tracker);
 		eventBus.unregister(bankFilter);
 		eventBus.unregister(bankAmountSwapper);
+		eventBus.unregister(tog);
 		overlayManager.remove(sceneOverlay);
+		overlayManager.remove(tearsOverlay);
 		overlayManager.remove(minimapOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -207,6 +224,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		});
 		guide = ActiveGuide.NONE;
 		profileLoaded = false;
+		tearsOpen = false;
 		panel = null;
 	}
 
@@ -262,6 +280,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 		trackBoat();
 		updateRuns();
+		if (profileLoaded)
+		{
+			tog.tick(this);
+		}
 		Skill activeSkill = settings.getActiveSkill();
 		sessionXp.tick(activeSkill, activeSkill == null ? 0 : client.getSkillExperience(activeSkill));
 		refresh();
@@ -270,7 +292,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Subscribe
 	public void onStatChanged(StatChanged e)
 	{
-		if (settings.getActiveSkill() == null && config.autoSelectSkill() && !autoSelectPaused && profileLoaded
+		if (settings.getActiveSkill() == null && !tearsOpen && config.autoSelectSkill() && !autoSelectPaused && profileLoaded
 			&& guides.hasGuide(e.getSkill()) && e.getXp() > 0)
 		{
 			selectSkill(e.getSkill());
@@ -351,6 +373,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		patches.reset();
 		runTimers.clear();
 		sessionXp.reset();
+		tog.reset();
 	}
 
 	/**
@@ -429,7 +452,21 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			{
 				pickBestGold();
 			}
+			else if (pick == SkillingHelperPanel.QuickPick.TEARS_OF_GUTHIX)
+			{
+				openTears();
+			}
 		});
+	}
+
+	/**
+	 * Opens the weekly Tears of Guthix guide in place of a skill.
+	 */
+	private void openTears()
+	{
+		selectSkill(null);
+		tearsOpen = true;
+		refresh();
 	}
 
 	/**
@@ -580,12 +617,14 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		refreshQuests();
 		birdhouses.load();
 		patches.load();
+		tog.load();
 		profileLoaded = true;
 	}
 
 	private void selectSkill(Skill skill)
 	{
 		autoSelectPaused = false;
+		tearsOpen = false;
 		settings.setActiveSkill(skill);
 		if (skill != null)
 		{
@@ -662,7 +701,12 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 
 		Skill skill = settings.getActiveSkill();
-		ActiveGuide next = skill == null ? ActiveGuide.NONE : buildGuide(skill);
+		ActiveGuide next = tearsOpen ? buildTearsGuide() : skill == null ? ActiveGuide.NONE : buildGuide(skill);
+		long now = Instant.now().getEpochSecond();
+		next = next.toBuilder()
+			.weeklyState(tog.getStatus().getState())
+			.weeklyStatus(TearsOfGuthix.describe(tog.getStatus(), now))
+			.build();
 		guide = next;
 		next = showPath(next);
 		guide = next;
@@ -689,6 +733,37 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.line("Shortest Path can't find a full route there with your current unlocks, so it shows how close "
 				+ "it can get. You may need a quest, level or item for a transport, or a teleport closer.")
 			.build()).build();
+	}
+
+	private ActiveGuide buildTearsGuide()
+	{
+		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests);
+		TearsOfGuthix.Situation sit = TearsOfGuthix.Situation.builder()
+			.status(tog.getStatus())
+			.now(Instant.now().getEpochSecond())
+			.inChasm(tog.isInChasm())
+			.playing(tog.isPlaying())
+			.tears(tog.getTears())
+			.lostTribeDone(tog.isLostTribeDone())
+			.reward(tog.getReward())
+			.build();
+		GuideStep step = TearsOfGuthix.step(sit, state);
+		List<String> info = new ArrayList<>();
+		if (tog.getReward() != null)
+		{
+			info.add("Reward: " + tog.getReward() + ", going to your lowest skill.");
+		}
+		info.add("Once every 7 days, after gaining 100,000 xp or a quest point since your last visit.");
+		info.add("More quest points mean more time in the cave and more tears.");
+		return ActiveGuide.builder()
+			.activity(TearsOfGuthix.NAME)
+			.hasGuide(true)
+			.player(state)
+			.step(step)
+			.activityInfo(info)
+			.bankItems(StepResolver.bankItems(List.of(), step))
+			.wikiPage(TearsOfGuthix.WIKI_PAGE)
+			.build();
 	}
 
 	private ActiveGuide buildGuide(Skill skill)
