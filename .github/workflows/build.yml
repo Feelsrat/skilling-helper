@@ -47,7 +47,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Fixed names the Android launcher downloads from releases/latest/download/
+          # Fixed names the Android and Windows launchers download from releases/latest/download/
           cp "build/libs/skilling-helper-$VERSION-all.jar" build/android-client.jar
           echo "v$VERSION" > build/android-version.txt
           # Fixed name the RuneMobile build downloads at every start (not skilling-helper-*.jar, which the Steam Deck updater matches)
@@ -57,6 +57,7 @@ jobs:
             build/libs/skilling-helper-$VERSION-all.jar \
             steamdeck/skilling-helper-update.sh \
             android/skilling-helper-android.sh \
+            windows/skilling-helper-windows.ps1 \
             build/libs/SkillingHelper.exe \
             build/android-client.jar \
             build/android-version.txt \
@@ -69,6 +70,7 @@ jobs:
           - \`skilling-helper-$VERSION.jar\`: Skilling Helper and PvM Progression on their own, for sideloading into RuneLite.
           - \`skilling-helper-$VERSION-all.jar\`: standalone dev client with both plugins bundled (\`java -jar skilling-helper-$VERSION-all.jar\`).
           - \`skilling-helper-update.sh\`: Steam Deck updater. It finds your RuneLite Steam shortcut and swaps in the newest jar (see the README).
+          - \`skilling-helper-windows.ps1\`: Windows launcher. Installs Java and the client, then updates them every time you start it (see the README).
           - \`skilling-helper-android.sh\`: Android installer/updater, run in Termux. Sets up the GameNative game (see the README).
-          - \`SkillingHelper.exe\`, \`android-client.jar\`, \`android-version.txt\`: used by the Android game; its launcher updates itself to the newest client on every start.
+          - \`SkillingHelper.exe\`, \`android-client.jar\`, \`android-version.txt\`: used by the Android game and the Windows launcher; they update to the newest client on every start.
           - \`runemobile-plugin.jar\`: the plugin jar the RuneMobile build (\`runemobile\` prerelease) downloads at every start."

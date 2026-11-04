@@ -161,6 +161,27 @@ while you're logged in, with a User-Agent that identifies the plugin, as the wik
 Wiki prices** setting (also off by default) fetches the same price list plus the wiki's daily trade volumes
 (`/volumes`, every 30 minutes). PvM Progression makes no network requests.
 
+## Windows
+
+Every release includes `skilling-helper-windows.ps1`, which installs and starts the RuneLite dev client with all the
+plugins built in. The first time, open PowerShell (Start menu, type `PowerShell`, Enter) and paste:
+
+```
+irm https://github.com/Feelsrat/skilling-helper/releases/latest/download/skilling-helper-windows.ps1 | iex
+```
+
+(or download the file, right-click it and pick **Run with PowerShell**). It downloads a private Java 21 and the client
+into `%LOCALAPPDATA%\SkillingHelper`, adds a **Skilling Helper** icon to the Desktop and Start menu, and opens RuneLite.
+From then on, start the game with that icon: it first downloads the newest plugins (and a newer launcher) if there's
+a new release, then opens RuneLite. With no internet it just starts the version you have. What it did is written to
+`%LOCALAPPDATA%\SkillingHelper\launcher.log`.
+
+Logging in with a Jagex account needs your saved login in `%USERPROFILE%\.runelite\credentials.properties`. The
+launcher takes it from `skilling-helper-phone.zip` (the Steam Deck "phone kit") if that's in your Downloads folder.
+Otherwise save it once: Start menu > **RuneLite (configure)**, add `--insecure-write-credentials` to Client arguments,
+start RuneLite from the Jagex Launcher once, then use the Skilling Helper icon (see
+[Using Jagex Accounts](https://github.com/runelite/runelite/wiki/Using-Jagex-Accounts)).
+
 ## Updating on Steam Deck
 
 Every release includes `skilling-helper-update.sh`. It reads Steam's list of non-Steam shortcuts, works out which
@@ -178,9 +199,9 @@ That puts an "Update Skilling Helper" launcher on the Desktop and in the app men
 release. While the repo is private, the first run asks for a GitHub token (a fine-grained token with read-only
 Contents access to this repo) and saves it in `~/.config/skilling-helper-updater/token`.
 
-To update every time you start the game, even from Game Mode, put
-`"$HOME/.local/bin/skilling-helper-update" --auto %command%` (with your home folder written out, usually
-`/home/deck`) at the start of the shortcut's launch options, before what's already there. If there's no internet
+To update every time you start the game, even from Game Mode, say yes when `--install` (or the Update icon) asks.
+It puts `"$HOME/.local/bin/skilling-helper-update" --auto %command%` at the start of the shortcut's launch options
+for you (Steam closes for a few seconds while it saves that; `--enable-auto` does it without asking). If there's no internet
 or GitHub is slow, the game just starts with the jar it has; what happened is logged to
 `~/.cache/skilling-helper-update.log`. Other options: `--list` shows your shortcuts, `--shortcut NAME` picks one,
 `--force` reinstalls.

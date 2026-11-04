@@ -12,6 +12,8 @@
 #   skilling-helper-update.sh --auto %command% <the shortcut's usual launch options>
 #                                             for Steam launch options: update quietly, then start the game
 #
+# Run by hand, it also offers (once) to put "--auto %command%" into the shortcut's launch options for you, so the
+# game updates itself on every start; --enable-auto does that without asking.
 # Other options: --shortcut NAME (pick a shortcut by name), --list, --force (reinstall even if up to date).
 # It only reads Steam's shortcut list and replaces jar files; it never touches the game itself.
 # Old jars are kept next to the new one as *.bak.
@@ -38,6 +40,7 @@ import re
 import shlex
 import shutil
 import struct
+import subprocess
 import sys
 import time
 import urllib.error
@@ -65,6 +68,7 @@ if auto:
     args = args[1:]
 force = "--force" in args
 list_only = "--list" in args
+enable_auto = "--enable-auto" in args
 wanted = None
 if "--shortcut" in args:
     i = args.index("--shortcut")
@@ -122,6 +126,58 @@ def read_vdf(data):
     return [v for v in shortcuts.values() if isinstance(v, dict)]
 
 
+# Lossless copy of the same format, for writing launch options back: [(type, key bytes, value)]
+def read_vdf_raw(data):
+    pos = 0
+
+    def cstr():
+        nonlocal pos
+        end = data.index(b"\x00", pos)
+        s = data[pos:end]
+        pos = end + 1
+        return s
+
+    def read_list():
+        nonlocal pos
+        out = []
+        while pos < len(data):
+            kind = data[pos]
+            pos += 1
+            if kind == 0x08:
+                return out
+            key = cstr()
+            if kind == 0x00:
+                out.append((kind, key, read_list()))
+            elif kind == 0x01:
+                out.append((kind, key, cstr()))
+            elif kind == 0x02:
+                out.append((kind, key, data[pos:pos + 4]))
+                pos += 4
+            elif kind == 0x07:
+                out.append((kind, key, data[pos:pos + 8]))
+                pos += 8
+            else:
+                raise ValueError("unknown VDF field type %d" % kind)
+        return out
+
+    return read_list()
+
+
+def write_vdf_raw(items):
+    out = bytearray()
+    for kind, key, value in items:
+        out.append(kind)
+        out += key + b"\x00"
+        if kind == 0x00:
+            out += write_vdf_raw(value)
+        elif kind == 0x01:
+            out += value + b"\x00"
+        else:
+            out += value
+    out.append(0x08)
+    return bytes(out)
+
+
 def steam_roots():
     roots = [
         os.path.join(HOME, ".local", "share", "Steam"),
@@ -150,6 +206,7 @@ def load_shortcuts():
                 continue
             for e in entries:
                 found.append({
+                    "file": path,
                     "name": e.get("appname", "") or "(no name)",
                     "exe": e.get("exe", ""),
                     "startdir": e.get("startdir", "").strip('"'),
@@ -201,6 +258,9 @@ def describe(sc):
     paths = [expand(w, sc["startdir"]) for w in words(text)]
     extra = []
     for p in paths:
+        # the updater itself (put in the launch options by --auto) is long and never names the jar
+        if os.path.basename(p).startswith("skilling-helper-update"):
+            continue
         body = script_text(p)
         if body:
             extra.append(body)
@@ -432,6 +492,123 @@ def update_self(release):
             os.remove(tmp)
 
 
+# --- Updating on every launch (Steam launch options) -----------------------------
+
+def has_auto(sc):
+    return "skilling-helper-update" in sc.get("options", "")
+
+
+def with_auto(options, installed):
+    hook = shlex.quote(installed) + " --auto %command%"
+    if "%command%" in options:
+        return options.replace("%command%", hook, 1)
+    # Without %command%, Steam adds the options after the game's command, so they stay after it here too
+    return (hook + " " + options).strip()
+
+
+def steam_pids():
+    pids = []
+    for comm in glob.glob("/proc/[0-9]*/comm"):
+        try:
+            with open(comm) as f:
+                if f.read().strip() == "steam":
+                    pids.append(comm.split("/")[2])
+        except OSError:
+            pass
+    return pids
+
+
+def set_launch_options(sc, installed):
+    """Rewrite this shortcut's launch options in shortcuts.vdf. Steam must be closed (it rewrites the file on exit)."""
+    path = sc["file"]
+    with open(path, "rb") as f:
+        data = f.read()
+    root = read_vdf_raw(data)
+    done = False
+    for kind, key, value in root:
+        if kind != 0x00 or key.lower() != b"shortcuts":
+            continue
+        for k2, _, entry in value:
+            if k2 != 0x00:
+                continue
+            fields = {k.lower(): (i, v) for i, (t, k, v) in enumerate(entry) if t == 0x01}
+            name = fields.get(b"appname", (None, b""))[1].decode("utf-8", "replace")
+            exe = fields.get(b"exe", (None, b""))[1].decode("utf-8", "replace")
+            if name != sc["name"] or exe != sc["exe"]:
+                continue
+            old = fields.get(b"launchoptions", (None, b""))[1].decode("utf-8", "replace")
+            if "skilling-helper-update" in old:
+                return True
+            new = with_auto(old, installed).encode("utf-8")
+            if b"launchoptions" in fields:
+                i = fields[b"launchoptions"][0]
+                entry[i] = (0x01, entry[i][1], new)
+            else:
+                entry.append((0x01, b"LaunchOptions", new))
+            done = True
+    if not done:
+        return False
+    shutil.copy2(path, path + ".bak")
+    tmp = path + ".tmp"
+    with open(tmp, "wb") as f:
+        f.write(write_vdf_raw(root))
+    os.replace(tmp, path)
+    return True
+
+
+def turn_on_auto(chosen, ask):
+    installed = os.environ.get("SKILLING_HELPER_INSTALLED", "")
+    if not installed or not os.path.isfile(installed):
+        return
+    state = load_state()
+    declined = state.get("auto_declined", [])
+    todo = [sc for sc, _ in chosen if sc.get("file") and not has_auto(sc) and (not ask or sc["name"] not in declined)]
+    if not todo:
+        if not ask:
+            say("Updating on every start is already on.")
+        return
+    names = ", ".join(sc["name"] for sc in todo)
+    if ask:
+        say()
+        say("Update automatically every time you start \"%s\" from Steam (Game Mode too)?" % names)
+        say("This adds the updater to the shortcut's launch options. Steam closes for a few seconds to save it.")
+        if input("[Y/n] ").strip().lower() in ("n", "no"):
+            state["auto_declined"] = sorted(set(declined) | {sc["name"] for sc in todo})
+            save_state(state)
+            say("OK. Run skilling-helper-update --enable-auto if you change your mind.")
+            return
+    was_running = bool(steam_pids())
+    if was_running:
+        say("Closing Steam for a moment...")
+        try:
+            subprocess.run(["steam", "-shutdown"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        for _ in range(60):
+            if not steam_pids():
+                break
+            time.sleep(0.5)
+        if steam_pids():
+            say("Steam didn't close, so nothing was changed. Close Steam and run skilling-helper-update --enable-auto.")
+            return
+    for sc in todo:
+        try:
+            if set_launch_options(sc, installed):
+                say("\"%s\" now updates Skilling Helper every time it starts." % sc["name"])
+            else:
+                say("Couldn't find \"%s\" in %s any more." % (sc["name"], sc["file"]))
+        except (OSError, ValueError, IndexError) as e:
+            say("Couldn't change \"%s\" (%s). Its launch options can be set by hand to: %s"
+                % (sc["name"], e, with_auto(sc["options"], installed)))
+    if was_running:
+        say("Starting Steam again.")
+        try:
+            subprocess.Popen(["steam"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL, start_new_session=True)
+        except OSError:
+            say("Couldn't start Steam; open it yourself.")
+
+
 def pick(cands):
     if wanted is not None:
         matches = [c for c in cands if wanted.lower() in c[0]["name"].lower()]
@@ -485,6 +662,10 @@ def main():
                 say("Run with --list to see your non-Steam shortcuts.")
             sys.exit(1)
 
+    if enable_auto:
+        turn_on_auto(chosen, ask=False)
+        return
+
     release = latest_release()
     say("Latest release: %s" % release["tag_name"])
     state = load_state()
@@ -499,6 +680,8 @@ def main():
         say("Done. Start the game from Steam as usual.")
     else:
         say("Nothing to update.")
+    if not auto:
+        turn_on_auto(chosen, ask=True)
 
 
 try:
@@ -612,11 +795,10 @@ Categories=Game;"
 	fi
 	install_phone_kit_launcher
 	echo "Installed to $INSTALL_PATH"
-	echo "Double-click \"Update Skilling Helper\" on the Desktop (or find it in the app menu) to update."
+	echo "Double-click \"Update Skilling Helper\" on the Desktop (or find it in the app menu) to update by hand."
 	echo
-	echo "To update automatically every time you start the game from Steam, put this at the very"
-	echo "start of the shortcut's launch options (keep whatever is already there after it):"
-	echo "    \"$INSTALL_PATH\" --auto %command%"
+	# Make the Steam shortcut update on every start (asks before closing Steam to save it)
+	SKILLING_HELPER_SELF="$INSTALL_PATH" SKILLING_HELPER_INSTALLED="$INSTALL_PATH" python3 -c "$UPDATER" || true
 }
 
 if [ "${1:-}" = "--install" ]; then
