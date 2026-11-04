@@ -102,7 +102,12 @@ jobs:
           cp rm/dist/ci/RuneMobile-*.apk out/RuneMobile-SH.apk
           echo "$KEY" > out/runemobile-build.txt
           cp android/runemobile-android.sh out/
-          gh release delete runemobile --cleanup-tag -y 2>/dev/null || true
+          # The delete can fail or lag now and then; make sure the old release is really gone before creating it again
+          for i in 1 2 3 4 5; do
+            gh release view runemobile >/dev/null 2>&1 || break
+            gh release delete runemobile --cleanup-tag -y || true
+            sleep $((i * 3))
+          done
           gh release create runemobile out/RuneMobile-SH.apk out/runemobile-build.txt out/runemobile-android.sh \
             --target "$GITHUB_SHA" --prerelease --latest=false \
             --title "RuneMobile with Skilling Helper (rolling)" \
