@@ -110,4 +110,54 @@ private fun ShStripButton(
         contentAlignment = Alignment.Center,
     ) { content() }
 }
+/** Click strip, a touch version of a scroll wheel bound to left-click: sliding a finger along it clicks once for
+ *  each notch the finger crosses (with a tick you can feel), at the spot last tapped or hovered in the game. Like a
+ *  wheel, it only clicks while the finger is moving: holding still does nothing, so every click is the player's. */
+class ShClickStrip(
+    context: android.content.Context,
+    private val onNotch: () -> Unit,
+) : android.view.View(context) {
+    private val d = context.resources.displayMetrics.density
+    private val notchPx = 22f * d
+    private var lastY = 0f
+    private var travel = 0f
+    private val bg = android.graphics.Paint().apply { color = 0x66000000; isAntiAlias = true }
+    private val line = android.graphics.Paint().apply { color = 0x88FFFFFF.toInt(); strokeWidth = 1.5f * d }
+    private val rect = android.graphics.RectF()
+
+    override fun onDraw(canvas: android.graphics.Canvas) {
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        canvas.drawRoundRect(rect, 8f * d, 8f * d, bg)
+        var y = notchPx / 2
+        while (y < height) {
+            canvas.drawLine(width * 0.3f, y, width * 0.7f, y, line)
+            y += notchPx
+        }
+    }
+
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(ev: android.view.MotionEvent): Boolean {
+        when (ev.actionMasked) {
+            android.view.MotionEvent.ACTION_DOWN -> {
+                lastY = ev.y
+                travel = 0f
+                parent?.requestDisallowInterceptTouchEvent(true)
+            }
+            android.view.MotionEvent.ACTION_MOVE -> {
+                travel += kotlin.math.abs(ev.y - lastY)
+                lastY = ev.y
+                // One click per notch crossed, at most two per touch event so a fast flick can't burst
+                var n = 0
+                while (travel >= notchPx && n < 2) {
+                    travel -= notchPx
+                    n++
+                    onNotch()
+                    performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK)
+                }
+                if (travel >= notchPx) travel = 0f
+            }
+        }
+        return true
+    }
+}
 // ---- end Skilling Helper build ----
