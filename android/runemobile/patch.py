@@ -458,7 +458,7 @@ patch(ma,
                                 }
                             }, tools = listOf(
                                 ShTool("⌨", "Keyboard", { manualKeyboard }, { kbButton.performClick() }),
-                                ShTool("↕", "Click strip", { shStripOn() }, { shToggleStrip() }),
+                                ShTool("◉", "Click pad", { shStripOn() }, { shToggleStrip() }),
                                 ShTool("⇧", "Shift", { shiftHeld }, { shiftButton.performClick() }),
                                 ShTool("⌃", "Ctrl", { ctrlHeld }, { ctrlButton.performClick() }),
                             ))
@@ -909,10 +909,10 @@ patch(ma,
 	"""            if (false && !mapOpen) { // Skilling Helper build: no orb snapping (see patch.py step 28)
                 val orb = nearestOrb(gx, gy)""")
 
-# 29. Click strip, the touch version of a scroll wheel bound to left-click (Yuri has carpal tunnel). The ↕ button
-# under ⌨ in the icon bar shows a notched strip on the game's left edge; sliding a finger along it clicks once per
-# notch crossed, at the spot last tapped (or hovered with the pen) in the game. It only clicks while the finger
-# moves, one click per notch the player slides over, so it adds no clicks of its own: holding still does nothing.
+# 29. Click pad (Yuri has carpal tunnel). The ◉ button under ⌨ in the icon bar shows a large tap pad on the game's
+# left edge; each tap on it is one left-click at the spot last tapped (or hovered with the pen) in the game, with a
+# short buzz. One touch = one click: sliding or holding on the pad sends nothing more, so it never makes a click the
+# player didn't tap for. (It began as a slide strip, one click per notch, but one swipe then sent many clicks.)
 patch(ma,
 	"""    private var shLastDownAt = 0L
 
@@ -977,7 +977,7 @@ patch(ma,
 
     private fun shStripClick() {
         if (shAimX < 0) {
-            Toast.makeText(this, "Tap the game first: the strip clicks where you last tapped", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tap the game first: the pad clicks where you last tapped", Toast.LENGTH_SHORT).show()
             return
         }
         JvmLauncher.click(shAimX, shAimY, 1)
@@ -997,7 +997,7 @@ patch(ma,
 patch(ma,
 	"""                // Skilling Helper build: the desktop-style icon bar on the right edge (landscape; empty in portrait).
                 addView(""",
-	"""                // Skilling Helper build: the click strip on the game's left edge, shown by the ↕ icon (step 29)
+	"""                // Skilling Helper build: the click pad on the game's left edge, shown by the ◉ icon (step 29)
                 addView(
                     ShClickStrip(this@MainActivity) { shStripClick() }.apply {
                         elevation = 205f
@@ -1005,8 +1005,8 @@ patch(ma,
                         shStrip = this
                     },
                     FrameLayout.LayoutParams(
-                        Math.round(44 * resources.displayMetrics.density),
-                        Math.round(220 * resources.displayMetrics.density),
+                        Math.round(72 * resources.displayMetrics.density),
+                        Math.round(150 * resources.displayMetrics.density),
                         Gravity.START or Gravity.TOP,
                     ).apply {
                         topMargin = Math.round(36 * resources.displayMetrics.density)
