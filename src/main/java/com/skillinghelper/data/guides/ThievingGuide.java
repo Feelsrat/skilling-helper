@@ -203,8 +203,8 @@ final class ThievingGuide
 				.instruction("Lure a bandit into an empty house and shut the curtain. Click Knock-Out, then Pickpocket "
 					+ "straight away, then Pickpocket again the moment the first xp drop shows: two guaranteed "
 					+ "pickpockets while it's out. If a knock-out fails, click Knock-Out again at once. With "
-					+ "\"Left-click Knock-Out/Pickpocket\" on (the default), the left-click follows this for you "
-					+ "(hold Shift for the normal menu)")
+					+ "\"Left-click Knock-Out/Pickpocket\" on (the default), the left-click is Knock-Out while it's "
+					+ "up and Pickpocket once it's down (hold Shift for the normal menu)")
 				.notes("Failed knock-outs are a plain roll on your Thieving level (about 59% success at 45, 72% at 65, "
 					+ "94% at 99); the blackjack and the target don't change it, so failing a lot at low levels is "
 					+ "normal. What costs xp is combat: a failed knock-out makes it aggressive, and Knock-Out again "
