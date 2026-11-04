@@ -108,7 +108,7 @@ jobs:
             gh release delete runemobile --cleanup-tag -y || true
             sleep $((i * 3))
           done
-          gh release create runemobile out/RuneMobile-SH.apk out/runemobile-build.txt out/runemobile-android.sh \
+          gh release create runemobile \
             --target "$GITHUB_SHA" --prerelease --latest=false \
             --title "RuneMobile with Skilling Helper (rolling)" \
             --notes "RuneMobile (github.com/audaro/RuneMobile @ ${KEY%%-*}) built with the Skilling Helper patches in android/runemobile.
@@ -117,3 +117,9 @@ jobs:
 
           - \`RuneMobile-SH.apk\`: installs next to the official RuneMobile as \"RuneMobile SH\". It downloads the newest Skilling Helper plugin at every start.
           - \`runemobile-android.sh\`: Termux installer/updater for the APK."
+          # Uploading the ~100 MB APK sometimes drops ("stream error ... CANCEL"); retry, replacing a partial upload
+          for i in 1 2 3 4; do
+            gh release upload runemobile out/RuneMobile-SH.apk out/runemobile-build.txt out/runemobile-android.sh --clobber && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
