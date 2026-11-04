@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.ChatMessageType;
@@ -16,6 +15,7 @@ import net.runelite.api.NPC;
 import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GraphicChanged;
+import net.runelite.api.events.HitsplatApplied;
 import net.runelite.api.events.InteractingChanged;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.NpcDespawned;
@@ -30,12 +30,12 @@ import net.runelite.client.util.Text;
  * the wiki says to blackjack:
  * <ul>
  * <li>Knock-Out while the target is up.</li>
- * <li>Pickpocket once the game shows it's out (its knocked-out animation or stun stars, or the "unconscious" chat
- * message), for the two guaranteed pickpockets.</li>
+ * <li>Pickpocket once the game shows it went down (its knocked-out animation or stun stars, or the "unconscious"
+ * chat message), for the two guaranteed pickpockets, then Knock-Out again.</li>
  * <li>Knock-Out again right away after a failed knock-out, which resets the target's aggression.</li>
  * </ul>
  * Only reorders the NPC's own options, like Menu Entry Swapper's NPC left-click swaps (which allow Knock-Out since
- * July 2026); hold Shift for the normal menu. Also notices when a target starts attacking the player, so the guide
+ * July 2026); hold Shift for the normal menu. Also notices when a target is hitting the player, so the guide
  * can say how to get out of combat.
  */
 @Slf4j
@@ -82,10 +82,14 @@ public class BlackjackSwapper
 	private int outTick = -1;
 	private int pickpockets;
 	/**
-	 * A bandit or thug attacking the player, or null.
+	 * The bandit or thug last turned towards the player, and the tick the player last took a hit.
 	 */
-	@Getter
-	private NPC attacker;
+	private NPC facing;
+	private int hitTick = -1;
+	/**
+	 * Ticks without a hit after which combat counts as over.
+	 */
+	static final int COMBAT_TICKS = 8;
 
 	@Inject
 	public BlackjackSwapper(Client client)
@@ -103,7 +107,8 @@ public class BlackjackSwapper
 		if (!guideOpen)
 		{
 			reset();
-			attacker = null;
+			facing = null;
+			hitTick = -1;
 		}
 	}
 
@@ -124,14 +129,6 @@ public class BlackjackSwapper
 			pickpockets = 0;
 		}
 		outTick = client.getTickCount();
-	}
-
-	/**
-	 * Whether the game shows this NPC as knocked out right now.
-	 */
-	static boolean looksOut(NPC npc)
-	{
-		return OUT_ANIMATIONS.contains(npc.getAnimation()) || npc.hasSpotAnim(SpotanimID.STUNNED_BLACKJACK);
 	}
 
 	static boolean isTarget(NPC npc)
@@ -155,7 +152,8 @@ public class BlackjackSwapper
 		{
 			NPC npc = (NPC) e.getActor();
 			log.debug("blackjack target {} animation {}", npc.getName(), npc.getAnimation());
-			if (OUT_ANIMATIONS.contains(npc.getAnimation()))
+			// Only the one we knocked: other players blackjack nearby too
+			if (npc == knockOutTarget && OUT_ANIMATIONS.contains(npc.getAnimation()))
 			{
 				wentDown(npc);
 			}
@@ -169,7 +167,7 @@ public class BlackjackSwapper
 		{
 			NPC npc = (NPC) e.getActor();
 			log.debug("blackjack target {} graphic {}", npc.getName(), npc.getGraphic());
-			if (npc.hasSpotAnim(SpotanimID.STUNNED_BLACKJACK))
+			if (npc == knockOutTarget && npc.hasSpotAnim(SpotanimID.STUNNED_BLACKJACK))
 			{
 				wentDown(npc);
 			}
@@ -203,32 +201,48 @@ public class BlackjackSwapper
 	@Subscribe
 	public void onInteractingChanged(InteractingChanged e)
 	{
-		if (!active)
+		if (!active || !(e.getSource() instanceof NPC) || !isTarget((NPC) e.getSource()))
 		{
 			return;
 		}
-		Actor source = e.getSource();
-		if (source instanceof NPC && isTarget((NPC) source))
+		// A lured bandit follows the player too, so this alone isn't combat: a hit on the player is
+		if (e.getTarget() == client.getLocalPlayer())
 		{
-			if (e.getTarget() == client.getLocalPlayer())
-			{
-				attacker = (NPC) source;
-				reset();
-			}
-			else if (source == attacker)
-			{
-				attacker = null;
-			}
+			facing = (NPC) e.getSource();
+		}
+		else if (e.getSource() == facing)
+		{
+			facing = null;
+			hitTick = -1;
+		}
+	}
+
+	@Subscribe
+	public void onHitsplatApplied(HitsplatApplied e)
+	{
+		if (active && facing != null && e.getActor() == client.getLocalPlayer())
+		{
+			hitTick = client.getTickCount();
+			reset();
 		}
 	}
 
 	@Subscribe
 	public void onNpcDespawned(NpcDespawned e)
 	{
-		if (e.getNpc() == attacker)
+		if (e.getNpc() == facing)
 		{
-			attacker = null;
+			facing = null;
+			hitTick = -1;
 		}
+	}
+
+	/**
+	 * A bandit or thug attacking the player, or null.
+	 */
+	public NPC getAttacker()
+	{
+		return facing != null && hitTick >= 0 && client.getTickCount() - hitTick <= COMBAT_TICKS ? facing : null;
 	}
 
 	/**
@@ -236,10 +250,7 @@ public class BlackjackSwapper
 	 */
 	String wanted(NPC npc)
 	{
-		if (looksOut(npc))
-		{
-			return PICKPOCKET;
-		}
+		// The knocked-out animation only starts the window: it may outlast the two guaranteed pickpockets
 		boolean recent = outTick >= 0 && client.getTickCount() - outTick <= OUT_TICKS
 			&& (knockOutTarget == null || knockOutTarget == npc);
 		return recent ? PICKPOCKET : KNOCK_OUT;
