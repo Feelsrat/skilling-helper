@@ -938,3 +938,53 @@ patch(ma,
         Toast.makeText(this, if (shCamLock) "Camera locked" else "Camera unlocked", Toast.LENGTH_SHORT).show()
     }
 """)
+
+# 30. Logging in by hand, as on desktop. RuneMobile clicked through the login itself (EULA, Play Now, the "Click here
+# to play" screen) and always picked world 301. Now the first login of a session is left to the player, in whatever
+# world the game or RuneLite's Default World plugin picks ("Use last world" remembers the last one). The machine still
+# drives a world-switcher hop (a hop here is a logout + relogin) and a reconnect after a dropped connection.
+hl = "runelite-client/src/main/java/net/runelite/client/headless/HeadlessLogin.java"
+patch(hl,
+	"""				if (tryDismissWelcome(client))
+				{
+					return;   // welcome overlay shown -> clicked it this tick, keep going until it's gone
+				}""",
+	"""				if (!shManualLogin() && tryDismissWelcome(client)) // Skilling Helper build (patch.py step 30)
+				{
+					return;   // welcome overlay shown -> clicked it this tick, keep going until it's gone
+				}""")
+patch(hl,
+	"""		if (draws < WARMUP_DRAWS)
+		{
+			return;
+		}
+
+		final Canvas canvas = client.getCanvas();""",
+	"""		if (shManualLogin())
+		{
+			return; // Skilling Helper build: the player logs in by hand (patch.py step 30)
+		}
+
+		if (draws < WARMUP_DRAWS)
+		{
+			return;
+		}
+
+		final Canvas canvas = client.getCanvas();""")
+patch(hl,
+	"	private static boolean hopAwaitingLogin;\n",
+	"""	private static boolean hopAwaitingLogin;
+
+	/** Skilling Helper build: a plain login (not a world-switcher hop or a reconnect) is the player's to click. */
+	private static boolean shManualLogin()
+	{
+		return !pendingHopActive && !hopAwaitingLogin && !sawConnectionLost && reconnectAttempts == 0;
+	}
+""")
+jt = "android/app/src/main/java/dev/audaro/runemobile/JagexTokens.kt"
+patch(jt,
+	"""            "-Drunelite.headless.autologin.world=301",
+            "-Drunelite.headless.autologin.worldAddress=oldschool1.runescape.com",
+""",
+	"""            // Skilling Helper build: no forced world 301 (patch.py step 30)
+""")
