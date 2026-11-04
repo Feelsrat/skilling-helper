@@ -898,3 +898,12 @@ patch(ma,
 	"    private var shImeDismissed = false // Skilling Helper build: the user closed the keyboard over an open game field\n"
 	"    private var shMenuDrag = false // Skilling Helper build: the long-press that opened the game menu is still down\n"
 	"    private var shMenuDragMoved = false\n")
+
+# 28. Taps go where they land, as on desktop. RuneMobile snapped any tap near a minimap orb onto the nearest orb's
+# centre, so a tap near the minimap could press the store orb, which opens the membership/bond store page in the
+# browser. With the desktop HUD the orbs are the game's own, so no snapping.
+patch(ma,
+	"""            if (!mapOpen) {
+                val orb = nearestOrb(gx, gy)""",
+	"""            if (false && !mapOpen) { // Skilling Helper build: no orb snapping (see patch.py step 28)
+                val orb = nearestOrb(gx, gy)""")
