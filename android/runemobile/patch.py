@@ -458,7 +458,7 @@ patch(ma,
                                 }
                             }, tools = listOf(
                                 ShTool("⌨", "Keyboard", { manualKeyboard }, { kbButton.performClick() }),
-                                ShTool("◉", "Click pad", { shStripOn() }, { shToggleStrip() }),
+                                ShTool("🔒", "Lock camera", { shCamLock }, { shToggleCamLock() }),
                                 ShTool("⇧", "Shift", { shiftHeld }, { shiftButton.performClick() }),
                                 ShTool("⌃", "Ctrl", { ctrlHeld }, { ctrlButton.performClick() }),
                             ))
@@ -909,109 +909,32 @@ patch(ma,
 	"""            if (false && !mapOpen) { // Skilling Helper build: no orb snapping (see patch.py step 28)
                 val orb = nearestOrb(gx, gy)""")
 
-# 29. Click pad (Yuri has carpal tunnel). The ◉ button under ⌨ in the icon bar shows a large tap pad on the game's
-# left edge; each tap on it is one left-click at the spot last tapped (or hovered with the pen) in the game, with a
-# short buzz. One touch = one click: sliding or holding on the pad sends nothing more, so it never makes a click the
-# player didn't tap for. (It began as a slide strip, one click per notch, but one swipe then sent many clicks.)
+# 29. Camera lock and no one-finger zoom. Yuri taps a lot in one spot (carpal tunnel), and stray drags turned the
+# camera or zoomed it. Android's "quick scale" zoom (double-tap, then drag) is off; zoom is a two-finger pinch only.
+# The 🔒 button under ⌨ in the icon bar locks the camera: drags and pinches no longer turn or zoom it (interfaces,
+# the chat and the world map still scroll). Taps are unchanged.
 patch(ma,
+	"        scaleGestures = ScaleGestureDetector(this, ScaleListener())\n",
+	"        scaleGestures = ScaleGestureDetector(this, ScaleListener())\n"
+	"        scaleGestures.isQuickScaleEnabled = false // Skilling Helper build: no double-tap-drag zoom (step 29)\n"
+	"        shCamLock = getSharedPreferences(\"sh_ui\", MODE_PRIVATE).getBoolean(\"cam_lock\", false)\n")
+patch(ma,
+	"                JvmLauncher.camera(cdx, cdy)\n",
+	"                if (!shCamLock) JvmLauncher.camera(cdx, cdy) // Skilling Helper build: camera lock (step 29)\n")
+patch(ma,
+	"            scaleAccum *= d.scaleFactor\n",
+	"            if (shCamLock) return true // Skilling Helper build: camera lock (step 29)\n"
+	"            scaleAccum *= d.scaleFactor\n")
+patch(ma,
+	"    private var shLastDownAt = 0L\n",
 	"""    private var shLastDownAt = 0L
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) shLastDownAt = SystemClock.uptimeMillis()
-        return super.dispatchTouchEvent(ev)
-    }
-""",
-	"""    private var shLastDownAt = 0L
+    // Skilling Helper build: camera lock (see patch.py step 29)
+    private var shCamLock = false
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) shLastDownAt = SystemClock.uptimeMillis()
-        shTrackAim(ev)
-        return super.dispatchTouchEvent(ev)
-    }
-
-    // Skilling Helper build: the click strip (see patch.py step 29)
-    private var shStrip: ShClickStrip? = null
-    private var shAimX = -1
-    private var shAimY = -1
-    private var shDownX = 0f
-    private var shDownY = 0f
-    private var shDownInGame = false
-
-    private fun shStripOn(): Boolean = shStrip?.visibility == View.VISIBLE
-
-    private fun shToggleStrip() {
-        val s = shStrip ?: return
-        s.visibility = if (shStripOn()) View.GONE else View.VISIBLE
-        getSharedPreferences("sh_ui", MODE_PRIVATE).edit().putBoolean("click_strip", shStripOn()).apply()
-    }
-
-    /** A tap (not a drag) on the game picks where the strip clicks. */
-    private fun shTrackAim(ev: MotionEvent) {
-        if (!::surfaceView.isInitialized) return
-        when (ev.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                shDownX = ev.x
-                shDownY = ev.y
-                surfaceView.getLocationInWindow(shHoverLoc)
-                val x = ev.x - shHoverLoc[0]
-                val y = ev.y - shHoverLoc[1]
-                shDownInGame = !shOnStrip(ev.x, ev.y) && x >= 0 && y >= 0 && x < surfaceView.width && y < surfaceView.height
-            }
-            MotionEvent.ACTION_UP -> if (shDownInGame && ev.pointerCount == 1 &&
-                hypot(ev.x - shDownX, ev.y - shDownY) < 12f * resources.displayMetrics.density) {
-                surfaceView.getLocationInWindow(shHoverLoc)
-                shAimX = toGameX(ev.x - shHoverLoc[0])
-                shAimY = toGameY(ev.y - shHoverLoc[1])
-            }
-            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_CANCEL -> shDownInGame = false
-        }
-    }
-
-    private fun shOnStrip(wx: Float, wy: Float): Boolean {
-        val s = shStrip ?: return false
-        if (s.visibility != View.VISIBLE) return false
-        val l = IntArray(2)
-        s.getLocationInWindow(l)
-        return wx >= l[0] && wx < l[0] + s.width && wy >= l[1] && wy < l[1] + s.height
-    }
-
-    private fun shStripClick() {
-        if (shAimX < 0) {
-            Toast.makeText(this, "Tap the game first: the pad clicks where you last tapped", Toast.LENGTH_SHORT).show()
-            return
-        }
-        JvmLauncher.click(shAimX, shAimY, 1)
+    private fun shToggleCamLock() {
+        shCamLock = !shCamLock
+        getSharedPreferences("sh_ui", MODE_PRIVATE).edit().putBoolean("cam_lock", shCamLock).apply()
+        Toast.makeText(this, if (shCamLock) "Camera locked" else "Camera unlocked", Toast.LENGTH_SHORT).show()
     }
 """)
-patch(ma,
-	"""                    if (x >= 0 && y >= 0 && x < surfaceView.width && y < surfaceView.height) {
-                        JvmLauncher.move(toGameX(x), toGameY(y))
-                        shHovering = true""",
-	"""                    if (x >= 0 && y >= 0 && x < surfaceView.width && y < surfaceView.height) {
-                        JvmLauncher.move(toGameX(x), toGameY(y))
-                        if (!shOnStrip(ev.x, ev.y)) { // the click strip clicks where the pen points
-                            shAimX = toGameX(x)
-                            shAimY = toGameY(y)
-                        }
-                        shHovering = true""")
-patch(ma,
-	"""                // Skilling Helper build: the desktop-style icon bar on the right edge (landscape; empty in portrait).
-                addView(""",
-	"""                // Skilling Helper build: the click pad on the game's left edge, shown by the ◉ icon (step 29)
-                addView(
-                    ShClickStrip(this@MainActivity) { shStripClick() }.apply {
-                        elevation = 205f
-                        visibility = if (getSharedPreferences("sh_ui", MODE_PRIVATE).getBoolean("click_strip", false)) View.VISIBLE else View.GONE
-                        shStrip = this
-                    },
-                    FrameLayout.LayoutParams(
-                        Math.round(72 * resources.displayMetrics.density),
-                        Math.round(150 * resources.displayMetrics.density),
-                        Gravity.START or Gravity.TOP,
-                    ).apply {
-                        topMargin = Math.round(36 * resources.displayMetrics.density)
-                        leftMargin = Math.round(6 * resources.displayMetrics.density)
-                    },
-                )
-                // Skilling Helper build: the desktop-style icon bar on the right edge (landscape; empty in portrait).
-                addView(""")

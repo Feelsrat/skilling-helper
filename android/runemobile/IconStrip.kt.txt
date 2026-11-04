@@ -110,39 +110,4 @@ private fun ShStripButton(
         contentAlignment = Alignment.Center,
     ) { content() }
 }
-/** Click pad: a big tap target on the game's edge. Each tap on it is one left-click at the spot last tapped or
- *  hovered in the game, so the player clicks with a relaxed thumb instead of aiming each time. One touch = one click:
- *  sliding or holding on it sends nothing more. Each click gives a short buzz. */
-class ShClickStrip(
-    context: android.content.Context,
-    private val onTap: () -> Unit,
-) : android.view.View(context) {
-    private val d = context.resources.displayMetrics.density
-    private val bg = android.graphics.Paint().apply { color = 0x66000000; isAntiAlias = true }
-    private val ring = android.graphics.Paint().apply {
-        color = 0x88FFFFFF.toInt()
-        style = android.graphics.Paint.Style.STROKE
-        strokeWidth = 2f * d
-        isAntiAlias = true
-    }
-    private val rect = android.graphics.RectF()
-
-    @Suppress("DEPRECATION")
-    private val vibrator = context.getSystemService(android.content.Context.VIBRATOR_SERVICE) as? android.os.Vibrator
-
-    override fun onDraw(canvas: android.graphics.Canvas) {
-        rect.set(0f, 0f, width.toFloat(), height.toFloat())
-        canvas.drawRoundRect(rect, 10f * d, 10f * d, bg)
-        canvas.drawCircle(width / 2f, height / 2f, minOf(width, height) * 0.3f, ring)
-    }
-
-    @android.annotation.SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(ev: android.view.MotionEvent): Boolean {
-        if (ev.actionMasked == android.view.MotionEvent.ACTION_DOWN) {
-            onTap()
-            runCatching { vibrator?.vibrate(android.os.VibrationEffect.createOneShot(15, 120)) }
-        }
-        return true
-    }
-}
 // ---- end Skilling Helper build ----
