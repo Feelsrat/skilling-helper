@@ -49,7 +49,16 @@ public class BlackjackSwapper
 	 */
 	static final int OUT_TICKS = 7;
 	private static final Pattern KNOCK_OUT_FAILED = Pattern.compile("glances off", Pattern.CASE_INSENSITIVE);
-	private static final Pattern PICKED = Pattern.compile("pick the .+'s pocket", Pattern.CASE_INSENSITIVE);
+	/**
+	 * The result of a pickpocket only: "You attempt to pick the bandit's pocket." comes first and mustn't count.
+	 */
+	private static final Pattern PICKED = Pattern.compile("^you (?:pick|fail to pick) the .+'s pocket",
+		Pattern.CASE_INSENSITIVE);
+	/**
+	 * Any message saying the target is out ("...render them unconscious", or a Knock-Out on one that's already
+	 * out): it's pickpocket time.
+	 */
+	private static final Pattern OUT = Pattern.compile("unconscious", Pattern.CASE_INSENSITIVE);
 
 	private final Client client;
 	private boolean active;
@@ -106,16 +115,25 @@ public class BlackjackSwapper
 	@Subscribe
 	public void onChatMessage(ChatMessage e)
 	{
-		if (!active || knockOutTick < 0
+		if (!active
 			|| (e.getType() != ChatMessageType.SPAM && e.getType() != ChatMessageType.GAMEMESSAGE))
 		{
 			return;
 		}
 		String msg = Text.removeTags(e.getMessage());
+		if (knockOutTick < 0 && !OUT.matcher(msg).find())
+		{
+			return;
+		}
 		if (KNOCK_OUT_FAILED.matcher(msg).find())
 		{
 			// Knocking out again straight away is the quickest way to reset its aggression
 			reset();
+		}
+		else if (OUT.matcher(msg).find())
+		{
+			// Still out: keep Pickpocket on left-click for the pickpockets that are left
+			knockOutTick = client.getTickCount();
 		}
 		else if (PICKED.matcher(msg).find() && ++pickpockets >= PICKPOCKETS)
 		{
