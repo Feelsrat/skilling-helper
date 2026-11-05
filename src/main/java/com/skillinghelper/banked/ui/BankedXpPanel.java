@@ -8,6 +8,7 @@ import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -80,9 +81,15 @@ public class BankedXpPanel extends PluginPanel
 	private List<Skill> shownSkills;
 	private boolean updating;
 
+	/**
+	 * Holds back redraws while the panel is closed.
+	 */
+	private final HiddenRedraws redraws;
+
 	public BankedXpPanel(Listener listener, ItemManager itemManager)
 	{
 		super(false);
+		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		this.itemManager = itemManager;
 		setLayout(new BorderLayout());
@@ -147,6 +154,11 @@ public class BankedXpPanel extends PluginPanel
 	 * Shows a new view. Swing thread.
 	 */
 	public void update(BankedView view)
+	{
+		redraws.run("update", () -> applyUpdate(view));
+	}
+
+	private void applyUpdate(BankedView view)
 	{
 		updating = true;
 		try

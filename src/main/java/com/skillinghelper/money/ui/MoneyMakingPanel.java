@@ -44,6 +44,7 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.HiddenRedraws;
 
 /**
  * Side panel: the wiki's money making methods the player can do, best gp/hr first, with filters. Clicking one shows
@@ -95,9 +96,15 @@ public class MoneyMakingPanel extends PluginPanel
 	private int shown = PAGE_SIZE;
 	private boolean updating;
 
+	/**
+	 * Holds back redraws while the panel is closed.
+	 */
+	private final HiddenRedraws redraws;
+
 	public MoneyMakingPanel(Listener listener)
 	{
 		super(false);
+		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		setLayout(new BorderLayout());
 		setBorder(new EmptyBorder(8, 8, 8, 8));
@@ -204,6 +211,11 @@ public class MoneyMakingPanel extends PluginPanel
 	 */
 	public void update(List<MoneyOption> options, Map<String, String> fullGuides)
 	{
+		redraws.run("update", () -> applyUpdate(options, fullGuides));
+	}
+
+	private void applyUpdate(List<MoneyOption> options, Map<String, String> fullGuides)
+	{
 		this.options = options;
 		this.fullGuides = fullGuides;
 		updating = true;
@@ -226,6 +238,11 @@ public class MoneyMakingPanel extends PluginPanel
 	 */
 	public void setWildernessAllowed(boolean allowed)
 	{
+		redraws.run("wilderness", () -> applySetWildernessAllowed(allowed));
+	}
+
+	private void applySetWildernessAllowed(boolean allowed)
+	{
 		if (showWilderness.isSelected() != allowed)
 		{
 			updating = true;
@@ -239,6 +256,11 @@ public class MoneyMakingPanel extends PluginPanel
 	 * Shows the running guide's step, or hides the guide box when {@code step} is null. Runs on the Swing thread.
 	 */
 	public void updateStep(String page, MoneyStep step)
+	{
+		redraws.run("step", () -> applyUpdateStep(page, step));
+	}
+
+	private void applyUpdateStep(String page, MoneyStep step)
 	{
 		String nowRunning = step == null ? null : page;
 		boolean changed = !Objects.equals(nowRunning, running);

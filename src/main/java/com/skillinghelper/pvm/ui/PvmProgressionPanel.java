@@ -43,6 +43,7 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.HiddenRedraws;
 
 /**
  * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked with
@@ -124,9 +125,15 @@ public class PvmProgressionPanel extends PluginPanel
 	 */
 	private final JPanel stepBox = new JPanel();
 
+	/**
+	 * Holds back redraws while the panel is closed.
+	 */
+	private final HiddenRedraws redraws;
+
 	public PvmProgressionPanel(Listener listener)
 	{
 		super(false);
+		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		setLayout(new BorderLayout());
 		setBorder(new EmptyBorder(8, 8, 8, 8));
@@ -186,6 +193,11 @@ public class PvmProgressionPanel extends PluginPanel
 	 */
 	public void update(List<Readiness> ladder, PlayerView view, String pathId, GuideView guides)
 	{
+		redraws.run("update", () -> applyUpdate(ladder, view, pathId, guides));
+	}
+
+	private void applyUpdate(List<Readiness> ladder, PlayerView view, String pathId, GuideView guides)
+	{
 		this.ladder = ladder;
 		this.view = view;
 		this.pathId = pathId;
@@ -206,6 +218,11 @@ public class PvmProgressionPanel extends PluginPanel
 	 */
 	public void setWildernessAllowed(boolean allowed)
 	{
+		redraws.run("wilderness", () -> applySetWildernessAllowed(allowed));
+	}
+
+	private void applySetWildernessAllowed(boolean allowed)
+	{
 		if (wildernessAllowed != allowed)
 		{
 			wildernessAllowed = allowed;
@@ -220,6 +237,11 @@ public class PvmProgressionPanel extends PluginPanel
 	 * Follows the shared "Hide outleveled guides" setting. Runs on the Swing thread.
 	 */
 	public void setHideOutleveled(boolean hide)
+	{
+		redraws.run("outleveled", () -> applySetHideOutleveled(hide));
+	}
+
+	private void applySetHideOutleveled(boolean hide)
 	{
 		if (hideOutleveled != hide)
 		{
@@ -253,6 +275,11 @@ public class PvmProgressionPanel extends PluginPanel
 	 * Shows the running guide's new step. Runs on the Swing thread.
 	 */
 	public void updateStep(PvmStep step)
+	{
+		redraws.run("step", () -> applyUpdateStep(step));
+	}
+
+	private void applyUpdateStep(PvmStep step)
 	{
 		guides = new GuideView(guides.getActiveId(), step, guides.getPlans(), guides.isBankKnown());
 		fillStep(step);

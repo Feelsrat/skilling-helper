@@ -144,9 +144,15 @@ public class SkillingHelperPanel extends PluginPanel
 	private boolean updating;
 	private String lastSignature;
 
+	/**
+	 * Holds back redraws while the panel is closed.
+	 */
+	private final HiddenRedraws redraws;
+
 	public SkillingHelperPanel(Listener listener, SkillIconManager skillIcons)
 	{
 		super(false);
+		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		this.skillIcons = skillIcons;
 		setLayout(new BorderLayout());
@@ -316,6 +322,11 @@ public class SkillingHelperPanel extends PluginPanel
 	 * Refreshes the panel. Must be called on the Swing thread.
 	 */
 	public void update(ActiveGuide guide, TrainingPreference preference, boolean bankFilterOn)
+	{
+		redraws.run("update", () -> applyUpdate(guide, preference, bankFilterOn));
+	}
+
+	private void applyUpdate(ActiveGuide guide, TrainingPreference preference, boolean bankFilterOn)
 	{
 		// Rebuilding the panel while a dropdown is open closes it, so wait until it's closed (updates come every tick)
 		if (skillBox.isPopupVisible() || prefBox.isPopupVisible())
