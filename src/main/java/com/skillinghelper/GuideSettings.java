@@ -118,8 +118,16 @@ class GuideSettings
 		set(KEY_METHOD + skill.name(), methodId);
 	}
 
+	/**
+	 * Changes the training style. A new style means "pick the best method for this", so methods the player chose by
+	 * hand (or a quick pick chose) are let go for every skill and each guide re-picks for the new style.
+	 */
 	void setPreference(TrainingPreference pref)
 	{
+		if (pref != preference)
+		{
+			clearForcedMethods();
+		}
 		preference = pref;
 		set(KEY_PREFERENCE, pref.name());
 	}
@@ -129,7 +137,23 @@ class GuideSettings
 	 */
 	void useDefaultPreference()
 	{
-		preference = config.preference();
+		TrainingPreference pref = config.preference();
+		if (pref != preference)
+		{
+			clearForcedMethods();
+		}
+		preference = pref;
+	}
+
+	private void clearForcedMethods()
+	{
+		for (Skill s : Skill.values())
+		{
+			if (forcedMethods.remove(s) != null)
+			{
+				set(KEY_METHOD + s.name(), null);
+			}
+		}
 	}
 
 	void setBoatMooring(Mooring mooring)

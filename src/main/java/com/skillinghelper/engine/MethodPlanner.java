@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -58,7 +59,28 @@ public final class MethodPlanner
 		Skill skill = methods.isEmpty() ? null : methods.get(0).getSkill();
 		int level = skill == null ? 1 : state.level(skill);
 		long xpNeeded = skill == null ? 0 : xpBetween(state.xp(skill), targetLevel);
-		return rankAt(methods, state, pref, level, xpNeeded);
+		List<MethodOption> options = rankAt(methods, state, pref, level, xpNeeded);
+		if (skill == null || level >= targetLevel)
+		{
+			return options;
+		}
+		// The guide trains with the best method for the first leg of the plan (until the next method unlocks), so
+		// order the list the same way: its top is then always the method the guide picks for this style. Each
+		// option still shows its numbers for the whole goal.
+		Integer legEnd = breakpoints(methods, level, targetLevel).higher(level);
+		if (legEnd == null || legEnd >= targetLevel)
+		{
+			return options;
+		}
+		long legXp = xpBetween(state.xp(skill), legEnd);
+		Map<Method, Integer> legOrder = new HashMap<>();
+		List<MethodOption> leg = rankAt(methods, state, pref, level, legXp);
+		for (int i = 0; i < leg.size(); i++)
+		{
+			legOrder.put(leg.get(i).getMethod(), i);
+		}
+		options.sort(Comparator.comparingInt(o -> legOrder.get(o.getMethod())));
+		return options;
 	}
 
 	/**
