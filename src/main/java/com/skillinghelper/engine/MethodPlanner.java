@@ -85,28 +85,68 @@ public final class MethodPlanner
 	}
 
 	/**
-	 * The method that earns the most gold per hour of everything the player can do right now: unlocked, affordable
-	 * and making a profit. Each method is costed over the climb to its skill's goal. Null when nothing makes money.
+	 * The method that earns the most gold per hour of everything the player can do right now. Null when nothing
+	 * makes money. See {@link #rankProfitable}.
 	 */
 	public MethodOption mostProfitable(Collection<Method> methods, PlayerState state, ToIntFunction<Skill> goal)
 	{
-		MethodOption best = null;
+		List<MethodOption> ranked = rankProfitable(methods, state, goal);
+		return ranked.isEmpty() ? null : ranked.get(0);
+	}
+
+	/**
+	 * Each skill's best money maker the player can do right now (unlocked, affordable, not outleveled and making a
+	 * profit), most gold per hour first. Each method is costed over the climb to its skill's goal.
+	 */
+	public List<MethodOption> rankProfitable(Collection<Method> methods, PlayerState state, ToIntFunction<Skill> goal)
+	{
+		List<MethodOption> best = bestPerSkill(methods, state, goal, TrainingPreference.PROFIT,
+			Comparator.comparingLong(MethodOption::gpPerHour).reversed());
+		best.removeIf(o -> o.gpPerHour() <= 0);
+		return best;
+	}
+
+	/**
+	 * Each skill's most AFK method the player can do right now (unlocked, affordable and not outleveled): the fewest
+	 * clicks per hour first, then the most xp.
+	 */
+	public List<MethodOption> rankMostAfk(Collection<Method> methods, PlayerState state, ToIntFunction<Skill> goal)
+	{
+		return bestPerSkill(methods, state, goal, TrainingPreference.AFK,
+			Comparator.comparingInt((MethodOption o) -> o.getMethod().getClicksPerHour())
+				.thenComparing(Comparator.comparingDouble(MethodOption::getXpPerHour).reversed()));
+	}
+
+	/**
+	 * For each skill, the usable method that sorts first by {@code order}, then those sorted the same way.
+	 */
+	private List<MethodOption> bestPerSkill(Collection<Method> methods, PlayerState state, ToIntFunction<Skill> goal,
+		TrainingPreference pref, Comparator<MethodOption> order)
+	{
+		Map<Skill, MethodOption> best = new EnumMap<>(Skill.class);
 		for (Method m : methods)
 		{
 			Skill skill = m.getSkill();
 			int level = state.level(skill);
-			long xpNeeded = xpBetween(state.xp(skill), Math.max(level + 1, goal.applyAsInt(skill)));
-			MethodOption option = evaluate(m, state, TrainingPreference.PROFIT, level, xpNeeded);
-			if (!option.isPickable() || !option.isAffordable() || option.gpPerHour() <= 0)
+			if (m.isOutleveled(level, state.combatLevel()))
 			{
 				continue;
 			}
-			if (best == null || option.gpPerHour() > best.gpPerHour())
+			long xpNeeded = xpBetween(state.xp(skill), Math.max(level + 1, goal.applyAsInt(skill)));
+			MethodOption option = evaluate(m, state, pref, level, xpNeeded);
+			if (!option.isPickable() || !option.isAffordable() || option.getXpPerHour() <= 0)
 			{
-				best = option;
+				continue;
+			}
+			MethodOption current = best.get(skill);
+			if (current == null || order.compare(option, current) < 0)
+			{
+				best.put(skill, option);
 			}
 		}
-		return best;
+		List<MethodOption> ranked = new ArrayList<>(best.values());
+		ranked.sort(order);
+		return ranked;
 	}
 
 	/**
@@ -122,21 +162,31 @@ public final class MethodPlanner
 	 */
 	public FastestClimb fastestClimb(Collection<Method> methods, PlayerState state, int levels)
 	{
+		List<FastestClimb> ranked = rankFastest(methods, state, levels);
+		return ranked.isEmpty() ? null : ranked.get(0);
+	}
+
+	/**
+	 * Every skill's fastest climb of {@code levels} levels, quickest first. See {@link #fastestClimb}.
+	 */
+	public List<FastestClimb> rankFastest(Collection<Method> methods, PlayerState state, int levels)
+	{
 		Map<Skill, List<Method>> bySkill = new EnumMap<>(Skill.class);
 		for (Method m : methods)
 		{
 			bySkill.computeIfAbsent(m.getSkill(), k -> new ArrayList<>()).add(m);
 		}
-		FastestClimb best = null;
+		List<FastestClimb> ranked = new ArrayList<>();
 		for (Map.Entry<Skill, List<Method>> e : bySkill.entrySet())
 		{
 			FastestClimb climb = climb(e.getKey(), e.getValue(), state, levels);
-			if (climb != null && (best == null || climb.hoursFor(levels) < best.hoursFor(levels)))
+			if (climb != null)
 			{
-				best = climb;
+				ranked.add(climb);
 			}
 		}
-		return best;
+		ranked.sort(Comparator.comparingDouble(c -> c.hoursFor(levels)));
+		return ranked;
 	}
 
 	/**
@@ -247,16 +297,25 @@ public final class MethodPlanner
 	 */
 	public static Skill lowestSkill(Collection<Skill> skills, PlayerState state)
 	{
-		Skill lowest = null;
+		List<Skill> ranked = rankLowest(skills, state);
+		return ranked.isEmpty() ? null : ranked.get(0);
+	}
+
+	/**
+	 * {@code skills} from the lowest level to the highest, ties by the least xp. Skills at 99 are left out.
+	 */
+	public static List<Skill> rankLowest(Collection<Skill> skills, PlayerState state)
+	{
+		List<Skill> ranked = new ArrayList<>();
 		for (Skill s : skills)
 		{
-			if (lowest == null || state.level(s) < state.level(lowest)
-				|| (state.level(s) == state.level(lowest) && state.xp(s) < state.xp(lowest)))
+			if (state.level(s) < Experience.MAX_REAL_LEVEL)
 			{
-				lowest = s;
+				ranked.add(s);
 			}
 		}
-		return lowest;
+		ranked.sort(Comparator.comparingInt(state::level).thenComparingInt(state::xp));
+		return ranked;
 	}
 
 	/**

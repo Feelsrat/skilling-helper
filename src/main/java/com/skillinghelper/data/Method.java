@@ -71,6 +71,11 @@ public class Method
 	boolean members;
 	@Singular
 	Set<MethodTag> tags;
+	/**
+	 * Roughly how many clicks an hour the method takes at an efficient pace: lower is more AFK. Set for every method
+	 * in {@code AfkRatings}.
+	 */
+	int clicksPerHour;
 
 	/**
 	 * Where the training happens. For bank-standing methods this is the bank itself.

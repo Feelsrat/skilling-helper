@@ -41,7 +41,7 @@ public class GuideRepository
 		all.addAll(FarmingGuide.methods());
 		all.addAll(ConstructionGuide.methods());
 		all.addAll(SailingGuide.methods());
-		bySkill.putAll(all.stream().map(LevelRanges::apply).collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
+		bySkill.putAll(all.stream().map(LevelRanges::apply).map(AfkRatings::apply).collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
 			Collectors.toUnmodifiableList())));
 	}
 
@@ -66,6 +66,14 @@ public class GuideRepository
 	public static boolean hasLevelRange(Method m)
 	{
 		return LevelRanges.has(m.getId());
+	}
+
+	/**
+	 * Whether the method's clicks per hour come from the table rather than a guess.
+	 */
+	public static boolean hasAfkRating(Method m)
+	{
+		return AfkRatings.has(m.getId());
 	}
 
 	public Method byId(String id)

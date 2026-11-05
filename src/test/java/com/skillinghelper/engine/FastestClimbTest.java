@@ -80,4 +80,38 @@ public class FastestClimbTest
 		Method locked = method("locked", Skill.MINING, 50, 0, 30_000);
 		assertNull(planner.fastestClimb(Collections.singletonList(locked), at(30, 1), 10));
 	}
+
+	@Test
+	public void mostAfkSkipsOutleveledAndRanksByClicks()
+	{
+		Method busy = method("busy", Skill.MINING, 1, 0, 30_000).toBuilder().clicksPerHour(1500).build();
+		Method idle = method("idle", Skill.MINING, 1, 0, 10_000).toBuilder().clicksPerHour(100).build();
+		Method outgrown = method("outgrown", Skill.MINING, 1, 20, 10_000).toBuilder().clicksPerHour(10).build();
+		Method chop = method("chop", Skill.WOODCUTTING, 1, 0, 10_000).toBuilder().clicksPerHour(50).build();
+		java.util.List<MethodOption> ranked = planner.rankMostAfk(Arrays.asList(busy, idle, outgrown, chop),
+			at(30, 30), s -> 40);
+
+		assertEquals(2, ranked.size());
+		assertEquals(chop, ranked.get(0).getMethod());
+		assertEquals(idle, ranked.get(1).getMethod());
+	}
+
+	@Test
+	public void mostAfkIsEmptyWhenEverythingIsOutleveled()
+	{
+		Method outgrown = method("outgrown", Skill.MINING, 1, 20, 10_000).toBuilder().clicksPerHour(10).build();
+		assertEquals(0, planner.rankMostAfk(Collections.singletonList(outgrown), at(30, 1), s -> 40).size());
+	}
+
+	@Test
+	public void fastestRanksEverySkill()
+	{
+		Method mining = method("mine", Skill.MINING, 1, 0, 30_000);
+		Method woodcutting = method("chop", Skill.WOODCUTTING, 1, 0, 30_000);
+		java.util.List<MethodPlanner.FastestClimb> ranked = planner.rankFastest(Arrays.asList(mining, woodcutting),
+			at(60, 20), 10);
+		assertEquals(2, ranked.size());
+		assertEquals(Skill.WOODCUTTING, ranked.get(0).getSkill());
+		assertEquals(Skill.MINING, ranked.get(1).getSkill());
+	}
 }

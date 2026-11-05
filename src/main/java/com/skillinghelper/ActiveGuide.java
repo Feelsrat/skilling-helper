@@ -8,6 +8,7 @@ import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.tog.TearsOfGuthix;
+import com.skillinghelper.ui.PickList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ public class ActiveGuide
 	 */
 	TearsOfGuthix.State weeklyState;
 	String weeklyStatus;
+	/**
+	 * A quick pick's ranked list of guides, shown in place of a guide until the player opens one. Null otherwise.
+	 */
+	PickList picks;
 
 	public boolean isActive()
 	{

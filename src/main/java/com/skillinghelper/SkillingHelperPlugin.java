@@ -33,6 +33,7 @@ import com.skillinghelper.thieving.BlackjackSwapper;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
 import com.skillinghelper.tog.TogTracker;
+import com.skillinghelper.ui.PickList;
 import com.skillinghelper.ui.SkillingHelperPanel;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
@@ -170,6 +171,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	 * The Tears of Guthix guide is open instead of a skill.
 	 */
 	private boolean tearsOpen;
+	/**
+	 * The quick pick list on show in place of a guide, or null.
+	 */
+	private PickList picks;
 
 	@Override
 	protected void startUp()
@@ -253,6 +258,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		guide = ActiveGuide.NONE;
 		profileLoaded = false;
 		tearsOpen = false;
+		picks = null;
 		panel = null;
 	}
 
@@ -324,7 +330,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	@Subscribe
 	public void onStatChanged(StatChanged e)
 	{
-		if (settings.getActiveSkill() == null && !tearsOpen && config.autoSelectSkill() && !autoSelectPaused && profileLoaded
+		if (settings.getActiveSkill() == null && !tearsOpen && picks == null && config.autoSelectSkill() && !autoSelectPaused && profileLoaded
 			&& guides.hasGuide(e.getSkill()) && e.getXp() > 0)
 		{
 			selectSkill(e.getSkill());
@@ -476,21 +482,43 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			{
 				return;
 			}
-			if (pick == SkillingHelperPanel.QuickPick.LOWEST_SKILL)
-			{
-				pickLowestSkill();
-			}
-			else if (pick == SkillingHelperPanel.QuickPick.BEST_GOLD)
-			{
-				pickBestGold();
-			}
-			else if (pick == SkillingHelperPanel.QuickPick.FASTEST_LEVELS)
-			{
-				pickFastestLevels();
-			}
-			else if (pick == SkillingHelperPanel.QuickPick.TEARS_OF_GUTHIX)
+			if (pick == SkillingHelperPanel.QuickPick.TEARS_OF_GUTHIX)
 			{
 				openTears();
+				return;
+			}
+			PickList list = pick == SkillingHelperPanel.QuickPick.LOWEST_SKILL ? lowestSkills()
+				: pick == SkillingHelperPanel.QuickPick.BEST_GOLD ? bestGold()
+				: pick == SkillingHelperPanel.QuickPick.FASTEST_LEVELS ? fastestLevels()
+				: mostAfk();
+			selectSkill(null);
+			picks = list;
+			refresh();
+		});
+	}
+
+	@Override
+	public void onPickChosen(PickList.Row row)
+	{
+		clientThread.invokeLater(() ->
+		{
+			if (client.getGameState() != GameState.LOGGED_IN || !profileLoaded)
+			{
+				return;
+			}
+			Skill skill = row.getSkill();
+			if (row.getMethodId() != null)
+			{
+				settings.setForcedMethod(skill, row.getMethodId());
+			}
+			else if (row.isClearForced())
+			{
+				settings.setForcedMethod(skill, null);
+			}
+			selectSkill(skill);
+			if (row.getTarget() > 0)
+			{
+				setTargetAndRefresh(row.getTarget());
 			}
 		});
 	}
@@ -506,10 +534,16 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	}
 
 	/**
-	 * Opens the guide for the player's lowest-level skill that has one.
+	 * How many guides a quick pick lists.
 	 */
-	private void pickLowestSkill()
+	private static final int PICK_ROWS = 10;
+
+	/**
+	 * The player's skills that have a guide, lowest level first, each with the method its guide would start with.
+	 */
+	private PickList lowestSkills()
 	{
+		PlayerState state = stateForAllGuides();
 		List<Skill> guided = new ArrayList<>();
 		for (Skill s : Skill.values())
 		{
@@ -518,70 +552,124 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 				guided.add(s);
 			}
 		}
-		PlayerState state = snapshot.take(settings.getBoatMooring(), completedQuests, startedQuests,
-			config.preferShops());
-		Skill lowest = MethodPlanner.lowestSkill(guided, state);
-		if (lowest != null)
+		PickList.PickListBuilder list = PickList.builder()
+			.pick(SkillingHelperPanel.QuickPick.LOWEST_SKILL)
+			.note("Your skills from the lowest level up, with the method each guide would start with.")
+			.emptyText("Every skill with a guide is already 99.");
+		for (Skill skill : limit(MethodPlanner.rankLowest(guided, state)))
 		{
-			selectSkill(lowest);
+			int target = goal(skill, state);
+			MethodOption first = planner.rank(guides.methods(skill), state, settings.getPreference(), target).stream()
+				.filter(o -> o.isPickable() && !o.getMethod().isOutleveled(state.level(skill), state.combatLevel()))
+				.findFirst().orElse(null);
+			list.row(PickList.Row.builder()
+				.skill(skill)
+				.title(skill.getName())
+				.value("Level " + state.level(skill))
+				.detail(first == null ? "No method you can use yet" : first.getMethod().getName())
+				.build());
 		}
+		return list.build();
 	}
 
 	/**
-	 * Looks through every guide for the method that earns the most gold per hour that the player can do now, then
-	 * opens that skill with that method chosen.
+	 * Each skill's best money maker the player can do now, most gold per hour first.
 	 */
-	private void pickBestGold()
+	private PickList bestGold()
 	{
 		PlayerState state = stateForAllGuides();
-		MethodOption best = planner.mostProfitable(guides.all(), state, s ->
+		PickList.PickListBuilder list = PickList.builder()
+			.pick(SkillingHelperPanel.QuickPick.BEST_GOLD)
+			.note("The best money maker in each skill you can do now, most gold per hour first, at your pace.")
+			.emptyText("None of the guides make money with your current levels, quests and gold.");
+		for (MethodOption o : limit(planner.rankProfitable(guides.all(), state, s -> goal(s, state))))
 		{
-			Integer saved = settings.getTarget(s);
-			return saved != null && saved > state.level(s) ? saved
-				: Math.min(Experience.MAX_REAL_LEVEL, state.level(s) + config.defaultTargetOffset());
-		});
-		if (best == null)
-		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
-				"Skilling Helper: none of the guides make money with your current levels, quests and gold.", null);
-			refresh();
-			return;
+			Method m = o.getMethod();
+			list.row(PickList.Row.builder()
+				.skill(m.getSkill())
+				.title(m.getName())
+				.value(Format.gp(o.gpPerHour()) + String.format("/hr · ~%,d xp/hr", Math.round(o.getXpPerHour())))
+				.detail(m.levelRange())
+				.methodId(m.getId())
+				.build());
 		}
-		Skill skill = best.getMethod().getSkill();
-		settings.setForcedMethod(skill, best.getMethod().getId());
-		selectSkill(skill);
+		return list.build();
 	}
 
 	/**
-	 * Looks through every skill for the one where the player would gain {@value MethodPlanner#FASTEST_LEVELS}
-	 * levels the quickest (switching method on the way where a faster one unlocks), then opens it with that goal.
+	 * Every skill's quickest climb of {@value MethodPlanner#FASTEST_LEVELS} levels, switching method on the way where
+	 * a faster one unlocks, quickest first.
 	 */
-	private void pickFastestLevels()
+	private PickList fastestLevels()
 	{
 		PlayerState state = stateForAllGuides();
-		MethodPlanner.FastestClimb climb = planner.fastestClimb(guides.all(), state, MethodPlanner.FASTEST_LEVELS);
-		if (climb == null)
+		PickList.PickListBuilder list = PickList.builder()
+			.pick(SkillingHelperPanel.QuickPick.FASTEST_LEVELS)
+			.note("Where you'd gain " + MethodPlanner.FASTEST_LEVELS + " levels the quickest at your pace, "
+				+ "switching to a faster method on the way when one unlocks.")
+			.emptyText("None of the guides can be used with your current levels, quests and gold.");
+		for (MethodPlanner.FastestClimb climb : limit(planner.rankFastest(guides.all(), state,
+			MethodPlanner.FASTEST_LEVELS)))
 		{
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
-				"Skilling Helper: none of the guides can be used with your current levels, quests and gold.", null);
-			refresh();
-			return;
+			List<PlanSegment> legs = climb.getLegs();
+			StringBuilder route = new StringBuilder();
+			for (PlanSegment leg : legs)
+			{
+				route.append(route.length() == 0 ? "" : ", then ").append(leg.getOption().getMethod().getName());
+			}
+			boolean oneMethod = legs.size() == 1;
+			list.row(PickList.Row.builder()
+				.skill(climb.getSkill())
+				.title(climb.getSkill().getName() + " " + climb.getFromLevel() + " → " + climb.getToLevel())
+				.value("~" + Format.hours(climb.getHours()))
+				.detail(route.toString())
+				// One method all the way: choose it. Otherwise let the plan switch on the way.
+				.methodId(oneMethod ? legs.get(0).getOption().getMethod().getId() : null)
+				.clearForced(!oneMethod)
+				.target(climb.getToLevel())
+				.build());
 		}
-		Skill skill = climb.getSkill();
-		List<PlanSegment> legs = climb.getLegs();
-		// One method all the way: pick it, like Best gold/hr does. Otherwise let the plan switch on the way.
-		settings.setForcedMethod(skill, legs.size() == 1 ? legs.get(0).getOption().getMethod().getId() : null);
-		selectSkill(skill);
-		setTargetAndRefresh(climb.getToLevel());
+		return list.build();
+	}
 
-		StringBuilder route = new StringBuilder();
-		for (PlanSegment leg : legs)
+	/**
+	 * Each skill's most AFK method the player can do now and hasn't outleveled, fewest clicks first.
+	 */
+	private PickList mostAfk()
+	{
+		PlayerState state = stateForAllGuides();
+		PickList.PickListBuilder list = PickList.builder()
+			.pick(SkillingHelperPanel.QuickPick.MOST_AFK)
+			.note("The most AFK method in each skill you can do now, fewest clicks per hour first. Methods you've "
+				+ "outleveled are left out.")
+			.emptyText("No guide you haven't outleveled can be used with your current levels, quests and gold.");
+		for (MethodOption o : limit(planner.rankMostAfk(guides.all(), state, s -> goal(s, state))))
 		{
-			route.append(route.length() == 0 ? "" : ", then ").append(leg.getOption().getMethod().getName());
+			Method m = o.getMethod();
+			list.row(PickList.Row.builder()
+				.skill(m.getSkill())
+				.title(m.getName())
+				.value(String.format("~%,d clicks/hr · ~%,d xp/hr", m.getClicksPerHour(), Math.round(o.getXpPerHour())))
+				.detail(m.levelRange())
+				.methodId(m.getId())
+				.build());
 		}
-		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Skilling Helper: fastest levels are "
-			+ skill.getName() + " " + climb.getFromLevel() + " to " + climb.getToLevel() + " in about "
-			+ Format.hours(climb.getHours()) + " (" + route + ").", null);
+		return list.build();
+	}
+
+	private static <T> List<T> limit(List<T> ranked)
+	{
+		return ranked.size() <= PICK_ROWS ? ranked : ranked.subList(0, PICK_ROWS);
+	}
+
+	/**
+	 * The saved goal for a skill, or the default one above the player's level.
+	 */
+	private int goal(Skill skill, PlayerState state)
+	{
+		Integer saved = settings.getTarget(skill);
+		return saved != null && saved > state.level(skill) ? saved
+			: Math.min(Experience.MAX_REAL_LEVEL, state.level(skill) + config.defaultTargetOffset());
 	}
 
 	/**
@@ -716,6 +804,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	{
 		autoSelectPaused = false;
 		tearsOpen = false;
+		picks = null;
 		settings.setActiveSkill(skill);
 		if (skill != null)
 		{
@@ -792,7 +881,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 
 		Skill skill = settings.getActiveSkill();
-		ActiveGuide next = tearsOpen ? buildTearsGuide() : skill == null ? ActiveGuide.NONE : buildGuide(skill);
+		ActiveGuide next = tearsOpen ? buildTearsGuide()
+			: skill != null ? buildGuide(skill)
+			: picks != null ? ActiveGuide.builder().picks(picks).build()
+			: ActiveGuide.NONE;
 		long now = Instant.now().getEpochSecond();
 		next = next.toBuilder()
 			.weeklyState(tog.getStatus().getState())

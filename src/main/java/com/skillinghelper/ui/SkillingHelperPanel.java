@@ -16,8 +16,11 @@ import com.skillinghelper.tog.TearsOfGuthix;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +41,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -69,10 +73,11 @@ public class SkillingHelperPanel extends PluginPanel
 	@RequiredArgsConstructor
 	public enum QuickPick
 	{
-		BEST_GOLD("Best gold/hr", "Opens the guide that earns the most gold per hour with your current stats"),
+		BEST_GOLD("Best gold/hr", "Lists the guides that earn the most gold per hour with your current stats"),
 		FASTEST_LEVELS("Fastest +10 levels",
-			"Opens the guide where you'd gain 10 levels the quickest with your current stats, gold and pace"),
-		LOWEST_SKILL("Lowest skill", "Opens the guide for your lowest-level skill"),
+			"Lists the guides where you'd gain 10 levels the quickest with your current stats, gold and pace"),
+		MOST_AFK("Most AFK", "Lists the guides that need the fewest clicks per hour, leaving out ones you've outleveled"),
+		LOWEST_SKILL("Lowest skill", "Lists your skills from the lowest level up"),
 		TEARS_OF_GUTHIX("Tears of Guthix (weekly)",
 			"Opens the guide to the weekly Tears of Guthix minigame, which gives xp in your lowest skill");
 
@@ -88,6 +93,11 @@ public class SkillingHelperPanel extends PluginPanel
 		 * Let the plugin choose the skill (and for gold, the method) to train.
 		 */
 		void onQuickPick(QuickPick pick);
+
+		/**
+		 * Open one guide from a quick pick's ranked list.
+		 */
+		void onPickChosen(PickList.Row row);
 
 		/**
 		 * Turn the guide off: no steps, paths or highlights until a skill is picked again.
@@ -320,6 +330,10 @@ public class SkillingHelperPanel extends PluginPanel
 		{
 			showActivity(guide, bankFilterOn);
 		}
+		else if (guide.getPicks() != null)
+		{
+			showPicks(guide.getPicks());
+		}
 		else if (!guide.isActive())
 		{
 			showIntro();
@@ -345,7 +359,8 @@ public class SkillingHelperPanel extends PluginPanel
 		updating = true;
 		try
 		{
-			Object selected = guide.getActivity() != null ? QuickPick.TEARS_OF_GUTHIX : guide.getSkill();
+			Object selected = guide.getActivity() != null ? QuickPick.TEARS_OF_GUTHIX
+				: guide.getPicks() != null ? guide.getPicks().getPick() : guide.getSkill();
 			if (!Objects.equals(skillBox.getSelectedItem(), selected))
 			{
 				skillBox.setSelectedItem(selected);
@@ -382,6 +397,76 @@ public class SkillingHelperPanel extends PluginPanel
 			MUTED, TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(6));
 		content.add(GuideUi.line("➜ Open your bank once so the guide knows what you own.", HINT, TEXT, TEXT_WIDTH));
+	}
+
+	/**
+	 * A quick pick's ranked guides, each with its skill icon; clicking one opens it.
+	 */
+	private void showPicks(PickList picks)
+	{
+		section(picks.getPick().getLabel());
+		content.add(GuideUi.line(picks.getNote(), MUTED, TEXT_WIDTH));
+		content.add(Box.createVerticalStrut(6));
+		if (picks.getRows().isEmpty())
+		{
+			content.add(GuideUi.line("⚠ " + picks.getEmptyText(), WARN, TEXT, TEXT_WIDTH));
+			return;
+		}
+		int rank = 1;
+		for (PickList.Row row : picks.getRows())
+		{
+			content.add(pickRow(rank++, row));
+			content.add(Box.createVerticalStrut(4));
+		}
+	}
+
+	private JPanel pickRow(int rank, PickList.Row r)
+	{
+		JPanel row = new JPanel(new BorderLayout(6, 0));
+		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		row.setBorder(new EmptyBorder(5, 6, 5, 6));
+		JLabel icon = new JLabel(new ImageIcon(skillIcons.getSkillImage(r.getSkill(), true)));
+		icon.setVerticalAlignment(SwingConstants.TOP);
+		row.add(icon, BorderLayout.WEST);
+
+		int w = GuideUi.CARD_WIDTH - 24;
+		JPanel text = new JPanel();
+		text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+		text.setOpaque(false);
+		JLabel title = GuideUi.text(rank + ". " + r.getTitle(), Color.WHITE, w);
+		title.setFont(FontManager.getRunescapeSmallFont().deriveFont(Font.BOLD));
+		text.add(title);
+		text.add(GuideUi.text(r.getValue(), GOLD, w));
+		if (r.getDetail() != null && !r.getDetail().isEmpty())
+		{
+			text.add(GuideUi.text(r.getDetail(), MUTED, w));
+		}
+		row.add(text, BorderLayout.CENTER);
+		row.setToolTipText("Open the " + r.getSkill().getName() + " guide" + (r.getMethodId() != null
+			? " with this method" : ""));
+		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		row.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				lastSignature = null;
+				listener.onPickChosen(r);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				row.setBackground(ColorScheme.DARKER_GRAY_HOVER_COLOR);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+			}
+		});
+		return full(row);
 	}
 
 	/**
@@ -740,6 +825,7 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		row.add(Box.createVerticalStrut(2));
 		row.add(GuideUi.stat("XP/hr", String.format("~%,d", Math.round(o.getXpPerHour())), TEXT));
+		row.add(GuideUi.stat("Clicks/hr", String.format("~%,d", m.getClicksPerHour()), TEXT));
 		if (xpRemaining > 0)
 		{
 			row.add(GuideUi.stat("To level " + targetLevel, duration(o.hours(xpRemaining)), TEXT));
@@ -895,6 +981,10 @@ public class SkillingHelperPanel extends PluginPanel
 			.append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
 			.append(g.getPriceSource()).append('|').append(g.getSessionXpPerHour()).append('|')
 			.append(g.getActivity()).append(g.getActivityInfo()).append(g.getWeeklyState()).append(g.getWeeklyStatus());
+		if (g.getPicks() != null)
+		{
+			sb.append('|').append(g.getPicks());
+		}
 		GuideStep s = g.getStep();
 		if (s != null)
 		{

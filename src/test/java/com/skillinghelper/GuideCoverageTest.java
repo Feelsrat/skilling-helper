@@ -86,6 +86,7 @@ public class GuideCoverageTest
 			assertTrue(m.getId() + " has no entry in LevelRanges", GuideRepository.hasLevelRange(m));
 			assertTrue(m.getId() + " is outgrown before it unlocks", m.topLevel() > m.getMinLevel());
 			assertTrue(m.getId() + " range goes past 99", m.getMaxLevel() <= Method.MAX_LEVEL);
+			assertTrue(m.getId() + " has no clicks/hr estimate", m.getClicksPerHour() > 0);
 		}
 	}
 
