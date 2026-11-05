@@ -113,8 +113,11 @@ public class ClogStepProvider implements PlanStepProvider
 				case PVM:
 					b.after("boss:" + link.getTarget());
 					break;
+				case MINIGAME:
+					b.after("minigame:" + link.getTarget());
+					// fall through: same requirements as its Skilling Helper method
 				case METHOD:
-					Method m = guides().byId(link.getTarget());
+					Method m = link.getRequirementsOf() == null ? null : guides().byId(link.getRequirementsOf());
 					if (m != null)
 					{
 						b.skill(m.getSkill(), Math.max(1, m.getMinLevel()));

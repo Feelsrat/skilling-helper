@@ -107,5 +107,9 @@ public class ClogView
 		String guide;
 		boolean hasPlace;
 		boolean showingWay;
+		/**
+		 * The boss as Combat Achievement Guides names it, when it has combat tasks; else null.
+		 */
+		String combatAchievements;
 	}
 }

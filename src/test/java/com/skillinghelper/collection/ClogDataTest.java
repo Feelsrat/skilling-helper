@@ -96,6 +96,11 @@ public class ClogDataTest
 		{
 			return;
 		}
+		if (link.getRequirementsOf() != null)
+		{
+			assertNotNull(what + " takes requirements from missing method " + link.getRequirementsOf(),
+				guides.byId(link.getRequirementsOf()));
+		}
 		switch (link.getKind())
 		{
 			case PVM:
@@ -104,6 +109,10 @@ public class ClogDataTest
 			case METHOD:
 				assertNotNull(what + " links to missing method " + link.getTarget(), guides.byId(link.getTarget()));
 				break;
+			case MINIGAME:
+				assertNotNull(what + " links to missing minigame " + link.getTarget(),
+					com.skillinghelper.minigame.data.Minigames.byId(link.getTarget()));
+				break;
 			case CLUE:
 				assertTrue(what + " links to unknown clue tier " + link.getTarget(), Set.of("beginner", "easy",
 					"medium", "hard", "elite", "master").contains(link.getTarget()));
@@ -111,6 +120,19 @@ public class ClogDataTest
 			default:
 				assertNotNull(link.getSkill());
 		}
+	}
+
+	@Test
+	public void bossPagesFindTheirCombatAchievements()
+	{
+		Set<String> monsters = new HashSet<>();
+		com.skillinghelper.ca.data.CaTasks.all().forEach(t -> monsters.add(t.getMonster().toLowerCase()));
+		for (String[] pair : new String[][]{{"Giant Mole", "Giant Mole"}, {"Dagannoth Kings", "Dagannoth Rex"},
+			{"The Fight Caves", "TzTok-Jad"}, {"Barrows Chests", "Barrows"}, {"The Whisperer", "Whisperer"}})
+		{
+			assertEquals(pair[1], ClogLinks.caBoss(data.entry(pair[0]), monsters));
+		}
+		assertEquals(null, ClogLinks.caBoss(data.entry("Easy Treasure Trails"), monsters));
 	}
 
 	@Test

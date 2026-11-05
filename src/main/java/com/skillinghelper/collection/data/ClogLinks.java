@@ -47,20 +47,28 @@ public final class ClogLinks
 		// The defenders come from the cyclopes in the Warriors' Guild
 		pvm("Cyclopes", "warriors_guild");
 
+		// Minigame Guides (with the Skilling Helper method that has the same requirements)
+		minigame("Tempoross", "tempoross", "fish_tempoross");
+		minigame("Wintertodt", "wintertodt", "fm_wintertodt");
+		minigame("Giants' Foundry", "giants_foundry", "smith_giants_foundry");
+		minigame("Motherlode Mine", "motherlode", "mine_motherlode");
+		minigame("Fishing Trawler", "fishing_trawler", "fish_trawler");
+		minigame("Brimhaven Agility Arena", "brimhaven_arena", "agility_brimhaven");
+		minigame("Hallowed Sepulchre", "hallowed_sepulchre", "agility_sepulchre");
+		minigame("Rogues' Den", "rogues_den", "thieve_rogues_den");
+		minigame("Tithe Farm", "tithe_farm", "farm_tithe");
+		minigame("Guardians of the Rift", "gotr", "rc_gotr");
+		minigame("Mahogany Homes", "mahogany_homes", "con_mahogany_homes");
+		minigame("Castle Wars", "castle_wars", null);
+		minigame("Soul Wars", "soul_wars", null);
+		minigame("Magic Training Arena", "mage_training_arena", null);
+		minigame("Volcanic Mine", "volcanic_mine", null);
+		minigame("Mastering Mixology", "mastering_mixology", null);
+		minigame("Vale Totems", "vale_totems", null);
+
 		// Skilling Helper methods
-		method("Tempoross", "fish_tempoross");
-		method("Wintertodt", "fm_wintertodt");
-		method("Giants' Foundry", "smith_giants_foundry");
-		method("Motherlode Mine", "mine_motherlode");
 		method("Camdozaal", "mine_barronite");
-		method("Fishing Trawler", "fish_trawler");
 		method("Aerial Fishing", "fish_aerial_molch");
-		method("Brimhaven Agility Arena", "agility_brimhaven");
-		method("Hallowed Sepulchre", "agility_sepulchre");
-		method("Rogues' Den", "thieve_rogues_den");
-		method("Tithe Farm", "farm_tithe");
-		method("Guardians of the Rift", "rc_gotr");
-		method("Mahogany Homes", "con_mahogany_homes");
 		method("Monkey Backpacks", "agility_ape_atoll");
 		method("Colossal Wyrm Agility", "agility_wyrm_basic");
 
@@ -101,6 +109,39 @@ public final class ClogLinks
 	private static void pvm(String entry, String id)
 	{
 		ENTRIES.put(entry, GuideLink.pvm(id));
+	}
+
+	private static void minigame(String entry, String id, String requirementsOf)
+	{
+		ENTRIES.put(entry, GuideLink.minigame(id, requirementsOf));
+	}
+
+	/**
+	 * Clog pages whose boss the Combat Achievements list names differently.
+	 */
+	private static final Map<String, String> CA_BOSS = Map.ofEntries(
+		Map.entry("Barrows Chests", "Barrows"),
+		Map.entry("Callisto and Artio", "Callisto"),
+		Map.entry("Venenatis and Spindel", "Venenatis"),
+		Map.entry("Vet'ion and Calvar'ion", "Vet'ion"),
+		Map.entry("Dagannoth Kings", "Dagannoth Rex"),
+		Map.entry("The Fight Caves", "TzTok-Jad"),
+		Map.entry("The Inferno", "TzKal-Zuk"),
+		Map.entry("The Gauntlet", "Crystalline Hunllef"),
+		Map.entry("The Leviathan", "Leviathan"),
+		Map.entry("The Mad Angel", "Mad Angel"),
+		Map.entry("The Whisperer", "Whisperer"),
+		Map.entry("Tormented Demons", "Tormented Demon"),
+		Map.entry("Glough's Experiments", "Demonic Gorilla"));
+
+	/**
+	 * The monster name the Combat Achievements list uses for this page's boss, or null when it has no combat
+	 * tasks. {@code caMonsters} is every monster name in that list, lower case.
+	 */
+	public static String caBoss(ClogEntry e, java.util.Set<String> caMonsters)
+	{
+		String name = CA_BOSS.getOrDefault(e.getName(), e.getName());
+		return caMonsters.contains(name.toLowerCase()) ? name : null;
 	}
 
 	private static void method(String entry, String id)

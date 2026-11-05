@@ -55,6 +55,8 @@ public class CollectionLogPanel extends PluginPanel
 		 */
 		void onOpenGuide(String entry, int itemId);
 
+		void onOpenCombatAchievements(String monster);
+
 		void onAllowWilderness(boolean allow);
 
 		void onShowLocked(boolean show);
@@ -325,6 +327,12 @@ public class CollectionLogPanel extends PluginPanel
 		{
 			body.add(GuideUi.button(d.isShowingWay() ? "Stop showing the way" : "Show the way",
 				() -> listener.onShowWay(!d.isShowingWay())));
+			body.add(Box.createVerticalStrut(3));
+		}
+		if (d.getCombatAchievements() != null)
+		{
+			body.add(GuideUi.button("Combat achievements here", () -> listener.onOpenCombatAchievements(
+				d.getCombatAchievements())));
 			body.add(Box.createVerticalStrut(3));
 		}
 		body.add(GuideUi.button("Open wiki page", () -> listener.onOpenWiki(d.getName())));

@@ -124,9 +124,9 @@ public final class ClogRequirements
 				train.add(s.getSkill().getName() + " " + s.getLevel() + " recommended");
 			}
 		}
-		else if (link != null && link.getKind() == GuideLink.Kind.METHOD && methods.containsKey(link.getTarget()))
+		else if (link != null && link.getRequirementsOf() != null && methods.containsKey(link.getRequirementsOf()))
 		{
-			Method m = methods.get(link.getTarget());
+			Method m = methods.get(link.getRequirementsOf());
 			if (m.getMinLevel() > level(levels, m.getSkill()))
 			{
 				missing.add("Level " + m.getMinLevel() + " " + m.getSkill().getName());

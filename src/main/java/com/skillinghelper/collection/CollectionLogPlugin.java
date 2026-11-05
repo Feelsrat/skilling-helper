@@ -3,7 +3,9 @@ package com.skillinghelper.collection;
 import com.google.inject.Provides;
 import com.skillinghelper.OpenClueGuideRequest;
 import com.skillinghelper.OpenCollectionLogRequest;
+import com.skillinghelper.OpenCombatAchievementsRequest;
 import com.skillinghelper.OpenMethodRequest;
+import com.skillinghelper.OpenMinigameRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
@@ -13,6 +15,8 @@ import com.skillinghelper.collection.data.ClogItem;
 import com.skillinghelper.collection.data.ClogLinks;
 import com.skillinghelper.collection.data.ClogTab;
 import com.skillinghelper.collection.data.GuideLink;
+import com.skillinghelper.ca.data.CaTask;
+import com.skillinghelper.ca.data.CaTasks;
 import com.skillinghelper.collection.ui.CollectionLogPanel;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
@@ -148,6 +152,7 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 	private boolean checkShortestPath;
 	private volatile Set<String> outlined = Collections.emptySet();
 	private ClogView shownView;
+	private Set<String> caMonsters;
 
 	@Override
 	protected void startUp()
@@ -536,7 +541,7 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 		ClogPlanner planner = new ClogPlanner(data, new ClogProgress(obtained, missing, owned()),
 			(e, link) -> checks.computeIfAbsent((e == null ? "" : e.getName()) + "|" + link,
 				k -> requirements.check(e, link, levels, questStates)),
-			allowWild, config.showLocked());
+			allowWild, config.showLocked(), caMonsters());
 
 		ClogView.EntryDetail detail = null;
 		if (entry != null)
@@ -582,6 +587,23 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 			.wildernessAllowed(allowWild)
 			.showLocked(config.showLocked())
 			.build());
+	}
+
+	private Set<String> caMonsters()
+	{
+		if (caMonsters == null)
+		{
+			Set<String> names = new HashSet<>();
+			for (CaTask t : CaTasks.all())
+			{
+				if (t.getMonster() != null)
+				{
+					names.add(t.getMonster().toLowerCase());
+				}
+			}
+			caMonsters = names;
+		}
+		return caMonsters;
 	}
 
 	private List<String> travelTips(ClogEntry e)
@@ -787,6 +809,9 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 				case CLUE:
 					eventBus.post(new OpenClueGuideRequest(link.getTarget()));
 					break;
+				case MINIGAME:
+					eventBus.post(new OpenMinigameRequest(link.getTarget()));
+					break;
 				default:
 					int level = client.getRealSkillLevel(link.getSkill());
 					eventBus.post(new TrainSkillRequest(link.getSkill(),
@@ -794,6 +819,12 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 			}
 			refresh();
 		});
+	}
+
+	@Override
+	public void onOpenCombatAchievements(String monster)
+	{
+		clientThread.invokeLater(() -> eventBus.post(OpenCombatAchievementsRequest.boss(monster)));
 	}
 
 	@Override

@@ -169,9 +169,10 @@ Data is rebuilt with `python3 tools/quests/build_quests.py src/main/resources/co
 Also in the jar: **Collection Log Guide** (red book icon). It shows the collection log slots you don't have yet that
 most players have (the wiki's completion figures, so the quickest ones come first), the pages you're closest to
 finishing, every pet with where it comes from, and the whole log by tab. Pick one for beginner steps: where a full
-guide exists elsewhere in the jar (PvM Progression for bosses and raids, Skilling Helper for Wintertodt, Tempoross,
-Guardians of the Rift, rooftops, skilling pets and more, Clue Scroll Guide for the clue pages) "Open full guide"
-starts it; otherwise "Show the way" draws
+guide exists elsewhere in the jar (PvM Progression for bosses and raids, Minigame Guides for Wintertodt, Tempoross,
+Guardians of the Rift, Castle Wars and other minigames, Skilling Helper for rooftops and skilling pets, Clue Scroll
+Guide for the clue pages) "Open full guide" starts it, and boss pages also open their Combat Achievement Guides
+tasks; otherwise "Show the way" draws
 the route with Shortest Path and the boss is outlined. Your log is read from the log pages you open in game and from
 the "New item added to your collection log" chat message, and saved per account; items in your bank count until the
 log page says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is rebuilt

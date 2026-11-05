@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -33,10 +34,22 @@ public final class ClogPlanner
 	private final BiFunction<ClogEntry, GuideLink, ClogRequirements.Check> checks;
 	private final boolean allowWilderness;
 	private final boolean showLocked;
+	/**
+	 * Every monster name in the Combat Achievements list, lower case.
+	 */
+	private final Set<String> caMonsters;
 
 	public ClogPlanner(ClogData data, ClogProgress progress,
 		BiFunction<ClogEntry, GuideLink, ClogRequirements.Check> checks, boolean allowWilderness, boolean showLocked)
 	{
+		this(data, progress, checks, allowWilderness, showLocked, Set.of());
+	}
+
+	public ClogPlanner(ClogData data, ClogProgress progress,
+		BiFunction<ClogEntry, GuideLink, ClogRequirements.Check> checks, boolean allowWilderness, boolean showLocked,
+		Set<String> caMonsters)
+	{
+		this.caMonsters = caMonsters;
 		this.data = data;
 		this.progress = progress;
 		this.checks = checks;
@@ -189,7 +202,7 @@ public final class ClogPlanner
 		}
 		return new ClogView.EntryDetail(e.getName(), e.getTab(), e.getIntro(), have(e), e.getItems().size(), slots,
 			steps(e, link, check, anyUnknown, travelTips), check.getMissing(), check.getTrain(), e.isWilderness(),
-			link == null ? null : label(link), e.getLocation() != null, showingWay);
+			link == null ? null : label(link), e.getLocation() != null, showingWay, ClogLinks.caBoss(e, caMonsters));
 	}
 
 	/**
