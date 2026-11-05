@@ -318,6 +318,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 			.done(done)
 			.claimed(claimed)
 			.varbit(client::getVarbitValue)
+			.varp(client::getVarpValue)
 			.carried(carried())
 			.bank(bankCounts == null ? null : new HashMap<>(bankCounts))
 			.bankOpen(bankWidget != null && !bankWidget.isHidden())

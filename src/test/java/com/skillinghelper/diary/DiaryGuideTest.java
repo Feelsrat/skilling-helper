@@ -195,7 +195,8 @@ public class DiaryGuideTest
 		}
 		for (DiaryTask t : Diaries.all())
 		{
-			DiaryStep step = DiaryGuide.resolve(t, player(99).quests(quests).build());
+			DiaryStep step = DiaryGuide.resolve(t, player(99).quests(quests)
+				.varp(id -> 1000).varbit(id -> id == VarbitID.VM_KUDOS ? 1000 : 0).build());
 			assertNotNull(t.key(), step);
 			assertNotNull(t.key(), step.getTitle());
 			assertTrue(t.key() + " " + step.getKind(), step.getKind() != DiaryStep.Kind.LOCKED);

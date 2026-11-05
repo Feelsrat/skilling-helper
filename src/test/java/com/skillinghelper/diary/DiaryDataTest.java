@@ -28,7 +28,8 @@ public class DiaryDataTest
 	 * Tasks per tier, from the wiki.
 	 */
 	private static final Map<DiaryRegion, int[]> COUNTS = Map.of(
-		DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6});
+		DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6},
+		DiaryRegion.VARROCK, new int[]{14, 13, 10, 5});
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()
@@ -82,9 +83,25 @@ public class DiaryDataTest
 		assertFlag(DiaryTier.ELITE, 6, VarPlayerID.LUMB_DRAY_ACHIEVEMENT_DIARY2, 9);
 	}
 
+	@Test
+	public void varrockDoneBitsSkipTheUnusedOne()
+	{
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.EASY, 1, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY, 1);
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.MEDIUM, 2, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY, 16);
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.MEDIUM, 3, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY, 18);
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.HARD, 3, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY, 31);
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.HARD, 4, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY2, 0);
+		assertFlag(DiaryRegion.VARROCK, DiaryTier.ELITE, 5, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY2, 11);
+	}
+
 	private static void assertFlag(DiaryTier tier, int number, int varp, int bit)
 	{
-		for (DiaryTask t : Diaries.tasks(DiaryRegion.LUMBRIDGE, tier))
+		assertFlag(DiaryRegion.LUMBRIDGE, tier, number, varp, bit);
+	}
+
+	private static void assertFlag(DiaryRegion region, DiaryTier tier, int number, int varp, int bit)
+	{
+		for (DiaryTask t : Diaries.tasks(region, tier))
 		{
 			if (t.getNumber() == number)
 			{

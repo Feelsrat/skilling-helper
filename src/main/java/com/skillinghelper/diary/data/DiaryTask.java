@@ -63,6 +63,11 @@ public class DiaryTask
 	 */
 	int combat;
 	/**
+	 * Requirements read from a varp or varbit, e.g. quest points or Varrock Museum kudos.
+	 */
+	@Singular
+	List<VarReq> varReqs;
+	/**
 	 * Other requirements the plugin can't check, shown with a "?".
 	 */
 	@Singular
@@ -75,6 +80,28 @@ public class DiaryTask
 	boolean wilderness;
 	@Singular
 	List<DiaryStage> stages;
+
+	/**
+	 * Needs at least {@link #min} in a varp (or varbit, when {@link #varp} is 0), e.g. "32 quest points".
+	 */
+	@Value
+	public static class VarReq
+	{
+		String label;
+		int varp;
+		int varbit;
+		int min;
+
+		public static VarReq varp(String label, int varp, int min)
+		{
+			return new VarReq(label, varp, 0, min);
+		}
+
+		public static VarReq varbit(String label, int varbit, int min)
+		{
+			return new VarReq(label, 0, varbit, min);
+		}
+	}
 
 	public String key()
 	{

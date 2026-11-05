@@ -23,6 +23,7 @@ public final class Diaries
 	static
 	{
 		TASKS.put(DiaryRegion.LUMBRIDGE, LumbridgeDiary.tasks());
+		TASKS.put(DiaryRegion.VARROCK, VarrockDiary.tasks());
 	}
 
 	private Diaries()

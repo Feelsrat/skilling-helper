@@ -43,6 +43,8 @@ public class DiaryPlayer
 	Set<String> claimed = Collections.emptySet();
 	@Builder.Default
 	IntUnaryOperator varbit = id -> 0;
+	@Builder.Default
+	IntUnaryOperator varp = id -> 0;
 	/**
 	 * Item id to count across the inventory and worn equipment.
 	 */

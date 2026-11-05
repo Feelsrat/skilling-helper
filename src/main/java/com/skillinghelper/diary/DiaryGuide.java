@@ -86,6 +86,14 @@ public final class DiaryGuide
 				out.add("Start the quest " + q.getName());
 			}
 		}
+		for (DiaryTask.VarReq r : t.getVarReqs())
+		{
+			int have = r.getVarp() > 0 ? p.getVarp().applyAsInt(r.getVarp()) : p.getVarbit().applyAsInt(r.getVarbit());
+			if (have < r.getMin())
+			{
+				out.add(r.getMin() + " " + r.getLabel() + " (you have " + have + ")");
+			}
+		}
 		if (t.isWilderness() && !p.isAllowWilderness())
 		{
 			out.add("Wilderness turned off in the panel");
