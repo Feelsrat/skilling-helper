@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
@@ -40,7 +43,9 @@ import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.api.WorldType;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
@@ -63,6 +68,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
+import net.runelite.client.util.Text;
 
 /**
  * Clue scroll helper around RuneLite's own Clue Scroll plugin: which clues, scroll boxes and caskets you already have
@@ -81,6 +87,8 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	private static final String WIKI_URL = "https://oldschool.runescape.wiki/w/";
 	private static final String CLUE_PLUGIN = "ClueScrollPlugin";
 	private static final int SLOW_REFRESH_TICKS = 50;
+	private static final Pattern COMPLETED = Pattern.compile(
+		"You have completed ([\\d,]+) (beginner|easy|medium|hard|elite|master) Treasure Trails?");
 
 	@Inject
 	private Client client;
@@ -232,6 +240,43 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 				clearWay();
 				refresh();
 			});
+		}
+	}
+
+	/**
+	 * Remembers how many clues of each tier this account finished, from the message opening a casket gives.
+	 */
+	@Subscribe
+	public void onChatMessage(ChatMessage e)
+	{
+		if (e.getType() != ChatMessageType.GAMEMESSAGE)
+		{
+			return;
+		}
+		Matcher m = COMPLETED.matcher(Text.removeTags(e.getMessage()));
+		if (m.find())
+		{
+			configManager.setRSProfileConfiguration(ClueScrollGuideConfig.GROUP, "completed." + m.group(2),
+				m.group(1).replace(",", ""));
+			refresh();
+		}
+	}
+
+	/**
+	 * Clues of the tier this account has finished, as last seen in the chat, or 0.
+	 *
+	 * @param profileConfig "group.key" to this account's saved value
+	 */
+	public static int completed(UnaryOperator<String> profileConfig, ClueTier tier)
+	{
+		String s = profileConfig.apply(ClueScrollGuideConfig.GROUP + ".completed." + tier.key());
+		try
+		{
+			return s == null ? 0 : Integer.parseInt(s);
+		}
+		catch (NumberFormatException e)
+		{
+			return 0;
 		}
 	}
 
@@ -434,6 +479,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 		ClueView.ClueViewBuilder v = ClueView.builder()
 			.loggedIn(p != null)
 			.tier(tier)
+			.completed(p == null ? 0 : completed(this::profileConfig, tier))
 			.holdings(holdings)
 			.running(running || stashKey != null)
 			.step(current)
@@ -546,6 +592,13 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 			hintArrowSet = false;
 		}
 		pathTarget = null;
+	}
+
+	private String profileConfig(String groupAndKey)
+	{
+		int dot = groupAndKey.indexOf('.');
+		return dot <= 0 ? null : configManager.getRSProfileConfiguration(groupAndKey.substring(0, dot),
+			groupAndKey.substring(dot + 1));
 	}
 
 	private ClueTier savedTier()

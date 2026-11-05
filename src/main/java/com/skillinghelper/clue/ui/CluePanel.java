@@ -193,6 +193,11 @@ public class CluePanel extends PluginPanel
 		body.add(GuideUi.section(tier.getLabel() + " clues"));
 		body.add(GuideUi.line(tier.getSteps() + (tier.isMembers() ? ", members only" : ", works on free worlds")
 			+ (tier.isWildernessSteps() ? "" : ", never in the Wilderness"), GuideUi.TEXT, WIDTH));
+		if (v.getCompleted() > 0)
+		{
+			body.add(GuideUi.line("✔ You've done " + String.format("%,d", v.getCompleted()) + " " + tier.getLabel()
+				.toLowerCase() + " clues", GuideUi.GOOD, WIDTH));
+		}
 		if (tier.isMembers() && !v.isMembers())
 		{
 			body.add(GuideUi.line("✘ You're on a free world: these clues need a members world.", GuideUi.BAD, WIDTH));

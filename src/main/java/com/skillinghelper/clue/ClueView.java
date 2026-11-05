@@ -58,6 +58,10 @@ public class ClueView
 	boolean loggedIn;
 	boolean members;
 	ClueTier tier;
+	/**
+	 * Clues of this tier the account finished (from the chat), 0 when not seen yet.
+	 */
+	int completed;
 	@Builder.Default
 	ClueHoldings holdings = ClueHoldings.of(Collections.emptyMap(), null, id -> null);
 	boolean running;
