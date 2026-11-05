@@ -63,6 +63,11 @@ final class CookingGuide
 			.instruction("Use the pineapple rings on the plain pizzas and press Space to make them all")
 			.notes("A wiki money maker: no range needed and every pizza succeeds.")
 			.wikiPage("Money_making_guide/Making_pineapple_pizzas")
+			.howTo("Stand next to any banker or bank booth at the Grand Exchange.")
+			.howTo("Take out 14 plain pizzas and 14 pineapple rings (the guide highlights them). If you only have "
+				+ "pineapples, use a knife on them first to cut them into rings.")
+			.howTo("Click a pineapple ring, then click a plain pizza. Press Space to make all 14.")
+			.howTo("When they're done, open the bank, click \"Deposit inventory\" and take out 14 of each again.")
 			.build());
 		methods.add(Method.builder()
 			.id("cook_wine")
@@ -83,6 +88,11 @@ final class CookingGuide
 			.instruction("Use grapes on the jugs of water, then bank and repeat")
 			.notes("The fastest Cooking xp in the game. Xp is granted when the wine ferments a few seconds later.")
 			.wikiPage(P2P_WIKI)
+			.howTo("Stand next to any banker or bank booth at the Grand Exchange.")
+			.howTo("Take out 14 grapes and 14 jugs of water (the guide highlights them).")
+			.howTo("Click the grapes, then click a jug of water. Press Space to make all 14.")
+			.howTo("The xp comes a few seconds later when the wine ferments, even if you're already banking. "
+				+ "Deposit the unfermented wine and repeat.")
 			.build());
 		methods.add(Method.builder()
 			.id("cook_karambwan")
@@ -102,6 +112,13 @@ final class CookingGuide
 			.target(Target.object("Cook", "Range"))
 			.instruction("Use raw karambwan on the range. 1-tick cooking gives much faster xp")
 			.wikiPage("1-tick_karambwan")
+			.getThere("First time only: finish Tai Bwo Wannai Trio and talk to Tinsay in Tai Bwo Wannai, or every "
+				+ "karambwan comes out poisoned.")
+			.howTo("The range is in the house just east of Catherby bank: follow the arrow. Take out 28 raw "
+				+ "karambwan.")
+			.howTo("Slow way: use a raw karambwan on the range and press Space to cook them all.")
+			.howTo("Fast way (1-tick): hold down the 1 key and keep using raw karambwan on the range, one after "
+				+ "another. Each one cooks instantly.")
 			.build());
 		return methods;
 	}
@@ -127,6 +144,15 @@ final class CookingGuide
 			.target(Target.object("Cook", "Range"))
 			.instruction("Use the raw " + fishName.toLowerCase() + " on the range and press Space to cook all")
 			.notes("Cooking fish you caught yourself is free xp. Buying raw fish usually costs a little per xp.")
+			.howTo(members ? "The range is in the house just east of Catherby bank: follow the arrow."
+				: "The range is in the small house just north of Al Kharid bank: follow the arrow.")
+			.howTo("At the bank, take out 28 raw " + fishName.toLowerCase() + " (the guide highlights them).")
+			.howTo("Click a raw " + fishName.toLowerCase() + " in your inventory, then click the highlighted range. A "
+				+ "menu pops up: press Space (or click the fish picture) to cook them all.")
+			.howTo("Wait while your character cooks the whole inventory. Some fish burn at first; that's normal and "
+				+ "happens less as you level.")
+			.howTo("When everything is cooked, the guide sends you back to the bank to put the fish away and take out "
+				+ "more.")
 			.wikiPage(members ? P2P_WIKI : F2P_WIKI);
 	}
 

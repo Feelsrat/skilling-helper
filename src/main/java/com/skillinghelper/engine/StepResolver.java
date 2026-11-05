@@ -469,6 +469,10 @@ public final class StepResolver
 			{
 				b.line(stop.getHint() + ".");
 			}
+			for (String step : m.getTravelSteps())
+			{
+				b.line("• " + step);
+			}
 			b.travel(route).line("Then: " + m.getInstruction() + ".");
 			if (!m.getSetupSteps().isEmpty() || !m.getHowTo().isEmpty())
 			{

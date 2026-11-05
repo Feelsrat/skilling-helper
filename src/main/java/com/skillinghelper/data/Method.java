@@ -187,6 +187,11 @@ public class Method
 	 */
 	@Singular("insideItem")
 	List<Integer> insideItems;
+	/**
+	 * Beginner steps for the trip to the spot: unlocks, entrances, what to bring. Shown while walking there.
+	 */
+	@Singular("getThere")
+	List<String> travelSteps;
 	@Singular
 	List<Quest> quests;
 	/**

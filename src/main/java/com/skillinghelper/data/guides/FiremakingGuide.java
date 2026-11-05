@@ -54,6 +54,21 @@ final class FiremakingGuide
 			.notes("Supply crates give logs, ores, herbs and the Pyromancer outfit.")
 			.wikiPage("Wintertodt")
 			.rateAt(70, 220_000).rateAt(90, 280_000).rateAt(99, 300_000)
+			.getThere("Get to the Wintertodt camp in the far north of Great Kourend: a games necklace "
+				+ "(\"Wintertodt Camp\") takes you there once you've sailed to Kourend with Veos at Port Sarim.")
+			.getThere("Bring an axe, a knife, a tinderbox, a hammer and some food (anything that heals 4 or "
+				+ "more). Wear four pieces of warm clothing if you have them (see the wiki's warm clothing list); "
+				+ "they cut the damage the cold does.")
+			.howTo("Go through the highlighted Doors of Dinh north of the camp and stand by one of the four "
+				+ "braziers. Wait for the timer at the top left to run out.")
+			.howTo("When the round starts, light the brazier with your tinderbox if no one has, then chop the "
+				+ "highlighted bruma roots next to it until your inventory is full.")
+			.howTo("Use your knife on a root to fletch them all into kindling, then click the burning brazier to "
+				+ "feed it all in. Repeat chop, fletch, feed.")
+			.howTo("If the brazier goes out, click it to light it again. If it breaks, click it with your hammer "
+				+ "to fix it. Eat when your warmth (top left) gets below about half.")
+			.howTo("Get at least 500 points (top left) before the Wintertodt's energy runs out. Then walk out "
+				+ "through the doors and search the reward cart for your loot.")
 			.build());
 		return methods;
 	}
@@ -77,6 +92,15 @@ final class FiremakingGuide
 			.instruction("Stand on a free east-facing lane and use the tinderbox on the " + logName.toLowerCase()
 				+ ". You step west after each fire, so keep lighting until the inventory is empty")
 			.notes("The Grand Exchange has long clear lanes and a bank in the middle.")
+			.howTo("At the Grand Exchange bank, keep your tinderbox and take out 27 " + logName.toLowerCase() + " (the "
+				+ "guide highlights them).")
+			.howTo("Walk to the east end of an empty row that runs east to west (there are clear rows on the east side "
+				+ "of the Grand Exchange). Fires can't go on a tile that already has a fire, so pick a row without "
+				+ "any.")
+			.howTo("Click the tinderbox, then click a log. Your character lights it and steps one tile west by "
+				+ "themselves.")
+			.howTo("Straight away use the tinderbox on the next log, and keep going until every log is lit.")
+			.howTo("Walk back to the bankers in the middle, take out 27 more logs and start a new row.")
 			.wikiPage("Pay-to-play_Firemaking_training");
 	}
 
