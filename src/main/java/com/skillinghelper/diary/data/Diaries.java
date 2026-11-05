@@ -33,6 +33,7 @@ public final class Diaries
 		TASKS.put(DiaryRegion.FREMENNIK, FremennikDiary.tasks());
 		TASKS.put(DiaryRegion.KOUREND, KourendDiary.tasks());
 		TASKS.put(DiaryRegion.WESTERN, WesternDiary.tasks());
+		TASKS.put(DiaryRegion.WILDERNESS, WildernessDiary.tasks());
 	}
 
 	private Diaries()
