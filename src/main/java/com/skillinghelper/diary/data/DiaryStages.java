@@ -126,4 +126,37 @@ final class DiaryStages
 				+ "password and bank PIN secret and doesn't trust anyone asking for them.")
 			.build();
 	}
+
+	static final DiaryItem FAIRY_STAFF = DiaryItem.owned("Dramen or Lunar staff",
+		"Make a Dramen staff during Lost City: cut a branch from the Dramen tree on Entrana and use a knife on it.",
+		ItemID.LUNAR_MOONCLAN_LIMINAL_STAFF, ItemID.DRAMEN_STAFF);
+	static final Zone ZANARIS = Zone.of(2369, 4352, 2497, 4481, 0);
+
+	/**
+	 * Travel by fairy ring: in through the Lumbridge Swamp shed to Zanaris, then dial the code. Any other fairy ring
+	 * works the same way.
+	 */
+	static List<DiaryStage> fairyRing(String code, String arrival)
+	{
+		String dials = String.join(", ", code.split(""));
+		return List.of(
+			DiaryStage.builder()
+				.title("Go into Zanaris through the swamp shed")
+				.at(Location.of("Shed in Lumbridge Swamp", 3202, 3169, 0, 2))
+				.object("Door")
+				.use(ItemID.DRAMEN_STAFF).use(ItemID.LUNAR_MOONCLAN_LIMINAL_STAFF)
+				.line("1. Wield your Dramen or Lunar staff (outlined in your inventory).")
+				.line("2. Walk to the small shed in Lumbridge Swamp, south of the castle, open the Door (outlined) and walk in.")
+				.line("Already next to another fairy ring? Use that one instead with code " + code + ".")
+				.build(),
+			DiaryStage.builder()
+				.title("Take the fairy ring to code " + code)
+				.inside(ZANARIS)
+				.at(Location.of("Fairy ring in Zanaris", 2412, 4434, 0, 3))
+				.object("Fairy ring")
+				.line("1. Wield your Dramen or Lunar staff.")
+				.line("2. Click Configure on the Fairy ring (outlined).")
+				.line("3. Turn the dials to " + dials + " and click Teleport. " + arrival)
+				.build());
+	}
 }

@@ -31,7 +31,8 @@ public class DiaryDataTest
 		DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6},
 		DiaryRegion.VARROCK, new int[]{14, 13, 10, 5},
 		DiaryRegion.FALADOR, new int[]{11, 14, 11, 6},
-		DiaryRegion.KARAMJA, new int[]{10, 19, 10, 5});
+		DiaryRegion.KARAMJA, new int[]{10, 19, 10, 5},
+		DiaryRegion.ARDOUGNE, new int[]{10, 12, 12, 8});
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()

@@ -195,7 +195,7 @@ public class DiaryGuideTest
 		}
 		for (DiaryTask t : Diaries.all())
 		{
-			DiaryStep step = DiaryGuide.resolve(t, player(99).combatLevel(126).quests(quests)
+			DiaryStep step = DiaryGuide.resolve(t, player(99).combatLevel(126).allowWilderness(true).quests(quests)
 				.varp(id -> 1000).varbit(id -> id == VarbitID.VM_KUDOS ? 1000 : 0).build());
 			assertNotNull(t.key(), step);
 			assertNotNull(t.key(), step.getTitle());
