@@ -81,6 +81,11 @@ public class PvmProgressionPanel extends PluginPanel
 		 * Let every guide pick Wilderness bosses and methods, or leave them out again.
 		 */
 		void onAllowWilderness(boolean allow);
+
+		/**
+		 * Switches the shared "Hide outleveled guides" setting.
+		 */
+		void onHideOutleveled(boolean hide);
 	}
 
 	/**
@@ -110,6 +115,7 @@ public class PvmProgressionPanel extends PluginPanel
 	private boolean updating;
 	private List<Readiness> ladder;
 	private boolean wildernessAllowed;
+	private boolean hideOutleveled = true;
 	private PlayerView view;
 	private String pathId;
 	private GuideView guides = GuideView.NONE;
@@ -145,7 +151,7 @@ public class PvmProgressionPanel extends PluginPanel
 			Readiness r = (Readiness) picker.getSelectedItem();
 			if (!updating && r != null)
 			{
-				Readiness first = Readiness.next(ladder, wildernessAllowed);
+				Readiness first = first();
 				pickedId = first != null && first.getContent().getId().equals(r.getContent().getId())
 					? null : r.getContent().getId();
 				showDetail();
@@ -188,7 +194,7 @@ public class PvmProgressionPanel extends PluginPanel
 		if (guides.getActiveId() != null && !guides.getActiveId().equals(shownGuideId))
 		{
 			// Jump to a guide when it starts
-			Readiness first = Readiness.next(ladder, wildernessAllowed);
+			Readiness first = first();
 			pickedId = first != null && first.getContent().getId().equals(guides.getActiveId())
 				? null : guides.getActiveId();
 		}
@@ -208,6 +214,39 @@ public class PvmProgressionPanel extends PluginPanel
 				rebuild();
 			}
 		}
+	}
+
+	/**
+	 * Follows the shared "Hide outleveled guides" setting. Runs on the Swing thread.
+	 */
+	public void setHideOutleveled(boolean hide)
+	{
+		if (hideOutleveled != hide)
+		{
+			hideOutleveled = hide;
+			if (ladder != null)
+			{
+				rebuild();
+			}
+		}
+	}
+
+	/**
+	 * The entry shown when the player hasn't picked one: the lowest-level one not done, skipping the Wilderness
+	 * (unless included) and outgrown ones (unless shown).
+	 */
+	private Readiness first()
+	{
+		return Readiness.next(ladder, wildernessAllowed, hideOutleveled);
+	}
+
+	/**
+	 * Hidden from the dropdown: outgrown while the setting hides those, and not the one being shown or guided.
+	 */
+	private boolean hidden(Readiness r)
+	{
+		String id = r.getContent().getId();
+		return hideOutleveled && r.isOutgrown() && !id.equals(pickedId) && !id.equals(guides.getActiveId());
 	}
 
 	/**
@@ -244,15 +283,18 @@ public class PvmProgressionPanel extends PluginPanel
 	{
 		updating = true;
 		picker.removeAllItems();
-		for (Readiness r : ladder)
-		{
-			picker.addItem(r);
-		}
 		Readiness shown = pickedId == null ? null : find(pickedId);
 		if (shown == null)
 		{
 			pickedId = null;
-			shown = Readiness.next(ladder, wildernessAllowed);
+			shown = first();
+		}
+		for (Readiness r : ladder)
+		{
+			if (r == shown || !hidden(r))
+			{
+				picker.addItem(r);
+			}
 		}
 		picker.setSelectedItem(shown);
 		updating = false;
@@ -269,6 +311,7 @@ public class PvmProgressionPanel extends PluginPanel
 			content.add(Box.createVerticalStrut(8));
 		}
 		wildernessNote();
+		outleveledNote();
 		if (shown != null)
 		{
 			detail(shown);
@@ -311,6 +354,26 @@ public class PvmProgressionPanel extends PluginPanel
 		content.add(Box.createVerticalStrut(8));
 	}
 
+	/**
+	 * Says how many outgrown entries the dropdown leaves out (or could), with the switch to change it.
+	 */
+	private void outleveledNote()
+	{
+		long outgrown = ladder.stream().filter(Readiness::isOutgrown).count();
+		if (outgrown == 0)
+		{
+			return;
+		}
+		content.add(text(hideOutleveled
+			? outgrown + (outgrown == 1 ? " boss you've outgrown is" : " bosses you've outgrown are")
+			+ " hidden from the list."
+			: outgrown + (outgrown == 1 ? " boss is" : " bosses are") + " past your level range.", MUTED));
+		content.add(Box.createVerticalStrut(3));
+		content.add(button(hideOutleveled ? "Show outgrown bosses" : "Hide outgrown bosses",
+			() -> listener.onHideOutleveled(!hideOutleveled)));
+		content.add(Box.createVerticalStrut(8));
+	}
+
 	private Readiness find(String id)
 	{
 		return ladder.stream().filter(r -> r.getContent().getId().equals(id)).findFirst().orElse(null);
@@ -325,8 +388,12 @@ public class PvmProgressionPanel extends PluginPanel
 		name.setFont(FontManager.getRunescapeBoldFont());
 		name.setForeground(Color.WHITE);
 		content.add(left(name));
-		content.add(text(r.getStatus().getLabel() + " · needs about level " + c.getLevel() + " · "
-			+ c.getTier().getLabel(), statusColor(r.getStatus())));
+		content.add(text(r.getStatus().getLabel() + " · " + c.levelRange() + " · " + c.getTier().getLabel(),
+			statusColor(r.getStatus())));
+		if (r.isOutgrown())
+		{
+			content.add(text("You've outgrown this one: your combat stats are past its range.", MUTED));
+		}
 		if (c.isWilderness())
 		{
 			content.add(text(Wilderness.TAG + ": " + Wilderness.WARNING, Wilderness.COLOR));
@@ -614,7 +681,7 @@ public class PvmProgressionPanel extends PluginPanel
 	}
 
 	/**
-	 * Dropdown rows: "70  Barrows (ready)", coloured by status.
+	 * Dropdown rows: "70→99  Barrows (ready)", coloured by status.
 	 */
 	private static class PickerRenderer extends DefaultListCellRenderer
 	{
@@ -628,7 +695,8 @@ public class PvmProgressionPanel extends PluginPanel
 				Readiness r = (Readiness) value;
 				// A star for anything killed at least once, a tick for things only marked done by hand
 				String mark = r.getKillCount() > 0 ? "★ " : r.getStatus() == Readiness.Status.DONE ? "✔ " : "";
-				setText(mark + r.getContent().getLevel() + "  " + r.getContent().getName() + " ("
+				setText(mark + r.getContent().getLevel() + "→" + r.getContent().topLevel() + "  "
+					+ r.getContent().getName() + " ("
 					+ r.getStatus().getLabel().toLowerCase() + ")"
 					+ (r.getContent().isWilderness() ? " " + Wilderness.TAG : ""));
 				if (!selected)

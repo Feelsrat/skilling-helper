@@ -9,6 +9,7 @@ import com.skillinghelper.data.Mooring;
 import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.SlayerPlaces;
 import com.skillinghelper.data.TrainingPreference;
+import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.GuideStep;
@@ -628,6 +629,12 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	}
 
 	@Override
+	public void onHideOutleveled(boolean hide)
+	{
+		Outleveled.setHidden(configManager, hide);
+	}
+
+	@Override
 	public void onToggleBankFilter()
 	{
 		bankFilter.toggle();
@@ -821,6 +828,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.player(state)
 			.priceSource(prices.sourceText())
 			.sessionXpPerHour(sessionXp.xpPerHour(skill))
+			.hideOutleveled(config.hideOutleveled())
 			.wikiPage(GuideRepository.wikiTrainingPage(skill, state.isMembersWorld()));
 
 		List<Method> methods = guides.methods(skill);

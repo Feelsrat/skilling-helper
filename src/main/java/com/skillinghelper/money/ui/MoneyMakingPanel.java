@@ -603,7 +603,7 @@ public class MoneyMakingPanel extends PluginPanel
 
 	private static String summary(MoneyMethod m)
 	{
-		String s = m.getSkillCategory() != null ? m.getSkillCategory() : m.mainCategory();
+		String s = m.levelRange() + " · " + (m.getSkillCategory() != null ? m.getSkillCategory() : m.mainCategory());
 		if (m.getIntensity() != null)
 		{
 			s += " · " + m.getIntensity() + " effort";

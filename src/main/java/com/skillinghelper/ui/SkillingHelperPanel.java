@@ -108,6 +108,11 @@ public class SkillingHelperPanel extends PluginPanel
 		 * Let every guide pick Wilderness methods, or leave them out again.
 		 */
 		void onAllowWilderness(boolean allow);
+
+		/**
+		 * Switches the shared "Hide outleveled guides" setting.
+		 */
+		void onHideOutleveled(boolean hide);
 	}
 
 	private final Listener listener;
@@ -639,12 +644,47 @@ public class SkillingHelperPanel extends PluginPanel
 			content.add(Box.createVerticalStrut(4));
 		}
 		addWildernessChoice(guide.getOptions());
+		int outleveled = 0;
 		for (MethodOption o : guide.getOptions())
 		{
+			if (isOutleveled(guide, o.getMethod()))
+			{
+				outleveled++;
+				if (guide.isHideOutleveled())
+				{
+					continue;
+				}
+			}
 			content.add(methodRow(o, o.getMethod() == guide.getMethod(), guide.getXpRemaining(),
 				guide.getTargetLevel(), guide.getPlayer()));
 			content.add(Box.createVerticalStrut(4));
 		}
+		if (outleveled > 0)
+		{
+			boolean hidden = guide.isHideOutleveled();
+			content.add(GuideUi.line(hidden
+				? outleveled + (outleveled == 1 ? " method you've outleveled is" : " methods you've outleveled are")
+				+ " hidden: something better has opened up."
+				: outleveled + (outleveled == 1 ? " method is" : " methods are") + " past your level range.",
+				MUTED, TEXT_WIDTH));
+			content.add(Box.createVerticalStrut(3));
+			content.add(button(hidden ? "Show outleveled methods" : "Hide outleveled methods",
+				() -> listener.onHideOutleveled(!hidden)));
+			content.add(Box.createVerticalStrut(4));
+		}
+	}
+
+	/**
+	 * Past the top of its level range, and not the method the guide is on or plans to use.
+	 */
+	private static boolean isOutleveled(ActiveGuide guide, Method m)
+	{
+		if (m == guide.getMethod() || guide.getPlan().stream().anyMatch(seg -> seg.getOption().getMethod() == m))
+		{
+			return false;
+		}
+		int combat = guide.getPlayer() == null ? 3 : guide.getPlayer().combatLevel();
+		return m.isOutleveled(guide.getLevel(), combat);
 	}
 
 	/**
@@ -737,13 +777,13 @@ public class SkillingHelperPanel extends PluginPanel
 	}
 
 	/**
-	 * "Lvl 30 · Members · AFK, Profit".
+	 * "Lvl 30 → 60 · Members · AFK, Profit".
 	 */
 	private static String methodInfo(MethodOption o)
 	{
 		Method m = o.getMethod();
 		String tags = m.getTags().stream().map(MethodTag::getLabel).collect(Collectors.joining(", "));
-		return String.format("Lvl %d%s%s", m.getMinLevel(), m.isMembers() ? " · Members" : " · F2P",
+		return String.format("%s%s%s", m.levelRange(), m.isMembers() ? " · Members" : " · F2P",
 			tags.isEmpty() ? "" : " · " + tags);
 	}
 
@@ -849,7 +889,8 @@ public class SkillingHelperPanel extends PluginPanel
 		StringBuilder sb = new StringBuilder();
 		sb.append(g.getSkill()).append('|').append(g.getLevel()).append('|').append(g.getTargetLevel()).append('|')
 			.append(g.getXpRemaining() / 500).append('|').append(pref).append('|').append(bankFilterOn).append('|')
-			.append(g.isForced()).append('|').append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
+			.append(g.isHideOutleveled()).append('|').append(g.isForced()).append('|')
+			.append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
 			.append(g.getPriceSource()).append('|').append(g.getSessionXpPerHour()).append('|')
 			.append(g.getActivity()).append(g.getActivityInfo()).append(g.getWeeklyState()).append(g.getWeeklyStatus());
 		GuideStep s = g.getStep();

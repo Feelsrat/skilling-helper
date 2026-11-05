@@ -41,7 +41,7 @@ public class GuideRepository
 		all.addAll(FarmingGuide.methods());
 		all.addAll(ConstructionGuide.methods());
 		all.addAll(SailingGuide.methods());
-		bySkill.putAll(all.stream().collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
+		bySkill.putAll(all.stream().map(LevelRanges::apply).collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
 			Collectors.toUnmodifiableList())));
 	}
 
@@ -58,6 +58,14 @@ public class GuideRepository
 	public List<Method> all()
 	{
 		return bySkill.values().stream().flatMap(List::stream).collect(Collectors.toList());
+	}
+
+	/**
+	 * Whether the method has a level range set (every built-in one should).
+	 */
+	public static boolean hasLevelRange(Method m)
+	{
+		return LevelRanges.has(m.getId());
 	}
 
 	public Method byId(String id)

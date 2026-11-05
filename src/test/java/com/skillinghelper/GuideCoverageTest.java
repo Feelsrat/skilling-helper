@@ -79,6 +79,32 @@ public class GuideCoverageTest
 	}
 
 	@Test
+	public void everyMethodHasALevelRange()
+	{
+		for (Method m : guides.all())
+		{
+			assertTrue(m.getId() + " has no entry in LevelRanges", GuideRepository.hasLevelRange(m));
+			assertTrue(m.getId() + " is outgrown before it unlocks", m.topLevel() > m.getMinLevel());
+			assertTrue(m.getId() + " range goes past 99", m.getMaxLevel() <= Method.MAX_LEVEL);
+		}
+	}
+
+	@Test
+	public void outleveledMethodsAreTheOnesPastTheirRange()
+	{
+		Method trees = guides.byId("wc_trees_varrock");
+		assertEquals("Lvl 1 → 15", trees.levelRange());
+		assertFalse(trees.isOutleveled(14, 3));
+		assertTrue(trees.isOutleveled(15, 3));
+		Method crab = guides.byId("attack_gemstone_crab");
+		assertEquals("Lvl 1 → 99", crab.levelRange());
+		assertFalse(crab.isOutleveled(99, 126));
+		Method turael = guides.byId("slayer_turael");
+		assertFalse(turael.isOutleveled(10, 19));
+		assertTrue(turael.isOutleveled(10, 20));
+	}
+
+	@Test
 	public void levelRatesClimbInLevelOrderAboveTheMinimum()
 	{
 		for (Method m : guides.all())

@@ -19,6 +19,8 @@ import net.runelite.api.coords.WorldPoint;
 @Builder(toBuilder = true)
 public class Method
 {
+	public static final int MAX_LEVEL = 99;
+
 	@NonNull
 	String id;
 	@NonNull
@@ -29,9 +31,19 @@ public class Method
 	MethodType type;
 	int minLevel;
 	/**
+	 * The level where the method stops being worth it because a better one has opened up. 99 (or 0, the same) when
+	 * it's worth doing all the way. Set for every method in {@code LevelRanges}.
+	 */
+	int maxLevel;
+	/**
 	 * Combat level needed, e.g. for Slayer masters. 0 when there's no requirement.
 	 */
 	int combatLevel;
+	/**
+	 * Combat level where the method is outgrown, e.g. when a better Slayer master gives tasks. 0 when combat level
+	 * never outgrows it.
+	 */
+	int maxCombatLevel;
 	/**
 	 * Approximate xp per hour at {@link #minLevel} for efficient play, as the wiki gives it. The planner scales it down
 	 * by the player's {@link RatePace}.
@@ -238,6 +250,35 @@ public class Method
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * {@link #maxLevel}, with 0 read as 99.
+	 */
+	public int topLevel()
+	{
+		return maxLevel <= 0 ? MAX_LEVEL : Math.min(maxLevel, MAX_LEVEL);
+	}
+
+	/**
+	 * Whether the player has outgrown the method: they reached the level where something better takes over.
+	 */
+	public boolean isOutleveled(int level, int combat)
+	{
+		return (topLevel() < MAX_LEVEL && level >= topLevel()) || (maxCombatLevel > 0 && combat >= maxCombatLevel);
+	}
+
+	/**
+	 * "Lvl 30 → 60", plus the combat range when combat level matters: "Lvl 1 → 99 · Combat 40 → 70".
+	 */
+	public String levelRange()
+	{
+		String s = "Lvl " + Math.max(1, minLevel) + " → " + topLevel();
+		if (combatLevel > 0 || maxCombatLevel > 0)
+		{
+			s += " · Combat " + Math.max(3, combatLevel) + " → " + (maxCombatLevel > 0 ? maxCombatLevel : 126);
+		}
+		return s;
 	}
 
 	public boolean hasTag(MethodTag tag)

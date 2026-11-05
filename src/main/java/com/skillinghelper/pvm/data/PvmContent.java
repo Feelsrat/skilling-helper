@@ -1,9 +1,11 @@
 package com.skillinghelper.pvm.data;
 
 import java.util.List;
+import java.util.function.ToIntFunction;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
+import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
 
 /**
@@ -25,6 +27,11 @@ public class PvmContent
 	List<QuestReq> quests;
 	@Singular
 	List<StatReq> stats;
+	/**
+	 * Combat stat level where it's outgrown: better bosses give more by then. 99 (or 0, the same) when it stays worth
+	 * doing.
+	 */
+	int maxLevel;
 	@Singular
 	List<ItemNeed> items;
 	/**
@@ -48,6 +55,47 @@ public class PvmContent
 	public int getLevel()
 	{
 		return stats.stream().mapToInt(StatReq::getLevel).max().orElse(1);
+	}
+
+	/**
+	 * {@link #maxLevel}, with 0 read as 99.
+	 */
+	public int topLevel()
+	{
+		return maxLevel <= 0 ? 99 : Math.min(maxLevel, 99);
+	}
+
+	/**
+	 * "Lvl 40 → 70": the recommended level to the level where it's outgrown.
+	 */
+	public String levelRange()
+	{
+		return "Lvl " + getLevel() + " → " + topLevel();
+	}
+
+	/**
+	 * Whether every combat stat it recommends (Prayer aside) is at the top of the range or higher.
+	 */
+	public boolean isOutgrownBy(ToIntFunction<Skill> level)
+	{
+		if (topLevel() >= 99)
+		{
+			return false;
+		}
+		boolean any = false;
+		for (StatReq s : stats)
+		{
+			if (s.getSkill() == Skill.PRAYER)
+			{
+				continue;
+			}
+			any = true;
+			if (level.applyAsInt(s.getSkill()) < topLevel())
+			{
+				return false;
+			}
+		}
+		return any;
 	}
 
 	int levelTotal()

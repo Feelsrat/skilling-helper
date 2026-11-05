@@ -1,5 +1,6 @@
 package com.skillinghelper;
 
+import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.Wilderness;
@@ -317,6 +318,19 @@ public interface SkillingHelperConfig extends Config
 	default boolean allowWilderness()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		keyName = Outleveled.KEY,
+		name = "Hide outleveled guides",
+		description = "Hide methods and bosses you've outgrown: past the top of their level range, where something "
+			+ "better has opened up. Shared by Skilling Helper and PvM Progression. The one you're doing is always shown",
+		section = guideSection,
+		position = 7
+	)
+	default boolean hideOutleveled()
+	{
+		return true;
 	}
 
 	@ConfigItem(

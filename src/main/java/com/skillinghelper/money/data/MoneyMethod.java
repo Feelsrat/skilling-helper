@@ -80,6 +80,16 @@ public class MoneyMethod
 	String details;
 
 	/**
+	 * "Lvl 70 → 99": from the highest skill level the wiki lists as needed (1 when none). Money makers aren't
+	 * outgrown by levels, so the range always runs to 99.
+	 */
+	public String levelRange()
+	{
+		int min = skills == null ? 1 : skills.values().stream().mapToInt(Integer::intValue).max().orElse(1);
+		return "Lvl " + Math.max(1, min) + " → 99";
+	}
+
+	/**
 	 * Whether the method is done in the Wilderness: its spot is there, or the wiki's location names it (Revenant
 	 * Caves, Lava Maze...), or it runs through the Abyss, whose way in is in the Wilderness.
 	 */

@@ -51,6 +51,10 @@ public class Readiness
 	 */
 	List<ItemNeed> missingItems;
 	int killCount;
+	/**
+	 * The player's combat stats are past the top of its level range.
+	 */
+	boolean outgrown;
 
 	public static Readiness of(PvmContent c, PlayerView p)
 	{
@@ -115,7 +119,7 @@ public class Readiness
 		{
 			status = Status.READY;
 		}
-		return new Readiness(c, status, quests, locked, gaps, items, kc);
+		return new Readiness(c, status, quests, locked, gaps, items, kc, c.isOutgrownBy(p::level));
 	}
 
 	static boolean questMet(QuestReq q, QuestState state)
@@ -140,8 +144,17 @@ public class Readiness
 	 */
 	public static Readiness next(List<Readiness> ladder, boolean allowWilderness)
 	{
+		return next(ladder, allowWilderness, false);
+	}
+
+	/**
+	 * The lowest-level entry not done yet, also skipping outgrown ones when {@code skipOutgrown} is set.
+	 */
+	public static Readiness next(List<Readiness> ladder, boolean allowWilderness, boolean skipOutgrown)
+	{
 		return ladder.stream()
-			.filter(r -> r.getStatus() != Status.DONE && (allowWilderness || !r.getContent().isWilderness()))
+			.filter(r -> r.getStatus() != Status.DONE && (allowWilderness || !r.getContent().isWilderness())
+				&& !(skipOutgrown && r.isOutgrown()))
 			.findFirst().orElse(null);
 	}
 }

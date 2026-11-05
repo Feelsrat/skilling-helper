@@ -33,6 +33,7 @@ public final class PvmLadder
 	public static final List<PvmContent> ALL = List.of(
 		PvmContent.builder()
 			.id("obor")
+			.maxLevel(70)
 			.name("Obor")
 			.tier(Tier.FIRST_BOSSES)
 			.why("A free-to-play hill giant boss: a gentle first boss fight to learn eating and gear swaps on.")
@@ -47,6 +48,7 @@ public final class PvmLadder
 			.build(),
 		PvmContent.builder()
 			.id("bryophyta")
+			.maxLevel(70)
 			.name("Bryophyta")
 			.tier(Tier.FIRST_BOSSES)
 			.why("The moss giant boss in the Varrock Sewers, another easy free-to-play boss.")
@@ -61,6 +63,7 @@ public final class PvmLadder
 			.build(),
 		PvmContent.builder()
 			.id("scurrius")
+			.maxLevel(75)
 			.name("Scurrius")
 			.tier(Tier.FIRST_BOSSES)
 			.why("A boss built to teach boss mechanics: you learn to move away from attacks and use protection prayers.")
@@ -87,6 +90,7 @@ public final class PvmLadder
 			.build(),
 		PvmContent.builder()
 			.id("giant_mole")
+			.maxLevel(85)
 			.name("Giant Mole")
 			.tier(Tier.EARLY)
 			.why("An easy, safe boss under Falador Park. Good practice at tracking a boss that runs away.")
@@ -138,6 +142,7 @@ public final class PvmLadder
 			.build(),
 		PvmContent.builder()
 			.id("sarachnis")
+			.maxLevel(90)
 			.name("Sarachnis")
 			.tier(Tier.EARLY)
 			.why("A mid-level melee boss with no special requirements. Drops the Sarachnis cudgel.")
@@ -150,6 +155,7 @@ public final class PvmLadder
 			.build(),
 		PvmContent.builder()
 			.id("king_black_dragon")
+			.maxLevel(90)
 			.name("King Black Dragon")
 			.tier(Tier.EARLY)
 			.why("A three-headed dragon boss. Teaches dragonfire protection; its lair is in the Wilderness.")

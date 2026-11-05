@@ -6,6 +6,7 @@ import com.skillinghelper.TrainSkillRequest;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
+import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.pvm.data.ItemNeed;
@@ -265,6 +266,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 
 		panel = new PvmProgressionPanel(this);
 		panel.setWildernessAllowed(Wilderness.allowed(configManager));
+		panel.setHideOutleveled(Outleveled.hidden(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("PvM Progression")
@@ -685,6 +687,12 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		Wilderness.setAllowed(configManager, allow);
 	}
 
+	@Override
+	public void onHideOutleveled(boolean hide)
+	{
+		Outleveled.setHidden(configManager, hide);
+	}
+
 	@Subscribe
 	public void onConfigChanged(ConfigChanged e)
 	{
@@ -695,6 +703,15 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			if (p != null)
 			{
 				SwingUtilities.invokeLater(() -> p.setWildernessAllowed(allowed));
+			}
+		}
+		if (Outleveled.isSettingChange(e))
+		{
+			boolean hide = Outleveled.hidden(configManager);
+			PvmProgressionPanel p = panel;
+			if (p != null)
+			{
+				SwingUtilities.invokeLater(() -> p.setHideOutleveled(hide));
 			}
 		}
 	}

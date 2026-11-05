@@ -33,6 +33,10 @@ public class ActiveGuide
 	 * True when the player picked this method instead of letting the planner choose.
 	 */
 	boolean forced;
+	/**
+	 * Hide methods the player has outgrown from the list (shared "Hide outleveled guides" setting).
+	 */
+	boolean hideOutleveled;
 	MethodOption option;
 	GuideStep step;
 	@Builder.Default
