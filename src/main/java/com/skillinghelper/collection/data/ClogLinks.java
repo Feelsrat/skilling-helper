@@ -64,6 +64,17 @@ public final class ClogLinks
 		method("Monkey Backpacks", "agility_ape_atoll");
 		method("Colossal Wyrm Agility", "agility_wyrm_basic");
 
+		// Clue Scroll Guide: each tier's view covers its uniques, rare and shared rewards and scroll case milestones
+		for (String tier : new String[]{"Beginner", "Easy", "Medium", "Hard", "Elite", "Master"})
+		{
+			ENTRIES.put(tier + " Treasure Trails", GuideLink.clue(tier.toLowerCase()));
+		}
+		ENTRIES.put("Hard Treasure Trail Rewards (Rare)", GuideLink.clue("hard"));
+		ENTRIES.put("Elite Treasure Trail Rewards (Rare)", GuideLink.clue("elite"));
+		ENTRIES.put("Master Treasure Trail Rewards (Rare)", GuideLink.clue("master"));
+		ENTRIES.put("Shared Treasure Trail Rewards", GuideLink.clue("master"));
+		ENTRIES.put("Scroll Cases", GuideLink.clue("master"));
+
 		// Whole-skill guides
 		ENTRIES.put("Rooftop Agility", GuideLink.skill(Skill.AGILITY));
 		ENTRIES.put("Forestry", GuideLink.skill(Skill.WOODCUTTING));

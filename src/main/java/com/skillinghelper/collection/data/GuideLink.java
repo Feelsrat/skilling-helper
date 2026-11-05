@@ -22,7 +22,11 @@ public class GuideLink
 		/**
 		 * Skilling Helper's guide for a whole skill (skilling pets come from training it).
 		 */
-		SKILL("Skilling Helper");
+		SKILL("Skilling Helper"),
+		/**
+		 * A Clue Scroll Guide tier, by tier id ("easy", "master", ...).
+		 */
+		CLUE("Clue Scroll Guide");
 
 		private final String plugin;
 
@@ -39,7 +43,7 @@ public class GuideLink
 
 	Kind kind;
 	/**
-	 * PvM ladder id or Skilling Helper method id; null for {@link Kind#SKILL}.
+	 * PvM ladder id, Skilling Helper method id or clue tier; null for {@link Kind#SKILL}.
 	 */
 	String target;
 	Skill skill;
@@ -52,6 +56,11 @@ public class GuideLink
 	public static GuideLink method(String id)
 	{
 		return new GuideLink(Kind.METHOD, id, null);
+	}
+
+	public static GuideLink clue(String tier)
+	{
+		return new GuideLink(Kind.CLUE, tier, null);
 	}
 
 	public static GuideLink skill(Skill skill)

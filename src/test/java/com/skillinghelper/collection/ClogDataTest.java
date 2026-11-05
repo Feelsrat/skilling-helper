@@ -83,7 +83,8 @@ public class ClogDataTest
 		}
 		// The table must name real pages too, or a renamed wiki page would silently lose its link
 		for (String name : new String[]{"Barrows Chests", "Giant Mole", "Tempoross", "Wintertodt", "Rooftop Agility",
-			"Guardians of the Rift", "The Fight Caves", "General Graardor"})
+			"Guardians of the Rift", "The Fight Caves", "General Graardor", "Easy Treasure Trails",
+			"Master Treasure Trail Rewards (Rare)"})
 		{
 			assertNotNull(name + " lost its guide", ClogLinks.of(data.entry(name)));
 		}
@@ -102,6 +103,10 @@ public class ClogDataTest
 				break;
 			case METHOD:
 				assertNotNull(what + " links to missing method " + link.getTarget(), guides.byId(link.getTarget()));
+				break;
+			case CLUE:
+				assertTrue(what + " links to unknown clue tier " + link.getTarget(), Set.of("beginner", "easy",
+					"medium", "hard", "elite", "master").contains(link.getTarget()));
 				break;
 			default:
 				assertNotNull(link.getSkill());

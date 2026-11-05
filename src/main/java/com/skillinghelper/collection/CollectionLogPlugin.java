@@ -1,6 +1,7 @@
 package com.skillinghelper.collection;
 
 import com.google.inject.Provides;
+import com.skillinghelper.OpenClueGuideRequest;
 import com.skillinghelper.OpenMethodRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
@@ -761,6 +762,9 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 					break;
 				case METHOD:
 					eventBus.post(new OpenMethodRequest(link.getTarget()));
+					break;
+				case CLUE:
+					eventBus.post(new OpenClueGuideRequest(link.getTarget()));
 					break;
 				default:
 					int level = client.getRealSkillLevel(link.getSkill());
