@@ -4,6 +4,7 @@ import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.minigame.MinigameView;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -61,7 +61,7 @@ public class MinigamePanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Minigames", null);
+		JPanel header = GuideUi.header("Minigames", "/com/skillinghelper/minigame/icon.png");
 
 		picker.setRenderer(new DefaultListCellRenderer()
 		{
@@ -288,7 +288,7 @@ public class MinigamePanel extends PluginPanel
 	{
 		JPanel row = column();
 		row.setOpaque(true);
-		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		row.setBackground(Skin.CARD);
 		row.setBorder(BorderFactory.createEmptyBorder(4, 5, 4, 5));
 		String marker;
 		Color color;
@@ -364,7 +364,7 @@ public class MinigamePanel extends PluginPanel
 	{
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		p.setBackground(Skin.BG);
 		p.setAlignmentX(LEFT_ALIGNMENT);
 		return p;
 	}

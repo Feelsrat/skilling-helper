@@ -8,6 +8,7 @@ import com.skillinghelper.ca.data.CaTier;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -19,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
@@ -60,7 +60,7 @@ public class CaPanel extends PluginPanel
 
 	private final Listener listener;
 	private final HiddenRedraws redraws;
-	private final JButton allButton = new JButton("All");
+	private final JButton allButton = new Skin.Pill("All");
 	private final JButton[] tierButtons = new JButton[CaTier.values().length];
 	private final JCheckBox wilderness = new JCheckBox(Wilderness.TOGGLE_LABEL);
 	private final JPanel body = new JPanel();
@@ -77,17 +77,17 @@ public class CaPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Combat Achievements", null);
+		JPanel header = GuideUi.header("Combat Achievements", "/com/skillinghelper/ca/icon.png");
 
 		JPanel tiers = new JPanel(new GridLayout(2, 4, 3, 3));
-		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		tiers.setBackground(Skin.BG);
 		style(allButton);
 		allButton.setFocusPainted(false);
 		allButton.addActionListener(e -> listener.onScope(null));
 		tiers.add(allButton);
 		for (CaTier t : CaTier.values())
 		{
-			JButton b = new JButton(shortLabel(t));
+			JButton b = new Skin.Pill(shortLabel(t));
 			style(b);
 			b.setToolTipText(t.getLabel() + " tasks (" + t.getPoints() + " point" + (t.getPoints() > 1 ? "s" : "")
 				+ " each)");

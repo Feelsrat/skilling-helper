@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -177,7 +176,7 @@ public class SkillingHelperPanel extends PluginPanel
 
 	private JPanel header()
 	{
-		JPanel header = GuideUi.header("Skilling Helper", null);
+		JPanel header = GuideUi.header("Skilling Helper", "/com/skillinghelper/icon.png");
 		header.add(full(skillRow()));
 		header.add(Box.createVerticalStrut(4));
 		buildGoalRow();
@@ -191,7 +190,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private JPanel skillRow()
 	{
 		JPanel row = new JPanel(new BorderLayout(4, 0));
-		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setBackground(Skin.BG);
 		row.add(skillPicker(), BorderLayout.CENTER);
 		return row;
 	}
@@ -265,7 +264,7 @@ public class SkillingHelperPanel extends PluginPanel
 	{
 		JPanel row = goalRow;
 		row.setLayout(new BorderLayout(4, 0));
-		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setBackground(Skin.BG);
 		levelLabel.setForeground(Color.WHITE);
 		row.add(levelLabel, BorderLayout.WEST);
 		targetSpinner.addChangeListener(e ->
@@ -277,9 +276,8 @@ public class SkillingHelperPanel extends PluginPanel
 		});
 		targetSpinner.setToolTipText("Target level");
 		row.add(targetSpinner, BorderLayout.CENTER);
-		JButton reset = new JButton("Reset");
+		JButton reset = GuideUi.small("Reset", listener::onTargetReset);
 		reset.setToolTipText("Reset the goal to your level plus the default offset");
-		reset.addActionListener(e -> listener.onTargetReset());
 		row.add(reset, BorderLayout.EAST);
 	}
 
@@ -431,9 +429,8 @@ public class SkillingHelperPanel extends PluginPanel
 	 */
 	private JComponent skillCell(Skill s, Integer level)
 	{
-		JPanel cell = new JPanel(new BorderLayout(4, 0));
-		cell.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		cell.setBorder(new EmptyBorder(3, 4, 3, 4));
+		JPanel cell = new Skin.Surface(new BorderLayout(4, 0), 8).edge(null);
+		cell.setBorder(new EmptyBorder(4, 5, 4, 6));
 		JLabel icon = new JLabel(new ImageIcon(skillIcons.getSkillImage(s, true)));
 		cell.add(icon, BorderLayout.WEST);
 		JLabel lvl = new JLabel(level == null || level == 0 ? "" : String.valueOf(level));
@@ -468,7 +465,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private JPanel pickRow(int rank, PickList.Row r)
 	{
 		JPanel row = new JPanel(new BorderLayout(6, 0));
-		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		row.setBackground(Skin.CARD);
 		row.setBorder(new EmptyBorder(5, 6, 5, 6));
 		JLabel icon = new JLabel(new ImageIcon(skillIcons.getSkillImage(r.getSkill(), true)));
 		icon.setVerticalAlignment(SwingConstants.TOP);
@@ -502,13 +499,13 @@ public class SkillingHelperPanel extends PluginPanel
 			@Override
 			public void mouseEntered(MouseEvent e)
 			{
-				row.setBackground(ColorScheme.DARKER_GRAY_HOVER_COLOR);
+				row.setBackground(Skin.CARD_HOVER);
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e)
 			{
-				row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+				row.setBackground(Skin.CARD);
 			}
 		});
 		return full(row);
@@ -878,14 +875,11 @@ public class SkillingHelperPanel extends PluginPanel
 	{
 		Method m = o.getMethod();
 		SkillOutfit earns = unownedOutfitEarnedBy(m, player);
-		JPanel row = new JPanel();
+		Color edge = current ? Skin.ACCENT : earns != null ? GOLD : null;
+		Skin.Surface row = new Skin.Surface(null, 10).accent(edge);
 		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
-		row.setBackground(current ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		Color edge = current ? ColorScheme.BRAND_ORANGE : earns != null ? GOLD : null;
-		row.setBorder(edge == null
-			? new EmptyBorder(5, 6, 5, 6)
-			: BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 3, 0, 0, edge),
-			new EmptyBorder(5, 3, 5, 6)));
+		row.setBackground(current ? Skin.mix(Skin.CARD, Skin.ACCENT, 0.08) : Skin.CARD);
+		row.setBorder(new EmptyBorder(6, edge == null ? 8 : 10, 6, 7));
 
 		int w = GuideUi.CARD_WIDTH;
 		JLabel name = GuideUi.text(m.getName(), o.isAvailable() ? Color.WHITE : Color.GRAY, w);

@@ -9,6 +9,7 @@ import com.skillinghelper.money.MoneyStep;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,9 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.runelite.api.Skill;
@@ -88,8 +87,8 @@ public class MoneyMakingPanel extends PluginPanel
 	private final JPanel guideBox = new JPanel();
 	private final JPanel list = new JPanel();
 	private final JPanel filters = new JPanel();
-	private final JButton wikiTab = new JButton("Wiki guides");
-	private final JButton bankTab = new JButton("My bank");
+	private final JButton wikiTab = new Skin.Pill("Wiki guides");
+	private final JButton bankTab = new Skin.Pill("My bank");
 	private final JLabel intro;
 	private final JLabel moreToggle = new JLabel();
 	private boolean moreOpen;
@@ -117,9 +116,9 @@ public class MoneyMakingPanel extends PluginPanel
 		super(false);
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
-		JPanel header = GuideUi.header("Money Making", null);
+		JPanel header = GuideUi.header("Money Making", "/com/skillinghelper/money/icon.png");
 		JPanel tabs = new JPanel(new GridLayout(1, 2, 4, 0));
-		tabs.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		tabs.setBackground(Skin.BG);
 		wikiTab.setToolTipText("The OSRS Wiki's money making guides you can do");
 		bankTab.setToolTipText("Things in your bank you can craft, cook, fletch, smith or mix into something worth more");
 		wikiTab.setFocusPainted(false);
@@ -170,11 +169,11 @@ public class MoneyMakingPanel extends PluginPanel
 			}
 		});
 		JPanel combos = new JPanel(new GridLayout(1, 2, 4, 0));
-		combos.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		combos.setBackground(Skin.BG);
 		combos.add(category);
 		combos.add(effort);
 		filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
-		filters.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		filters.setBackground(Skin.BG);
 		filters.add(full(search));
 		filters.add(Box.createVerticalStrut(2));
 		header.add(full(filters));
@@ -185,7 +184,7 @@ public class MoneyMakingPanel extends PluginPanel
 		guideBox.setVisible(false);
 
 		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
-		list.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		list.setBackground(Skin.BG);
 		JPanel body = new JPanel();
 		GuideUi.frame(this, header, body);
 		body.add(guideBox);
@@ -499,11 +498,11 @@ public class MoneyMakingPanel extends PluginPanel
 	{
 		MoneyMethod m = o.getMethod();
 		boolean open = m.getPage().equals(selected);
-		JPanel row = new JPanel();
-		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
-		row.setBackground(open ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
 		Color edge = m.getPage().equals(running) ? HINT : o.isGood() ? GOOD : o.isAvailable() ? WARN : BAD;
-		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
+		Skin.Surface row = new Skin.Surface(null, 10).accent(edge);
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setBackground(open ? Skin.CARD_HOVER : Skin.CARD);
+		row.setBorder(new EmptyBorder(6, 10, 6, 7));
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel name = GuideUi.text(m.getName(), Color.WHITE, TEXT_WIDTH - 15);
@@ -741,9 +740,7 @@ public class MoneyMakingPanel extends PluginPanel
 
 	private static JButton button(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
-		b.addActionListener(e -> action.run());
-		return full(b);
+		return GuideUi.button(label, action);
 	}
 
 	private static <T extends JComponent> T left(T c)

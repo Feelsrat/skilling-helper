@@ -67,7 +67,7 @@ public class QuestOrderPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Quest Order Guide", null);
+		JPanel header = GuideUi.header("Quest Order Guide", "/com/skillinghelper/quests/icon.png");
 		routes.setToolTipText("Which of the wiki's optimal quest guides to follow");
 		routes.addActionListener(e ->
 		{

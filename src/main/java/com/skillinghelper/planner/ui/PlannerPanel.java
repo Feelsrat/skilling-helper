@@ -10,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -91,7 +90,7 @@ public class PlannerPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Account Planner", null);
+		JPanel header = GuideUi.header("Account Planner", "/com/skillinghelper/planner/icon.png");
 		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: steps in the Wilderness are left out.", () ->
 		{
 			if (!updating)
@@ -359,11 +358,7 @@ public class PlannerPanel extends PluginPanel
 
 	private static JButton small(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
-		b.setFont(FontManager.getRunescapeSmallFont());
-		b.setMargin(new Insets(2, 2, 2, 2));
-		b.addActionListener(e -> action.run());
-		return b;
+		return GuideUi.small(label, action);
 	}
 
 	private static String plural(StepKind k)

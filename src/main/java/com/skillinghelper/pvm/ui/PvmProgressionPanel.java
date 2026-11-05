@@ -16,6 +16,7 @@ import com.skillinghelper.pvm.guide.PvmStep;
 import com.skillinghelper.pvm.guide.Supply;
 import com.skillinghelper.pvm.guide.WaveCard;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,12 +37,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import lombok.Value;
 import net.runelite.api.Skill;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
@@ -124,7 +122,7 @@ public class PvmProgressionPanel extends PluginPanel
 	/**
 	 * Holds the running guide's current step, so it can change every tick without rebuilding the panel.
 	 */
-	private final JPanel stepBox = new JPanel();
+	private final JPanel stepBox = new Skin.Surface(null, 10).accent(HINT);
 
 	/**
 	 * Holds back redraws while the panel is closed.
@@ -136,7 +134,7 @@ public class PvmProgressionPanel extends PluginPanel
 		super(false);
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
-		JPanel header = GuideUi.header("PvM Progression", null);
+		JPanel header = GuideUi.header("PvM Progression", "/com/skillinghelper/pvm/icon.png");
 		picker.setRenderer(new PickerRenderer());
 		picker.setMaximumRowCount(20);
 		picker.addActionListener(e ->
@@ -156,8 +154,7 @@ public class PvmProgressionPanel extends PluginPanel
 		content.add(GuideUi.empty("Not logged in", "Log in to see which boss to work towards next."));
 
 		stepBox.setLayout(new BoxLayout(stepBox, BoxLayout.Y_AXIS));
-		stepBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		stepBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 7, 6)));
+		stepBox.setBorder(new EmptyBorder(9, 11, 10, 9));
 		stepBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 	}
 
@@ -663,12 +660,11 @@ public class PvmProgressionPanel extends PluginPanel
 			return text(label, color);
 		}
 		JPanel row = new JPanel(new BorderLayout(4, 0));
-		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setBackground(Skin.BG);
 		row.add(text(label, color, TEXT_WIDTH - 55), BorderLayout.CENTER);
-		JButton train = new JButton("Train");
+		JButton train = GuideUi.small("Train", () -> listener.onTrain(s.getSkill(), s.getLevel()));
 		train.setToolTipText("Open the Skilling Helper guide for " + s.getSkill().getName() + " to level "
 			+ s.getLevel());
-		train.addActionListener(e -> listener.onTrain(s.getSkill(), s.getLevel()));
 		row.add(train, BorderLayout.EAST);
 		return full(row);
 	}
@@ -747,7 +743,7 @@ public class PvmProgressionPanel extends PluginPanel
 		int width = TEXT_WIDTH - 25;
 		JPanel box = new JPanel();
 		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		box.setBackground(Skin.CARD);
 		box.setBorder(new EmptyBorder(6, 6, 6, 6));
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -787,10 +783,10 @@ public class PvmProgressionPanel extends PluginPanel
 		if (card.getTip() != null)
 		{
 			box.add(Box.createVerticalStrut(6));
-			JPanel tip = new JPanel();
+			JPanel tip = new Skin.Surface(null, 8).accent(HINT).edge(null);
 			tip.setLayout(new BoxLayout(tip, BoxLayout.Y_AXIS));
-			tip.setBackground(ColorScheme.DARK_GRAY_COLOR);
-			tip.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, HINT), new EmptyBorder(3, 5, 3, 3)));
+			tip.setBackground(Skin.WELL);
+			tip.setBorder(new EmptyBorder(5, 9, 5, 5));
 			tip.setAlignmentX(Component.LEFT_ALIGNMENT);
 			JLabel heading = new JLabel("Wiki tip");
 			heading.setFont(FontManager.getRunescapeSmallFont());

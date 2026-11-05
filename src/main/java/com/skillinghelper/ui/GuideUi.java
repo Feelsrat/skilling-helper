@@ -9,8 +9,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Rectangle;
+import javax.swing.ImageIcon;
+import net.runelite.client.util.ImageUtil;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -26,10 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
@@ -61,12 +59,12 @@ public final class GuideUi
 	/**
 	 * Fill of the one main button on a panel ("Start guide").
 	 */
-	public static final Color PRIMARY = new Color(173, 90, 18);
-	public static final Color PRIMARY_HOVER = new Color(198, 106, 26);
+	public static final Color PRIMARY = Skin.ACCENT;
+	public static final Color PRIMARY_HOVER = Skin.mix(Skin.ACCENT, Color.WHITE, 0.12);
 	/**
 	 * Background of a list row under the mouse.
 	 */
-	public static final Color ROW_HOVER = ColorScheme.DARKER_GRAY_HOVER_COLOR;
+	public static final Color ROW_HOVER = Skin.CARD_HOVER;
 
 	private static final GuideText.Palette PALETTE = new GuideText.Palette(hex(BRIGHT), hex(GOLD), hex(OPTION));
 	private static final Font MARKER_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
@@ -189,10 +187,9 @@ public final class GuideUi
 	 */
 	public static JPanel card(Color accent)
 	{
-		JPanel card = new JPanel();
+		Skin.Surface card = new Skin.Surface(null, Skin.RADIUS).accent(accent).shade(Skin.mix(Skin.CARD, accent, 0.06));
 		card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-		card.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		card.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, accent), new EmptyBorder(6, 6, 7, 6)));
+		card.setBorder(new EmptyBorder(9, 11, 10, 9));
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}
@@ -208,11 +205,8 @@ public final class GuideUi
 		card.removeAll();
 		if (kicker != null)
 		{
-			JLabel k = new JLabel(kicker.toUpperCase(Locale.ROOT));
-			k.setFont(FontManager.getRunescapeSmallFont());
-			k.setForeground(kickerColor);
-			card.add(left(k));
-			card.add(Box.createVerticalStrut(2));
+			card.add(left(chip(kicker, kickerColor)));
+			card.add(Box.createVerticalStrut(5));
 		}
 		GuideText.Line t = GuideText.parse(title);
 		JLabel heading = html(GuideText.highlight(t.main(), PALETTE), BRIGHT, CARD_WIDTH);
@@ -241,12 +235,9 @@ public final class GuideUi
 	 */
 	public static JComponent section(String title)
 	{
-		JLabel l = new JLabel(title);
+		JLabel l = new Skin.Heading(title);
 		l.putClientProperty(SECTION, title);
 		l.setFont(FontManager.getRunescapeBoldFont());
-		l.setForeground(ColorScheme.BRAND_ORANGE);
-		l.setBorder(new CompoundBorder(new EmptyBorder(10, 0, 4, 0),
-			new CompoundBorder(new MatteBorder(0, 0, 1, 0, ColorScheme.MEDIUM_GRAY_COLOR), new EmptyBorder(0, 0, 2, 0))));
 		return full(l);
 	}
 
@@ -381,15 +372,17 @@ public final class GuideUi
 	{
 		panel.setLayout(new BorderLayout());
 		panel.setBorder(new EmptyBorder(8, 8, 8, 8));
-		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		panel.setBackground(Skin.BG);
 		panel.add(header, BorderLayout.NORTH);
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		body.setBackground(Skin.BG);
 		JPanel wrapper = new WidthTracking();
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		wrapper.setBackground(Skin.BG);
 		wrapper.add(body, BorderLayout.NORTH);
 		JScrollPane scroll = new JScrollPane(wrapper);
 		scroll.setBorder(null);
+		scroll.getViewport().setBackground(Skin.BG);
+		scroll.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
 		panel.add(scroll, BorderLayout.CENTER);
@@ -439,26 +432,36 @@ public final class GuideUi
 	}
 
 	/**
-	 * The top of a side panel: the plugin's name and one short line on what it does. Add the panel's own
-	 * controls (pickers, filters) to the returned column.
+	 * The top of a side panel: a banner card with the plugin's icon and name. Add the panel's own controls
+	 * (pickers, filters) to the returned column.
+	 *
+	 * @param icon the plugin's sidebar icon as a resource path (e.g. {@code /com/skillinghelper/clue/icon.png}),
+	 *             or null
 	 */
-	public static JPanel header(String title, String tagline)
+	public static JPanel header(String title, String icon)
 	{
 		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JPanel top = new JPanel(new BorderLayout(4, 0));
-		top.setOpaque(false);
+		header.setBorder(new EmptyBorder(0, 0, 4, 0));
+		Skin.Surface top = new Skin.Surface(new BorderLayout(8, 0), 12).shade(Skin.mix(Skin.CARD, Skin.ACCENT, 0.16));
+		top.setBorder(new EmptyBorder(7, 9, 7, 7));
 		JLabel t = new JLabel(title);
 		t.setFont(FontManager.getRunescapeBoldFont());
 		t.setForeground(BRIGHT);
-		top.add(t, BorderLayout.WEST);
-		header.add(full(top));
-		if (tagline != null)
+		t.setIconTextGap(8);
+		if (icon != null)
 		{
-			header.add(Box.createVerticalStrut(1));
-			header.add(text(tagline, MUTED, WIDTH));
+			try
+			{
+				t.setIcon(new ImageIcon(ImageUtil.loadImageResource(GuideUi.class, icon)));
+			}
+			catch (RuntimeException e)
+			{
+				// No icon is fine; the name still shows
+			}
 		}
-		header.add(Box.createVerticalStrut(6));
+		top.add(t, BorderLayout.CENTER);
+		header.add(full(top));
+		header.add(Box.createVerticalStrut(8));
 		return header;
 	}
 
@@ -469,23 +472,25 @@ public final class GuideUi
 	 */
 	public static void options(JPanel header, JComponent... controls)
 	{
-		JPanel box = column();
-		box.setOpaque(true);
-		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		box.setBorder(new EmptyBorder(4, 6, 4, 6));
+		JPanel box = new Skin.Surface(null, Skin.RADIUS).edge(null);
+		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+		box.setBackground(Skin.WELL);
+		box.setBorder(new EmptyBorder(6, 8, 6, 8));
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		for (JComponent c : controls)
 		{
 			box.add(left(c));
 		}
 		box.setVisible(false);
-		JButton toggle = small("Options ▾", () ->
+		JButton toggle = small("⚙", () ->
 		{
 		});
-		toggle.setFont(MARKER_FONT);
+		toggle.setFont(new Font(Font.DIALOG, Font.PLAIN, 13));
+		toggle.setBackground(new Color(0, 0, 0, 60));
 		toggle.addActionListener(e ->
 		{
 			box.setVisible(!box.isVisible());
-			toggle.setText(box.isVisible() ? "Options ▴" : "Options ▾");
+			toggle.setForeground(box.isVisible() ? Skin.ACCENT : TEXT);
 			header.revalidate();
 			header.repaint();
 		});
@@ -493,7 +498,7 @@ public final class GuideUi
 		JPanel top = (JPanel) header.getComponent(0);
 		top.add(toggle, BorderLayout.EAST);
 		header.add(full(box));
-		header.add(Box.createVerticalStrut(4));
+		header.add(Box.createVerticalStrut(6));
 	}
 
 	/**
@@ -533,10 +538,10 @@ public final class GuideUi
 	 */
 	public static JComponent empty(String title, String hint)
 	{
-		JPanel box = column();
-		box.setOpaque(true);
-		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		box.setBorder(new EmptyBorder(10, 8, 10, 8));
+		JPanel box = new Skin.Surface(null, Skin.RADIUS);
+		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		box.setBorder(new EmptyBorder(14, 12, 14, 10));
 		JLabel t = new JLabel(title);
 		t.setFont(FontManager.getRunescapeBoldFont());
 		t.setForeground(TEXT);
@@ -558,18 +563,25 @@ public final class GuideUi
 		JPanel top = new JPanel(new BorderLayout(6, 0));
 		top.setOpaque(false);
 		JLabel t = new JLabel(title);
-		t.setFont(FontManager.getRunescapeBoldFont());
-		t.setForeground(BRIGHT);
-		JLabel n = new JLabel(String.format("%,d / %,d", done, total));
-		n.setFont(FontManager.getRunescapeBoldFont());
-		n.setForeground(complete ? GOOD : GOLD);
-		n.setHorizontalAlignment(SwingConstants.RIGHT);
+		t.setFont(FontManager.getRunescapeSmallFont());
+		t.setForeground(MUTED);
+		JLabel pct = new JLabel(total > 0 ? Math.round(100.0 * Math.min(done, total) / total) + "%" : "");
+		pct.setFont(FontManager.getRunescapeSmallFont());
+		pct.setForeground(complete ? GOOD : Skin.ACCENT);
 		top.add(t, BorderLayout.WEST);
-		top.add(n, BorderLayout.EAST);
-		JPanel box = column();
+		top.add(pct, BorderLayout.EAST);
+		JLabel n = new JLabel("<html><font size='+0' color='" + hex(BRIGHT) + "'>" + String.format("%,d", done)
+			+ "</font><font color='" + hex(MUTED) + "'> / " + String.format("%,d", total) + "</font></html>");
+		n.setFont(FontManager.getRunescapeBoldFont());
+		JPanel box = new Skin.Surface(null, Skin.RADIUS);
+		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		box.setBorder(new EmptyBorder(8, 10, 10, 10));
 		box.add(full(top));
-		box.add(Box.createVerticalStrut(3));
-		box.add(bar(done, total, complete ? GOOD : ColorScheme.BRAND_ORANGE));
+		box.add(Box.createVerticalStrut(1));
+		box.add(left(n));
+		box.add(Box.createVerticalStrut(6));
+		box.add(bar(done, total, complete ? GOOD : Skin.ACCENT));
 		return full(box);
 	}
 
@@ -583,20 +595,24 @@ public final class GuideUi
 			@Override
 			protected void paintComponent(Graphics g)
 			{
-				g.setColor(ColorScheme.MEDIUM_GRAY_COLOR);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				if (total > 0)
+				java.awt.Graphics2D g2 = Skin.smooth(g);
+				int h = getHeight();
+				g2.setColor(Skin.WELL);
+				g2.fillRoundRect(0, 0, getWidth(), h, h, h);
+				if (total > 0 && done > 0)
 				{
-					g.setColor(fill);
-					g.fillRect(0, 0, (int) Math.round(getWidth() * Math.min(1.0, done / (double) total)),
-						getHeight());
+					int w = Math.max(h, (int) Math.round(getWidth() * Math.min(1.0, done / (double) total)));
+					g2.setPaint(new java.awt.GradientPaint(0, 0, Skin.mix(fill, Color.WHITE, 0.25), 0, h,
+						Skin.mix(fill, Color.BLACK, 0.15)));
+					g2.fillRoundRect(0, 0, w, h, h, h);
 				}
+				g2.dispose();
 			}
 		};
 		bar.setOpaque(false);
-		bar.setPreferredSize(new Dimension(WIDTH, 4));
-		bar.setMinimumSize(new Dimension(0, 4));
-		bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+		bar.setPreferredSize(new Dimension(WIDTH, 6));
+		bar.setMinimumSize(new Dimension(0, 6));
+		bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 6));
 		bar.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return bar;
 	}
@@ -608,26 +624,10 @@ public final class GuideUi
 	 */
 	public static JButton primary(String label, Runnable action)
 	{
-		JButton b = button(label, action);
-		b.setBackground(PRIMARY);
-		b.setForeground(BRIGHT);
+		JButton b = new Skin.Pill(label).primary();
 		b.setFont(FontManager.getRunescapeBoldFont());
-		b.setFocusPainted(false);
-		b.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseEntered(MouseEvent e)
-			{
-				b.setBackground(PRIMARY_HOVER);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e)
-			{
-				b.setBackground(PRIMARY);
-			}
-		});
-		return b;
+		b.addActionListener(e -> action.run());
+		return full(b);
 	}
 
 	/**
@@ -636,7 +636,7 @@ public final class GuideUi
 	public static JButton tab(String label, Runnable action)
 	{
 		JButton b = small(label, action);
-		b.setMargin(new Insets(2, 1, 2, 1));
+		b.setBorder(new EmptyBorder(4, 2, 4, 2));
 		return b;
 	}
 
@@ -654,10 +654,8 @@ public final class GuideUi
 	 */
 	public static JButton small(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
+		JButton b = new Skin.Pill(label);
 		b.setFont(FontManager.getRunescapeSmallFont());
-		b.setMargin(new Insets(2, 2, 2, 2));
-		b.setFocusPainted(false);
 		b.addActionListener(e -> action.run());
 		return b;
 	}
@@ -677,7 +675,7 @@ public final class GuideUi
 			}
 		}
 		int cols = list.size() == 4 ? 2 : Math.min(3, Math.max(1, list.size()));
-		JPanel row = new JPanel(new GridLayout(0, cols, 3, 3));
+		JPanel row = new JPanel(new GridLayout(0, cols, 4, 4));
 		row.setOpaque(false);
 		for (JButton b : list)
 		{
@@ -723,12 +721,11 @@ public final class GuideUi
 		card.remove(0);
 		JPanel top = new JPanel(new BorderLayout(4, 0));
 		top.setOpaque(false);
-		JLabel k = new JLabel(kicker.toUpperCase(Locale.ROOT));
-		k.setFont(FontManager.getRunescapeSmallFont());
-		k.setForeground(color);
-		top.add(k, BorderLayout.WEST);
+		top.add(chip(kicker, color), BorderLayout.WEST);
 		JButton stop = small("■ Stop", onStop);
 		stop.setFont(MARKER_FONT);
+		stop.setForeground(BAD);
+		stop.setBorder(new EmptyBorder(2, 7, 2, 7));
 		stop.setToolTipText("Stop the guide");
 		top.add(stop, BorderLayout.EAST);
 		card.add(full(top), 0);
@@ -741,11 +738,14 @@ public final class GuideUi
 	 */
 	public static JPanel row(boolean current)
 	{
-		JPanel row = column();
-		row.setOpaque(true);
-		row.setBackground(current ? ROW_HOVER : ColorScheme.DARKER_GRAY_COLOR);
-		row.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, current ? OPTION
-			: ColorScheme.DARKER_GRAY_COLOR), new EmptyBorder(4, 5, 4, 5)));
+		Skin.Surface row = new Skin.Surface(null, Skin.RADIUS).accent(current ? Skin.ACCENT : null);
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+		if (current)
+		{
+			row.setBackground(Skin.mix(Skin.CARD, Skin.ACCENT, 0.08));
+		}
+		row.setBorder(new EmptyBorder(6, current ? 10 : 8, 6, 7));
 		return row;
 	}
 
@@ -815,7 +815,9 @@ public final class GuideUi
 
 	public static JButton button(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
+		JButton b = new Skin.Pill(label);
+		b.setFont(FontManager.getRunescapeSmallFont());
+		b.setBorder(new EmptyBorder(6, 6, 6, 6));
 		b.addActionListener(e -> action.run());
 		return full(b);
 	}
@@ -836,6 +838,30 @@ public final class GuideUi
 	public static String hex(Color c)
 	{
 		return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+	}
+
+	/**
+	 * A small rounded tag, e.g. the "NOW" over the current step.
+	 */
+	public static JLabel chip(String text, Color color)
+	{
+		JLabel l = new JLabel(text.toUpperCase(Locale.ROOT))
+		{
+			@Override
+			protected void paintComponent(Graphics g)
+			{
+				java.awt.Graphics2D g2 = Skin.smooth(g);
+				g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 45));
+				g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
+				g2.dispose();
+				super.paintComponent(g);
+			}
+		};
+		l.setFont(FontManager.getRunescapeSmallFont());
+		l.setForeground(color);
+		l.setBorder(new EmptyBorder(1, 7, 1, 7));
+		l.setMaximumSize(l.getPreferredSize());
+		return l;
 	}
 
 	public static JPanel column()

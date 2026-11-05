@@ -9,6 +9,7 @@ import com.skillinghelper.diary.data.DiaryReward;
 import com.skillinghelper.diary.data.DiaryTier;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -23,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -72,7 +72,7 @@ public class DiaryPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Achievement Diaries", null);
+		JPanel header = GuideUi.header("Achievement Diaries", "/com/skillinghelper/diary/icon.png");
 		regions.setRenderer(new DefaultListCellRenderer()
 		{
 			@Override
@@ -101,7 +101,7 @@ public class DiaryPanel extends PluginPanel
 		header.add(GuideUi.full(regions));
 		header.add(Box.createVerticalStrut(4));
 		JPanel tiers = new JPanel(new GridLayout(1, 4, 3, 0));
-		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		tiers.setBackground(Skin.BG);
 		for (DiaryTier t : DiaryTier.values())
 		{
 			JButton b = GuideUi.tab(t.getLabel(), () ->

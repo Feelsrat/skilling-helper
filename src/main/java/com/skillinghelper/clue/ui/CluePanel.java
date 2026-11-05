@@ -11,6 +11,7 @@ import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -26,7 +27,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
@@ -77,12 +77,12 @@ public class CluePanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Clue Scrolls", null);
+		JPanel header = GuideUi.header("Clue Scrolls", "/com/skillinghelper/clue/icon.png");
 		JPanel tiers = new JPanel(new GridLayout(2, 3, 3, 3));
-		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		tiers.setBackground(Skin.BG);
 		for (ClueTier t : ClueTier.values())
 		{
-			JButton b = new JButton(t.getLabel());
+			JButton b = new Skin.Pill(t.getLabel());
 			b.setFont(FontManager.getRunescapeSmallFont());
 			b.setMargin(new Insets(2, 1, 2, 1));
 			b.addActionListener(e -> listener.onSelectTier(t));
@@ -278,7 +278,7 @@ public class CluePanel extends PluginPanel
 		{
 			JPanel row = column();
 			row.setOpaque(true);
-			row.setBackground(w.isCurrent() ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
+			row.setBackground(w.isCurrent() ? Skin.CARD_HOVER : Skin.CARD);
 			row.setBorder(BorderFactory.createEmptyBorder(4, 5, 4, 5));
 			boolean ready = w.getMissing().isEmpty();
 			row.add(GuideUi.line((w.isCurrent() ? "▶ " : ready ? "✔ " : "✘ ") + w.getName(),
@@ -397,7 +397,7 @@ public class CluePanel extends PluginPanel
 			}
 			JPanel row = column();
 			row.setOpaque(true);
-			row.setBackground(s.isCurrent() ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
+			row.setBackground(s.isCurrent() ? Skin.CARD_HOVER : Skin.CARD);
 			row.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
 			String mark = s.getOwnAll() == null ? "• " : s.getOwnAll() ? "✔ " : "✘ ";
 			Color c = s.getOwnAll() == null ? GuideUi.TEXT : s.getOwnAll() ? GuideUi.GOOD : GuideUi.MUTED;
@@ -473,7 +473,7 @@ public class CluePanel extends PluginPanel
 	{
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		p.setBackground(Skin.BG);
 		p.setAlignmentX(LEFT_ALIGNMENT);
 		return p;
 	}

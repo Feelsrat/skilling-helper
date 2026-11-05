@@ -59,7 +59,7 @@ public class UnlocksPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Account Unlocks", null);
+		JPanel header = GuideUi.header("Account Unlocks", "/com/skillinghelper/unlocks/icon.png");
 		GuideUi.options(header, GuideUi.toggle(hideDone, GuideUi.TEXT, "Leave out the unlocks you already have",
 			() ->
 			{

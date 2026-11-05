@@ -9,6 +9,7 @@ import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.Component;
@@ -93,7 +94,7 @@ public class BankedXpPanel extends PluginPanel
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		this.itemManager = itemManager;
-		JPanel header = GuideUi.header("Banked XP Guide", "Turn what's in your bank into xp, step by step.");
+		JPanel header = GuideUi.header("Banked XP Guide", "/com/skillinghelper/banked/icon.png");
 		header.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		JPanel content = column();
@@ -515,7 +516,7 @@ public class BankedXpPanel extends PluginPanel
 	{
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		p.setBackground(Skin.BG);
 		p.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return p;
 	}

@@ -4,6 +4,7 @@ import com.skillinghelper.banked.profit.BankProfit;
 import com.skillinghelper.banked.profit.ProfitPick;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -18,10 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 
 /**
@@ -113,11 +111,11 @@ class BankProfitList
 	private JComponent row(ProfitPick p)
 	{
 		boolean open = p.getId().equals(selected);
-		JPanel row = new JPanel();
-		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
-		row.setBackground(open ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
 		Color edge = p.isDoable() ? GuideUi.GOOD : GuideUi.WARN;
-		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
+		Skin.Surface row = new Skin.Surface(null, 10).accent(edge);
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setBackground(open ? Skin.CARD_HOVER : Skin.CARD);
+		row.setBorder(new EmptyBorder(6, 10, 6, 7));
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel name = GuideUi.text(p.getName(), Color.WHITE, WIDTH);
