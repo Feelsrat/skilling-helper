@@ -1,0 +1,817 @@
+package com.skillinghelper.diary.data;
+
+import com.skillinghelper.data.Location;
+import com.skillinghelper.data.ToolType;
+import java.util.ArrayList;
+import java.util.List;
+import net.runelite.api.Quest;
+import net.runelite.api.Skill;
+import net.runelite.api.gameval.ItemID;
+import net.runelite.api.gameval.VarPlayerID;
+import net.runelite.api.gameval.VarbitID;
+
+/**
+ * Lumbridge &amp; Draynor diary, every tier. Task wording and requirements from the OSRS Wiki; tasks are listed
+ * in a sensible walking order (Lumbridge, then Draynor, Al Kharid and the far-away ones), which is the order the
+ * guide does them in.
+ */
+final class LumbridgeDiary
+{
+	// ---- Places ----
+
+	private static final Location CELLAR_TRAPDOOR = Location.of("Lumbridge Castle kitchen trapdoor", 3209, 3216, 0, 2);
+	private static final Zone CASTLE_CELLAR = Zone.of(3206, 9613, 3221, 9626, 0);
+	private static final Zone LUMBRIDGE_UNDERGROUND = Zone.anyFloor(3137, 9465, 3332, 9706);
+	private static final Location DORGESH_DOOR = Location.of("Door to Dorgesh-Kaan", 3317, 9601, 0, 3);
+	private static final Zone DORGESH_KAAN = Zone.anyFloor(2688, 5251, 2751, 5377);
+	private static final Location ZANARIS_SHED = Location.of("Shed in Lumbridge Swamp", 3202, 3169, 0, 3);
+	private static final Zone ZANARIS = Zone.of(2369, 4352, 2497, 4481, 0);
+	private static final Location DRAYNOR_SEWER_TRAPDOOR = Location.of("Trapdoor in Draynor Village", 3118, 3244, 0, 2);
+	private static final Zone DRAYNOR_SEWER = Zone.of(3077, 9641, 3132, 9699, 0);
+	private static final Location WATER_RUINS = Location.of("Water altar ruins, Lumbridge Swamp", 3185, 3165, 0, 3);
+	private static final Zone WATER_ALTAR = Zone.of(2688, 4800, 2751, 4863, 0);
+
+	// ---- Shared item groups, best first ----
+
+	private static final int[] ESSENCE = {ItemID.BLANKRUNE_DAEYALT, ItemID.BLANKRUNE_HIGH, ItemID.BLANKRUNE};
+	private static final int[] PURE_ESSENCE = {ItemID.BLANKRUNE_DAEYALT, ItemID.BLANKRUNE_HIGH};
+	private static final int[] FAIRY_STAFF = {ItemID.LUNAR_MOONCLAN_LIMINAL_STAFF, ItemID.DRAMEN_STAFF};
+	private static final int[] LIGHT = {ItemID.BULLSEYE_LANTERN_LIT, ItemID.OIL_LANTERN_LIT, ItemID.OIL_LAMP_LIT,
+		ItemID.CANDLE_LANTERN_LIT, ItemID.CAVE_GOBLIN_MINING_HELMET_LIT, ItemID.TORCH_LIT, ItemID.LIT_CANDLE,
+		ItemID.UNLIT_CANDLE};
+	private static final int[] CROSSBOW = {ItemID.ACB, ItemID.XBOWS_CROSSBOW_RUNITE, ItemID.XBOWS_CROSSBOW_ADAMANTITE,
+		ItemID.XBOWS_CROSSBOW_MITHRIL, ItemID.XBOWS_CROSSBOW_STEEL, ItemID.XBOWS_CROSSBOW_IRON,
+		ItemID.XBOWS_CROSSBOW_BRONZE, ItemID.CROSSBOW};
+
+	private static final DiaryItem FAIRY_STAFF_ITEM = DiaryItem.owned("Dramen or Lunar staff",
+		"Make a Dramen staff during Lost City: cut a branch from the Dramen tree on Entrana and use a knife on it.",
+		FAIRY_STAFF);
+	private static final DiaryItem MITH_GRAPPLE = DiaryItem.of("Mith grapple", ItemID.XBOWS_GRAPPLE_TIP_BOLT_MITHRIL_ROPE);
+	private static final DiaryItem ANY_CROSSBOW = DiaryItem.anyOf("Any crossbow", 1, ItemID.XBOWS_CROSSBOW_BRONZE,
+		CROSSBOW);
+	private static final DiaryItem LIGHT_SOURCE = DiaryItem.anyOf("Light source (a candle is fine)", 1, ItemID.UNLIT_CANDLE,
+		LIGHT);
+
+	private LumbridgeDiary()
+	{
+	}
+
+	static List<DiaryTask> tasks()
+	{
+		List<DiaryTask> out = new ArrayList<>();
+		easy(out);
+		medium(out);
+		hard(out);
+		elite(out);
+		return out;
+	}
+
+	// ---- Easy ----
+
+	private static void easy(List<DiaryTask> out)
+	{
+		DiaryTier t = DiaryTier.EASY;
+		out.add(task(t, 5, "Hans", "Learn your age from Hans in Lumbridge.")
+			.stage(DiaryStage.builder()
+				.title("Talk to Hans")
+				.at(Location.of("Lumbridge Castle courtyard", 3221, 3218, 0, 12))
+				.npc("Hans")
+				.line("1. Hans walks around the outside of Lumbridge Castle; he's outlined when you're close.")
+				.line("2. Click him to Talk-to.")
+				.line("3. Choose \"Can you tell me how long I've been here?\" and the task is done.")
+				.build())
+			.build());
+		out.add(task(t, 6, "Pickpocket in Lumbridge", "Pickpocket a man or woman in Lumbridge.")
+			.stage(DiaryStage.builder()
+				.title("Pickpocket a man or woman")
+				.at(Location.of("Lumbridge, by the castle", 3222, 3218, 0, 10))
+				.npc("Man").npc("Woman")
+				.line("1. Find a Man or Woman (outlined) around Lumbridge Castle.")
+				.line("2. Right-click them and choose Pickpocket. Doing it once is enough.")
+				.line("3. If you fail you're stunned for a few seconds; just try again.")
+				.build())
+			.build());
+		out.add(task(t, 10, "Bake bread", "Bake some Bread on the Lumbridge kitchen range.")
+			.quest(Quest.COOKS_ASSISTANT)
+			.item(DiaryItem.of("Bread dough", 3, ItemID.BREAD_DOUGH))
+			.stage(DiaryStage.builder()
+				.title("Bake bread on the castle range")
+				.at(Location.of("Lumbridge Castle kitchen", 3211, 3215, 0, 3))
+				.object("Cooking range").object("Range")
+				.use(ItemID.BREAD_DOUGH)
+				.line("1. The kitchen is on the ground floor of Lumbridge Castle, in the north-west room.")
+				.line("2. Use your Bread dough (outlined) on the Cooking range (outlined), or click the range to Cook.")
+				.line("3. If it burns, cook another one. One loaf of Bread is enough.")
+				.build())
+			.build());
+		out.add(task(t, 7, "Chop and burn oak", "Chop and burn some oak logs in Lumbridge.")
+			.skill(Skill.WOODCUTTING, 15).skill(Skill.FIREMAKING, 15)
+			.item(DiaryItem.tool(ToolType.AXE))
+			.item(DiaryItem.of("Tinderbox", ItemID.TINDERBOX))
+			.stage(DiaryStage.builder()
+				.title("Chop the oak tree")
+				.at(Location.of("Oak tree by Lumbridge Castle", 3219, 3206, 0, 4))
+				.object("Oak tree").object("Oak")
+				.line("1. Make sure you have a free inventory slot.")
+				.line("2. Click Chop down on the Oak tree (outlined) south of the castle and wait for a log.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Burn the oak logs")
+				.carrying(ItemID.OAK_LOGS)
+				.use(ItemID.TINDERBOX).use(ItemID.OAK_LOGS)
+				.line("1. Stay in Lumbridge and stand on an empty grass tile.")
+				.line("2. Use the Tinderbox on the Oak logs (both outlined).")
+				.line("3. If it says you can't light a fire here, take a step and try again.")
+				.build())
+			.build());
+		out.add(task(t, 12, "Enter the H.A.M. Hideout", "Enter the H.A.M. Hideout.")
+			.item(DiaryItem.anyOf("Lockpick (optional, makes it quicker)", 0, ItemID.LOCKPICK, ItemID.LOCKPICK))
+			.stage(DiaryStage.builder()
+				.title("Pick the lock on the H.A.M. trapdoor")
+				.at(Location.of("H.A.M. Hideout trapdoor, west of Lumbridge", 3166, 3252, 0, 2))
+				.object("Trapdoor")
+				.line("1. The trapdoor is in the field north-west of Lumbridge, past the cows and chickens.")
+				.line("2. Right-click the Trapdoor (outlined) and choose Pick-Lock. It can take a few tries.")
+				.line("3. When it opens, click Climb-down. Going inside finishes the task.")
+				.line("Warning: H.A.M. members inside can attack low levels; just climb back up the ladder.")
+				.build())
+			.build());
+		out.add(task(t, 2, "Kill a cave bug", "Slay a Cave bug beneath Lumbridge Swamp.")
+			.skill(Skill.SLAYER, 7)
+			.item(LIGHT_SOURCE)
+			.item(DiaryItem.of("Tinderbox", ItemID.TINDERBOX))
+			.item(DiaryItem.of("Rope", ItemID.ROPE).skipWhenVarbit(VarbitID.SWAMP_CAVES_ROPED_ENTRANCE))
+			.stage(DiaryStage.builder()
+				.title("Tie your rope to the dark hole")
+				.at(Location.of("Dark hole in Lumbridge Swamp", 3169, 3172, 0, 2))
+				.object("Dark hole")
+				.use(ItemID.ROPE)
+				.line("1. If your candle isn't lit, use the Tinderbox on it first (it should say Lit candle).")
+				.line("2. Use the Rope (outlined) on the Dark hole (outlined). You only ever do this once.")
+				.line("Why: without a light source the cave is pitch black and insects bite you.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Climb down the dark hole")
+				.varbit(VarbitID.SWAMP_CAVES_ROPED_ENTRANCE).varbitValue(1)
+				.at(Location.of("Dark hole in Lumbridge Swamp", 3169, 3172, 0, 2))
+				.object("Dark hole")
+				.line("1. Keep your lit light source in your inventory.")
+				.line("2. Click Climb-down on the Dark hole (outlined).")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Kill a cave bug")
+				.inside(Zone.of(3140, 9537, 3261, 9602, 0))
+				.npc("Cave bug")
+				.line("1. Cave bugs (level 6) are close to the rope; they're outlined.")
+				.line("2. Click Attack on one and wait until it dies.")
+				.line("3. Watch out for hands coming out of the walls (wall beasts) further in; stay near the entrance.")
+				.line("4. Climb the rope to leave.")
+				.build())
+			.build());
+		out.add(task(t, 4, "Craft water runes", "Craft some water runes from Essence.")
+			.skill(Skill.RUNECRAFT, 5)
+			.item(DiaryItem.anyOf("Rune or pure essence", 1, ItemID.BLANKRUNE, ESSENCE))
+			.item(DiaryItem.anyOf("Water talisman or tiara", 1, ItemID.WATER_TALISMAN, ItemID.TIARA_ELEMENTAL,
+				ItemID.TIARA_WATER, ItemID.ELEMENTAL_TALISMAN, ItemID.WATER_TALISMAN))
+			.stages(waterAltar("Craft some water runes"))
+			.build());
+		out.add(task(t, 1, "Draynor rooftops", "Complete a lap of the Draynor Village agility course.")
+			.skill(Skill.AGILITY, 10)
+			.stage(DiaryStage.builder()
+				.title("Run a lap of the Draynor rooftops")
+				.at(Location.of("Draynor rooftop course start", 3103, 3279, 0, 2))
+				.inside(Zone.of(3086, 3253, 3104, 3282, 3))
+				.object("Rough wall").object("Tightrope").object("Narrow wall").object("Wall").object("Gap")
+				.object("Crate")
+				.line("1. Climb the Rough wall (outlined) on the east side of Draynor, north of the bank.")
+				.line("2. Then cross each outlined obstacle in turn: Tightrope, Tightrope, Narrow wall, Wall, Gap, Crate.")
+				.line("3. Climbing down the Crate finishes the lap. If you fall, start again from the Rough wall.")
+				.line("Optional: pick up Marks of grace (small red-and-yellow items) on the roofs.")
+				.build())
+			.build());
+		out.add(task(t, 8, "Kill a zombie", "Kill a Zombie in Draynor Sewers.")
+			.stage(DiaryStage.builder()
+				.title("Climb down into Draynor Sewers")
+				.at(DRAYNOR_SEWER_TRAPDOOR)
+				.object("Trapdoor")
+				.line("1. Bring some food (anything you can eat) and wear your best armour and weapon.")
+				.line("2. The trapdoor is in a small building in the middle of Draynor Village.")
+				.line("3. Click Open on the Trapdoor (outlined), then Climb-down.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Kill a zombie")
+				.inside(DRAYNOR_SEWER)
+				.npc("Zombie")
+				.line("1. Zombies (level 13) are outlined. Click Attack on one.")
+				.line("2. Eat food if your health gets low.")
+				.line("3. Climb the ladder to leave.")
+				.build())
+			.build());
+		out.add(task(t, 3, "Sedridor's teleport", "Have Sedridor teleport you to the Rune essence mine.")
+			.quest(Quest.RUNE_MYSTERIES)
+			.stage(DiaryStage.builder()
+				.title("Go down to the Wizards' Tower basement")
+				.at(Location.of("Wizards' Tower ladder", 3104, 3162, 0, 3))
+				.object("Ladder")
+				.line("1. The Wizards' Tower is on the island south of Draynor; cross the bridge.")
+				.line("2. Click Climb-down on the Ladder (outlined) in the middle of the ground floor.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Ask Sedridor to teleport you")
+				.inside(Zone.of(3095, 9554, 3122, 9578, 0))
+				.npc("Archmage Sedridor").npc("Sedridor")
+				.line("1. Right-click Archmage Sedridor (outlined) and choose Teleport.")
+				.line("2. You land in the Rune essence mine and the task is done.")
+				.line("3. Click a portal in the mine to leave.")
+				.build())
+			.build());
+		out.add(task(t, 9, "Catch anchovies", "Catch some Anchovies in Al Kharid.")
+			.skill(Skill.FISHING, 15)
+			.item(DiaryItem.of("Small fishing net", ItemID.NET))
+			.stage(DiaryStage.builder()
+				.title("Net fish in Al Kharid")
+				.at(Location.of("Al Kharid fishing spots", 3267, 3148, 0, 4))
+				.npc("Fishing spot")
+				.line("1. The toll gate into Al Kharid costs 10 coins unless you've done Prince Ali Rescue.")
+				.line("2. The fishing spots are on the shore south of Al Kharid.")
+				.line("3. Click Small Net on a Fishing spot (outlined) and keep fishing until you get an Anchovy.")
+				.line("4. Shrimps come first; anchovies take a little longer at low Fishing.")
+				.build())
+			.build());
+		out.add(task(t, 11, "Mine iron", "Mine some Iron ore at the Al Kharid mine.")
+			.skill(Skill.MINING, 15)
+			.item(DiaryItem.tool(ToolType.PICKAXE))
+			.stage(DiaryStage.builder()
+				.title("Mine iron ore")
+				.at(Location.of("Al Kharid mine", 3301, 3285, 0, 5))
+				.object("Iron rocks")
+				.line("1. The mine is north of Al Kharid, along the cliff.")
+				.line("2. Click Mine on Iron rocks (outlined, they have reddish-brown spots).")
+				.line("3. One Iron ore is enough. If someone else mines the rock first, try another.")
+				.build())
+			.build());
+	}
+
+	// ---- Medium ----
+
+	private static void medium(List<DiaryTask> out)
+	{
+		DiaryTier t = DiaryTier.MEDIUM;
+		out.add(task(t, 5, "Lumbridge Teleport", "Cast the Teleport to Lumbridge spell.")
+			.skill(Skill.MAGIC, 31)
+			.item(DiaryItem.of("Law rune", 1, ItemID.LAWRUNE))
+			.item(DiaryItem.of("Air rune", 3, ItemID.AIRRUNE))
+			.item(DiaryItem.of("Earth rune", 1, ItemID.EARTHRUNE))
+			.stage(DiaryStage.builder()
+				.title("Cast Lumbridge Teleport")
+				.line("1. Open the spellbook (the blue star tab).")
+				.line("2. Click Lumbridge Teleport. You can cast it from anywhere.")
+				.line("Optional: a Staff of air or earth replaces those runes if you wield one.")
+				.build())
+			.build());
+		out.add(task(t, 6, "Catch salmon", "Catch some Salmon in Lumbridge.")
+			.skill(Skill.FISHING, 30)
+			.item(DiaryItem.of("Fly fishing rod", ItemID.FLY_FISHING_ROD))
+			.item(DiaryItem.of("Feather", 50, ItemID.FEATHER))
+			.stage(DiaryStage.builder()
+				.title("Fly fish in the River Lum")
+				.at(Location.of("River Lum, north of Lumbridge Castle", 3241, 3248, 0, 5))
+				.npc("Rod Fishing spot").npc("Fishing spot")
+				.line("1. Click Lure on a fishing spot (outlined) in the river.")
+				.line("2. Trout come too; keep fishing until you catch a Salmon.")
+				.build())
+			.build());
+		out.add(task(t, 7, "Craft a coif", "Craft a coif in the Lumbridge cow pen.")
+			.skill(Skill.CRAFTING, 38)
+			.item(DiaryItem.of("Leather", ItemID.LEATHER))
+			.item(DiaryItem.of("Needle", ItemID.NEEDLE))
+			.item(DiaryItem.of("Thread", ItemID.THREAD))
+			.stage(DiaryStage.builder()
+				.title("Craft a coif inside the cow pen")
+				.at(Location.of("Lumbridge cow pen", 3258, 3270, 0, 4))
+				.inside(Zone.of(3253, 3255, 3265, 3298, 0))
+				.use(ItemID.NEEDLE).use(ItemID.LEATHER)
+				.line("1. Walk inside the fenced cow field east of Lumbridge (go through the gate).")
+				.line("2. Use the Needle on the Leather (both outlined).")
+				.line("3. Choose Coif (not the cowl).")
+				.build())
+			.build());
+		out.add(task(t, 1, "Al Kharid rooftops", "Complete a lap of the Al Kharid agility course.")
+			.skill(Skill.AGILITY, 20)
+			.stage(DiaryStage.builder()
+				.title("Run a lap of the Al Kharid rooftops")
+				.at(Location.of("Al Kharid rooftop course start", 3273, 3195, 0, 2))
+				.inside(Zone.anyFloor(3265, 3155, 3320, 3200))
+				.object("Rough wall").object("Tightrope").object("Cable").object("Zip line")
+				.object("Tropical tree").object("Roof top beams").object("Gap")
+				.line("1. Climb the Rough wall (outlined) in south Al Kharid, near the furnace.")
+				.line("2. Cross each outlined obstacle in turn: Tightrope, Cable, Zip line, Tropical tree, Roof top beams, Tightrope, Gap.")
+				.line("3. Jumping the last Gap finishes the lap. If you fall, start again at the Rough wall.")
+				.build())
+			.build());
+		out.add(task(t, 2, "Grapple the River Lum", "Grapple across the River Lum.")
+			.skill(Skill.AGILITY, 8).skill(Skill.STRENGTH, 19).skill(Skill.RANGED, 37)
+			.item(MITH_GRAPPLE)
+			.item(ANY_CROSSBOW)
+			.stage(DiaryStage.builder()
+				.title("Grapple across the river")
+				.at(Location.of("Broken raft on the River Lum", 3252, 3179, 0, 3))
+				.object("Broken raft")
+				.use(ItemID.XBOWS_GRAPPLE_TIP_BOLT_MITHRIL_ROPE)
+				.line("1. Wield your crossbow, then wield the Mith grapple (it goes in the ammo slot).")
+				.line("2. Go to the river bank south of the Al Kharid toll gate.")
+				.line("3. Right-click the Broken raft (outlined) and choose Grapple. You swing across.")
+				.build())
+			.build());
+		out.add(task(t, 12, "Craft lava runes", "Craft some Lava runes at the fire altar in Al Kharid.")
+			.skill(Skill.RUNECRAFT, 23)
+			.item(DiaryItem.anyOf("Pure essence", 1, ItemID.BLANKRUNE_HIGH, PURE_ESSENCE))
+			.item(DiaryItem.of("Earth rune", 1, ItemID.EARTHRUNE))
+			.item(DiaryItem.of("Earth talisman", ItemID.EARTH_TALISMAN))
+			.item(DiaryItem.anyOf("Fire tiara or talisman", 1, ItemID.FIRE_TALISMAN, ItemID.TIARA_ELEMENTAL,
+				ItemID.TIARA_FIRE, ItemID.ELEMENTAL_TALISMAN, ItemID.FIRE_TALISMAN))
+			.stage(DiaryStage.builder()
+				.title("Enter the fire altar")
+				.at(Location.of("Fire altar ruins, north of Al Kharid", 3313, 3255, 0, 3))
+				.object("Mysterious ruins")
+				.use(ItemID.FIRE_TALISMAN).use(ItemID.ELEMENTAL_TALISMAN)
+				.line("1. Wear a fire (or elemental) tiara and click Enter on the Mysterious ruins (outlined),")
+				.line("2. or use the Fire talisman on the ruins.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Use earth runes on the altar")
+				.inside(Zone.of(2553, 4802, 2623, 4863, 0))
+				.object("Altar")
+				.use(ItemID.EARTHRUNE)
+				.line("1. Keep the Earth talisman and Pure essence in your inventory.")
+				.line("2. Use the Earth runes (outlined) on the Altar (outlined), not the essence.")
+				.line("3. You make Lava runes and the task is done. A Binding necklace stops half of them failing.")
+				.build())
+			.build());
+		out.add(task(t, 8, "Chop willows", "Chop some willow logs in Draynor Village.")
+			.skill(Skill.WOODCUTTING, 30)
+			.item(DiaryItem.tool(ToolType.AXE))
+			.stage(DiaryStage.builder()
+				.title("Chop a willow tree")
+				.at(Location.of("Willow trees south of Draynor bank", 3089, 3235, 0, 4))
+				.object("Willow tree").object("Willow")
+				.line("1. Make sure you have a free inventory slot.")
+				.line("2. Click Chop down on a Willow tree (outlined) and wait for a log.")
+				.build())
+			.build());
+		out.add(task(t, 9, "Pickpocket Martin", "Pickpocket Martin the Master Gardener.")
+			.skill(Skill.THIEVING, 38)
+			.stage(DiaryStage.builder()
+				.title("Pickpocket Martin the Master Gardener")
+				.at(Location.of("Draynor Village market", 3077, 3263, 0, 6))
+				.npc("Martin the Master Gardener")
+				.line("1. Martin walks around the Draynor market; he's outlined.")
+				.line("2. Right-click him and choose Pickpocket. One success is enough.")
+				.line("3. Failing stuns you and hurts a little; bring a bit of food at low levels.")
+				.build())
+			.build());
+		out.add(task(t, 3, "Ava's upgraded device", "Purchase an upgraded device from Ava.")
+			.quest(Quest.ANIMAL_MAGNETISM)
+			.skill(Skill.RANGED, 50).unboostable(Skill.RANGED)
+			.item(DiaryItem.of("Steel arrows", 75, ItemID.STEEL_ARROW))
+			.item(DiaryItem.of("Coins (or Ava's attractor)", 999, ItemID.COINS))
+			.stage(DiaryStage.builder()
+				.title("Buy the accumulator from Ava")
+				.at(Location.of("Ava in Draynor Manor", 3093, 3357, 0, 4))
+				.npc("Ava")
+				.line("1. Ava is on the ground floor of Draynor Manor, north of Draynor Village.")
+				.line("2. Talk to Ava (outlined) and ask for the upgraded device (Ava's accumulator).")
+				.line("3. She takes 75 steel arrows and either your Ava's attractor or 999 coins.")
+				.build())
+			.build());
+		out.add(task(t, 10, "Task from Chaeldar", "Get a slayer task from Chaeldar.")
+			.quest(Quest.LOST_CITY)
+			.combat(70)
+			.item(FAIRY_STAFF_ITEM)
+			.stage(zanarisEntrance())
+			.stage(DiaryStage.builder()
+				.title("Get a task from Chaeldar")
+				.inside(ZANARIS)
+				.at(Location.of("Chaeldar in Zanaris", 2446, 4430, 0, 4))
+				.npc("Chaeldar")
+				.line("1. Talk to Chaeldar (outlined) and ask for a slayer assignment.")
+				.line("2. If you already have a task she won't give a new one: finish it first (or ask Turael).")
+				.build())
+			.build());
+		out.add(task(t, 11, "Puro-Puro impling", "Catch an Essence or Eclectic impling in Puro-Puro.")
+			.skill(Skill.HUNTER, 42)
+			.item(FAIRY_STAFF_ITEM)
+			.item(DiaryItem.anyOf("Butterfly net", 1, ItemID.HUNTING_BUTTERFLY_NET, ItemID.II_MAGIC_BUTTERFLY_NET,
+				ItemID.HUNTING_BUTTERFLY_NET))
+			.item(DiaryItem.of("Impling jar", 3, ItemID.II_IMPLING_JAR))
+			.stage(zanarisEntrance())
+			.stage(DiaryStage.builder()
+				.title("Go into Puro-Puro")
+				.inside(ZANARIS)
+				.at(Location.of("Wheat field in Zanaris", 2427, 4446, 0, 4))
+				.object("Magical wheat").object("Magic wheat").object("Centre of crop circle")
+				.line("1. Walk to the wheat field in the middle of Zanaris.")
+				.line("2. Click the wheat (outlined) to go into Puro-Puro.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Catch an essence or eclectic impling")
+				.inside(Zone.of(2561, 4289, 2623, 4350, 0))
+				.npc("Essence impling").npc("Eclectic impling")
+				.line("1. Wield the Butterfly net and keep Impling jars in your inventory.")
+				.line("2. Implings fly through the wheat maze; essence and eclectic ones are outlined.")
+				.line("3. Click Catch on one. Catching one finishes the task.")
+				.build())
+			.build());
+		out.add(task(t, 4, "Fairy ring to Wizards' Tower", "Travel to the Wizards' Tower by Fairy ring.")
+			.questStarted(Quest.FAIRYTALE_II__CURE_A_QUEEN)
+			.item(FAIRY_STAFF_ITEM)
+			.stage(zanarisEntrance())
+			.stage(DiaryStage.builder()
+				.title("Take the fairy ring to code DIS")
+				.inside(ZANARIS)
+				.at(Location.of("Fairy ring in Zanaris", 2412, 4434, 0, 3))
+				.object("Fairy ring")
+				.line("1. Wield your Dramen or Lunar staff.")
+				.line("2. Click Configure on the Fairy ring (outlined) in Zanaris (any fairy ring works too).")
+				.line("3. Turn the dials to D, I, S and click Teleport. Arriving at the Wizards' Tower finishes it.")
+				.build())
+			.build());
+	}
+
+	// ---- Hard ----
+
+	private static void hard(List<DiaryTask> out)
+	{
+		DiaryTier t = DiaryTier.HARD;
+		out.add(task(t, 9, "Light a mining helmet", "Light your mining helmet in the Lumbridge castle basement.")
+			.skill(Skill.FIREMAKING, 65)
+			.item(DiaryItem.of("Tinderbox", ItemID.TINDERBOX))
+			.item(DiaryItem.of("Mining helmet", ItemID.CAVE_GOBLIN_MINING_HELMET_UNLIT))
+			.stage(cellarTrapdoor())
+			.stage(DiaryStage.builder()
+				.title("Light the mining helmet")
+				.inside(CASTLE_CELLAR)
+				.use(ItemID.TINDERBOX).use(ItemID.CAVE_GOBLIN_MINING_HELMET_UNLIT)
+				.line("1. Use the Tinderbox on the Mining helmet (both outlined) while in the cellar.")
+				.build())
+			.build());
+		out.add(task(t, 7, "Barrows gloves", "Purchase some Barrows gloves from the Lumbridge bank chest.")
+			.quest(Quest.RECIPE_FOR_DISASTER)
+			.item(DiaryItem.of("Coins", 130_000, ItemID.COINS))
+			.stage(cellarTrapdoor())
+			.stage(DiaryStage.builder()
+				.title("Buy Barrows gloves from the chest")
+				.inside(CASTLE_CELLAR)
+				.at(Location.of("Culinaromancer's Chest", 3219, 9623, 0, 3))
+				.object("Chest")
+				.line("1. Click Buy-items on the Chest (outlined) in the castle cellar.")
+				.line("2. Buy the Barrows gloves (130,000 coins, less after the Lumbridge elite diary).")
+				.build())
+			.build());
+		out.add(task(t, 11, "Amulet of power", "Craft, string and enchant an Amulet of Power in Lumbridge.")
+			.skill(Skill.CRAFTING, 70).skill(Skill.MAGIC, 57)
+			.item(DiaryItem.of("Gold bar", ItemID.GOLD_BAR))
+			.item(DiaryItem.of("Diamond", ItemID.DIAMOND))
+			.item(DiaryItem.of("Amulet mould", ItemID.AMULET_MOULD))
+			.item(DiaryItem.of("Ball of wool", ItemID.BALL_OF_WOOL))
+			.item(DiaryItem.of("Cosmic rune", 1, ItemID.COSMICRUNE))
+			.item(DiaryItem.of("Earth rune", 10, ItemID.EARTHRUNE))
+			.stage(DiaryStage.builder()
+				.title("Make a diamond amulet at the Lumbridge furnace")
+				.at(Location.of("Lumbridge furnace", 3227, 3256, 0, 3))
+				.object("Furnace")
+				.use(ItemID.GOLD_BAR)
+				.line("1. The furnace is in the building north of Lumbridge Castle, across the path.")
+				.line("2. Use the Gold bar on the Furnace (outlined) and choose the Diamond amulet.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("String the amulet")
+				.carrying(ItemID.UNSTRUNG_DIAMOND_AMULET)
+				.started(true)
+				.use(ItemID.BALL_OF_WOOL).use(ItemID.UNSTRUNG_DIAMOND_AMULET)
+				.line("1. Stay in Lumbridge (not upstairs in the castle).")
+				.line("2. Use the Ball of wool on the Diamond amulet (u) (both outlined).")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Enchant it into an Amulet of power")
+				.carrying(ItemID.STRUNG_DIAMOND_AMULET)
+				.started(true)
+				.use(ItemID.STRUNG_DIAMOND_AMULET)
+				.line("1. Still in Lumbridge, open the spellbook and click Lvl-4 Enchant.")
+				.line("2. Then click the Diamond amulet (outlined). That finishes the task.")
+				.build())
+			.build());
+		out.add(task(t, 4, "Waka canoe to Edgeville", "Travel from Lumbridge to Edgeville on a Waka Canoe.")
+			.skill(Skill.WOODCUTTING, 57)
+			.item(DiaryItem.tool(ToolType.AXE))
+			.stage(DiaryStage.builder()
+				.title("Make a waka canoe and paddle to Edgeville")
+				.at(Location.of("Lumbridge canoe station", 3242, 3237, 0, 3))
+				.object("Canoe Station").object("Canoe station")
+				.line("1. The canoe station is on the river bank north-east of Lumbridge Castle.")
+				.line("2. Click Chop-down on the Canoe Station (outlined), then Shape-Canoe and choose Waka.")
+				.line("3. Click Float Waka, then Paddle Canoe and pick Edgeville. Arriving finishes it.")
+				.build())
+			.build());
+		out.add(task(t, 1, "Bones to Peaches in the palace", "Cast Bones to Peaches in Al Kharid palace.")
+			.skill(Skill.MAGIC, 60)
+			.note("Bones to Peaches unlocked at the Mage Training Arena")
+			.item(DiaryItem.of("Bones", 1, ItemID.BONES))
+			.item(DiaryItem.of("Nature rune", 2, ItemID.NATURERUNE))
+			.item(DiaryItem.of("Earth rune", 4, ItemID.EARTHRUNE))
+			.item(DiaryItem.of("Water rune", 4, ItemID.WATERRUNE))
+			.stage(DiaryStage.builder()
+				.title("Cast Bones to Peaches inside the palace")
+				.at(Location.of("Al Kharid palace", 3293, 3164, 0, 4))
+				.inside(Zone.of(3282, 3159, 3303, 3166, 0))
+				.line("1. Walk inside the Al Kharid palace (the big building in the middle of Al Kharid).")
+				.line("2. With Bones in your inventory, open the spellbook and click Bones to Peaches.")
+				.line("Warning: the tablet doesn't count, it has to be the spell.")
+				.build())
+			.build());
+		out.add(task(t, 10, "Smite at Emir's Arena", "Recharge your prayer at Emir's Arena with Smite activated.")
+			.skill(Skill.PRAYER, 52).unboostable(Skill.PRAYER)
+			.stage(DiaryStage.builder()
+				.title("Pray at the Emir's Arena altar with Smite on")
+				.at(Location.of("Emir's Arena altar", 3377, 3285, 0, 3))
+				.object("Altar")
+				.line("1. Go to the chapel at Emir's Arena, north-east of Al Kharid.")
+				.line("2. Open the prayer book and turn on Smite.")
+				.line("3. With Smite still on, click Pray-at on the Altar (outlined).")
+				.build())
+			.build());
+		out.add(task(t, 8, "Pick belladonna", "Pick some Belladonna from the farming patch at Draynor Manor.")
+			.skill(Skill.FARMING, 63)
+			.item(DiaryItem.of("Belladonna seed", ItemID.BELLADONNA_SEED))
+			.item(DiaryItem.of("Seed dibber", ItemID.DIBBER))
+			.item(DiaryItem.of("Spade", ItemID.SPADE))
+			.item(DiaryItem.of("Rake", ItemID.RAKE))
+			.item(DiaryItem.anyOf("Gloves (any)", 1, ItemID.LEATHER_GLOVES, ItemID.HUNDRED_GAUNTLETS_LEVEL_10,
+				ItemID.LEATHER_GLOVES))
+			.stage(DiaryStage.builder()
+				.title("Grow and pick belladonna")
+				.at(Location.of("Belladonna patch, Draynor Manor", 3087, 3355, 0, 3))
+				.object("Belladonna patch")
+				.line("1. The patch is just east of Draynor Manor's front door.")
+				.line("2. Click Rake on the patch (outlined) until the weeds are gone.")
+				.line("3. Use the Belladonna seed on the patch to plant it (the dibber must be in your inventory).")
+				.line("4. It takes about 5 hours to grow. Come back later; the guide waits here.")
+				.line("5. Wear your gloves, then click Pick on the grown belladonna. Without gloves it poisons you.")
+				.build())
+			.build());
+		out.add(task(t, 2, "Jutting wall in Zanaris", "Squeeze past the jutting wall on your way to the cosmic altar.")
+			.quest(Quest.LOST_CITY)
+			.skill(Skill.AGILITY, 46)
+			.item(FAIRY_STAFF_ITEM)
+			.stage(zanarisEntrance())
+			.stage(DiaryStage.builder()
+				.title("Squeeze past the jutting wall")
+				.inside(ZANARIS)
+				.at(Location.of("Jutting wall in Zanaris", 2400, 4403, 0, 3))
+				.object("Jutting wall")
+				.line("1. Head south-west in Zanaris, towards the cosmic altar.")
+				.line("2. Click Squeeze-past on the Jutting wall (outlined).")
+				.build())
+			.build());
+		out.add(task(t, 3, "56 cosmic runes", "Craft 56 Cosmic runes simultaneously from Essence without the use of Extracts.")
+			.quest(Quest.LOST_CITY)
+			.skill(Skill.RUNECRAFT, 59)
+			.item(FAIRY_STAFF_ITEM)
+			.item(DiaryItem.anyOf("Pure essence", 28, ItemID.BLANKRUNE_HIGH, PURE_ESSENCE))
+			.item(DiaryItem.anyOf("Cosmic tiara", 1, ItemID.TIARA_COSMIC, ItemID.TIARA_CATALYTIC, ItemID.TIARA_COSMIC))
+			.stage(zanarisEntrance())
+			.stage(DiaryStage.builder()
+				.title("Enter the cosmic altar")
+				.inside(ZANARIS)
+				.at(Location.of("Cosmic altar ruins in Zanaris", 2408, 4377, 0, 3))
+				.object("Mysterious ruins")
+				.line("1. Wear the Cosmic tiara and have 28 Pure essence: a talisman would take a slot and make only 54.")
+				.line("2. Walk to the far south-west of Zanaris (squeeze past the jutting wall on the way).")
+				.line("3. Click Enter on the Mysterious ruins (outlined).")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Craft the cosmic runes")
+				.inside(Zone.of(2111, 4804, 2174, 4863, 0))
+				.object("Altar")
+				.line("1. Click Craft-rune on the Altar (outlined) in the middle.")
+				.line("2. At 59 Runecraft each essence makes 2 runes, so 28 essence makes the 56.")
+				.build())
+			.build());
+		out.add(task(t, 5, "100 Tears of Guthix", "Collect at least 100 Tears of Guthix in one visit.")
+			.quest(Quest.TEARS_OF_GUTHIX)
+			.note("150+ quest points recommended (more time in the cave)")
+			.stage(DiaryStage.builder()
+				.title("Collect 100 tears in one go")
+				.at(Location.of("Juna, Tears of Guthix cave", 3252, 9517, 2, 4))
+				.npc("Juna")
+				.line("1. You can play once a week. A Games necklace teleports you right there.")
+				.line("2. Talk to Juna (outlined) and choose Story to start.")
+				.line("3. Click the blue streams on the walls; avoid the green ones, they take tears away.")
+				.line("4. Move on as soon as a stream turns green. 100 tears needs about 150 quest points of time.")
+				.line("Tip: Skilling Helper's Tears of Guthix helper highlights the blue streams for you.")
+				.build())
+			.build());
+		out.add(task(t, 6, "Train to Keldagrim", "Take the train from Dorgesh-Kaan to Keldagrim.")
+			.quest(Quest.ANOTHER_SLICE_OF_HAM)
+			.stage(cellarTrapdoor())
+			.stage(dorgeshDoor())
+			.stage(DiaryStage.builder()
+				.title("Ride the train to Keldagrim")
+				.inside(DORGESH_KAAN)
+				.at(Location.of("Dorgesh-Kaan station entrance", 2695, 5277, 1, 3))
+				.object("Stairs").object("Door").object("Train cart")
+				.line("1. In Dorgesh-Kaan go up the stairs (outlined) to the upper level.")
+				.line("2. The train station is on the west side; go in through the door.")
+				.line("3. Board the train to ride to Keldagrim. Arriving finishes the task.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Board the train")
+				.inside(Zone.of(2478, 5513, 2491, 5558, 0))
+				.object("Train cart")
+				.line("1. Walk onto the train and it takes you to Keldagrim.")
+				.build())
+			.build());
+	}
+
+	// ---- Elite ----
+
+	private static void elite(List<DiaryTask> out)
+	{
+		DiaryTier t = DiaryTier.ELITE;
+		out.add(task(t, 6, "Quest cape emote", "Perform the Quest cape emote in the Wise Old Man's house.")
+			.note("All quests completed")
+			.item(DiaryItem.owned("Quest point cape", "Buy it from the Wise Old Man in Draynor once every quest is done.",
+				ItemID.SKILLCAPE_QP_TRIMMED, ItemID.SKILLCAPE_QP))
+			.stage(DiaryStage.builder()
+				.title("Do the Skillcape emote in the Wise Old Man's house")
+				.at(Location.of("Wise Old Man's house, Draynor", 3089, 3253, 0, 2))
+				.inside(Zone.of(3087, 3251, 3094, 3255, 0))
+				.line("1. Wear your Quest point cape.")
+				.line("2. Go inside the Wise Old Man's house in Draynor Village.")
+				.line("3. Open the Emotes tab (the smiley face) and click Skillcape.")
+				.build())
+			.build());
+		out.add(task(t, 4, "Adamant platebody in the sewers", "Smith an Adamant platebody down Draynor sewer.")
+			.skill(Skill.SMITHING, 88)
+			.item(DiaryItem.of("Adamantite bar", 5, ItemID.ADAMANTITE_BAR))
+			.item(DiaryItem.of("Hammer", ItemID.HAMMER))
+			.stage(DiaryStage.builder()
+				.title("Climb down into Draynor Sewers")
+				.at(DRAYNOR_SEWER_TRAPDOOR)
+				.object("Trapdoor")
+				.line("1. Click Open on the Trapdoor (outlined) in Draynor Village, then Climb-down.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Smith the platebody on the sewer anvil")
+				.inside(DRAYNOR_SEWER)
+				.at(Location.of("Anvil in Draynor Sewers", 3112, 9689, 0, 3))
+				.object("Anvil")
+				.use(ItemID.ADAMANTITE_BAR)
+				.line("1. The anvil is at the north end of the sewers.")
+				.line("2. Use an Adamantite bar on the Anvil (outlined) and choose Platebody.")
+				.build())
+			.build());
+		out.add(task(t, 5, "140 water runes", "Craft 140 or more Water runes simultaneously from Essence without the use of Extracts.")
+			.skill(Skill.RUNECRAFT, 76)
+			.note("Raiments of the Eye pieces lower the level needed")
+			.item(DiaryItem.anyOf("Essence", 28, ItemID.BLANKRUNE_HIGH, ESSENCE))
+			.item(DiaryItem.anyOf("Water or elemental tiara", 1, ItemID.TIARA_WATER, ItemID.TIARA_ELEMENTAL,
+				ItemID.TIARA_WATER))
+			.stages(waterAltar("Craft 140 water runes at once"))
+			.build());
+		out.add(task(t, 3, "Magic logs at the MTA", "Chop some magic logs at the Mage Training Arena.")
+			.skill(Skill.WOODCUTTING, 75)
+			.item(DiaryItem.tool(ToolType.AXE))
+			.stage(DiaryStage.builder()
+				.title("Chop a magic tree")
+				.at(Location.of("Magic trees by the Mage Training Arena", 3357, 3312, 0, 4))
+				.object("Magic tree")
+				.line("1. The magic trees are just south of the Mage Training Arena, north of Emir's Arena.")
+				.line("2. Click Chop down on a Magic tree (outlined) until you get a log.")
+				.build())
+			.build());
+		out.add(task(t, 1, "Dorgesh-Kaan rich chest", "Steal from a Dorgesh-Kaan rich chest.")
+			.quest(Quest.DEATH_TO_THE_DORGESHUUN)
+			.skill(Skill.THIEVING, 78)
+			.item(DiaryItem.of("Lockpick", ItemID.LOCKPICK))
+			.stage(cellarTrapdoor())
+			.stage(dorgeshDoor())
+			.stage(DiaryStage.builder()
+				.title("Go upstairs in north Dorgesh-Kaan")
+				.inside(Zone.of(2688, 5251, 2751, 5377, 0))
+				.at(Location.of("North Dorgesh-Kaan stairs", 2721, 5360, 0, 3))
+				.object("Stairs")
+				.line("1. Walk to the north part of Dorgesh-Kaan and click Climb-up on the Stairs (outlined).")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Steal from the rich chest")
+				.inside(Zone.of(2688, 5251, 2751, 5377, 1))
+				.at(Location.of("Rich chest, Dorgesh-Kaan", 2703, 5348, 1, 3))
+				.object("Chest")
+				.line("1. Keep the Lockpick in your inventory.")
+				.line("2. Right-click the Chest (outlined) and choose Search for traps. Repeat if it fails.")
+				.build())
+			.build());
+		out.add(task(t, 2, "Dorgesh-Kaan pylon", "Grapple across a pylon on the Dorgesh-Kaan Agility Course.")
+			.quest(Quest.DEATH_TO_THE_DORGESHUUN)
+			.skill(Skill.AGILITY, 70).skill(Skill.RANGED, 70).skill(Skill.STRENGTH, 70)
+			.item(MITH_GRAPPLE)
+			.item(ANY_CROSSBOW)
+			.item(LIGHT_SOURCE)
+			.stage(cellarTrapdoor())
+			.stage(dorgeshDoor())
+			.stage(DiaryStage.builder()
+				.title("Go down to the agility course")
+				.inside(DORGESH_KAAN)
+				.at(Location.of("Stairs to the agility course, south Dorgesh-Kaan", 2723, 5253, 1, 4))
+				.object("Stairs").object("Steps")
+				.line("1. The agility course is under the south of Dorgesh-Kaan.")
+				.line("2. Take the outlined Stairs and Steps down to it.")
+				.build())
+			.stage(DiaryStage.builder()
+				.title("Grapple across a pylon")
+				.inside(Zone.anyFloor(2688, 5183, 2752, 5249))
+				.object("Pylon")
+				.line("1. Wield your crossbow and the Mith grapple; keep a lit light source with you.")
+				.line("2. Click Grapple on a Pylon (outlined). Crossing one finishes the task.")
+				.build())
+			.build());
+	}
+
+	// ---- Shared stages ----
+
+	private static DiaryStage zanarisEntrance()
+	{
+		return DiaryStage.builder()
+			.title("Go into Zanaris through the swamp shed")
+			.at(ZANARIS_SHED)
+			.object("Door")
+			.use(ItemID.DRAMEN_STAFF).use(ItemID.LUNAR_MOONCLAN_LIMINAL_STAFF)
+			.line("1. Wield your Dramen or Lunar staff (outlined in your inventory).")
+			.line("2. Walk to the small shed in Lumbridge Swamp, south of the castle.")
+			.line("3. Open the shed Door (outlined) and walk inside: you appear in Zanaris.")
+			.build();
+	}
+
+	private static DiaryStage cellarTrapdoor()
+	{
+		return DiaryStage.builder()
+			.title("Go down to the Lumbridge Castle cellar")
+			.at(CELLAR_TRAPDOOR)
+			.object("Trapdoor")
+			.line("1. The trapdoor is in the castle kitchen (ground floor, north-west room).")
+			.line("2. Click Climb-down on the Trapdoor (outlined); open it first if it's shut.")
+			.build();
+	}
+
+	private static DiaryStage dorgeshDoor()
+	{
+		return DiaryStage.builder()
+			.title("Walk through the caves to Dorgesh-Kaan")
+			.inside(LUMBRIDGE_UNDERGROUND)
+			.at(DORGESH_DOOR)
+			.object("Door")
+			.line("1. From the cellar, go through the hole in the wall into the tunnels, then follow the route east.")
+			.line("2. Open the big Door (outlined) at the end to walk into Dorgesh-Kaan.")
+			.build();
+	}
+
+	private static List<DiaryStage> waterAltar(String title)
+	{
+		return List.of(
+			DiaryStage.builder()
+				.title("Enter the water altar")
+				.at(WATER_RUINS)
+				.object("Mysterious ruins")
+				.use(ItemID.WATER_TALISMAN).use(ItemID.ELEMENTAL_TALISMAN)
+				.line("1. The ruins are in Lumbridge Swamp, south of the castle, near the coast.")
+				.line("2. Wear a water (or elemental) tiara and click Enter on the Mysterious ruins (outlined),")
+				.line("3. or use the talisman (outlined) on the ruins.")
+				.build(),
+			DiaryStage.builder()
+				.title(title)
+				.inside(WATER_ALTAR)
+				.object("Altar")
+				.line("1. Click Craft-rune on the Altar (outlined) with the essence in your inventory.")
+				.line("2. The portal behind you takes you back out.")
+				.build());
+	}
+
+	/**
+	 * Starts a task. Its done bit: Easy tasks are bits 1-12 of the first diary varp, Medium 13-24, Hard 25 on
+	 * (running into the second varp after bit 31), and Elite from bit 4 of the second varp.
+	 */
+	private static DiaryTask.DiaryTaskBuilder task(DiaryTier tier, int number, String name, String text)
+	{
+		int[] offsets = {0, 12, 24, 35};
+		int index = offsets[tier.ordinal()] + number;
+		return DiaryTask.builder()
+			.region(DiaryRegion.LUMBRIDGE)
+			.tier(tier)
+			.number(number)
+			.name(name)
+			.text(text)
+			.varp(index < 32 ? VarPlayerID.LUMB_DRAY_ACHIEVEMENT_DIARY : VarPlayerID.LUMB_DRAY_ACHIEVEMENT_DIARY2)
+			.bit(index % 32);
+	}
+}
