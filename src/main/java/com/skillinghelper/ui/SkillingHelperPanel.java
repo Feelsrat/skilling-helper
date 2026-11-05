@@ -606,6 +606,7 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		content.add(GuideUi.stat("Guide rate", String.format("~%,d xp/hr", Math.round(option.getXpPerHour())),
 			HINT));
+		content.add(GuideUi.stat("Clicks", String.format("~%,d/hr", guide.getMethod().getClicksPerHour()), HINT));
 		addSessionRate(guide);
 	}
 
