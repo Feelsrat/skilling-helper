@@ -41,7 +41,7 @@ public class RouteTest
 			Location l = Location.of("Test", 3000, 3000, radius);
 			Route route = Route.to(player(1).build(), l);
 			List<WorldPoint> targets = route.pathTargets();
-			assertTrue("radius " + radius + " sends " + targets.size(), targets.size() <= 49);
+			assertTrue("radius " + radius + " sends " + targets.size(), targets.size() <= 25);
 			assertTrue(targets.contains(l.getPoint()));
 			for (int x = -radius; x <= radius; x++)
 			{

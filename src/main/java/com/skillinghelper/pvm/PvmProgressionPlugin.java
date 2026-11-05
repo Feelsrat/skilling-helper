@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm;
 
 import com.google.inject.Provides;
+import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
 import com.skillinghelper.bank.BankItems;
@@ -26,6 +27,7 @@ import com.skillinghelper.pvm.guide.Supply;
 import com.skillinghelper.pvm.ui.PvmProgressionPanel;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,7 +69,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.events.PluginMessage;
 import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.hiscore.HiscoreClient;
@@ -76,6 +77,7 @@ import net.runelite.client.hiscore.HiscoreResult;
 import net.runelite.client.hiscore.HiscoreSkill;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -118,6 +120,9 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private ClientThread clientThread;
 	@Inject
 	private ConfigManager configManager;
+
+	@Inject
+	private PluginManager pluginManager;
 	@Inject
 	private ClientToolbar clientToolbar;
 	@Inject
@@ -191,6 +196,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private final Map<Quest, QuestState> questStates = new HashMap<>();
 	private boolean profileLoaded;
 	private boolean dirty;
+	/**
+	 * What the panel was last sent by {@link #refresh}, to skip sending the same again.
+	 */
+	private List<Object> lastShown;
+	/**
+	 * Logged in: check on the next tick that Shortest Path is there.
+	 */
+	private boolean checkShortestPath;
 	private int questRefreshCountdown;
 	private PvmContent pathShown;
 
@@ -265,6 +278,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		trackedItems.addAll(AMMO_IDS);
 
 		panel = new PvmProgressionPanel(this);
+		lastShown = null;
 		panel.setWildernessAllowed(Wilderness.allowed(configManager));
 		panel.setHideOutleveled(Outleveled.hidden(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
@@ -286,6 +300,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
+				checkShortestPath = true;
 				loadProfile();
 				refreshQuests();
 				refresh();
@@ -332,6 +347,10 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
 	{
+		if (e.getGameState() == GameState.LOGGED_IN)
+		{
+			checkShortestPath = true;
+		}
 		if (e.getGameState() == GameState.LOGGED_IN && !profileLoaded)
 		{
 			loadProfile();
@@ -360,6 +379,14 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	@Subscribe
 	public void onGameTick(GameTick e)
 	{
+		if (checkShortestPath)
+		{
+			checkShortestPath = false;
+			if (config.shortestPath())
+			{
+				ShortestPathLink.warnIfMissing(client, pluginManager);
+			}
+		}
 		if (--questRefreshCountdown <= 0)
 		{
 			refreshQuests();
@@ -1002,7 +1029,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			if (pathShown == null)
 			{
-				eventBus.post(new PluginMessage("shortestpath", "clear", new HashMap<>()));
+				ShortestPathLink.clear(eventBus, this);
 			}
 			return;
 		}
@@ -1015,7 +1042,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			if (pathShown == null)
 			{
-				eventBus.post(new PluginMessage("shortestpath", "clear", new HashMap<>()));
+				ShortestPathLink.clear(eventBus, this);
 			}
 		}
 		else if (config.shortestPath())
@@ -1032,7 +1059,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		Map<String, Object> overrides = new HashMap<>();
 		overrides.put("avoidWilderness", !(wilderness && Wilderness.contains(target)));
 		data.put("config", overrides);
-		eventBus.post(new PluginMessage("shortestpath", "path", data));
+		ShortestPathLink.path(eventBus, this, data);
 	}
 
 	// ---- State ----
@@ -1041,7 +1068,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	{
 		if (pathShown != null)
 		{
-			eventBus.post(new PluginMessage("shortestpath", "clear", new HashMap<>()));
+			ShortestPathLink.clear(eventBus, this);
 			pathShown = null;
 		}
 	}
@@ -1100,9 +1127,17 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		String guideId = guideContent == null ? null : guideContent.getId();
 		PvmStep current = step;
 		boolean bankKnown = bankSeen;
+		PvmProgressionPanel.GuideView guides = new PvmProgressionPanel.GuideView(guideId, current, plans, bankKnown);
+		// Every xp drop asks for a refresh, but the panel only needs redrawing when what it shows changed:
+		// rebuilding it takes tens of milliseconds on the Swing thread
+		List<Object> shown = Arrays.asList(ladder, player, pathId, guides);
+		if (shown.equals(lastShown))
+		{
+			return;
+		}
+		lastShown = shown;
 		PvmProgressionPanel p = panel;
-		SwingUtilities.invokeLater(() -> p.update(ladder, player, pathId,
-			new PvmProgressionPanel.GuideView(guideId, current, plans, bankKnown)));
+		SwingUtilities.invokeLater(() -> p.update(ladder, player, pathId, guides));
 	}
 
 	private Set<Integer> trackedIn(ItemContainer container)

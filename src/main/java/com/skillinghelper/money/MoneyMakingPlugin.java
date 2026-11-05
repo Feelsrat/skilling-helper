@@ -2,6 +2,7 @@ package com.skillinghelper.money;
 
 import com.google.inject.Provides;
 import com.skillinghelper.OpenMethodRequest;
+import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.bank.BankItems;
@@ -51,7 +52,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.events.PluginMessage;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -127,6 +127,15 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private final Map<String, Method> skillMethods = new HashMap<>();
 	private int refreshCountdown;
 	private boolean rankDirty = true;
+	/**
+	 * The ranking the panel was last sent, to skip sending the same again.
+	 */
+	private List<MoneyOption> shownRanking;
+	private Map<String, String> shownFullGuides;
+	/**
+	 * Logged in: check on the next tick that Shortest Path is there.
+	 */
+	private boolean checkShortestPath = true;
 	private List<MoneyOption> ranked = Collections.emptyList();
 	private MoneyPlayer player = MoneyPlayer.NONE;
 
@@ -228,6 +237,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		panel = new MoneyMakingPanel(this);
+		shownRanking = null;
+		shownFullGuides = null;
 		panel.setWildernessAllowed(Wilderness.allowed(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 		navButton = NavigationButton.builder()
@@ -239,6 +250,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		clientToolbar.addNavigation(navButton);
 		rankDirty = true;
 		refreshCountdown = 0;
+		checkShortestPath = true;
 	}
 
 	@Override
@@ -280,6 +292,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			rankDirty = true;
 			refreshCountdown = 0;
+			checkShortestPath = true;
 		}
 		else if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
@@ -357,6 +370,14 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			return;
 		}
+		if (checkShortestPath)
+		{
+			checkShortestPath = false;
+			if (config.shortestPath())
+			{
+				ShortestPathLink.warnIfMissing(client, pluginManager);
+			}
+		}
 		if (config.livePrices() && --priceCountdown <= 0)
 		{
 			// About every 5 minutes; the next ranking picks the new prices up
@@ -430,8 +451,11 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		}
 		final List<MoneyOption> list = ranked;
 		final MoneyMakingPanel p = panel;
-		if (p != null)
+		// Re-ranked every minute, but the list only needs rebuilding (on the Swing thread) when it changed
+		if (p != null && !(list.equals(shownRanking) && fullGuides.equals(shownFullGuides)))
 		{
+			shownRanking = list;
+			shownFullGuides = fullGuides;
 			SwingUtilities.invokeLater(() -> p.update(list, fullGuides));
 		}
 	}
@@ -605,7 +629,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			Map<String, Object> overrides = new HashMap<>();
 			overrides.put("avoidWilderness", !Wilderness.contains(target));
 			data.put("config", overrides);
-			eventBus.post(new PluginMessage("shortestpath", "path", data));
+			ShortestPathLink.path(eventBus, this, data);
 		}
 	}
 
@@ -613,7 +637,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	{
 		if (pathTarget != null)
 		{
-			eventBus.post(new PluginMessage("shortestpath", "clear", new HashMap<>()));
+			ShortestPathLink.clear(eventBus, this);
 		}
 		if (hintArrowSet)
 		{

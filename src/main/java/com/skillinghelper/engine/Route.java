@@ -35,9 +35,10 @@ public class Route
 	}
 
 	/**
-	 * Most targets sent to Shortest Path per stop, per axis.
+	 * Most targets sent to Shortest Path per stop, per axis. Shortest Path draws every target it didn't end on, in
+	 * the scene, minimap and world map, every frame, and lists the count on its "Set Target" menu, so keep it small.
 	 */
-	private static final int GRID = 7;
+	private static final int GRID = 5;
 
 	Kind kind;
 	/**

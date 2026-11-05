@@ -70,6 +70,7 @@ import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.SkillIconManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -97,6 +98,9 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private SkillingHelperConfig config;
 	@Inject
 	private ConfigManager configManager;
+
+	@Inject
+	private PluginManager pluginManager;
 	@Inject
 	private EventBus eventBus;
 	@Inject
@@ -164,6 +168,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private boolean profileLoaded;
 	private boolean wasOnBoat;
 	/**
+	 * Logged in: check on the next tick that Shortest Path is there.
+	 */
+	private boolean checkShortestPath;
+	/**
 	 * The player stopped the guide with the Stop button, so gaining xp shouldn't open one again.
 	 */
 	private boolean autoSelectPaused;
@@ -207,6 +215,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
+				checkShortestPath = true;
 				tracker.rescan();
 				plunder.rescan();
 				loadProfile();
@@ -276,6 +285,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (e.getGameState() == GameState.LOGGED_IN)
 		{
 			prices.onLoggedIn();
+			checkShortestPath = true;
 		}
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
@@ -307,6 +317,14 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (!profileLoaded)
 		{
 			loadProfile();
+		}
+		if (checkShortestPath)
+		{
+			checkShortestPath = false;
+			if (config.shortestPath())
+			{
+				ShortestPathLink.warnIfMissing(client, pluginManager);
+			}
 		}
 		if (--questRefreshCountdown <= 0)
 		{

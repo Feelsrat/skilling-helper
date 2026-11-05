@@ -2,6 +2,8 @@ package com.skillinghelper;
 
 import com.skillinghelper.engine.Route;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,7 +20,7 @@ import net.runelite.client.events.PluginMessage;
 @Singleton
 public class ShortestPathBridge
 {
-	private static final String NAMESPACE = "shortestpath";
+	private static final String NAMESPACE = ShortestPathLink.NAMESPACE;
 
 	/**
 	 * Transports that only get used when the player meets their requirements, which Shortest Path checks itself.
@@ -39,9 +41,17 @@ public class ShortestPathBridge
 	private final String queryPrefix;
 
 	private Route shown;
+	/**
+	 * What was last sent to Shortest Path, so walking around (which only reorders the stops, nearest first) doesn't
+	 * make it search again from scratch.
+	 */
+	private List<Object> sentKey;
 	private int queryCount;
 	private String pendingQuery;
-	private Route unreachable;
+	/**
+	 * The {@link #sendKey} of the route Shortest Path said it can't complete, or null.
+	 */
+	private List<Object> unreachable;
 
 	@Inject
 	ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config)
@@ -69,7 +79,14 @@ public class ShortestPathBridge
 			clear();
 			return;
 		}
+		List<Object> next = sendKey(route, config.shortestPathTransports());
 		shown = route;
+		if (next.equals(sentKey) && ShortestPathLink.ownedBy(this))
+		{
+			// Same targets and settings: Shortest Path is already showing (or working out) this path
+			return;
+		}
+		sentKey = next;
 		unreachable = null;
 
 		Map<String, Object> overrides = new HashMap<>();
@@ -88,7 +105,7 @@ public class ShortestPathBridge
 		Map<String, Object> path = new HashMap<>();
 		path.put("target", route.pathTargets());
 		path.put("config", overrides);
-		eventBus.post(new PluginMessage(NAMESPACE, "path", path));
+		ShortestPathLink.path(eventBus, this, path);
 
 		// Queries always walk, so they can't judge a sailing route
 		if (route.bySea())
@@ -107,11 +124,21 @@ public class ShortestPathBridge
 	{
 		if (shown != null)
 		{
-			eventBus.post(new PluginMessage(NAMESPACE, "clear", new HashMap<>()));
+			ShortestPathLink.clear(eventBus, this);
 		}
 		shown = null;
+		sentKey = null;
 		pendingQuery = null;
 		unreachable = null;
+	}
+
+	/**
+	 * Everything that decides what Shortest Path is asked: the route's kind and its stops in any order (the targets
+	 * are sent as one set, and the reach and Wilderness settings follow from the stops), plus the transport setting.
+	 */
+	static List<Object> sendKey(Route route, boolean transports)
+	{
+		return List.of(route.getKind(), new HashSet<>(route.getStops()), transports);
 	}
 
 	/**
@@ -119,7 +146,7 @@ public class ShortestPathBridge
 	 */
 	public boolean isUnreachable(Route route)
 	{
-		return route != null && route.equals(unreachable);
+		return route != null && unreachable != null && unreachable.equals(sendKey(route, config.shortestPathTransports()));
 	}
 
 	@Subscribe
@@ -140,7 +167,7 @@ public class ShortestPathBridge
 			reached, e.getData().get("reason"));
 		if (Boolean.FALSE.equals(reached) && !"CANCELLED".equals(e.getData().get("reason")))
 		{
-			unreachable = shown;
+			unreachable = sentKey;
 		}
 	}
 }
