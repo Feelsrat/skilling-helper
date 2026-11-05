@@ -569,7 +569,9 @@ public final class BankedActivities
 
 	private static void gem(List<BankedActivity> a, String name, int id, int level, double xp, boolean members)
 	{
-		Method m = bankMethod("banked_cut_" + key(name), Skill.CRAFTING, "Cut " + lower(name.substring(6)) + "s",
+		String gem = lower(name.substring(6));
+		Method m = bankMethod("banked_cut_" + key(name), Skill.CRAFTING, "Cut " + (gem.endsWith("y")
+			? gem.substring(0, gem.length() - 1) + "ies" : gem + "s"),
 			level, xp, 2_700)
 			.members(members)
 			.tool(CHISEL)

@@ -3,6 +3,7 @@ package com.skillinghelper.banked.ui;
 import com.skillinghelper.banked.BankedPlanner;
 import com.skillinghelper.banked.BankedView;
 import com.skillinghelper.banked.data.BankedActivity;
+import com.skillinghelper.banked.profit.BankProfit;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
@@ -238,6 +239,11 @@ public class BankedXpPanel extends PluginPanel
 
 		BankedPlanner.Option current = view.getCurrent();
 		BankedActivity a = current.getActivity();
+		if (view.getProfitRun() != null)
+		{
+			showProfitRun(view, current, a);
+			return;
+		}
 		JPanel card = GuideUi.card(GOOD);
 		GuideStep step = view.getStep();
 		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
@@ -299,6 +305,52 @@ public class BankedXpPanel extends PluginPanel
 			guideBox.add(text("Then: " + next.getActivity().getName() + " (" + (view.getQueue().size() - 1)
 				+ " more after this)", MUTED));
 		}
+	}
+
+	/**
+	 * A profit run from Money Making: one item, then selling what it made.
+	 */
+	private void showProfitRun(BankedView view, BankedPlanner.Option current, BankedActivity a)
+	{
+		JPanel card = GuideUi.card(GOOD);
+		GuideStep step = view.getStep();
+		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
+		if (step != null && step.getRoute() != null && step.getRoute().entersWilderness())
+		{
+			lines.add(Wilderness.TAG + ": " + Wilderness.WARNING);
+		}
+		boolean selling = current.getActions() <= 0;
+		String heading = selling ? "Now: sell your " + view.getProfitRun().toLowerCase()
+			: "Profit run: " + a.getName();
+		GuideUi.fillStep(card, heading, GOOD, step == null ? a.getName() : step.getTitle(), lines);
+		card.add(Box.createVerticalStrut(5));
+		if (!selling)
+		{
+			card.add(GuideUi.stat("Left", String.format("%,d", current.getActions()), GuideUi.BRIGHT));
+			card.add(GuideUi.stat("Time", "about " + Format.hours(current.getActions()
+				/ BankProfit.actionsPerHour(a.getMethod())), GuideUi.TEXT));
+			card.add(GuideUi.line("Then: sell the " + view.getProfitRun().toLowerCase() + " at the Grand Exchange ("
+				+ Format.gp(view.getProfitEach()) + " each after tax)", MUTED, GuideUi.CARD_WIDTH));
+			addRequirements(card, view.getRequirements());
+		}
+		guideBox.add(card);
+		guideBox.add(Box.createVerticalStrut(6));
+		JPanel buttons = new JPanel(new GridLayout(1, 2, 4, 0));
+		buttons.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		buttons.add(new JButton("Stop")
+		{
+			{
+				addActionListener(e -> listener.onStop());
+			}
+		});
+		buttons.add(new JButton("Bank filter")
+		{
+			{
+				setToolTipText("Show only this guide's items in the bank (or click the Banked XP button there)");
+				addActionListener(e -> listener.onToggleBankFilter());
+			}
+		});
+		guideBox.add(full(buttons));
 	}
 
 	private static void addRequirements(JPanel card, List<Requirement> reqs)

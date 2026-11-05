@@ -7,15 +7,20 @@ import com.skillinghelper.PathDisplay;
 import com.skillinghelper.PlayerSnapshot;
 import com.skillinghelper.ShortestPathBridge;
 import com.skillinghelper.SkillingHelperConfig;
+import com.skillinghelper.StartBankProfitRequest;
 import com.skillinghelper.TargetTracker;
 import com.skillinghelper.bank.BankAmountSwapper;
 import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.banked.data.BankedActivities;
 import com.skillinghelper.banked.data.BankedActivity;
+import com.skillinghelper.banked.profit.ProfitRecipe;
+import com.skillinghelper.banked.profit.ProfitRecipes;
+import com.skillinghelper.banked.profit.SellStep;
 import com.skillinghelper.banked.ui.BankedXpPanel;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.engine.GuideStep;
+import com.skillinghelper.engine.ItemHighlight;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.engine.StepResolver;
@@ -154,6 +159,15 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	 */
 	private String lastActivity;
 	private BankedView lastView;
+	/**
+	 * The Money Making plugin asked for a profit run on this recipe: process it, then sell what it made. Null for a
+	 * normal banked xp run.
+	 */
+	private ProfitRecipe profitRun;
+	/**
+	 * Noted id of each product, read from the item definitions once.
+	 */
+	private final Map<Integer, Integer> notedIds = new HashMap<>();
 
 	private final PriceLookup prices = id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id));
 
@@ -171,6 +185,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		}
 		tracker.setInterestingTargets(methods);
 		tracker.addInterestingTargets(Shops.targets());
+		tracker.addInterestingTargets(List.of(SellStep.CLERK));
 		shortestPath = new ShortestPathBridge(eventBus, displayConfig, configManager, "bankedxp:");
 		path = new PathDisplay(client, displayConfig, worldMapPointManager, shortestPath);
 		bankFilter = new BankFilter(client, clientThread, bankSearch, itemManager, this, configManager,
@@ -231,6 +246,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		});
 		guide = ActiveGuide.NONE;
 		running = false;
+		profitRun = null;
 		profileLoaded = false;
 		lastActivity = null;
 		lastView = null;
@@ -255,6 +271,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 				profileLoaded = false;
 				reloadBank = true;
 				running = false;
+				profitRun = null;
 			}
 			guide = ActiveGuide.NONE;
 			path.clear();
@@ -267,6 +284,34 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		profileLoaded = false;
 		reloadBank = true;
 		running = false;
+		profitRun = null;
+	}
+
+	/**
+	 * Money Making picked something in the bank to process for profit: guide it, then the selling.
+	 */
+	@Subscribe
+	public void onStartBankProfitRequest(StartBankProfitRequest e)
+	{
+		ProfitRecipe recipe = ProfitRecipes.byId(e.getRecipeId());
+		if (recipe == null)
+		{
+			return;
+		}
+		profitRun = recipe;
+		running = true;
+		lastActivity = null;
+		if (config.chatMessages())
+		{
+			chat("Profit run: " + recipe.getActivity().getName().toLowerCase() + ", then selling the "
+				+ recipe.getProductName().toLowerCase() + " at the Grand Exchange.");
+		}
+		final NavigationButton button = navButton;
+		if (button != null)
+		{
+			SwingUtilities.invokeLater(() -> clientToolbar.openPanel(button));
+		}
+		refresh();
 	}
 
 	@Subscribe
@@ -392,6 +437,11 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			return;
 		}
 
+		if (profitRun != null && running)
+		{
+			refreshProfit(p, state, view);
+			return;
+		}
 		planner.setBuyMissing(config.buyMissing());
 		List<BankedPlanner.Group> groups = planner.groups(state, choices, focus);
 		view.focus(focus).skills(planner.skillsWithUses(state));
@@ -437,6 +487,93 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		step = showPath(step);
 		guide = next.toBuilder().step(step).build();
 		show(p, view.running(true).current(current).step(step).requirements(plan.getRequirements()).build());
+	}
+
+	/**
+	 * A profit run: use up the banked item (buying missing secondaries), then sell the products at the GE.
+	 */
+	private void refreshProfit(BankedXpPanel p, PlayerState state, BankedView.BankedViewBuilder view)
+	{
+		ProfitRecipe recipe = profitRun;
+		BankedActivity a = recipe.getActivity();
+		int productId = recipe.getProductId();
+		int each = prices.sellPriceAfterTax(productId);
+		int actions = a.actions(state, true);
+		String lock = BankedPlanner.lockReason(a, state);
+		view.profitRun(recipe.getProductName()).profitEach(each);
+		if (actions > 0 && lock == null)
+		{
+			planner.setBuyMissing(true);
+			BankedPlanner.Option current = new BankedPlanner.Option(a, actions, a.xp(state, true), null, null);
+			BankedPlanner.Plan plan = planner.plan(a, state);
+			List<TravelPick> picks = travel.plan(state, StepResolver.destinations(plan.getMethod(), state));
+			if (!picks.isEmpty())
+			{
+				state = state.toBuilder().travel(picks).build();
+				plan = planner.plan(a, state);
+			}
+			GuideStep step = withBankTip(plan.getStep());
+			ActiveGuide next = ActiveGuide.builder()
+				.skill(a.getSkill())
+				.level(state.level(a.getSkill()))
+				.method(plan.getMethod())
+				.requirements(plan.getRequirements())
+				.step(step)
+				.bankItems(StepResolver.bankItems(plan.getRequirements(), step, state.getTravel()))
+				.player(state)
+				.hasGuide(true)
+				.wikiPage(plan.getMethod().getWikiPage())
+				.build();
+			step = showPath(step);
+			guide = next.toBuilder().step(step).build();
+			show(p, view.running(true).current(current).queue(List.of(current)).step(step)
+				.requirements(plan.getRequirements()).build());
+			return;
+		}
+
+		GuideStep sell = SellStep.next(state, productId, notedId(productId), recipe.getProductName(), each);
+		if (sell == null)
+		{
+			if (config.chatMessages())
+			{
+				chat(lock != null && actions > 0 ? "Can't do " + a.getName().toLowerCase() + " yet: " + lock + "."
+					: "All your " + recipe.getProductName().toLowerCase() + " are on sale. Collect the coins from "
+					+ "the Grand Exchange when the offer finishes. Nice!");
+			}
+			profitRun = null;
+			running = false;
+			lastActivity = null;
+			guide = ActiveGuide.NONE;
+			path.show(null);
+			show(p, view.profitRun(null).running(false).build());
+			return;
+		}
+		BankedPlanner.Option current = new BankedPlanner.Option(a, 0, 0, null, null);
+		Method m = BankedPlanner.placed(a, state);
+		Map<Integer, ItemHighlight> bankItems = new HashMap<>();
+		bankItems.put(productId, ItemHighlight.WITHDRAW);
+		ActiveGuide next = ActiveGuide.builder()
+			.skill(a.getSkill())
+			.level(state.level(a.getSkill()))
+			.method(m)
+			.step(sell)
+			.bankItems(bankItems)
+			.player(state)
+			.hasGuide(true)
+			.wikiPage("Grand_Exchange")
+			.build();
+		sell = showPath(sell);
+		guide = next.toBuilder().step(sell).build();
+		show(p, view.running(true).current(current).queue(List.of(current)).step(sell).build());
+	}
+
+	private int notedId(int itemId)
+	{
+		return notedIds.computeIfAbsent(itemId, id ->
+		{
+			int note = itemManager.getItemComposition(id).getLinkedNoteId();
+			return note > 0 ? note : -1;
+		});
 	}
 
 	private void show(BankedXpPanel p, BankedView view)
@@ -529,6 +666,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		clientThread.invokeLater(() ->
 		{
 			running = true;
+			profitRun = null;
 			lastActivity = null;
 			refresh();
 		});
@@ -540,6 +678,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		clientThread.invokeLater(() ->
 		{
 			running = false;
+			profitRun = null;
 			refresh();
 		});
 	}

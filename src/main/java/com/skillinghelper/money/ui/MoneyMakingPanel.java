@@ -1,5 +1,6 @@
 package com.skillinghelper.money.ui;
 
+import com.skillinghelper.banked.profit.BankProfit;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.money.MoneyGuide;
@@ -76,6 +77,11 @@ public class MoneyMakingPanel extends PluginPanel
 		 * Let every guide pick Wilderness methods, or leave them out again.
 		 */
 		void onAllowWilderness(boolean allow);
+
+		/**
+		 * Start the guide that processes a banked item for profit and sells it.
+		 */
+		void onStartBankProfit(String recipeId);
 	}
 
 	private final Listener listener;
@@ -87,6 +93,15 @@ public class MoneyMakingPanel extends PluginPanel
 	private final JTextField search = new JTextField();
 	private final JPanel guideBox = new JPanel();
 	private final JPanel list = new JPanel();
+	private final JPanel filters = new JPanel();
+	private final JButton wikiTab = new JButton("Wiki guides");
+	private final JButton bankTab = new JButton("My bank");
+	private final JLabel intro;
+	private final BankProfitList bankList;
+	/**
+	 * Showing what the bank can be processed into instead of the wiki's methods.
+	 */
+	private boolean bankMode;
 
 	private List<MoneyOption> options = Collections.emptyList();
 	private Map<String, String> fullGuides = Collections.emptyMap();
@@ -119,7 +134,18 @@ public class MoneyMakingPanel extends PluginPanel
 		title.setForeground(Color.WHITE);
 		header.add(left(title));
 		header.add(Box.createVerticalStrut(4));
-		header.add(text("OSRS Wiki money making guides, best gp/hr at today's prices first.", MUTED));
+		JPanel tabs = new JPanel(new GridLayout(1, 2, 4, 0));
+		tabs.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		wikiTab.setToolTipText("The OSRS Wiki's money making guides you can do");
+		bankTab.setToolTipText("Things in your bank you can craft, cook, fletch, smith or mix into something worth more");
+		wikiTab.addActionListener(e -> setBankMode(false));
+		bankTab.addActionListener(e -> setBankMode(true));
+		tabs.add(wikiTab);
+		tabs.add(bankTab);
+		header.add(full(tabs));
+		header.add(Box.createVerticalStrut(6));
+		intro = GuideUi.text(WIKI_INTRO, MUTED, TEXT_WIDTH);
+		header.add(left(intro));
 		header.add(Box.createVerticalStrut(6));
 
 		category.addItem(ALL);
@@ -170,12 +196,15 @@ public class MoneyMakingPanel extends PluginPanel
 		combos.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		combos.add(category);
 		combos.add(effort);
-		header.add(full(combos));
-		header.add(Box.createVerticalStrut(4));
-		header.add(full(search));
-		header.add(left(showLocked));
-		header.add(left(showLosing));
-		header.add(left(showWilderness));
+		filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
+		filters.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		filters.add(full(combos));
+		filters.add(Box.createVerticalStrut(4));
+		filters.add(full(search));
+		filters.add(left(showLocked));
+		filters.add(left(showLosing));
+		filters.add(left(showWilderness));
+		header.add(full(filters));
 		add(header, BorderLayout.NORTH);
 
 		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
@@ -202,6 +231,56 @@ public class MoneyMakingPanel extends PluginPanel
 		add(scroll, BorderLayout.CENTER);
 
 		list.add(text("Log in to see the money makers you can do.", MUTED));
+		bankList = new BankProfitList(list, listener::onStartBankProfit, listener::onOpenWiki);
+		styleTabs();
+	}
+
+	private static final String WIKI_INTRO = "OSRS Wiki money making guides, best gp/hr at today's prices first.";
+	private static final String BANK_INTRO = "Items in your bank you can process and sell for more, most profit first.";
+
+	/**
+	 * Shows what the bank can be processed into for profit. Runs on the Swing thread.
+	 */
+	public void updateBank(BankProfit.Result result, boolean loggedIn,
+		boolean bankKnown, boolean guideOn, int soonLevels)
+	{
+		redraws.run("bank", () ->
+		{
+			bankList.update(result, loggedIn, bankKnown, guideOn, soonLevels);
+			if (bankMode)
+			{
+				rebuild();
+			}
+		});
+	}
+
+	/**
+	 * Switches to the "From my bank" list. Runs on the Swing thread.
+	 */
+	public void showBankTab()
+	{
+		setBankMode(true);
+	}
+
+	private void setBankMode(boolean bank)
+	{
+		if (bankMode == bank)
+		{
+			return;
+		}
+		bankMode = bank;
+		styleTabs();
+		rebuild();
+	}
+
+	private void styleTabs()
+	{
+		wikiTab.setForeground(bankMode ? MUTED : Color.WHITE);
+		bankTab.setForeground(bankMode ? Color.WHITE : MUTED);
+		filters.setVisible(!bankMode);
+		intro.setText(GuideUi.text(bankMode ? BANK_INTRO : WIKI_INTRO, MUTED, TEXT_WIDTH).getText());
+		revalidate();
+		repaint();
 	}
 
 	/**
@@ -319,6 +398,13 @@ public class MoneyMakingPanel extends PluginPanel
 	private void rebuild()
 	{
 		list.removeAll();
+		if (bankMode)
+		{
+			bankList.rebuild();
+			list.revalidate();
+			list.repaint();
+			return;
+		}
 		List<MoneyOption> visible = new ArrayList<>();
 		for (MoneyOption o : options)
 		{

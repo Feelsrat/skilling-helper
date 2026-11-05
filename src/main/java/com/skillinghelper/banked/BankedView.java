@@ -42,4 +42,12 @@ public class BankedView
 	GuideStep step;
 	@Builder.Default
 	List<Requirement> requirements = Collections.emptyList();
+	/**
+	 * Product of a profit run started from Money Making, or null for a normal banked xp run.
+	 */
+	String profitRun;
+	/**
+	 * Gold one product of the profit run sells for, after tax.
+	 */
+	int profitEach;
 }
