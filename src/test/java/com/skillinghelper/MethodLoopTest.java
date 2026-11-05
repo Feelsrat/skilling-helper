@@ -62,8 +62,10 @@ public class MethodLoopTest
 			{
 				if (input == CombatGear.AMMO_INPUT)
 				{
-					// Worn in the quiver; iron arrows fire from any bow, better ammo may not fit the guide's weapon
+					// Worn in the quiver with a shortbow, so the guide trains with them instead of suggesting a
+					// crossbow at higher levels
 					worn.put(ItemID.IRON_ARROW, 1_000);
+					worn.put(ItemID.SHORTBOW, 1);
 					continue;
 				}
 				carried.merge(input.getIds()[0], input.isWholeStack() ? 1_000 : Math.max(1, input.getQuantity()),

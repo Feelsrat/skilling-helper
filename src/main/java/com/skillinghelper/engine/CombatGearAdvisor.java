@@ -3,6 +3,7 @@ package com.skillinghelper.engine;
 import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.CombatSpell;
 import com.skillinghelper.data.ItemReq;
+import com.skillinghelper.data.Method;
 import net.runelite.api.Skill;
 
 /**
@@ -78,6 +79,10 @@ final class CombatGearAdvisor
 		{
 			return spellRunes(input, s);
 		}
+		if (input == CombatGear.CHINCHOMPA_INPUT)
+		{
+			return chinchompas(input, s);
+		}
 		if (input != CombatGear.AMMO_INPUT)
 		{
 			return input;
@@ -103,6 +108,44 @@ final class CombatGearAdvisor
 			input = input.withSubstituteName(null).withSubstituteIds(null);
 		}
 		return input.withName(best.getName()).withIds(best.getIds().clone());
+	}
+
+	/**
+	 * The best chinchompas the player owns and can throw, else the best they can buy for their Ranged level.
+	 */
+	private static ItemReq chinchompas(ItemReq input, PlayerState s)
+	{
+		int ranged = s.level(Skill.RANGED);
+		int pick = -1;
+		for (int i = 0; i < CombatGear.CHINCHOMPA_IDS.length; i++)
+		{
+			if (ranged < CombatGear.CHINCHOMPA_LEVELS[i])
+			{
+				continue;
+			}
+			if (s.owned(CombatGear.CHINCHOMPA_IDS[i]) > 0)
+			{
+				pick = i;
+				break;
+			}
+			if (pick < 0)
+			{
+				pick = i;
+			}
+		}
+		if (pick < 0)
+		{
+			return input;
+		}
+		return input.withName(CombatGear.CHINCHOMPA_NAMES[pick]).withIds(new int[]{CombatGear.CHINCHOMPA_IDS[pick]});
+	}
+
+	/**
+	 * Whether the method throws chinchompas, which take the weapon slot, so no bow, ammo or offhand is suggested.
+	 */
+	static boolean chinning(Method m)
+	{
+		return m.getInputs().contains(CombatGear.CHINCHOMPA_INPUT);
 	}
 
 	/**

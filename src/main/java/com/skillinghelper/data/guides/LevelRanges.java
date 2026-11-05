@@ -42,9 +42,14 @@ final class LevelRanges
 		range("attack_gemstone_crab", 99); // 1+ Gemstone Crab (Varlamore)
 		range("attack_cows", 20); // 10+ Cows (Lumbridge)
 		range("attack_al_kharid_warriors", 40); // 20+ Al Kharid warriors
-		range("attack_sand_crabs", 70); // 20+ Sand crabs (Hosidius)
+		range("attack_sand_crabs", 99); // 20+ Sand crabs (Hosidius), AFK all the way when ammonite crabs are locked
 		range("attack_hill_giants", 60); // 30+ Hill giants (Edgeville Dungeon)
 		range("attack_nmz", 99); // 60+ Nightmare Zone
+		range("attack_rock_crabs", 40); // 10+ Rock crabs (Rellekka)
+		range("attack_ammonite_crabs", 99); // 30+ Ammonite crabs (Fossil Island)
+		range("attack_sulphur_naguas", 75); // 55+ Sulphur naguas (Neypotzli)
+		range("attack_maniacal_monkeys", 99); // 75+ Maniacal monkeys (Kruk's Dungeon)
+		range("attack_gargoyles", 99); // 80+ Gargoyles (Slayer Tower)
 		// Construction
 		range("con_crude_chairs", 4); // 1+ Build crude wooden chairs
 		range("con_mahogany_homes", 99); // 1+ Mahogany Homes contracts
@@ -109,9 +114,14 @@ final class LevelRanges
 		range("defence_gemstone_crab", 99); // 1+ Gemstone Crab (Varlamore)
 		range("defence_cows", 20); // 10+ Cows (Lumbridge)
 		range("defence_al_kharid_warriors", 40); // 20+ Al Kharid warriors
-		range("defence_sand_crabs", 70); // 20+ Sand crabs (Hosidius)
+		range("defence_sand_crabs", 99); // 20+ Sand crabs (Hosidius), AFK all the way when ammonite crabs are locked
 		range("defence_hill_giants", 60); // 30+ Hill giants (Edgeville Dungeon)
 		range("defence_nmz", 99); // 60+ Nightmare Zone
+		range("defence_rock_crabs", 40); // 10+ Rock crabs (Rellekka)
+		range("defence_ammonite_crabs", 99); // 30+ Ammonite crabs (Fossil Island)
+		range("defence_sulphur_naguas", 75); // 55+ Sulphur naguas (Neypotzli)
+		range("defence_maniacal_monkeys", 99); // 75+ Maniacal monkeys (Kruk's Dungeon)
+		range("defence_gargoyles", 99); // 80+ Gargoyles (Slayer Tower)
 		// Farming
 		range("farm_allotments", 32); // 1+ Potatoes in allotments (Falador)
 		range("farm_tree_oak", 30); // 15+ Oak tree runs
@@ -204,9 +214,14 @@ final class LevelRanges
 		range("hitpoints_gemstone_crab", 99); // 1+ Gemstone Crab (Varlamore)
 		range("hitpoints_cows", 20); // 10+ Cows (Lumbridge)
 		range("hitpoints_al_kharid_warriors", 40); // 20+ Al Kharid warriors
-		range("hitpoints_sand_crabs", 70); // 20+ Sand crabs (Hosidius)
+		range("hitpoints_sand_crabs", 99); // 20+ Sand crabs (Hosidius), AFK all the way when ammonite crabs are locked
 		range("hitpoints_hill_giants", 60); // 30+ Hill giants (Edgeville Dungeon)
 		range("hitpoints_nmz", 99); // 60+ Nightmare Zone
+		range("hitpoints_rock_crabs", 40); // 10+ Rock crabs (Rellekka)
+		range("hitpoints_ammonite_crabs", 99); // 30+ Ammonite crabs (Fossil Island)
+		range("hitpoints_sulphur_naguas", 75); // 55+ Sulphur naguas (Neypotzli)
+		range("hitpoints_maniacal_monkeys", 99); // 75+ Maniacal monkeys (Kruk's Dungeon)
+		range("hitpoints_gargoyles", 99); // 80+ Gargoyles (Slayer Tower)
 		// Hunter
 		range("hunter_crimson_swift", 9); // 1+ Crimson swifts (Feldip Hills)
 		range("hunter_birdhouses", 99); // 5+ Birdhouse runs (Fossil Island)
@@ -262,7 +277,13 @@ final class LevelRanges
 		range("ranged_gemstone_crab", 99); // 1+ Gemstone Crab (Varlamore)
 		range("ranged_cows", 20); // 10+ Cows (Lumbridge)
 		range("ranged_al_kharid_warriors", 40); // 20+ Al Kharid warriors
-		range("ranged_sand_crabs", 70); // 20+ Sand crabs (Hosidius)
+		range("ranged_sand_crabs", 99); // 20+ Sand crabs (Hosidius), AFK all the way when ammonite crabs are locked
+		range("ranged_ogres_cannon", 45); // 1+ Cannon ogres (Castle Wars), until chinning at 45
+		range("ranged_rock_crabs", 40); // 10+ Rock crabs (Rellekka)
+		range("ranged_ammonite_crabs", 99); // 30+ Ammonite crabs (Fossil Island)
+		range("ranged_maniacal_monkeys", 99); // 45+ Chinning maniacal monkeys (Kruk's Dungeon)
+		range("ranged_skeletal_monkeys", 99); // 45+ Chinning skeletal monkeys (Ape Atoll Dungeon)
+		range("ranged_nmz", 99); // 70+ Nightmare Zone
 		range("ranged_hill_giants", 60); // 30+ Hill giants (Edgeville Dungeon)
 		// Runecraft
 		range("rc_air", 14); // 1+ Air runes (Falador)
@@ -316,9 +337,14 @@ final class LevelRanges
 		range("strength_gemstone_crab", 99); // 1+ Gemstone Crab (Varlamore)
 		range("strength_cows", 20); // 10+ Cows (Lumbridge)
 		range("strength_al_kharid_warriors", 40); // 20+ Al Kharid warriors
-		range("strength_sand_crabs", 70); // 20+ Sand crabs (Hosidius)
+		range("strength_sand_crabs", 99); // 20+ Sand crabs (Hosidius), AFK all the way when ammonite crabs are locked
 		range("strength_hill_giants", 60); // 30+ Hill giants (Edgeville Dungeon)
 		range("strength_nmz", 99); // 60+ Nightmare Zone
+		range("strength_rock_crabs", 40); // 10+ Rock crabs (Rellekka)
+		range("strength_ammonite_crabs", 99); // 30+ Ammonite crabs (Fossil Island)
+		range("strength_sulphur_naguas", 75); // 55+ Sulphur naguas (Neypotzli)
+		range("strength_maniacal_monkeys", 99); // 75+ Maniacal monkeys (Kruk's Dungeon)
+		range("strength_gargoyles", 99); // 80+ Gargoyles (Slayer Tower)
 		// Thieving
 		range("thieve_men", 5); // 1+ Pickpocket men (Lumbridge)
 		range("thieve_cake_stall", 25); // 5+ Baker's stall (Ardougne)

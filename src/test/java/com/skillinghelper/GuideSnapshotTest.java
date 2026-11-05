@@ -220,6 +220,8 @@ public class GuideSnapshotTest
 			.membersWorld(strong)
 			.completedQuests(strong && !m.getQuests().isEmpty() ? EnumSet.copyOf(m.getQuests())
 				: EnumSet.noneOf(Quest.class))
+			.startedQuests(strong && !m.getQuestsStarted().isEmpty() ? EnumSet.copyOf(m.getQuestsStarted())
+				: EnumSet.noneOf(Quest.class))
 			.build();
 	}
 

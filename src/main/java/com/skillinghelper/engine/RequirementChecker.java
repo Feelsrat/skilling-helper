@@ -58,6 +58,18 @@ final class RequirementChecker
 			boolean done = s.getCompletedQuests().contains(q);
 			reqs.add(info("Quest: " + q.getName(), done ? Requirement.Status.READY : Requirement.Status.MISSING));
 		}
+		for (Map.Entry<Skill, Integer> e : m.getSkillLevels().entrySet())
+		{
+			boolean has = s.level(e.getKey()) >= e.getValue();
+			reqs.add(info(e.getValue() + " " + e.getKey().getName(),
+				has ? Requirement.Status.READY : Requirement.Status.MISSING));
+		}
+		for (Quest q : m.getQuestsStarted())
+		{
+			boolean started = s.getStartedQuests().contains(q) || s.getCompletedQuests().contains(q);
+			reqs.add(info("Quest: " + q.getName() + " (started)",
+				started ? Requirement.Status.READY : Requirement.Status.MISSING));
+		}
 		if (m.getRequirementText() != null)
 		{
 			reqs.add(info(m.getRequirementText(), Requirement.Status.INFO));
@@ -382,10 +394,17 @@ final class RequirementChecker
 		{
 			return;
 		}
+		boolean chinning = CombatGearAdvisor.chinning(m);
 		for (CombatGear slot : CombatGear.values())
 		{
 			if (slot.getStyle() != m.getGearStyle())
 			{
+				continue;
+			}
+			if (chinning && (slot == CombatGear.RANGED_WEAPON || slot == CombatGear.RANGED_AMMO
+				|| slot == CombatGear.RANGED_SHIELD))
+			{
+				// The chinchompas are the weapon
 				continue;
 			}
 			if (slot == CombatGear.RANGED_AMMO)

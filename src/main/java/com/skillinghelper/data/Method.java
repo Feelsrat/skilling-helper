@@ -2,6 +2,7 @@ package com.skillinghelper.data;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.Builder;
 import lombok.NonNull;
@@ -156,6 +157,17 @@ public class Method
 	String notes;
 	@Singular
 	List<Quest> quests;
+	/**
+	 * Quests that only need to be started (or partly done) to get to the training spot, e.g. Monkey Madness II for
+	 * Kruk's Dungeon.
+	 */
+	@Singular("questStarted")
+	List<Quest> questsStarted;
+	/**
+	 * Levels needed in other skills, e.g. 75 Slayer to hurt gargoyles.
+	 */
+	@Singular
+	Map<Skill, Integer> skillLevels;
 	/**
 	 * Free text for requirements that can't be checked automatically.
 	 */

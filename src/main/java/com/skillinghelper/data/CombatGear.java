@@ -282,6 +282,21 @@ public enum CombatGear
 		.orUse("Loaded toxic blowpipe", ItemID.TOXIC_BLOWPIPE_LOADED);
 
 	/**
+	 * Chinchompas thrown at groups of monsters, best first, with the Ranged level each needs. The chinchompa is the
+	 * weapon, so chinning methods suggest no bow, ammo or offhand.
+	 */
+	public static final String[] CHINCHOMPA_NAMES = {"Black chinchompas", "Red chinchompas", "Chinchompas"};
+	public static final int[] CHINCHOMPA_IDS = {ItemID.CHINCHOMPA_BLACK, ItemID.CHINCHOMPA_BIG_CAPTURED,
+		ItemID.CHINCHOMPA_CAPTURED};
+	public static final int[] CHINCHOMPA_LEVELS = {65, 55, 45};
+	/**
+	 * The ammo input of a chinning method. The guide names the best kind the player owns and can throw, or else the
+	 * best they can buy.
+	 */
+	public static final ItemReq CHINCHOMPA_INPUT = ItemReq.stack("Chinchompas", 1, ItemID.CHINCHOMPA_CAPTURED,
+		ItemID.CHINCHOMPA_BIG_CAPTURED, ItemID.CHINCHOMPA_BLACK);
+
+	/**
 	 * One tier of gear. {@code skill} is null when there's no level requirement; {@code defenceLevel} and
 	 * {@code attackLevel} are extra Defence and Attack requirements (0 if none). {@code ammo} is what a weapon fires,
 	 * or what kind of ammo this is.

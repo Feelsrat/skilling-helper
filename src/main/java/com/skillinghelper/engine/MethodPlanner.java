@@ -411,6 +411,20 @@ public final class MethodPlanner
 				blockers.add("Needs " + q.getName());
 			}
 		}
+		for (Map.Entry<Skill, Integer> e : m.getSkillLevels().entrySet())
+		{
+			if (state.level(e.getKey()) < e.getValue())
+			{
+				blockers.add("Needs " + e.getValue() + " " + e.getKey().getName());
+			}
+		}
+		for (Quest q : m.getQuestsStarted())
+		{
+			if (!state.getStartedQuests().contains(q) && !state.getCompletedQuests().contains(q))
+			{
+				blockers.add("Needs " + q.getName() + " started");
+			}
+		}
 		return blockers;
 	}
 
