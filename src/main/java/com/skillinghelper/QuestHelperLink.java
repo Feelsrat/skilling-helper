@@ -6,7 +6,8 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 
 /**
- * Finds the Quest Helper plugin, which the Quest Order Guide hands each quest over to for the click-by-click steps.
+ * Finds the Quest Helper plugin, which the Quest Order Guide and Account Unlocks hand each quest over to for the
+ * click-by-click steps.
  * Quest Helper has no way for other plugins to start a quest in it, so the guide shows where to right-click it.
  * Warns once per session when it's missing, like {@link ShortestPathLink}. Client thread only.
  */
@@ -14,9 +15,14 @@ public final class QuestHelperLink
 {
 	static final String PLUGIN_CLASS = "com.questhelper.QuestHelperPlugin";
 	static final String PLUGIN_NAME = "Quest Helper";
-	static final String WARNING = "The Quest Helper plugin isn't installed or isn't turned on, so the Quest Order "
-		+ "Guide can only show where each quest starts. Get Quest Helper from the Plugin Hub (or turn it on) for "
+	static final String WARNING = "The Quest Helper plugin isn't installed or isn't turned on, so the guides can "
+		+ "only show where each quest starts. Get Quest Helper from the Plugin Hub (or turn it on) for "
 		+ "click-by-click quest steps.";
+	/**
+	 * Shown on a guide step that sends the player through a quest while Quest Helper is missing.
+	 */
+	public static final String MISSING = "The Quest Helper plugin isn't installed or isn't turned on. Get it from "
+		+ "the Plugin Hub (or turn it on) to be shown every step of the quest.";
 
 	private static boolean warned;
 

@@ -2,6 +2,7 @@ package com.skillinghelper.diary;
 
 import com.google.inject.Provides;
 import com.skillinghelper.ShortestPathLink;
+import com.skillinghelper.StartDiaryGuideRequest;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Wilderness;
@@ -99,12 +100,11 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	@Inject
 	private TravelAdvisor travel;
 	@Inject
-	private DiaryItemOverlay itemOverlay;
-	@Inject
 	private ModelOutlineRenderer outlineRenderer;
 
 	private NameTargets targets;
 	private DiarySceneOverlay sceneOverlay;
+	private DiaryItemOverlay itemOverlay;
 	private DiaryPanel panel;
 	private NavigationButton navButton;
 
@@ -135,7 +135,8 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	protected void startUp()
 	{
 		targets = new NameTargets(client);
-		sceneOverlay = new DiarySceneOverlay(client, this, config, targets, outlineRenderer);
+		sceneOverlay = new DiarySceneOverlay(client, this::getStep, config::targetColor, targets, outlineRenderer);
+		itemOverlay = new DiaryItemOverlay(this::getStep, config::itemColor, itemManager, configManager);
 		eventBus.register(targets);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
@@ -265,6 +266,26 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 		refresh();
 	}
 
+	/**
+	 * Another plugin in this jar (Account Unlocks) asked to guide one diary tier: pick it, start, open the panel.
+	 */
+	@Subscribe
+	public void onStartDiaryGuideRequest(StartDiaryGuideRequest e)
+	{
+		configManager.setConfiguration(AchievementDiaryConfig.GROUP, "region", e.getRegion().name());
+		configManager.setConfiguration(AchievementDiaryConfig.GROUP, "tier", e.getTier().name());
+		if (e.getRegion() != region || e.getTier() != tier)
+		{
+			picked = null;
+		}
+		region = e.getRegion();
+		tier = e.getTier();
+		running = true;
+		checkShortestPath = true;
+		refresh();
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
+	}
+
 	// ---- Reading the player ----
 
 	private void readQuests()
@@ -288,17 +309,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 		Map<Integer, Integer> varps = new HashMap<>();
 		for (DiaryTask t : Diaries.all())
 		{
-			boolean isDone;
-			if (t.getVarp() > 0)
-			{
-				int value = varps.computeIfAbsent(t.getVarp(), client::getVarpValue);
-				isDone = (value >>> t.getBit() & 1) != 0;
-			}
-			else
-			{
-				isDone = client.getVarbitValue(t.getVarbit()) >= t.getVarbitDone();
-			}
-			if (isDone)
+			if (DiaryGuide.isDone(t, id -> varps.computeIfAbsent(id, client::getVarpValue), client::getVarbitValue))
 			{
 				done.add(t.key());
 			}

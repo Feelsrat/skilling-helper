@@ -197,6 +197,19 @@ panel offers to turn it on if it's off):
 The data (rewards, STASH units, drop sources) is built from the OSRS Wiki by `tools/clue/build_clue_data.py`; the
 plugin doesn't go online for it.
 
+## Account Unlocks
+
+Also in the jar: **Account Unlocks** (padlock icon). A checklist of the unlocks that make the game smoother, in a
+suggested order: graceful, a house, the Dramen staff, fairy rings, spirit trees, gnome gliders, the easy diary
+rewards (Ardougne cloak, Explorer's ring, Karamja gloves, Varrock armour), coal and gem bags, the Ectophial, Ava's
+accumulator, the Slayer helmet unlock, the rune pouch, Barrows gloves, Ancient Magicks, the Lunar spellbook and
+staffless fairy rings. Each row says what it gives, how it's got and what's still missing; done ones are ticked (read
+from quests, varbits, claimed diary rewards and the items in your bank). Start the guide, or click a row, and it
+takes you through the next part: quests go to Quest Helper (warns in the chat and panel if it's missing), diary
+rewards open Achievement Diary Guides, points to earn (marks of grace, golden nuggets, Slayer points) open Skilling
+Helper, and the last part (buying it from Grace, Percy, a Slayer master or the Culinaromancer's chest) is guided step
+by step with the bank, the route and what to click. No network requests.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it

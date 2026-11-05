@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntUnaryOperator;
 import lombok.Value;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
@@ -101,6 +102,19 @@ public final class DiaryGuide
 			out.add("Wilderness turned off in the panel");
 		}
 		return out;
+	}
+
+	/**
+	 * Whether the game says the task is done, from its varp bit or varbit.
+	 */
+	public static boolean isDone(DiaryTask t, IntUnaryOperator varp,
+		IntUnaryOperator varbit)
+	{
+		if (t.getVarp() > 0)
+		{
+			return (varp.applyAsInt(t.getVarp()) >>> t.getBit() & 1) != 0;
+		}
+		return varbit.applyAsInt(t.getVarbit()) >= t.getVarbitDone();
 	}
 
 	public static boolean done(DiaryTask t, DiaryPlayer p)

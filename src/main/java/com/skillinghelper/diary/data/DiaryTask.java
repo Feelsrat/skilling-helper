@@ -14,7 +14,7 @@ import net.runelite.api.Skill;
  * step-by-step guide to do it.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class DiaryTask
 {
 	/**
