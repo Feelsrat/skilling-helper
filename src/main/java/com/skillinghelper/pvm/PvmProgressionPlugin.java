@@ -25,6 +25,8 @@ import com.skillinghelper.pvm.guide.PvmStep;
 import com.skillinghelper.pvm.guide.Supplies;
 import com.skillinghelper.pvm.guide.Supply;
 import com.skillinghelper.pvm.ui.PvmProgressionPanel;
+import com.skillinghelper.travel.TravelAdvisor;
+import com.skillinghelper.travel.TravelPick;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,6 +122,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	private ClientThread clientThread;
 	@Inject
 	private ConfigManager configManager;
+	@Inject
+	private TravelAdvisor travel;
 
 	@Inject
 	private PluginManager pluginManager;
@@ -799,10 +803,16 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			tripStocked = false;
 		}
-		state = state.toBuilder().tripStocked(tripStocked).build();
+		state = state.toBuilder().tripStocked(tripStocked).travel(travelPick(state)).build();
 		PvmStep next = GuideResolver.resolve(guide, guideContent.getName(), state, plan);
 		showRoute(next.getDestination(), next.isLocalRoute());
 		Set<Integer> items = plan.bankItems();
+		TravelPick pick = state.getTravel();
+		if (pick != null && !pick.isCarried())
+		{
+			items = new HashSet<>(items);
+			items.add(pick.getItemId());
+		}
 		if (!items.equals(bankItems))
 		{
 			bankItems = items;
@@ -905,6 +915,24 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * The travel item worth bringing to the guide's place, or null.
+	 */
+	private TravelPick travelPick(GuideState s)
+	{
+		Location place = guide.getPlace();
+		WorldPoint point = place != null ? place.getPoint() : guideContent.getLocation();
+		if (point == null || s.isInInstance())
+		{
+			return null;
+		}
+		Map<Integer, Integer> bank = s.getBank();
+		return travel.pick(id -> s.getInventory().containsKey(id) || s.getWorn().containsKey(id),
+			id -> bank != null && bank.getOrDefault(id, 0) > 0, s.getLocation(), List.of(point),
+			place != null ? place.getName() : guideContent.getName(),
+			guideContent.isWilderness() && Wilderness.contains(point));
 	}
 
 	private GuideState guideState()
@@ -1058,6 +1086,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		// Only path through the Wilderness when the place itself is there, whatever Shortest Path's own setting says
 		Map<String, Object> overrides = new HashMap<>();
 		overrides.put("avoidWilderness", !(wilderness && Wilderness.contains(target)));
+		ShortestPathLink.allowCarriedTeleports(configManager, overrides);
 		data.put("config", overrides);
 		ShortestPathLink.path(eventBus, this, data);
 	}

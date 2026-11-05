@@ -1,5 +1,6 @@
 package com.skillinghelper.pvm.guide;
 
+import com.skillinghelper.travel.TravelPick;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -85,6 +86,10 @@ public class GuideState
 	 * Barrows: the way through the tunnels to the chest, or null outside the tunnels or when it can't be worked out.
 	 */
 	TunnelRoute tunnel;
+	/**
+	 * The travel item to bring to the guide's place, or null.
+	 */
+	TravelPick travel;
 
 	public int level(Skill skill)
 	{

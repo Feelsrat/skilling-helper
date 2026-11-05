@@ -17,7 +17,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 
 /**
- * Outlines inventory items to use, wear or drop, and bank items to withdraw.
+ * Outlines inventory items to use, wear or drop, and bank items to withdraw (travel items in their own colour).
  */
 public class ItemHighlightOverlay extends WidgetItemOverlay
 {
@@ -61,7 +61,7 @@ public class ItemHighlightOverlay extends WidgetItemOverlay
 		else
 		{
 			kind = step.getItemHighlights().get(itemId);
-			if (kind == ItemHighlight.WITHDRAW)
+			if (kind == ItemHighlight.WITHDRAW || kind == ItemHighlight.TRAVEL)
 			{
 				kind = null;
 			}
@@ -89,6 +89,8 @@ public class ItemHighlightOverlay extends WidgetItemOverlay
 			case DROP:
 			case DEPOSIT:
 				return config.dropColor();
+			case TRAVEL:
+				return config.travelColor();
 			case USE:
 			case WITHDRAW:
 			default:

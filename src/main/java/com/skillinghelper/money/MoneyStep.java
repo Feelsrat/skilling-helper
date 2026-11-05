@@ -76,6 +76,11 @@ public class MoneyStep
 	 */
 	@Builder.Default
 	Set<Integer> use = Collections.emptySet();
+	/**
+	 * The travel item to take out of the bank, outlined in its own colour. Empty when there's none.
+	 */
+	@Builder.Default
+	Set<Integer> travel = Collections.emptySet();
 
 	/**
 	 * Whether the step is about getting the supplies, so the panel offers "I have everything".

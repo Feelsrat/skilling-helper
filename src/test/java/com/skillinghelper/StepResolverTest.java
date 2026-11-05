@@ -9,7 +9,10 @@ import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.engine.StepResolver;
 import com.skillinghelper.engine.StepType;
+import com.skillinghelper.travel.TravelOption;
+import com.skillinghelper.travel.TravelPick;
 import java.util.List;
+import java.util.Map;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.gameval.ItemID;
@@ -108,6 +111,45 @@ public class StepResolverTest
 		GuideStep bank = resolver.resolve(willows, full, 40, false, resolver.requirements(willows, full, 100));
 		assertEquals(StepType.BANK, bank.getType());
 		assertEquals(ItemHighlight.DEPOSIT, bank.getItemHighlights().get(ItemID.WILLOW_LOGS));
+	}
+
+	private static TravelPick tablet(boolean carried)
+	{
+		TravelOption o = new TravelOption(TravelOption.Kind.ITEM, "Varrock tablet", "Varrock tablet",
+			new WorldPoint(3213, 3424, 0), new int[]{ItemID.POH_TABLET_VARROCKTELEPORT}, true, List.of(), Map.of(),
+			List.of(), List.of());
+		return new TravelPick(o, ItemID.POH_TABLET_VARROCKTELEPORT, carried, 10, "Willows");
+	}
+
+	@Test
+	public void travelItemInBankIsTakenOutInItsOwnColour()
+	{
+		PlayerState s = base(30, 1).location(lumbridge).travel(tablet(false))
+			.bank(ItemCounts.of(ItemID.MITHRIL_AXE, 1, ItemID.POH_TABLET_VARROCKTELEPORT, 5)).build();
+		GuideStep step = step(willows, s);
+		assertEquals(StepType.BANK, step.getType());
+		assertEquals(ItemHighlight.TRAVEL, step.getItemHighlights().get(ItemID.POH_TABLET_VARROCKTELEPORT));
+		assertEquals(Integer.valueOf(1), step.getWithdrawAmounts().get(ItemID.POH_TABLET_VARROCKTELEPORT));
+		assertTrue(step.getDetails().stream().anyMatch(l -> l.contains("Travel: take your Varrock tablet")));
+		Map<Integer, ItemHighlight> bank = StepResolver.bankItems(List.of(), step, s.getTravel());
+		assertEquals(ItemHighlight.TRAVEL, bank.get(ItemID.POH_TABLET_VARROCKTELEPORT));
+	}
+
+	@Test
+	public void carriedTravelItemIsKeptWhileHeadingOut()
+	{
+		PlayerState full = base(30, 1).location(atWillows).bank(ItemCounts.EMPTY).freeInventorySlots(0)
+			.travel(tablet(true))
+			.inventory(ItemCounts.of(ItemID.MITHRIL_AXE, 1, ItemID.WILLOW_LOGS, 26, ItemID.POH_TABLET_VARROCKTELEPORT, 1))
+			.build();
+		GuideStep bank = resolver.resolve(willows, full, 40, false, resolver.requirements(willows, full, 100));
+		assertEquals(StepType.BANK, bank.getType());
+		assertNull(bank.getItemHighlights().get(ItemID.POH_TABLET_VARROCKTELEPORT));
+
+		// Once there the guide no longer suggests it, so the next bank trip puts it back to free the slot
+		PlayerState arrived = full.toBuilder().travel(null).build();
+		GuideStep next = resolver.resolve(willows, arrived, 40, false, resolver.requirements(willows, arrived, 100));
+		assertEquals(ItemHighlight.DEPOSIT, next.getItemHighlights().get(ItemID.POH_TABLET_VARROCKTELEPORT));
 	}
 
 	@Test

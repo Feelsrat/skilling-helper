@@ -2,6 +2,7 @@ package com.skillinghelper.engine;
 
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Mooring;
+import com.skillinghelper.travel.TravelPick;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -75,6 +76,10 @@ public class PlayerState
 	 * Buy from an NPC shop instead of the Grand Exchange when it's cheaper.
 	 */
 	boolean preferShops;
+	/**
+	 * The travel item to bring to the training spot, or null.
+	 */
+	TravelPick travel;
 
 	public int level(Skill skill)
 	{

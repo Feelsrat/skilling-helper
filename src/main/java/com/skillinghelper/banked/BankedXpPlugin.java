@@ -24,6 +24,8 @@ import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
 import com.skillinghelper.shops.Shops;
+import com.skillinghelper.travel.TravelAdvisor;
+import com.skillinghelper.travel.TravelPick;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -98,6 +100,8 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	@Inject
 	private ConfigManager configManager;
 	@Inject
+	private TravelAdvisor travel;
+	@Inject
 	private OverlayManager overlayManager;
 	@Inject
 	private ClientToolbar clientToolbar;
@@ -167,7 +171,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		}
 		tracker.setInterestingTargets(methods);
 		tracker.addInterestingTargets(Shops.targets());
-		shortestPath = new ShortestPathBridge(eventBus, displayConfig, "bankedxp:");
+		shortestPath = new ShortestPathBridge(eventBus, displayConfig, configManager, "bankedxp:");
 		path = new PathDisplay(client, displayConfig, worldMapPointManager, shortestPath);
 		bankFilter = new BankFilter(client, clientThread, bankSearch, itemManager, this, configManager,
 			new BankFilter.Options(BankedXpConfig.GROUP, 3, "Banked XP items", config::showBankButton,
@@ -412,6 +416,12 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		BankedPlanner.Option current = queue.get(0);
 		announce(current, queue);
 		BankedPlanner.Plan plan = planner.plan(current.getActivity(), state);
+		TravelPick pick = travel.pick(state, StepResolver.destinations(plan.getMethod(), state));
+		if (pick != null)
+		{
+			state = state.toBuilder().travel(pick).build();
+			plan = planner.plan(current.getActivity(), state);
+		}
 		GuideStep step = withBankTip(plan.getStep());
 		ActiveGuide next = ActiveGuide.builder()
 			.skill(current.getActivity().getSkill())
@@ -419,7 +429,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			.method(plan.getMethod())
 			.requirements(plan.getRequirements())
 			.step(step)
-			.bankItems(StepResolver.bankItems(plan.getRequirements(), step))
+			.bankItems(StepResolver.bankItems(plan.getRequirements(), step, state.getTravel()))
 			.player(state)
 			.hasGuide(true)
 			.wikiPage(plan.getMethod().getWikiPage())

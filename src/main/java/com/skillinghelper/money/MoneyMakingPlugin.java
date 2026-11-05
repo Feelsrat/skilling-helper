@@ -17,6 +17,8 @@ import com.skillinghelper.money.data.MoneyMethods;
 import com.skillinghelper.money.ui.MoneyMakingPanel;
 import com.skillinghelper.prices.WikiPriceClient;
 import com.skillinghelper.pvm.PvmProgressionPlugin;
+import com.skillinghelper.travel.TravelAdvisor;
+import com.skillinghelper.travel.TravelPick;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,6 +102,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private MoneyMakingConfig config;
 	@Inject
 	private ConfigManager configManager;
+	@Inject
+	private TravelAdvisor travel;
 	@Inject
 	private MoneyTargets targets;
 	@Inject
@@ -526,9 +530,16 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		Widget bankWidget = client.getWidget(InterfaceID.Bankmain.ITEMS);
 		boolean bankOpen = bankWidget != null && !bankWidget.isHidden();
 		ItemContainer inv = client.getItemContainer(InventoryID.INV);
+		Map<Integer, Integer> carried = carried();
+		Location spot = running.getSpot();
+		Map<Integer, Integer> bank = bankCounts;
+		TravelPick pick = spot == null || client.getTopLevelWorldView().isInstance() ? null
+			: travel.pick(id -> carried.getOrDefault(id, 0) > 0, id -> bank != null && bank.getOrDefault(id, 0) > 0,
+				here, List.of(spot.getPoint()), spot.getName(), Wilderness.contains(spot));
 		MoneyStep next = MoneyGuide.resolve(option, MoneyGuide.Player.builder()
 			.location(here)
-			.carried(carried())
+			.carried(carried)
+			.travel(pick)
 			.bank(bankCounts == null ? null : new HashMap<>(bankCounts))
 			.bankOpen(bankOpen)
 			.inventoryFull(inv != null && inv.count() >= MoneyGuide.INVENTORY_SLOTS)
@@ -542,6 +553,12 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		step = next;
 		targets.track(next.getNpcs(), next.getObjects());
 		showWay(next.getDestination(), running);
+		Set<Integer> wanted = new HashSet<>(inputIds(running));
+		if (pick != null && !pick.isCarried())
+		{
+			wanted.add(pick.getItemId());
+		}
+		setBankItems(wanted);
 		if (!Objects.equals(previous, next))
 		{
 			final MoneyMakingPanel p = panel;
@@ -628,6 +645,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			// Only path through the Wilderness when the place itself is there, whatever Shortest Path's setting says
 			Map<String, Object> overrides = new HashMap<>();
 			overrides.put("avoidWilderness", !Wilderness.contains(target));
+			ShortestPathLink.allowCarriedTeleports(configManager, overrides);
 			data.put("config", overrides);
 			ShortestPathLink.path(eventBus, this, data);
 		}
@@ -677,15 +695,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			}
 			stopGuide();
 			guide = m;
-			Set<Integer> ids = new HashSet<>();
-			for (MoneyItem item : m.getInputs())
-			{
-				if (MoneyGuide.itemId(item) > 0)
-				{
-					ids.add(MoneyGuide.itemId(item));
-				}
-			}
-			setBankItems(ids);
+			setBankItems(inputIds(m));
 			updateGuide();
 		});
 	}
@@ -748,6 +758,19 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			SwingUtilities.invokeLater(() -> p.updateStep(null, s));
 		}
+	}
+
+	private static Set<Integer> inputIds(MoneyMethod m)
+	{
+		Set<Integer> ids = new HashSet<>();
+		for (MoneyItem item : m.getInputs())
+		{
+			if (MoneyGuide.itemId(item) > 0)
+			{
+				ids.add(MoneyGuide.itemId(item));
+			}
+		}
+		return ids;
 	}
 
 	private void setBankItems(Set<Integer> ids)

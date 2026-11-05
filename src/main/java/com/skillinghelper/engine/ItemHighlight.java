@@ -24,5 +24,9 @@ public enum ItemHighlight
 	/**
 	 * Deposit this item into the bank.
 	 */
-	DEPOSIT
+	DEPOSIT,
+	/**
+	 * Take this travel item (teleport jewellery, a tablet, a fairy ring staff) out of the bank.
+	 */
+	TRAVEL
 }

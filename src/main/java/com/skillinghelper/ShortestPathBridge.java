@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.PluginMessage;
@@ -36,6 +37,10 @@ public class ShortestPathBridge
 	private final EventBus eventBus;
 	private final SkillingHelperConfig config;
 	/**
+	 * For the shared travel item setting, or null in tests.
+	 */
+	private final ConfigManager configManager;
+	/**
 	 * Starts this bridge's query ids, so two plugins in this jar don't take each other's answers.
 	 */
 	private final String queryPrefix;
@@ -54,19 +59,26 @@ public class ShortestPathBridge
 	private List<Object> unreachable;
 
 	@Inject
-	ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config)
+	ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config, ConfigManager configManager)
 	{
-		this(eventBus, config, "skillinghelper:");
+		this(eventBus, config, configManager, "skillinghelper:");
 	}
 
 	/**
 	 * For another plugin in this jar that shows its own paths.
 	 */
-	public ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config, String queryPrefix)
+	public ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config, ConfigManager configManager,
+		String queryPrefix)
 	{
 		this.eventBus = eventBus;
 		this.config = config;
+		this.configManager = configManager;
 		this.queryPrefix = queryPrefix;
+	}
+
+	ShortestPathBridge(EventBus eventBus, SkillingHelperConfig config, String queryPrefix)
+	{
+		this(eventBus, config, null, queryPrefix);
 	}
 
 	/**
@@ -100,6 +112,11 @@ public class ShortestPathBridge
 			{
 				overrides.put(key, true);
 			}
+		}
+
+		if (configManager != null)
+		{
+			ShortestPathLink.allowCarriedTeleports(configManager, overrides);
 		}
 
 		Map<String, Object> path = new HashMap<>();

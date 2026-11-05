@@ -33,6 +33,7 @@ import com.skillinghelper.thieving.BlackjackSwapper;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
 import com.skillinghelper.tog.TogTracker;
+import com.skillinghelper.travel.TravelAdvisor;
 import com.skillinghelper.ui.PickList;
 import com.skillinghelper.ui.SkillingHelperPanel;
 import java.awt.image.BufferedImage;
@@ -153,6 +154,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	private MinimapArrowOverlay minimapOverlay;
 	@Inject
 	private ItemHighlightOverlay itemOverlay;
+	@Inject
+	private TravelAdvisor travel;
 
 	@Getter
 	private volatile ActiveGuide guide = ActiveGuide.NONE;
@@ -286,6 +289,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			prices.onLoggedIn();
 			checkShortestPath = true;
+			travel.invalidate();
 		}
 		if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
@@ -1039,6 +1043,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			return b.step(noMethodStep(skill, level, target)).build();
 		}
 		Method method = current.getMethod();
+		state = state.toBuilder().travel(travel.pick(state, StepResolver.destinations(method, state))).build();
+		b.player(state);
 		List<Requirement> reqs = resolver.requirements(method, state, current.getActions());
 		// Size trips and batches to this leg of the plan, the same span the requirement amounts cover
 		int legTarget = plan.isEmpty() ? target : plan.get(0).getToLevel();
@@ -1062,7 +1068,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.option(current)
 			.requirements(reqs)
 			.step(step)
-			.bankItems(StepResolver.bankItems(reqs, step))
+			.bankItems(StepResolver.bankItems(reqs, step, state.getTravel()))
 			.build();
 	}
 

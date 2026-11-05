@@ -1,9 +1,11 @@
 package com.skillinghelper;
 
+import com.skillinghelper.travel.TravelSettings;
 import java.util.HashMap;
 import java.util.Map;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.events.PluginMessage;
 import net.runelite.client.plugins.Plugin;
@@ -39,6 +41,44 @@ public final class ShortestPathLink
 	{
 		owner = who;
 		eventBus.post(new PluginMessage(NAMESPACE, "path", data));
+	}
+
+	/**
+	 * With travel items on, lets Shortest Path also use teleports that spend a charge or a tablet (jewellery, tabs)
+	 * from the inventory, which its default "(perm)" setting leaves out: the guides suggest carrying them. Settings
+	 * that don't look at the inventory, or don't allow item teleports at all, are left alone.
+	 */
+	public static void allowCarriedTeleports(ConfigManager configManager, Map<String, Object> overrides)
+	{
+		if (!TravelSettings.enabled(configManager))
+		{
+			return;
+		}
+		String lifted = liftPerm(configManager.getConfiguration(NAMESPACE, TELEPORT_ITEMS_KEY));
+		if (lifted != null)
+		{
+			overrides.put(TELEPORT_ITEMS_KEY, lifted);
+		}
+	}
+
+	static final String TELEPORT_ITEMS_KEY = "useTeleportationItems";
+
+	/**
+	 * The Shortest Path setting (sent by its display name) that also allows charged items, for a saved setting that
+	 * only allows permanent ones from the inventory. Null to leave it as it is. Unset means its default, "Inventory
+	 * (perm)".
+	 */
+	static String liftPerm(String saved)
+	{
+		if (saved == null || "INVENTORY_NON_CONSUMABLE".equals(saved))
+		{
+			return "Inventory";
+		}
+		if ("INVENTORY_AND_BANK_NON_CONSUMABLE".equals(saved))
+		{
+			return "Inventory and Bank";
+		}
+		return null;
 	}
 
 	/**

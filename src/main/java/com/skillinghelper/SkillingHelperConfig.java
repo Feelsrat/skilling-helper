@@ -4,6 +4,7 @@ import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.RatePace;
 import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.Wilderness;
+import com.skillinghelper.travel.TravelSettings;
 import java.awt.Color;
 import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
@@ -408,11 +409,24 @@ public interface SkillingHelperConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = TravelSettings.COLOR_KEY,
+		name = "Travel item",
+		description = "Colour of travel items (teleport jewellery, tablets, a fairy ring staff) to take out of the bank. "
+			+ "Used by every guide in this plugin pack",
+		section = highlightSection,
+		position = 6
+	)
+	default Color travelColor()
+	{
+		return TravelSettings.DEFAULT_COLOR;
+	}
+
+	@ConfigItem(
 		keyName = "showBankButton",
 		name = "Bank filter button",
 		description = "Add a button to the bank that shows only the items the current guide needs",
 		section = highlightSection,
-		position = 6
+		position = 7
 	)
 	default boolean showBankButton()
 	{
@@ -426,7 +440,7 @@ public interface SkillingHelperConfig extends Config
 			+ "like Menu Entry Swapper does. Amounts the game has no option for use Withdraw-X: type it once and the "
 			+ "game remembers it. Hold shift for your normal options",
 		section = highlightSection,
-		position = 7
+		position = 8
 	)
 	default boolean swapBankAmounts()
 	{
@@ -514,6 +528,21 @@ public interface SkillingHelperConfig extends Config
 		position = 5
 	)
 	default boolean shortestPathTransports()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = TravelSettings.KEY,
+		name = "Suggest travel items",
+		description = "Every guide in this plugin pack suggests the one teleport item you own and have unlocked that "
+			+ "gets you closest to where it's going (jewellery, tablets, capes, a Dramen or Lunar staff for fairy "
+			+ "rings), and outlines it in the bank in its own colour. While a guide shows a path, Shortest Path may "
+			+ "also use charged jewellery and tablets you carry, even if it's set to permanent items only",
+		section = pathingSection,
+		position = 6
+	)
+	default boolean travelItems()
 	{
 		return true;
 	}

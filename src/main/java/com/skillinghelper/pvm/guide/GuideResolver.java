@@ -6,6 +6,7 @@ import com.skillinghelper.data.Target;
 import com.skillinghelper.engine.ItemHighlight;
 import com.skillinghelper.shops.ShopPlan;
 import com.skillinghelper.shops.ShopPlanner;
+import com.skillinghelper.travel.TravelPick;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -313,6 +314,18 @@ public final class GuideResolver
 				b.line("✘ No " + l.buyName().toLowerCase() + " in your bank: get " + l.getToBuy() + " first.");
 			}
 		}
+		TravelPick travel = s.getTravel();
+		if (travel != null && !travel.isCarried())
+		{
+			b.line("• " + travel.bankLine());
+			b.itemHighlight(travel.getItemId(), ItemHighlight.TRAVEL);
+			// Worth a bank step on its own only while the bank is open anyway
+			if (any || bank == null)
+			{
+				slotsNeeded++;
+				any = true;
+			}
+		}
 		if (!any)
 		{
 			return null;
@@ -422,6 +435,11 @@ public final class GuideResolver
 		if (!there)
 		{
 			b.destination(place);
+			TravelPick travel = s.getTravel();
+			if (travel != null)
+			{
+				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
+			}
 		}
 		for (String line : guide.getArrival())
 		{

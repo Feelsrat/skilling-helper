@@ -7,6 +7,7 @@ import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
 import com.skillinghelper.shops.ShopPlan;
 import com.skillinghelper.shops.ShopPlanner;
+import com.skillinghelper.travel.TravelPick;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -84,6 +85,10 @@ public final class MoneyGuide
 		 */
 		@Builder.Default
 		IntUnaryOperator buyPrice = id -> 0;
+		/**
+		 * The travel item to bring to the spot, or null.
+		 */
+		TravelPick travel;
 	}
 
 	public static MoneyStep resolve(MoneyOption option, Player p)
@@ -126,7 +131,15 @@ public final class MoneyGuide
 				b.line("About " + me.distanceTo2D(spot.getPoint()) + " tiles away.");
 			}
 			b.line("Follow the yellow arrow, or the line on the ground if you have the Shortest Path plugin.");
-			b.line("Teleports save time: check the wiki page (button in the panel) for the fastest way.");
+			TravelPick travel = p.getTravel();
+			if (travel != null)
+			{
+				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
+			}
+			else
+			{
+				b.line("Teleports save time: check the wiki page (button in the panel) for the fastest way.");
+			}
 			return b.build();
 		}
 		return workStep(m, main, p);
@@ -252,6 +265,7 @@ public final class MoneyGuide
 			b.line("Click a bank booth or banker (outlined) and choose Bank.");
 			b.line("You'll need:");
 			missing.forEach((item, n) -> b.line("- " + amount(item, n)));
+			travelLine(b, p);
 			if (warning != null)
 			{
 				b.line(warning);
@@ -265,6 +279,7 @@ public final class MoneyGuide
 		b.line("1. If your inventory has other things, click \"Deposit inventory\" at the bottom of the bank.");
 		b.line("2. Take out these (outlined in the bank):");
 		missing.forEach((item, n) -> b.line("- " + amount(item, n)));
+		travelLine(b, p);
 		b.line("To take an exact number, right-click the item and choose Withdraw-X, then type it.");
 		b.line("Tip: the coin button at the top of the bank shows only these items.");
 		if (shop != null)
@@ -282,6 +297,19 @@ public final class MoneyGuide
 			b.line(warning);
 		}
 		return b.build();
+	}
+
+	/**
+	 * Adds the travel item still in the bank to a step that opens or uses the bank.
+	 */
+	private static void travelLine(MoneyStep.MoneyStepBuilder b, Player p)
+	{
+		TravelPick travel = p.getTravel();
+		if (travel != null && !travel.isCarried())
+		{
+			b.line("- " + travel.bankLine());
+			b.travel(Set.of(travel.getItemId()));
+		}
 	}
 
 	private static ShopPlan shopPlan(Map<MoneyItem, Integer> toBuy, Player p)

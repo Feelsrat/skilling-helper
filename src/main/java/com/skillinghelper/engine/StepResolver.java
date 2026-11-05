@@ -9,7 +9,9 @@ import com.skillinghelper.data.QuestGroup;
 import com.skillinghelper.data.Stop;
 import com.skillinghelper.shops.ShopPlan;
 import com.skillinghelper.shops.ShopPlanner;
+import com.skillinghelper.travel.TravelPick;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -389,13 +391,16 @@ public final class StepResolver
 			}
 		}
 		GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, needs.optionalInBank, m, kept);
+		// Leave a slot for the travel item still to take out
+		PlayerState forInputs = s.getTravel() != null && !s.getTravel().isCarried()
+			? s.toBuilder().freeInventorySlots(Math.max(0, s.getFreeInventorySlots() - 1)).build() : s;
 		if (toMake.isEmpty())
 		{
-			trips.withdrawInputs(b, m, s, gather, actionsLeft);
+			trips.withdrawInputs(b, m, forInputs, gather, actionsLeft);
 		}
 		else
 		{
-			BankTrip.withdrawParts(b, toMake, s, actionsLeft);
+			BankTrip.withdrawParts(b, toMake, forInputs, actionsLeft);
 		}
 		return b.line(BANK_TIP).build();
 	}
@@ -473,6 +478,11 @@ public final class StepResolver
 			{
 				b.line("• " + step);
 			}
+			TravelPick travel = s.getTravel();
+			if (travel != null)
+			{
+				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
+			}
 			b.travel(route).line("Then: " + m.getInstruction() + ".");
 			if (!m.getSetupSteps().isEmpty() || !m.getHowTo().isEmpty())
 			{
@@ -516,6 +526,28 @@ public final class StepResolver
 			}
 			b.line(n++ + ". " + line);
 		}
+	}
+
+	/**
+	 * Where the guide sends the player to train next: the method's spots, or the next stop of a run. Empty when the
+	 * Slayer task decides where to go, or a run has nothing ready.
+	 */
+	public static List<Location> destinations(Method m, PlayerState s)
+	{
+		if (SlayerTaskStep.applies(m, s))
+		{
+			return Collections.emptyList();
+		}
+		Stop stop = null;
+		if (!m.getStops().isEmpty())
+		{
+			stop = Runs.nextStop(m, s);
+			if (stop == null)
+			{
+				return Collections.emptyList();
+			}
+		}
+		return trainingSpots(m, stop);
 	}
 
 	private static List<Location> trainingSpots(Method m, Stop stop)
@@ -581,6 +613,13 @@ public final class StepResolver
 		{
 			depositUnused(b, m, s, kept);
 		}
+		TravelPick travel = s.getTravel();
+		if (travel != null && !travel.isCarried() && m != null)
+		{
+			b.line("• " + travel.bankLine());
+			b.itemHighlight(travel.getItemId(), ItemHighlight.TRAVEL);
+			b.withdrawAmount(travel.getItemId(), 1);
+		}
 		for (Requirement r : withdraw)
 		{
 			b.line("• " + (r.getStatus() == Requirement.Status.MISSING ? "Check for " : "Withdraw ")
@@ -619,7 +658,7 @@ public final class StepResolver
 		boolean other = false;
 		for (int id : s.getInventory().asMap().keySet())
 		{
-			if (!kept.contains(id) && !m.getProducts().contains(id))
+			if (!kept.contains(id) && !m.getProducts().contains(id) && !isTravelItem(s, id))
 			{
 				b.deposit(id, 0);
 				other = true;
@@ -629,6 +668,14 @@ public final class StepResolver
 		{
 			b.line("• Deposit the other outlined items: this trip doesn't use them");
 		}
+	}
+
+	/**
+	 * Whether this carried item is the travel item the guide suggested: it stays in the inventory.
+	 */
+	private static boolean isTravelItem(PlayerState s, int id)
+	{
+		return s.getTravel() != null && s.getTravel().isCarried() && s.getTravel().getItemId() == id;
 	}
 
 	private static boolean needsInputs(Method m, PlayerState s, boolean gather, List<ItemReq> toMake)
@@ -838,6 +885,24 @@ public final class StepResolver
 	 * Every item id the bank filter should show for these requirements and step.
 	 */
 	public static Map<Integer, ItemHighlight> bankItems(List<Requirement> reqs, GuideStep step)
+	{
+		return bankItems(reqs, step, null);
+	}
+
+	/**
+	 * Every item id the bank filter should show, plus the travel item still in the bank in its own colour.
+	 */
+	public static Map<Integer, ItemHighlight> bankItems(List<Requirement> reqs, GuideStep step, TravelPick travel)
+	{
+		Map<Integer, ItemHighlight> items = bankItemsFor(reqs, step);
+		if (travel != null && !travel.isCarried())
+		{
+			items.put(travel.getItemId(), ItemHighlight.TRAVEL);
+		}
+		return items;
+	}
+
+	private static Map<Integer, ItemHighlight> bankItemsFor(List<Requirement> reqs, GuideStep step)
 	{
 		Map<Integer, ItemHighlight> items = new LinkedHashMap<>();
 		for (Requirement r : reqs)
