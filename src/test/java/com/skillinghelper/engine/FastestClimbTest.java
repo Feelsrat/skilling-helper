@@ -114,4 +114,25 @@ public class FastestClimbTest
 		assertEquals(Skill.WOODCUTTING, ranked.get(0).getSkill());
 		assertEquals(Skill.MINING, ranked.get(1).getSkill());
 	}
+
+	@Test
+	public void sameActivityUnderSeveralSkillsShowsOnce()
+	{
+		Method crabAttack = Method.builder().id("a").skill(Skill.ATTACK).name("Crab").type(MethodType.ACTIVITY)
+			.location(Location.of("Spot", 3000, 3000, 0, 5)).instruction("Fight").minLevel(1).xpPerAction(10)
+			.xpPerHour(20_000).clicksPerHour(20).build();
+		Method crabDefence = crabAttack.toBuilder().id("d").skill(Skill.DEFENCE).build();
+		Method trees = method("chop", Skill.WOODCUTTING, 1, 0, 10_000).toBuilder().clicksPerHour(50).build();
+		PlayerState state = PlayerState.builder()
+			.levels(ImmutableMap.of(Skill.ATTACK, 40, Skill.DEFENCE, 30, Skill.WOODCUTTING, 30))
+			.build();
+		java.util.List<java.util.List<MethodOption>> groups = MethodPlanner.sameActivityOnce(
+			planner.rankMostAfk(Arrays.asList(crabAttack, crabDefence, trees), state, s -> 50), state);
+
+		assertEquals(2, groups.size());
+		assertEquals(2, groups.get(0).size());
+		// The lower skill is the one opened
+		assertEquals(Skill.DEFENCE, groups.get(0).get(0).getMethod().getSkill());
+		assertEquals(trees, groups.get(1).get(0).getMethod());
+	}
 }

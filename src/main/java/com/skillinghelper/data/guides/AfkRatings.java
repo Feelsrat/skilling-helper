@@ -29,11 +29,11 @@ final class AfkRatings
 		COMBAT.put("combat_spells_cows", 250);
 		COMBAT.put("al_kharid_warriors", 200);
 		COMBAT.put("hill_giants", 150);
-		COMBAT.put("gemstone_crab", 25); // re-attack when it burrows
+		COMBAT.put("gemstone_crab", 20); // follow it through the tunnel when it burrows, every ~10 minutes
 		COMBAT.put("sand_crabs", 60);
 		COMBAT.put("rock_crabs", 60);
 		COMBAT.put("ammonite_crabs", 60);
-		COMBAT.put("nmz", 60); // absorptions and overloads
+		COMBAT.put("nmz", 40); // absorption sips and a rock cake every few minutes
 		COMBAT.put("sulphur_naguas", 250);
 		COMBAT.put("maniacal_monkeys", 200);
 		COMBAT.put("skeletal_monkeys", 200);
@@ -197,7 +197,7 @@ final class AfkRatings
 		clicks("mine_copper_tin_varrock", 1500);
 		clicks("mine_iron_al_kharid", 1800);
 		clicks("mine_iron_varrock", 1800);
-		clicks("mine_motherlode", 300);
+		clicks("mine_motherlode", 200);
 		clicks("mine_gem_shilo", 600);
 		clicks("mine_granite_quarry", 1500);
 		clicks("mine_amethyst_guild", 60);
@@ -251,7 +251,7 @@ final class AfkRatings
 		{
 			clicks("smith_" + id, 350);
 		}
-		clicks("smith_cannonballs", 100);
+		clicks("smith_cannonballs", 80);
 		clicks("smith_giants_foundry", 800);
 		clicks("smith_blast_furnace_gold", 2000);
 
@@ -279,8 +279,8 @@ final class AfkRatings
 		clicks("wc_mahogany_grove", 300);
 		clicks("wc_yews_edgeville", 150);
 		clicks("wc_yews_guild", 150);
-		clicks("wc_magic_guild", 100);
-		clicks("wc_redwood_guild", 60);
+		clicks("wc_magic_guild", 80);
+		clicks("wc_redwood_guild", 40);
 	}
 
 	private AfkRatings()

@@ -582,14 +582,16 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.pick(SkillingHelperPanel.QuickPick.BEST_GOLD)
 			.note("The best money maker in each skill you can do now, most gold per hour first, at your pace.")
 			.emptyText("None of the guides make money with your current levels, quests and gold.");
-		for (MethodOption o : limit(planner.rankProfitable(guides.all(), state, s -> goal(s, state))))
+		for (List<MethodOption> group : limit(MethodPlanner.sameActivityOnce(
+			planner.rankProfitable(guides.all(), state, s -> goal(s, state)), state)))
 		{
+			MethodOption o = group.get(0);
 			Method m = o.getMethod();
 			list.row(PickList.Row.builder()
 				.skill(m.getSkill())
 				.title(m.getName())
 				.value(Format.gp(o.gpPerHour()) + String.format("/hr · ~%,d xp/hr", Math.round(o.getXpPerHour())))
-				.detail(m.levelRange())
+				.detail(alsoTrains(group, m.levelRange()))
 				.methodId(m.getId())
 				.build());
 		}
@@ -643,18 +645,38 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			.note("The most AFK method in each skill you can do now, fewest clicks per hour first. Methods you've "
 				+ "outleveled are left out.")
 			.emptyText("No guide you haven't outleveled can be used with your current levels, quests and gold.");
-		for (MethodOption o : limit(planner.rankMostAfk(guides.all(), state, s -> goal(s, state))))
+		for (List<MethodOption> group : limit(MethodPlanner.sameActivityOnce(
+			planner.rankMostAfk(guides.all(), state, s -> goal(s, state)), state)))
 		{
+			MethodOption o = group.get(0);
 			Method m = o.getMethod();
 			list.row(PickList.Row.builder()
 				.skill(m.getSkill())
 				.title(m.getName())
 				.value(String.format("~%,d clicks/hr · ~%,d xp/hr", m.getClicksPerHour(), Math.round(o.getXpPerHour())))
-				.detail(m.levelRange())
+				.detail(alsoTrains(group, m.levelRange()))
 				.methodId(m.getId())
 				.build());
 		}
 		return list.build();
+	}
+
+	/**
+	 * "Lvl 1 → 99 · Also trains Strength, Defence" when the same activity was listed under other skills; opening
+	 * the row trains the lowest one, the skill shown.
+	 */
+	private static String alsoTrains(List<MethodOption> group, String detail)
+	{
+		if (group.size() < 2)
+		{
+			return detail;
+		}
+		StringBuilder others = new StringBuilder();
+		for (MethodOption o : group.subList(1, group.size()))
+		{
+			others.append(others.length() == 0 ? "" : ", ").append(o.getMethod().getSkill().getName());
+		}
+		return detail + " · Also trains " + others;
 	}
 
 	private static <T> List<T> limit(List<T> ranked)

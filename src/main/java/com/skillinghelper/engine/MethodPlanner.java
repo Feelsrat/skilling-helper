@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,28 @@ public final class MethodPlanner
 		return bestPerSkill(methods, state, goal, TrainingPreference.AFK,
 			Comparator.comparingInt((MethodOption o) -> o.getMethod().getClicksPerHour())
 				.thenComparing(Comparator.comparingDouble(MethodOption::getXpPerHour).reversed()));
+	}
+
+	/**
+	 * Groups a ranked list so the same activity listed under several skills (a combat spot that trains Attack,
+	 * Strength, Defence and Hitpoints) shows once, where its best entry ranked. Within a group the player's
+	 * lowest-level skill comes first.
+	 */
+	public static List<List<MethodOption>> sameActivityOnce(List<MethodOption> ranked, PlayerState state)
+	{
+		Map<String, List<MethodOption>> groups = new LinkedHashMap<>();
+		for (MethodOption o : ranked)
+		{
+			groups.computeIfAbsent(o.getMethod().getName(), k -> new ArrayList<>()).add(o);
+		}
+		List<List<MethodOption>> out = new ArrayList<>();
+		for (List<MethodOption> g : groups.values())
+		{
+			g.sort(Comparator.comparingInt((MethodOption o) -> state.level(o.getMethod().getSkill()))
+				.thenComparingInt(o -> state.xp(o.getMethod().getSkill())));
+			out.add(g);
+		}
+		return out;
 	}
 
 	/**
