@@ -9,9 +9,12 @@ import com.skillinghelper.data.TrainingPreference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.function.ToIntFunction;
+import lombok.Value;
 import net.runelite.api.Experience;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
@@ -81,6 +84,139 @@ public final class MethodPlanner
 			}
 		}
 		return best;
+	}
+
+	/**
+	 * How many levels the "Fastest leveling" pick races to.
+	 */
+	public static final int FASTEST_LEVELS = 10;
+
+	/**
+	 * The quickest way to gain {@code levels} levels in one skill, over every skill that has methods: for each skill,
+	 * the climb is split at every level a method unlocks or tops out (its level range), and each leg uses the fastest
+	 * method the player can do and afford there, timed at the calibrated pace. Skills too close to 99 for the full
+	 * gain are only compared per level gained. Null when no skill has a usable climb.
+	 */
+	public FastestClimb fastestClimb(Collection<Method> methods, PlayerState state, int levels)
+	{
+		Map<Skill, List<Method>> bySkill = new EnumMap<>(Skill.class);
+		for (Method m : methods)
+		{
+			bySkill.computeIfAbsent(m.getSkill(), k -> new ArrayList<>()).add(m);
+		}
+		FastestClimb best = null;
+		for (Map.Entry<Skill, List<Method>> e : bySkill.entrySet())
+		{
+			FastestClimb climb = climb(e.getKey(), e.getValue(), state, levels);
+			if (climb != null && (best == null || climb.hoursFor(levels) < best.hoursFor(levels)))
+			{
+				best = climb;
+			}
+		}
+		return best;
+	}
+
+	/**
+	 * One skill's fastest climb of {@code levels} levels (capped at 99), or null when some leg has no usable method.
+	 */
+	FastestClimb climb(Skill skill, List<Method> methods, PlayerState state, int levels)
+	{
+		int current = state.level(skill);
+		int target = Math.min(Experience.MAX_REAL_LEVEL, current + levels);
+		if (current >= target)
+		{
+			return null;
+		}
+		TreeSet<Integer> breakpoints = breakpoints(methods, current, target);
+		for (Method m : methods)
+		{
+			// A method stops being the right one at the top of its range, so a leg never runs past it
+			if (m.topLevel() > current && m.topLevel() < target)
+			{
+				breakpoints.add(m.topLevel());
+			}
+		}
+		int currentXp = state.xp(skill);
+		List<PlanSegment> legs = new ArrayList<>();
+		double hours = 0;
+		Integer from = breakpoints.first();
+		for (Integer to : breakpoints.tailSet(from, false))
+		{
+			long xp = xpBetween(Math.max(currentXp, Experience.getXpForLevel(from)), to);
+			MethodOption fastest = fastestAt(methods, state, from, xp, false);
+			if (fastest == null)
+			{
+				// Past the top of every range: still better to name something than give up on the skill
+				fastest = fastestAt(methods, state, from, xp, true);
+			}
+			if (fastest == null)
+			{
+				return null;
+			}
+			hours += fastest.hours(xp);
+			PlanSegment last = legs.isEmpty() ? null : legs.get(legs.size() - 1);
+			if (last != null && last.getOption().getMethod() == fastest.getMethod())
+			{
+				legs.set(legs.size() - 1, new PlanSegment(last.getFromLevel(), to, last.getXp() + xp,
+					last.getOption()));
+			}
+			else
+			{
+				legs.add(new PlanSegment(from, to, xp, fastest));
+			}
+			from = to;
+		}
+		return new FastestClimb(skill, current, target, legs, hours);
+	}
+
+	/**
+	 * The method with the most xp/hr the player can pick, afford and isn't past the top of (unless
+	 * {@code outleveledToo}) at {@code level}. Null when there's none.
+	 */
+	private MethodOption fastestAt(List<Method> methods, PlayerState state, int level, long xp, boolean outleveledToo)
+	{
+		MethodOption best = null;
+		for (Method m : methods)
+		{
+			if (!outleveledToo && m.isOutleveled(level, state.combatLevel()))
+			{
+				continue;
+			}
+			MethodOption option = evaluate(m, state, TrainingPreference.FAST, level, xp);
+			if (!option.isPickable() || !option.isAffordable() || option.getXpPerHour() <= 0)
+			{
+				continue;
+			}
+			if (best == null || option.getXpPerHour() > best.getXpPerHour())
+			{
+				best = option;
+			}
+		}
+		return best;
+	}
+
+	/**
+	 * The fastest way found to gain levels in one skill.
+	 */
+	@Value
+	public static class FastestClimb
+	{
+		Skill skill;
+		int fromLevel;
+		int toLevel;
+		/**
+		 * The legs in order, one per method used.
+		 */
+		List<PlanSegment> legs;
+		double hours;
+
+		/**
+		 * The time scaled to {@code levels} levels, so a skill near 99 that can't gain them all compares fairly.
+		 */
+		double hoursFor(int levels)
+		{
+			return hours * levels / Math.max(1, toLevel - fromLevel);
+		}
 	}
 
 	/**

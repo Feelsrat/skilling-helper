@@ -12,6 +12,7 @@ import com.skillinghelper.data.TrainingPreference;
 import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.MethodPlanner;
@@ -483,6 +484,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			{
 				pickBestGold();
 			}
+			else if (pick == SkillingHelperPanel.QuickPick.FASTEST_LEVELS)
+			{
+				pickFastestLevels();
+			}
 			else if (pick == SkillingHelperPanel.QuickPick.TEARS_OF_GUTHIX)
 			{
 				openTears();
@@ -528,17 +533,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	 */
 	private void pickBestGold()
 	{
-		Set<Quest> allQuests = EnumSet.noneOf(Quest.class);
-		for (Method m : guides.all())
-		{
-			allQuests.addAll(m.getQuests());
-		}
-		Set<Quest> done = EnumSet.noneOf(Quest.class);
-		Set<Quest> started = EnumSet.noneOf(Quest.class);
-		readQuests(allQuests, done, started);
-		PlayerState state = snapshot.take(settings.getBoatMooring(), done, started, config.preferShops());
-		planner.setPace(config.ratePace());
-		planner.setAllowWilderness(config.allowWilderness());
+		PlayerState state = stateForAllGuides();
 		MethodOption best = planner.mostProfitable(guides.all(), state, s ->
 		{
 			Integer saved = settings.getTarget(s);
@@ -555,6 +550,56 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		Skill skill = best.getMethod().getSkill();
 		settings.setForcedMethod(skill, best.getMethod().getId());
 		selectSkill(skill);
+	}
+
+	/**
+	 * Looks through every skill for the one where the player would gain {@value MethodPlanner#FASTEST_LEVELS}
+	 * levels the quickest (switching method on the way where a faster one unlocks), then opens it with that goal.
+	 */
+	private void pickFastestLevels()
+	{
+		PlayerState state = stateForAllGuides();
+		MethodPlanner.FastestClimb climb = planner.fastestClimb(guides.all(), state, MethodPlanner.FASTEST_LEVELS);
+		if (climb == null)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "",
+				"Skilling Helper: none of the guides can be used with your current levels, quests and gold.", null);
+			refresh();
+			return;
+		}
+		Skill skill = climb.getSkill();
+		List<PlanSegment> legs = climb.getLegs();
+		// One method all the way: pick it, like Best gold/hr does. Otherwise let the plan switch on the way.
+		settings.setForcedMethod(skill, legs.size() == 1 ? legs.get(0).getOption().getMethod().getId() : null);
+		selectSkill(skill);
+		setTargetAndRefresh(climb.getToLevel());
+
+		StringBuilder route = new StringBuilder();
+		for (PlanSegment leg : legs)
+		{
+			route.append(route.length() == 0 ? "" : ", then ").append(leg.getOption().getMethod().getName());
+		}
+		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Skilling Helper: fastest levels are "
+			+ skill.getName() + " " + climb.getFromLevel() + " to " + climb.getToLevel() + " in about "
+			+ Format.hours(climb.getHours()) + " (" + route + ").", null);
+	}
+
+	/**
+	 * The player's state with every guide's quests read, for picks that look across all skills.
+	 */
+	private PlayerState stateForAllGuides()
+	{
+		Set<Quest> allQuests = EnumSet.noneOf(Quest.class);
+		for (Method m : guides.all())
+		{
+			allQuests.addAll(m.getQuests());
+		}
+		Set<Quest> done = EnumSet.noneOf(Quest.class);
+		Set<Quest> started = EnumSet.noneOf(Quest.class);
+		readQuests(allQuests, done, started);
+		planner.setPace(config.ratePace());
+		planner.setAllowWilderness(config.allowWilderness());
+		return snapshot.take(settings.getBoatMooring(), done, started, config.preferShops());
 	}
 
 	@Override

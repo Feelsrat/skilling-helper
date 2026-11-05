@@ -70,6 +70,8 @@ public class SkillingHelperPanel extends PluginPanel
 	public enum QuickPick
 	{
 		BEST_GOLD("Best gold/hr", "Opens the guide that earns the most gold per hour with your current stats"),
+		FASTEST_LEVELS("Fastest +10 levels",
+			"Opens the guide where you'd gain 10 levels the quickest with your current stats, gold and pace"),
 		LOWEST_SKILL("Lowest skill", "Opens the guide for your lowest-level skill"),
 		TEARS_OF_GUTHIX("Tears of Guthix (weekly)",
 			"Opens the guide to the weekly Tears of Guthix minigame, which gives xp in your lowest skill");
