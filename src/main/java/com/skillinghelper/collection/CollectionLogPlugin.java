@@ -2,6 +2,7 @@ package com.skillinghelper.collection;
 
 import com.google.inject.Provides;
 import com.skillinghelper.OpenClueGuideRequest;
+import com.skillinghelper.OpenCollectionLogRequest;
 import com.skillinghelper.OpenMethodRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
@@ -331,6 +332,26 @@ public class CollectionLogPlugin extends Plugin implements CollectionLogPanel.Li
 			refreshCountdown = REFRESH_TICKS;
 			refresh();
 		}
+	}
+
+	/**
+	 * Another plugin in this jar (Account Planner) asked to open one log page.
+	 */
+	@Subscribe
+	public void onOpenCollectionLogRequest(OpenCollectionLogRequest e)
+	{
+		if (data.entry(e.getEntry()) == null)
+		{
+			return;
+		}
+		if (!e.getEntry().equals(selected))
+		{
+			showingWay = false;
+			clearWay();
+		}
+		selected = e.getEntry();
+		refresh();
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
 
 	// ---- Reading the log ----
