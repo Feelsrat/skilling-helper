@@ -27,6 +27,7 @@ public final class Diaries
 		TASKS.put(DiaryRegion.FALADOR, FaladorDiary.tasks());
 		TASKS.put(DiaryRegion.KARAMJA, KaramjaDiary.tasks());
 		TASKS.put(DiaryRegion.ARDOUGNE, ArdougneDiary.tasks());
+		TASKS.put(DiaryRegion.DESERT, DesertDiary.tasks());
 	}
 
 	private Diaries()
