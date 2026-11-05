@@ -363,8 +363,8 @@ final class RequirementChecker
 	}
 
 	/**
-	 * Suggests the best weapon and armour per slot: wear what you own, or buy an upgrade from the GE. Ammo is only
-	 * suggested for the weapon the player will be using.
+	 * Suggests the best weapon and armour per slot: wear the best you own, or buy an upgrade from the GE. Ammo and the
+	 * ranged offhand are only suggested for the weapon the player will be using.
 	 */
 	private void addCombatGear(Method m, PlayerState s, List<Requirement> reqs)
 	{
@@ -386,6 +386,13 @@ final class RequirementChecker
 					addGearSlot(slot, s, reqs, t -> t.firedFrom(weapon));
 				}
 			}
+			else if (slot == CombatGear.RANGED_SHIELD)
+			{
+				if (CombatGearAdvisor.rangedOffhand(s))
+				{
+					addGearSlot(slot, s, reqs, t -> true);
+				}
+			}
 			else
 			{
 				addGearSlot(slot, s, reqs, t -> true);
@@ -395,12 +402,14 @@ final class RequirementChecker
 
 	/**
 	 * One gear slot. Tiers are listed best first, so a lower index is better gear. Only tiers that pass
-	 * {@code allowed} are considered.
+	 * {@code allowed} are considered. The upgrade is the best piece the player can buy: earned gear never is, and
+	 * pricey gear only when the player has the coins.
 	 */
 	private void addGearSlot(CombatGear slot, PlayerState s, List<Requirement> reqs, Predicate<CombatGear.Tier> allowed)
 	{
 		List<CombatGear.Tier> tiers = slot.getTiers();
-		int bestUsable = -1;
+		int bestBuy = -1;
+		int bestBuyPrice = 0;
 		int worn = -1;
 		int owned = -1;
 		int ownedId = -1;
@@ -411,9 +420,14 @@ final class RequirementChecker
 			{
 				continue;
 			}
-			if (bestUsable == -1)
+			if (bestBuy == -1 && t.isBuyable())
 			{
-				bestUsable = i;
+				int price = prices.price(t.getIds()[0]);
+				if (!t.isPricey() || (price > 0 && price <= s.gp()))
+				{
+					bestBuy = i;
+					bestBuyPrice = price;
+				}
 			}
 			if (worn == -1 && s.getEquipment().has(t.getIds()))
 			{
@@ -425,23 +439,19 @@ final class RequirementChecker
 				ownedId = ItemIds.firstOwned(t.getIds(), s);
 			}
 		}
-		if (bestUsable == -1)
-		{
-			return;
-		}
 		if (owned != -1 && ownedId != -1 && (worn == -1 || owned < worn))
 		{
 			reqs.add(item("Gear: wear your " + tiers.get(owned).getName() + inBankNote(ownedId, s),
 				Requirement.Status.OPTIONAL, ownedId));
 		}
 		int have = worn != -1 && (owned == -1 || worn < owned) ? worn : owned;
-		if (s.bankKnown() && (have == -1 || bestUsable < have))
+		if (bestBuy != -1 && s.bankKnown() && (have == -1 || bestBuy < have))
 		{
-			CombatGear.Tier best = tiers.get(bestUsable);
+			CombatGear.Tier best = tiers.get(bestBuy);
 			String darts = best.getAmmo() == CombatGear.Ammo.DARTS && slot == CombatGear.RANGED_AMMO
 				? ", loaded into the blowpipe with Zulrah's scales" : "";
 			reqs.add(info("Gear upgrade (" + slot.getSlotName() + "): " + best.getName() + " (~"
-				+ gp(prices.price(best.getIds()[0])) + " on the GE" + darts + ")", Requirement.Status.SUGGESTED));
+				+ gp(bestBuyPrice) + " on the GE" + darts + ")", Requirement.Status.SUGGESTED));
 		}
 	}
 

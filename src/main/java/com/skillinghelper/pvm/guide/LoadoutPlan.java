@@ -130,14 +130,37 @@ public class LoadoutPlan
 		int swapSlots = 0;
 		for (GearSlot slot : guide.getGear())
 		{
-			if (slot.isSwap() && gearLine(slot, guide.getBudget(), s, prices) != null)
+			if (slot.isSwap() && gearLine(slot, guide.getBudget(), s, prices, false) != null)
 			{
 				swapSlots++;
 			}
 		}
+		// A slot the guide can't do without (an anti-dragon shield) rules out two-handed weapons
+		boolean shieldRequired = false;
 		for (GearSlot slot : guide.getGear())
 		{
-			GearLine line = gearLine(slot, guide.getBudget(), s, prices);
+			if (slot.isRequired() && "shield".equals(slot.getName()))
+			{
+				shieldRequired = true;
+			}
+		}
+		boolean twoHanded = false;
+		for (GearSlot slot : guide.getGear())
+		{
+			if ("weapon".equals(slot.getName()))
+			{
+				GearLine line = gearLine(slot, guide.getBudget(), s, prices, shieldRequired);
+				twoHanded = line != null && line.getGear().isTwoHanded();
+			}
+		}
+		for (GearSlot slot : guide.getGear())
+		{
+			boolean isWeapon = "weapon".equals(slot.getName());
+			if (twoHanded && "shield".equals(slot.getName()))
+			{
+				continue;
+			}
+			GearLine line = gearLine(slot, guide.getBudget(), s, prices, isWeapon && shieldRequired);
 			if (line == null)
 			{
 				continue;
@@ -222,15 +245,17 @@ public class LoadoutPlan
 	/**
 	 * The best piece for a slot that the player owns and can wear, else the best one to buy. Null when nothing in
 	 * the slot can be worn or bought.
+	 *
+	 * @param oneHanded only consider one-handed weapons, to keep the shield slot free
 	 */
-	private static GearLine gearLine(GearSlot slot, int budget, GuideState s, PriceLookup prices)
+	private static GearLine gearLine(GearSlot slot, int budget, GuideState s, PriceLookup prices, boolean oneHanded)
 	{
 		Gear owned = null;
 		Gear bestBuy = null;
 		int bestBuyPrice = 0;
 		for (Gear g : slot.getOptions())
 		{
-			if (!canWear(g, s))
+			if (!canWear(g, s) || (oneHanded && g.isTwoHanded()))
 			{
 				continue;
 			}

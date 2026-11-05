@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm.guide;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -50,6 +51,35 @@ public class PvmGuidesTest
 		Set<String> guides = PvmGuides.ALL.stream().map(PvmGuide::getContentId).collect(Collectors.toSet());
 		assertEquals(ladder, guides);
 		assertEquals(PvmGuides.ALL.size(), guides.size());
+	}
+
+	private static LoadoutPlan.GearLine slot(LoadoutPlan plan, String name)
+	{
+		return plan.getGear().stream().filter(g -> g.getSlot().equals(name)).findFirst().orElse(null);
+	}
+
+	@Test
+	public void crossbowsGetAnOffhandAndBowsDont()
+	{
+		GuideState xbow = player(70).bank(Map.of(ItemID.XBOWS_CROSSBOW_RUNITE, 1)).build();
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent("fight_caves"), xbow, PRICES);
+		assertEquals("Rune crossbow", slot(plan, "weapon").getGear().getName());
+		assertEquals("Odium ward", slot(plan, "shield").getGear().getName());
+
+		GuideState bow = player(70).bank(Map.of(ItemID.MAGIC_SHORTBOW, 1)).build();
+		plan = LoadoutPlan.of(PvmGuides.forContent("fight_caves"), bow, PRICES);
+		assertEquals("Magic shortbow", slot(plan, "weapon").getGear().getName());
+		assertNull(slot(plan, "shield"));
+	}
+
+	@Test
+	public void antiDragonShieldRulesOutTwoHandedWeapons()
+	{
+		GuideState s = player(80).bank(Map.of(ItemID.TOXIC_BLOWPIPE_LOADED, 1, ItemID.ACB, 1)).build();
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent("vorkath"), s, PRICES);
+		assertEquals("Armadyl crossbow", slot(plan, "weapon").getGear().getName());
+		assertEquals("Dragon hunter crossbow", slot(plan, "weapon").getUpgrade().getName());
+		assertEquals("Dragonfire shield", slot(plan, "shield").getGear().getName());
 	}
 
 	@Test

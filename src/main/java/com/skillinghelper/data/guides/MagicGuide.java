@@ -258,6 +258,7 @@ final class MagicGuide
 			.location(CombatGuide.GEMSTONE_CRAB_SPOTS[0])
 			.target(Target.npc("Attack", "Gemstone Crab"))
 			.target(Target.npc("Mine", "Gemstone Crab Shell"))
+			.supply(Supplies.PICKAXE)
 			.instruction("Autocast the spell named next to the runes and attack the Gemstone Crab")
 			.notes("Very AFK and it never hits back. The guide picks the strongest Strike, Bolt, Blast, Wave or Surge "
 				+ "spell you can cast; an air staff saves the air runes every spell uses. Every 10 minutes the crab "

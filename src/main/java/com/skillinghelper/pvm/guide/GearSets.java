@@ -120,31 +120,61 @@ public final class GearSets
 		buy("Berserker ring", null, 0, 0, true, ItemID.BERZERKER_RING),
 		buy("Warrior ring", null, 0, 0, true, ItemID.WARRIOR_RING));
 
+	/**
+	 * Bows and the blowpipe are two-handed; crossbows leave the shield slot for {@link #RANGED_SHIELD}.
+	 */
 	public static final GearSlot RANGED_WEAPON = GearSlot.of("weapon",
-		buy("Twisted bow", RNG, 75, 0, true, ItemID.TWISTED_BOW).firing(Ammo.ARROWS),
-		earn("Bow of faerdhinen", RNG, 80, 0, true, ItemID.BOW_OF_FAERDHINEN),
+		buy("Twisted bow", RNG, 75, 0, true, ItemID.TWISTED_BOW).firing(Ammo.ARROWS).twoHanded(),
+		earn("Bow of faerdhinen", RNG, 80, 0, true, ItemID.BOW_OF_FAERDHINEN, ItemID.BOW_OF_FAERDHINEN_INFINITE,
+			ItemID.BOW_OF_FAERDHINEN_INFINITE_ITHELL, ItemID.BOW_OF_FAERDHINEN_INFINITE_IORWERTH,
+			ItemID.BOW_OF_FAERDHINEN_INFINITE_TRAHAEARN, ItemID.BOW_OF_FAERDHINEN_INFINITE_CADARN,
+			ItemID.BOW_OF_FAERDHINEN_INFINITE_CRWYS, ItemID.BOW_OF_FAERDHINEN_INFINITE_MEILYR,
+			ItemID.BOW_OF_FAERDHINEN_INFINITE_AMLODD).twoHanded(),
+		buy("Zaryte crossbow", RNG, 80, 0, true, ItemID.ZARYTE_XBOW).firing(Ammo.BOLTS),
 		buy("Toxic blowpipe", RNG, 75, 0, true, ItemID.TOXIC_BLOWPIPE_LOADED, ItemID.TOXIC_BLOWPIPE)
-			.firing(Ammo.DARTS),
+			.firing(Ammo.DARTS).twoHanded(),
 		buy("Armadyl crossbow", RNG, 70, 0, true, ItemID.ACB).firing(Ammo.BOLTS),
+		buy("Dragon hunter crossbow", RNG, 70, 0, true, ItemID.DRAGONHUNTER_XBOW, ItemID.DRAGONHUNTER_XBOW_VORKATH,
+			ItemID.DRAGONHUNTER_XBOW_KBD).firing(Ammo.BOLTS),
 		buy("Dragon crossbow", RNG, 64, 0, true, ItemID.XBOWS_CROSSBOW_DRAGON).firing(Ammo.BOLTS),
 		buy("Rune crossbow", RNG, 61, 0, true, ItemID.XBOWS_CROSSBOW_RUNITE).firing(Ammo.BOLTS),
-		buy("Magic shortbow", RNG, 50, 0, true, ItemID.MAGIC_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Yew shortbow", RNG, 40, 0, false, ItemID.YEW_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Maple shortbow", RNG, 30, 0, false, ItemID.MAPLE_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Willow shortbow", RNG, 20, 0, false, ItemID.WILLOW_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Oak shortbow", RNG, 5, 0, false, ItemID.OAK_SHORTBOW).firing(Ammo.ARROWS),
-		buy("Shortbow", RNG, 1, 0, false, ItemID.SHORTBOW).firing(Ammo.ARROWS));
+		buy("Magic shortbow", RNG, 50, 0, true, ItemID.MAGIC_SHORTBOW).firing(Ammo.ARROWS).twoHanded(),
+		buy("Yew shortbow", RNG, 40, 0, false, ItemID.YEW_SHORTBOW).firing(Ammo.ARROWS).twoHanded(),
+		buy("Maple shortbow", RNG, 30, 0, false, ItemID.MAPLE_SHORTBOW).firing(Ammo.ARROWS).twoHanded(),
+		buy("Willow shortbow", RNG, 20, 0, false, ItemID.WILLOW_SHORTBOW).firing(Ammo.ARROWS).twoHanded(),
+		buy("Oak shortbow", RNG, 5, 0, false, ItemID.OAK_SHORTBOW).firing(Ammo.ARROWS).twoHanded(),
+		buy("Shortbow", RNG, 1, 0, false, ItemID.SHORTBOW).firing(Ammo.ARROWS).twoHanded());
+
+	/**
+	 * Ranged weapons against dragons: the dragon hunter crossbow first, the rest as usual.
+	 */
+	public static final GearSlot RANGED_WEAPON_DRAGONS = GearSlot.of("weapon", dragonsFirst());
+
+	/**
+	 * The offhand for a one-handed crossbow, best first. Left out of the loadout when the weapon is two-handed.
+	 */
+	public static final GearSlot RANGED_SHIELD = GearSlot.of("shield",
+		buy("Twisted buckler", RNG, 75, 75, true, ItemID.TWISTED_BUCKLER),
+		buy("Dragonfire ward", RNG, 70, 75, true, ItemID.DRAGONFIRE_WARD, ItemID.DRAGONFIRE_WARD_UNCHARGED),
+		buy("Odium ward", DEF, 60, 0, true, ItemID.ODIUM_WARD),
+		buy("Antler guard", Skill.PRAYER, 50, 0, true, ItemID.CUSTODIAN_ANTLER_GUARD),
+		buy("Black d'hide shield", RNG, 70, 40, true, ItemID.BLACK_DHIDE_SHIELD),
+		buy("Red d'hide shield", RNG, 60, 40, true, ItemID.RED_DHIDE_SHIELD),
+		buy("Blue d'hide shield", RNG, 50, 40, true, ItemID.BLUE_DHIDE_SHIELD),
+		buy("Green d'hide shield", RNG, 40, 40, true, ItemID.GREEN_DHIDE_SHIELD));
 
 	public static final GearSlot RANGED_HELM = GearSlot.of("helmet",
-		buy("Masori mask (f)", RNG, 80, 30, true, ItemID.MASORI_MASK_FORTIFIED),
-		buy("Armadyl helmet", RNG, 70, 70, true, ItemID.ARMADYL_HELMET),
+		buy("Masori mask (f)", RNG, 80, 80, true, ItemID.MASORI_MASK_FORTIFIED),
+		buy("Masori mask", RNG, 80, 30, true, ItemID.MASORI_MASK),
+		buy("Armadyl helmet", RNG, 70, 70, true, ItemID.ARMADYL_HELMET, ItemID.ARMADYL_HELMET_ORNAMENT),
 		earn("Archer helm", DEF, 45, 0, true, ItemID.VIKING_HELMET_RANGE),
 		buy("Coif", RNG, 20, 0, false, ItemID.COIF),
 		buy("Leather cowl", null, 0, 0, false, ItemID.LEATHER_COWL));
 
 	public static final GearSlot RANGED_BODY = GearSlot.of("body",
-		buy("Masori body (f)", RNG, 80, 30, true, ItemID.MASORI_BODY_FORTIFIED),
-		buy("Armadyl chestplate", RNG, 70, 70, true, ItemID.ARMADYL_CHESTPLATE),
+		buy("Masori body (f)", RNG, 80, 80, true, ItemID.MASORI_BODY_FORTIFIED),
+		buy("Masori body", RNG, 80, 30, true, ItemID.MASORI_BODY),
+		buy("Armadyl chestplate", RNG, 70, 70, true, ItemID.ARMADYL_CHESTPLATE, ItemID.ARMADYL_CHESTPLATE_ORNAMENT),
 		buy("Black d'hide body", RNG, 70, 40, true, ItemID.BLACK_DRAGONHIDE_BODY),
 		buy("Red d'hide body", RNG, 60, 40, true, ItemID.RED_DRAGONHIDE_BODY),
 		buy("Blue d'hide body", RNG, 50, 40, true, ItemID.BLUE_DRAGONHIDE_BODY),
@@ -152,8 +182,9 @@ public final class GearSets
 		buy("Studded body", RNG, 20, 20, false, ItemID.STUDDED_BODY));
 
 	public static final GearSlot RANGED_LEGS = GearSlot.of("legs",
-		buy("Masori chaps (f)", RNG, 80, 30, true, ItemID.MASORI_CHAPS_FORTIFIED),
-		buy("Armadyl chainskirt", RNG, 70, 70, true, ItemID.ARMADYL_SKIRT),
+		buy("Masori chaps (f)", RNG, 80, 80, true, ItemID.MASORI_CHAPS_FORTIFIED),
+		buy("Masori chaps", RNG, 80, 30, true, ItemID.MASORI_CHAPS),
+		buy("Armadyl chainskirt", RNG, 70, 70, true, ItemID.ARMADYL_SKIRT, ItemID.ARMADYL_SKIRT_ORNAMENT),
 		buy("Black d'hide chaps", RNG, 70, 0, true, ItemID.BLACK_DRAGONHIDE_CHAPS),
 		buy("Red d'hide chaps", RNG, 60, 0, true, ItemID.RED_DRAGONHIDE_CHAPS),
 		buy("Blue d'hide chaps", RNG, 50, 0, true, ItemID.BLUE_DRAGONHIDE_CHAPS),
@@ -175,7 +206,7 @@ public final class GearSets
 		buy("Leather boots", null, 0, 0, false, ItemID.LEATHER_BOOTS));
 
 	public static final GearSlot RANGED_AMULET = GearSlot.of("amulet",
-		buy("Necklace of anguish", null, 0, 0, true, ItemID.ZENYTE_NECKLACE_ENCHANTED),
+		buy("Necklace of anguish", null, 0, 0, true, ItemID.ZENYTE_NECKLACE_ENCHANTED, ItemID.ZENYTE_NECKLACE_ORNAMENT),
 		MELEE_AMULET.getOptions().get(1),
 		MELEE_AMULET.getOptions().get(2),
 		MELEE_AMULET.getOptions().get(3));
@@ -186,8 +217,10 @@ public final class GearSets
 		earn("Ava's attractor", RNG, 30, 0, true, ItemID.ANMA_30_REWARD));
 
 	public static final GearSlot RANGED_RING = GearSlot.of("ring",
-		buy("Venator ring", null, 0, 0, true, ItemID.VENATOR_RING),
-		earn("Archers ring (i)", null, 0, 0, true, ItemID.NZONE_RANGER_RING));
+		// Needs a Leviathan kill to wear
+		earn("Venator ring", null, 0, 0, true, ItemID.VENATOR_RING),
+		earn("Archers ring (i)", null, 0, 0, true, ItemID.NZONE_RANGER_RING),
+		buy("Archers ring", null, 0, 0, true, ItemID.RANGER_RING));
 
 	/**
 	 * Melee gear for every slot.
@@ -199,12 +232,13 @@ public final class GearSets
 	}
 
 	/**
-	 * Ranged gear for every slot. Ammo is added to the supplies from the weapon picked.
+	 * Ranged gear for every slot. Ammo is added to the supplies from the weapon picked, and the offhand only when the
+	 * weapon is one-handed.
 	 */
 	public static List<GearSlot> ranged()
 	{
-		return new ArrayList<>(List.of(RANGED_WEAPON, RANGED_HELM, RANGED_BODY, RANGED_LEGS, RANGED_AMULET,
-			RANGED_CAPE, RANGED_GLOVES, RANGED_BOOTS, RANGED_RING));
+		return new ArrayList<>(List.of(RANGED_WEAPON, RANGED_SHIELD, RANGED_HELM, RANGED_BODY, RANGED_LEGS,
+			RANGED_AMULET, RANGED_CAPE, RANGED_GLOVES, RANGED_BOOTS, RANGED_RING));
 	}
 
 	/**
@@ -231,6 +265,23 @@ public final class GearSets
 			out.add(replacement);
 		}
 		return out;
+	}
+
+	private static Gear[] dragonsFirst()
+	{
+		List<Gear> out = new ArrayList<>();
+		for (Gear g : RANGED_WEAPON.getOptions())
+		{
+			if (g.getName().equals("Dragon hunter crossbow"))
+			{
+				out.add(0, g);
+			}
+			else
+			{
+				out.add(g);
+			}
+		}
+		return out.toArray(new Gear[0]);
 	}
 
 	private GearSets()

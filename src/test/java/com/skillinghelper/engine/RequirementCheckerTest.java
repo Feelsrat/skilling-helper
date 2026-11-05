@@ -80,15 +80,52 @@ public class RequirementCheckerTest
 	public void rangedGearFollowsTheRangedLevelNotTheMonster()
 	{
 		List<String> at70 = texts(checker.check(ranged(), rangedAt(70, ItemCounts.of(ItemID.COINS, 1)), 100));
-		assertEquals("Runite bolts (0 carried, 0 in bank, 100 needed for goal) - buy 100 x ~50 gp = ~5,000 gp",
+		assertEquals("Dragon bolts (0 carried, 0 in bank, 100 needed for goal) - buy 100 x ~50 gp = ~5,000 gp",
 			at70.get(0));
-		assertTrue(at70.contains("Gear upgrade (weapon): Rune crossbow (~50 gp on the GE)"));
-		assertTrue(at70.contains("Gear upgrade (ammo): Runite bolts (~50 gp on the GE)"));
+		// Pricey crossbows (Armadyl, dragon hunter) aren't suggested without the coins for them
+		assertTrue(at70.contains("Gear upgrade (weapon): Dragon crossbow (~50 gp on the GE)"));
+		assertTrue(at70.contains("Gear upgrade (ammo): Dragon bolts (~50 gp on the GE)"));
 
 		List<String> at75 = texts(checker.check(ranged(), rangedAt(75, ItemCounts.of(ItemID.COINS, 1)), 100));
 		assertTrue(at75.contains("Gear upgrade (weapon): Toxic blowpipe (~50 gp on the GE)"));
 		assertTrue(at75.contains("Gear upgrade (ammo): Dragon darts (~50 gp on the GE, loaded into the blowpipe with "
 			+ "Zulrah's scales)"));
+	}
+
+	@Test
+	public void bestOwnedGearIsWornEvenIfItIsNotSoldOnTheGe()
+	{
+		List<String> bofa = texts(checker.check(ranged(),
+			rangedAt(85, ItemCounts.of(ItemID.BOW_OF_FAERDHINEN_INFINITE, 1, ItemID.ACB, 1)), 100));
+		assertTrue(bofa.contains("Gear: wear your Bow of faerdhinen (in bank)"));
+		// It makes its own arrows, and both hands are taken
+		assertTrue(bofa.stream().noneMatch(t -> t.contains("Ammo") || t.contains("bolts") || t.contains("arrows")));
+		assertTrue(bofa.stream().noneMatch(t -> t.contains("(shield)")));
+	}
+
+	@Test
+	public void pricyGearIsSuggestedWhenYouCanAffordIt()
+	{
+		List<String> rich = texts(checker.check(ranged(), rangedAt(75, ItemCounts.of(ItemID.COINS, 1_000_000)), 100));
+		assertTrue(rich.contains("Gear upgrade (weapon): Twisted bow (~50 gp on the GE)"));
+		assertTrue(rich.contains("Gear upgrade (amulet): Necklace of anguish (~50 gp on the GE)"));
+	}
+
+	@Test
+	public void crossbowsGetAnOffhand()
+	{
+		List<String> rcb = texts(checker.check(ranged(),
+			rangedAt(70, ItemCounts.of(ItemID.XBOWS_CROSSBOW_RUNITE, 1, ItemID.COINS, 1)), 100));
+		assertTrue(rcb.contains("Gear upgrade (shield): Odium ward (~50 gp on the GE)"));
+
+		List<String> owned = texts(checker.check(ranged(),
+			rangedAt(80, ItemCounts.of(ItemID.ACB, 1, ItemID.ODIUM_WARD, 1)), 100));
+		assertTrue(owned.contains("Gear: wear your Armadyl crossbow (in bank)"));
+		assertTrue(owned.contains("Gear: wear your Odium ward (in bank)"));
+
+		List<String> bow = texts(checker.check(ranged(),
+			rangedAt(70, ItemCounts.of(ItemID.MAGIC_SHORTBOW, 1, ItemID.COINS, 1)), 100));
+		assertTrue(bow.stream().noneMatch(t -> t.contains("(shield)")));
 	}
 
 	@Test

@@ -16,10 +16,23 @@ public class GearSlot
 	 * Barrows brothers weak to Magic).
 	 */
 	boolean swap;
+	/**
+	 * The guide can't be done without this slot filled (e.g. an anti-dragon shield), so a two-handed weapon is never
+	 * picked over it.
+	 */
+	boolean required;
 
 	public static GearSlot of(String name, Gear... options)
 	{
-		return new GearSlot(name, List.of(options), false);
+		return new GearSlot(name, List.of(options), false, false);
+	}
+
+	/**
+	 * A slot the guide needs filled, e.g. an anti-dragon shield against dragonfire.
+	 */
+	public static GearSlot required(String name, Gear... options)
+	{
+		return new GearSlot(name, List.of(options), false, true);
 	}
 
 	/**
@@ -27,6 +40,6 @@ public class GearSlot
 	 */
 	public static GearSlot swap(String name, Gear... options)
 	{
-		return new GearSlot(name, List.of(options), true);
+		return new GearSlot(name, List.of(options), true, false);
 	}
 }

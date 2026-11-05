@@ -51,7 +51,7 @@ public final class PvmGuides
 		ItemID._1DOSEMOONLIGHTPOTION,
 	};
 
-	private static final GearSlot ANTI_DRAGON_SHIELD = GearSlot.of("shield",
+	private static final GearSlot ANTI_DRAGON_SHIELD = GearSlot.required("shield",
 		buy("Dragonfire shield", Skill.DEFENCE, 75, 0, true, ItemID.DRAGONFIRE_SHIELD),
 		buy("Dragonfire ward", Skill.DEFENCE, 75, 0, true, ItemID.DRAGONFIRE_WARD),
 		buy("Anti-dragon shield", null, 0, 0, false, ItemID.ANTIDRAGONBREATHSHIELD));
@@ -560,7 +560,7 @@ public final class PvmGuides
 
 		PvmGuide.builder()
 			.contentId("vorkath")
-			.gear(GearSets.with(GearSets.ranged(), ANTI_DRAGON_SHIELD))
+			.gear(GearSets.with(GearSets.with(GearSets.ranged(), ANTI_DRAGON_SHIELD), GearSets.RANGED_WEAPON_DRAGONS))
 			.budget(30_000_000)
 			.supply(Supplies.antifire(2))
 			.supply(Supplies.antiVenom(1))

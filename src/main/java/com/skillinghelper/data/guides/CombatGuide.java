@@ -154,7 +154,7 @@ final class CombatGuide
 			{
 				b.alsoAt(GEMSTONE_CRAB_SPOTS[i]);
 			}
-			b.quest(Quest.CHILDREN_OF_THE_SUN).target(Target.npc("Mine", "Gemstone Crab Shell"));
+			b.quest(Quest.CHILDREN_OF_THE_SUN).target(Target.npc("Mine", "Gemstone Crab Shell")).supply(Supplies.PICKAXE);
 		}
 		return b;
 	}

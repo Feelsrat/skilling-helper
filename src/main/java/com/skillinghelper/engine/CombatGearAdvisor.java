@@ -15,7 +15,7 @@ final class CombatGearAdvisor
 {
 	/**
 	 * The ranged weapon the player will train with: the best one they own and can wield, else the best one they can
-	 * buy. Null if they can't wield any.
+	 * buy that isn't {@link CombatGear.Tier#isPricey() pricey}. Null if they can't wield any.
 	 */
 	static CombatGear.Tier rangedWeapon(PlayerState s)
 	{
@@ -30,12 +30,22 @@ final class CombatGearAdvisor
 			{
 				return t;
 			}
-			if (best == null)
+			if (best == null && t.isBuyable() && !t.isPricey())
 			{
 				best = t;
 			}
 		}
 		return best;
+	}
+
+	/**
+	 * Whether the ranged weapon the player will use leaves a hand free for an offhand (crossbows do, bows and the
+	 * blowpipe don't).
+	 */
+	static boolean rangedOffhand(PlayerState s)
+	{
+		CombatGear.Tier weapon = rangedWeapon(s);
+		return weapon != null && !weapon.isTwoHanded();
 	}
 
 	/**
@@ -60,8 +70,9 @@ final class CombatGearAdvisor
 
 	/**
 	 * Spell rune inputs become the runes of the player's best spell, or null when that spell doesn't use one.
-	 * Any other input but the generic ammo one is returned as it is. The ammo input is named after what the player should use: the kind they fire if they already have some,
-	 * otherwise the exact ammo to buy, which is also what its price comes from.
+	 * Any other input but the generic ammo one is returned as it is. The ammo input is named after what the player
+	 * should use: the kind they fire if they already have some, otherwise the exact ammo to buy, which is also what
+	 * its price comes from. It is null when the weapon needs no ammo.
 	 */
 	static ItemReq resolve(ItemReq input, PlayerState s)
 	{
@@ -72,6 +83,12 @@ final class CombatGearAdvisor
 		if (input != CombatGear.AMMO_INPUT)
 		{
 			return input;
+		}
+		CombatGear.Tier weapon = rangedWeapon(s);
+		if (weapon != null && weapon.getAmmo() == CombatGear.Ammo.NONE)
+		{
+			// The bow of faerdhinen makes its own arrows
+			return null;
 		}
 		CombatGear.Tier best = bestAmmo(s);
 		if (best == null)
