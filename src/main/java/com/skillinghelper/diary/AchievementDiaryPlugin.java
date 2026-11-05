@@ -220,8 +220,22 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	{
 		if (AchievementDiaryConfig.GROUP.equals(e.getGroup()) || Wilderness.isSettingChange(e))
 		{
+			boolean pick = AchievementDiaryConfig.GROUP.equals(e.getGroup())
+				&& ("region".equals(e.getKey()) || "tier".equals(e.getKey()));
 			clientThread.invokeLater(() ->
 			{
+				if (pick)
+				{
+					// Also set from the Quest Order Guide's "Show in Achievement Diary Guides"
+					DiaryRegion r = savedRegion();
+					DiaryTier t = savedTier();
+					if (r != region || t != tier)
+					{
+						picked = null;
+						region = r;
+						tier = t;
+					}
+				}
 				clearWay();
 				refresh();
 			});

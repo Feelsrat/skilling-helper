@@ -153,6 +153,17 @@ levels, quests and world allow, and sorts them by gp/hr at today's GE prices.
 The method list is bundled with the plugin (built from the wiki by `tools/money/build_money_methods.py`). Prices come
 from RuneLite's own GE guide unless you turn on live wiki prices.
 
+## Quest Order Guide
+
+Also in the jar: **Quest Order Guide** (blue quest icon). It follows the OSRS Wiki's
+[optimal quest guide](https://oldschool.runescape.wiki/w/Optimal_quest_guide) (main or Ironman route, picked by
+account type) and shows what's done, what you can do now, and what's missing for the rest (quests, levels, Quest
+points, members). The next quest is handed over to the [Quest Helper](https://runelite.net/plugin-hub/show/quest-helper)
+plugin for the click-by-click steps: the guide draws the way to the start with Shortest Path, outlines the NPC who
+starts it and the quest's line in the Quest list, and tells you to right-click it and choose "Start Quest Helper".
+Without Quest Helper it warns once in the chat and in the panel. Diary rows send you to Achievement Diary Guides.
+Data is rebuilt with `python3 tools/quests/build_quests.py src/main/resources/com/skillinghelper/quests`.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
