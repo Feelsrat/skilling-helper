@@ -37,7 +37,8 @@ public class DiaryDataTest
 		Map.entry(DiaryRegion.KANDARIN, new int[]{11, 14, 11, 7}),
 		Map.entry(DiaryRegion.MORYTANIA, new int[]{11, 11, 10, 6}),
 		Map.entry(DiaryRegion.FREMENNIK, new int[]{10, 9, 9, 6}),
-		Map.entry(DiaryRegion.KOUREND, new int[]{12, 13, 10, 8}));
+		Map.entry(DiaryRegion.KOUREND, new int[]{12, 13, 10, 8}),
+		Map.entry(DiaryRegion.WESTERN, new int[]{11, 13, 13, 7}));
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()
