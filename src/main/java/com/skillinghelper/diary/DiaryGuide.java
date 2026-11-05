@@ -155,7 +155,15 @@ public final class DiaryGuide
 	 */
 	public static boolean obtainable(DiaryTask t, DiaryPlayer p)
 	{
-		for (DiaryItem item : t.getItems())
+		return obtainable(t.getItems(), p);
+	}
+
+	/**
+	 * Whether every one of these items can be bought or is owned.
+	 */
+	public static boolean obtainable(List<DiaryItem> items, DiaryPlayer p)
+	{
+		for (DiaryItem item : items)
 		{
 			if (required(item, p) && item.getBuyId() <= 0 && item.getTool() == null && ownedCount(item, p) < item.getAmount())
 			{
@@ -364,7 +372,16 @@ public final class DiaryGuide
 	 */
 	static DiaryStep supplies(DiaryTask t, DiaryPlayer p)
 	{
-		List<Need> needs = needs(t, p);
+		return supplies(t.key(), t.label(), t.getItems(), p);
+	}
+
+	/**
+	 * The bank or shop step for whatever of {@code items} the player doesn't carry yet, or null when they carry it
+	 * all. {@code key} goes on the step (task or minigame id) and {@code label} names what it's for.
+	 */
+	public static DiaryStep supplies(String key, String label, List<DiaryItem> items, DiaryPlayer p)
+	{
+		List<Need> needs = needs(items, p);
 		if (needs.isEmpty())
 		{
 			return null;
@@ -373,7 +390,7 @@ public final class DiaryGuide
 		{
 			if (n.getId() <= 0)
 			{
-				return step(DiaryStep.Kind.GET_ITEM, t)
+				return step(DiaryStep.Kind.GET_ITEM, key)
 					.title("Get a " + n.getItem().getName() + " first")
 					.line(n.getItem().getHowToGet() != null ? n.getItem().getHowToGet()
 						: "It can't be bought on the Grand Exchange.")
@@ -397,7 +414,7 @@ public final class DiaryGuide
 		ShopPlan shop = toBuy.isEmpty() || !p.isPreferShops() ? null : shopPlan(toBuy, p);
 		if (shop != null && !p.isBankOpen())
 		{
-			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.BUY, t)
+			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.BUY, key)
 				.title(shop.title())
 				.withdraw(withdraw)
 				.npcs(new HashSet<>(shop.getShop().getNpcs()));
@@ -416,7 +433,7 @@ public final class DiaryGuide
 			Location ge = Banks.GRAND_EXCHANGE;
 			Set<String> npcs = new HashSet<>(GE_CLERKS);
 			npcs.addAll(BANK_NPCS);
-			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.BUY, t)
+			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.BUY, key)
 				.title("Buy what this task needs at the Grand Exchange")
 				.withdraw(withdraw)
 				.npcs(npcs)
@@ -448,7 +465,7 @@ public final class DiaryGuide
 		if (!p.isBankOpen())
 		{
 			Location bank = Banks.nearest(p.getLocation(), p.isMembers());
-			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.OPEN_BANK, t)
+			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.OPEN_BANK, key)
 				.title("Open your bank")
 				.withdraw(withdraw)
 				.npcs(BANK_NPCS)
@@ -458,12 +475,12 @@ public final class DiaryGuide
 				b.destination(bank).line("Walk to " + bank.getName() + " (follow the arrow).");
 			}
 			b.line("Click a bank booth or banker (outlined) and choose Bank.");
-			b.line("For \"" + t.label() + "\" you need:");
+			b.line("For \"" + label + "\" you need:");
 			needs.forEach(n -> b.line("- " + amount(n.getItem(), n.getId(), n.getAmount())));
 			travelLines(b, p);
 			return b.build();
 		}
-		DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.WITHDRAW, t)
+		DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.WITHDRAW, key)
 			.title("Take out what this task needs")
 			.withdraw(withdraw);
 		b.line("Take these out (outlined in the bank):");
@@ -484,8 +501,13 @@ public final class DiaryGuide
 	 */
 	static List<Need> needs(DiaryTask t, DiaryPlayer p)
 	{
+		return needs(t.getItems(), p);
+	}
+
+	static List<Need> needs(List<DiaryItem> items, DiaryPlayer p)
+	{
 		List<Need> out = new ArrayList<>();
-		for (DiaryItem item : t.getItems())
+		for (DiaryItem item : items)
 		{
 			if (!required(item, p))
 			{
@@ -530,8 +552,17 @@ public final class DiaryGuide
 	 */
 	public static long cost(DiaryTask t, DiaryPlayer p)
 	{
+		return cost(t.getItems(), p);
+	}
+
+	/**
+	 * What these items cost in gold: coins counted as they are, plus the Grand Exchange price of each item the player
+	 * doesn't own enough of yet.
+	 */
+	public static long cost(List<DiaryItem> items, DiaryPlayer p)
+	{
 		long gp = 0;
-		for (DiaryItem item : t.getItems())
+		for (DiaryItem item : items)
 		{
 			if (!required(item, p))
 			{
@@ -680,6 +711,11 @@ public final class DiaryGuide
 
 	private static DiaryStep.DiaryStepBuilder step(DiaryStep.Kind kind, DiaryTask t)
 	{
-		return DiaryStep.builder().kind(kind).taskKey(t.key());
+		return step(kind, t.key());
+	}
+
+	private static DiaryStep.DiaryStepBuilder step(DiaryStep.Kind kind, String key)
+	{
+		return DiaryStep.builder().kind(kind).taskKey(key);
 	}
 }
