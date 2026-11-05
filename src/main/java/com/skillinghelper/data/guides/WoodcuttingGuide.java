@@ -8,6 +8,7 @@ import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.Target;
 import com.skillinghelper.data.ToolType;
 import java.util.List;
+import net.runelite.api.Quest;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
 
@@ -137,6 +138,45 @@ final class WoodcuttingGuide
 				.howTo("The redwoods are the huge trees in the south-west of the guild. Click the highlighted "
 					+ "rope ladder to climb onto the platform that runs around them, then chop from up there.")
 				.howTo(chop("redwood tree"))
+				.build(),
+			tree("wc_camphor_conch", "Camphor trees (The Great Conch)", 66, 143, 50_000, "Camphor tree",
+				Location.of("Sacred Grove camphor trees (The Great Conch)", 3196, 2481, 12), null,
+				ItemID.CAMPHOR_LOGS)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.FAST).dropByDefault(true)
+				.questStarted(Quest.TROUBLED_TORTUGANS)
+				.notes("From the wiki's AFK guide: a tree lasts about 2 minutes of chopping. Camphor logs make the "
+					+ "planks for Sailing boat parts, so they're worth keeping if you sail.")
+				.wikiPage("Camphor_tree")
+				.rateAt(80, 63_000).rateAt(99, 70_000)
+				.getThere("The Great Conch is south of Menaphos; you need Troubled Tortugans started (give the "
+					+ "bandage to Floopa). Fairy ring C-J-Q or a charter ship gets you there; the camphor trees are "
+					+ "in the Sacred Grove: follow the arrow.")
+				.howTo(chop("camphor tree"))
+				.build(),
+			tree("wc_ironwood_sunbleak", "Ironwood trees (Sunbleak Island)", 80, 175, 60_000, "Ironwood tree",
+				Location.of("Sunbleak Island ironwood trees", 2216, 2330, 18), null, ItemID.IRONWOOD_LOGS)
+				.members(true).tag(MethodTag.AFK).tag(MethodTag.FAST).dropByDefault(true)
+				.skillLevel(Skill.SAILING, 72)
+				.notes("From the wiki's AFK guide: a tree lasts about 4 minutes of chopping, and it's the best "
+					+ "Woodcutting xp in the game with forester's rations. Sunbleak has a bank chest you can build.")
+				.wikiPage("Ironwood_tree")
+				.rateAt(90, 68_000).rateAt(99, 75_000)
+				.getThere("Sunbleak Island is only reachable by boat (72 Sailing and an adamant helm for the kelp). "
+					+ "Teleport to Wyrmscraig with a necklace of passage, call your boat and sail north-west.")
+				.howTo(chop("ironwood tree"))
+				.build(),
+			tree("wc_rosewood_drumstick", "Rosewood trees (Drumstick Isle)", 92, 212.5, 70_000, "Rosewood tree",
+				Location.of("Drumstick Isle rosewood trees", 2147, 3548, 12), null, ItemID.ROSEWOOD_LOGS)
+				.members(true).tag(MethodTag.AFK).dropByDefault(true)
+				.skillLevel(Skill.SAILING, 79)
+				.notes("From the wiki's AFK guide: the longest a tree lasts (about 4.5 minutes) and the logs are the "
+					+ "most valuable. Keep them in your boat's cargo hold rather than dropping them.")
+				.wikiPage("Rosewood_tree")
+				.rateAt(99, 85_000)
+				.getThere("Drumstick Isle is west of Piscatoris and needs 79 Sailing and an adamant keel to moor. "
+					+ "Take a charter ship to Prifddinas, sail to the cyan Portal of Meilyr north-west of it, and it "
+					+ "drops you just north of the island.")
+				.howTo(chop("rosewood tree"))
 				.build()
 		);
 	}

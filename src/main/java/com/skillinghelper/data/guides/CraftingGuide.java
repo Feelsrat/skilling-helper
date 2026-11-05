@@ -145,6 +145,36 @@ final class CraftingGuide
 			.howTo(HowTo.bankStanding("your chisel and 27 amethyst",
 				"the chisel, then the amethyst (in the menu pick arrowtips)", "amethyst arrowtips"))
 			.build());
+		Location oven = Location.of("Barbarian Village pottery oven", 3085, 3408, 5);
+		Target ovenTarget = Target.object(null, "Pottery Oven");
+		m.add(Method.builder()
+			.id("craft_fire_pot_lids")
+			.skill(Skill.CRAFTING)
+			.type(MethodType.PROCESS)
+			.name("Fire pot lids (Barbarian Village)")
+			.minLevel(25)
+			.xpPerAction(20)
+			// About 800 an hour with the walk to Edgeville bank (wiki AFK guide: 16k xp/hr)
+			.xpPerHour(20 * 800)
+			.tag(MethodTag.AFK).tag(MethodTag.CHEAP)
+			.location(oven)
+			.bank(Banks.EDGEVILLE)
+			.input(ItemReq.consumed("Unfired pot lids", 28, 1, ItemID.POTLID_UNFIRED)
+				.madeFrom("Use soft clay on the potter's wheel and pick the pot lid", false,
+					ItemReq.part("Soft clay", 1, ItemID.SOFTCLAY))
+				.madeAt(oven, Target.object(null, "Potter's Wheel")))
+			.product(ItemID.POTLID)
+			.target(ovenTarget)
+			.useItem(ItemID.POTLID_UNFIRED)
+			.instruction("Use an unfired pot lid on the pottery oven and fire them all")
+			.notes("From the wiki's AFK guide: firing clay takes about 2 minutes an inventory with one click. Any "
+				+ "unfired pottery works; pot lids give the most xp for the level.")
+			.wikiPage("Pottery_Oven")
+			.howTo(HowTo.atObject("The pottery oven is in the small house in Barbarian Village, next to the "
+					+ "potter's wheel (south-west of Edgeville bank)",
+				"28 unfired pot lids", "an unfired pot lid, then the highlighted pottery oven",
+				"press Space to fire them all", "pot lids"))
+			.build());
 		return m;
 	}
 

@@ -22,8 +22,8 @@ final class HerbloreGuide
 	private static final String WIKI = "Herblore_training";
 	// 14 potions per trip, about 2,500 an hour
 	private static final int POTIONS_PER_HOUR = 2_500;
-	// Cleaning one herb per click, about 4,500 an hour with banking
-	private static final int HERBS_CLEANED_PER_HOUR = 4_500;
+	// One click cleans the whole inventory now; about 3,000 an hour with banking (wiki AFK guide: 45k xp/hr torstol)
+	private static final int HERBS_CLEANED_PER_HOUR = 3_000;
 
 	static List<Method> methods()
 	{
@@ -115,6 +115,60 @@ final class HerbloreGuide
 			.howTo("Click a torstol, then a super attack potion. Press Space to make them all.")
 			.howTo("Bank the super combats, take out more and repeat.")
 			.build());
+		// From the wiki's AFK guide: tar and stackable secondaries make a whole inventory in one click
+		m.add(tar("herb_guam_tar", "Guam tar", 19, 30, ItemID.GUAM_LEAF, "Clean guam", ItemID.SALAMANDER_TAR_GREEN)
+			.build());
+		m.add(tar("herb_harralander_tar", "Harralander tar", 44, 72.5, ItemID.HARRALANDER, "Clean harralander",
+			ItemID.SALAMANDER_TAR_BLACK).build());
+		m.add(tar("herb_irit_tar", "Irit tar", 55, 85, ItemID.IRIT_LEAF, "Clean irit", ItemID.SALAMANDER_TAR_MOUNTAIN)
+			.build());
+		m.add(Method.builder()
+			.id("herb_stamina")
+			.skill(Skill.HERBLORE)
+			.type(MethodType.PROCESS)
+			.name("Make stamina potions")
+			.minLevel(77)
+			.xpPerAction(102)
+			.xpPerHour(102 * 2_700)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.quest(Quest.DRUIDIC_RITUAL)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.consumed("Super energy (4)", 27, 1, ItemID._4DOSE2ENERGY))
+			.input(ItemReq.stack("Amylase crystals", 4, ItemID.AMYLASE))
+			.product(ItemID._4DOSESTAMINA)
+			.useItem(ItemID.AMYLASE).useItem(ItemID._4DOSE2ENERGY)
+			.instruction("Use the amylase crystals on a super energy (4) and press Space to make them all")
+			.notes("Amylase stacks, so one click makes 27 potions. Amylase comes from Mark of grace trades or the "
+				+ "GE.")
+			.wikiPage(WIKI)
+			.howTo(HowTo.bankStanding("27 super energy (4) and a stack of amylase crystals (4 per potion)",
+				"the amylase crystals, then a super energy", "stamina potions"))
+			.build());
+		m.add(Method.builder()
+			.id("herb_anti_venom")
+			.skill(Skill.HERBLORE)
+			.type(MethodType.PROCESS)
+			.name("Make anti-venoms")
+			.minLevel(87)
+			.xpPerAction(120)
+			.xpPerHour(120 * 2_700)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.quest(Quest.DRUIDIC_RITUAL)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.input(ItemReq.consumed("Antidote++ (4)", 27, 1, ItemID.ANTIDOTE__4))
+			.input(ItemReq.stack("Zulrah's scales", 20, ItemID.SNAKEBOSS_SCALE))
+			.product(ItemID.ANTIVENOM4)
+			.useItem(ItemID.SNAKEBOSS_SCALE).useItem(ItemID.ANTIDOTE__4)
+			.instruction("Use the Zulrah's scales on an antidote++ (4) and press Space to make them all")
+			.notes("The scales stack, so one click makes 27 potions. The wiki's AFK guide uses this for its rates.")
+			.wikiPage(WIKI)
+			.howTo(HowTo.bankStanding("27 antidote++ (4) and a stack of Zulrah's scales (20 per potion)",
+				"the Zulrah's scales, then an antidote++", "anti-venoms"))
+			.build());
 		m.add(clean("herb_clean_guam", "guam leaves", 3, 2.5, ItemID.UNIDENTIFIED_GUAM, ItemID.GUAM_LEAF).build());
 		m.add(clean("herb_clean_marrentill", "marrentill", 5, 3.8, ItemID.UNIDENTIFIED_MARENTILL, ItemID.MARENTILL)
 			.build());
@@ -185,14 +239,48 @@ final class HerbloreGuide
 			.input(ItemReq.consumed("Grimy " + herbName, 28, 1, grimy))
 			.product(clean)
 			.useItem(grimy)
-			.instruction("Click each grimy " + herbName + " to clean it, then bank and repeat")
+			.instruction("Click a grimy " + herbName + " once to clean the whole inventory, then bank and repeat")
 			.howTo("Stand next to any banker or bank booth (the Grand Exchange has lots in the middle).")
 			.howTo("Open the bank and take out 28 grimy " + herbName + " (the guide highlights them).")
-			.howTo("Close the bank and click each grimy herb in your inventory once (\"Clean\"). Click them one "
-				+ "after another as fast as you like.")
+			.howTo("Close the bank and click one grimy herb (\"Clean\"). Your character cleans the rest of the "
+				+ "inventory by themselves.")
 			.howTo("When they're all clean, deposit them, take out 28 more and repeat.")
 			.notes("Slow xp but it pays: clean herbs sell for more than grimy ones. Profit depends on today's prices.")
 			.wikiPage("Money_making_guide/Cleaning_grimy_" + herbName.replace(' ', '_'));
+	}
+
+	/**
+	 * Grinding a herb into 15 tar with swamp tar: the swamp tar and the tar stack, so a whole inventory of herbs goes in
+	 * one click.
+	 */
+	private static Method.MethodBuilder tar(String id, String name, int level, double xp, int herb, String herbName,
+		int product)
+	{
+		return Method.builder()
+			.id(id)
+			.skill(Skill.HERBLORE)
+			.type(MethodType.PROCESS)
+			.name("Make " + name.toLowerCase())
+			.minLevel(level)
+			.xpPerAction(xp)
+			// One herb per 2 ticks with Make-All, about 2,000 an hour with banking (wiki AFK guide: 170k xp/hr irit)
+			.xpPerHour((int) (xp * 2_000))
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.quest(Quest.DRUIDIC_RITUAL)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.tool(ItemReq.tool("Pestle and mortar", ItemID.PESTLE_AND_MORTAR))
+			.input(ItemReq.consumed(herbName, 26, 1, herb))
+			.input(ItemReq.stack("Swamp tar", 15, ItemID.SWAMP_TAR))
+			.product(product)
+			.useItem(herb).useItem(ItemID.SWAMP_TAR)
+			.instruction("Use the " + herbName.toLowerCase() + " on the swamp tar and press Space to make it all")
+			.notes("Each herb and 15 swamp tar make 15 " + name.toLowerCase() + " for Hunter salamanders. Swamp tar "
+				+ "is cheap on the GE or picked in Lumbridge Swamp.")
+			.wikiPage("Herblore_training#Making_tar")
+			.howTo(HowTo.bankStanding("your pestle and mortar, the swamp tar (15 per herb) and 26 "
+					+ herbName.toLowerCase(), "a herb, then the swamp tar", name.toLowerCase()));
 	}
 
 	private static Method.MethodBuilder potion(String id, String name, int level, double xp, int unf, String unfName,

@@ -168,9 +168,10 @@ final class MagicGuide
 				.name("Enchant sapphire rings (rings of recoil)")
 				.minLevel(7)
 				.xpPerAction(17.5)
-				.xpPerHour(30_000)
+				// The spell repeats by itself every 7 ticks: about 850 rings an hour
+				.xpPerHour(15_000)
 				.members(true)
-				.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+				.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT).tag(MethodTag.AFK)
 				.location(Banks.GRAND_EXCHANGE)
 				.bank(Banks.GRAND_EXCHANGE)
 				.input(ItemReq.stack("Cosmic runes", 1, ItemID.COSMICRUNE))
@@ -178,14 +179,15 @@ final class MagicGuide
 				.input(ItemReq.consumed("Sapphire rings", 27, 1, ItemID.SAPPHIRE_RING))
 				.product(ItemID.RING_OF_RECOIL)
 				.useItem(ItemID.SAPPHIRE_RING)
-				.instruction("Cast Lvl-1 Enchant on each sapphire ring")
+				.instruction("Cast Lvl-1 Enchant on a sapphire ring; the rest of the rings enchant by themselves")
 				.wikiPage(P2P_WIKI)
 				.howTo("Stand at any bank. Wear a water staff, or carry water runes, and take out the cosmic "
 					+ "runes and 27 sapphire rings.")
 				.howTo("Open your spellbook (the blue book icon), click Lvl-1 Enchant, then click a sapphire "
 					+ "ring: it becomes a ring of recoil.")
-				.howTo("The spellbook opens again by itself: click Lvl-1 Enchant and the next ring. Repeat, then "
-					+ "bank them and take more.")
+				.howTo("Your character carries on with the next rings by themselves until the whole inventory is "
+					+ "done (casting again by hand on each ring is a bit faster but much more clicking).")
+				.howTo("Bank the rings of recoil, take out more sapphire rings and repeat.")
 				.build(),
 			enchant("magic_enchant_power", "Lvl-4 Enchant", "Diamond amulets", 57, 67, ItemID.STRUNG_DIAMOND_AMULET,
 				ItemID.AMULET_OF_POWER, earth(10)).build(),
@@ -271,22 +273,24 @@ final class MagicGuide
 			.name(spell + " (" + itemName.toLowerCase() + ")")
 			.minLevel(level)
 			.xpPerAction(xp)
-			.xpPerHour((int) (xp * 1_300))
+			// The spell repeats by itself every 7 ticks: about 850 an hour (wiki AFK guide: 63k xp/hr at Lvl-5)
+			.xpPerHour((int) (xp * 850))
 			.members(true)
-			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT).tag(MethodTag.AFK)
 			.location(Banks.GRAND_EXCHANGE)
 			.bank(Banks.GRAND_EXCHANGE)
 			.input(ItemReq.stack("Cosmic runes", 1, ItemID.COSMICRUNE))
 			.input(ItemReq.consumed(itemName, 27, 1, item))
 			.product(product)
 			.useItem(item)
-			.instruction("Cast " + spell + " on each of the " + itemName.toLowerCase())
+			.instruction("Cast " + spell + " on one of the " + itemName.toLowerCase() + "; the rest enchant by "
+				+ "themselves")
 			.howTo("Stand at any bank (the Grand Exchange is handy). Wear the matching elemental staff if you have "
 				+ "one, and take out the cosmic runes, the other runes and 27 " + itemName.toLowerCase() + ".")
 			.howTo("Open your spellbook (the blue book icon), click " + spell + ", then click one of the "
 				+ itemName.toLowerCase() + ".")
-			.howTo("The spellbook opens again by itself: click the spell, then the next item. Repeat until all are "
-				+ "enchanted.")
+			.howTo("Your character carries on with the rest of the inventory by themselves (casting by hand on each "
+				+ "one is a bit faster but much more clicking).")
 			.howTo("Bank the enchanted items, take out more and repeat.")
 			.notes("A wiki money maker when the enchanted item sells for more than the amulet and runes.")
 			.wikiPage(P2P_WIKI);
@@ -393,9 +397,10 @@ final class MagicGuide
 			.name("Plank Make (" + wood.toLowerCase() + " logs)")
 			.minLevel(86)
 			.xpPerAction(90)
-			.xpPerHour(90 * 1_500)
+			// Letting the spell repeat by itself: about 1,000 planks an hour (wiki: up to 90k xp/hr)
+			.xpPerHour(90 * 1_000)
 			.members(true)
-			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.PROFIT).tag(MethodTag.AFK)
 			.quest(Quest.DREAM_MENTOR)
 			.location(Banks.GRAND_EXCHANGE)
 			.bank(Banks.GRAND_EXCHANGE)
@@ -406,13 +411,14 @@ final class MagicGuide
 			.input(ItemReq.consumed(wood + " logs", 25, 1, log))
 			.product(plank)
 			.useItem(log)
-			.instruction("On the Lunar spellbook, cast Plank Make on each " + wood.toLowerCase() + " log")
+			.instruction("On the Lunar spellbook, cast Plank Make on one " + wood.toLowerCase() + " log; the rest turn "
+				+ "into planks by themselves")
 			.howTo("You must be on the Lunar spellbook: after Lunar Diplomacy, pray at the altar in the Astral "
 				+ "altar's temple on Lunar Isle to switch.")
 			.howTo("Stand at any bank. Take out the astral, nature and earth runes (or wear an earth staff), the coins "
 				+ "and the " + wood.toLowerCase() + " logs.")
-			.howTo("Open your spellbook, click Plank Make, then click a log. The spellbook opens again by itself: "
-				+ "click Plank Make and the next log, until every log is a plank.")
+			.howTo("Open your spellbook, click Plank Make, then click a log. Your character keeps casting on the "
+				+ "rest of the logs by themselves until every log is a plank.")
 			.howTo("Bank the planks, take out more logs and repeat.")
 			.notes("Needs the Lunar spellbook (Lunar Diplomacy) and Dream Mentor to cast. Each cast costs "
 				+ String.format("%,d", fee) + " coins on top of the runes.")

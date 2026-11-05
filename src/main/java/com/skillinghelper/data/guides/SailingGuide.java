@@ -56,6 +56,21 @@ final class SailingGuide
 				.build(),
 			salvage("sail_salvage_large", "Large shipwrecks", 53, 55_000,
 				1563, 2679, 1886, 2508, 2459, 2144, 2845, 4030, 3394, 2138)
+				.build(),
+			// Higher wrecks and their rates from the wiki's AFK guide
+			salvage("sail_salvage_pirate", "Pirate shipwrecks", 64, 47_000,
+				2663, 2544, 1826, 2842, 2116, 3655, 2193, 3843)
+				.build(),
+			salvage("sail_salvage_mercenary", "Mercenary shipwrecks", 73, 70_000,
+				1688, 2399, 1747, 2209, 2140, 2212)
+				.build(),
+			salvage("sail_salvage_fremennik", "Fremennik shipwrecks", 80, 80_000,
+				1769, 4124, 2272, 4129, 2591, 4128)
+				.build(),
+			salvage("sail_salvage_merchant", "Merchant shipwrecks", 87, 85_000,
+				1069, 2962, 1820, 3989, 1888, 2150)
+				.notes("Each wreck sinks about 4 minutes after you start. Aldarin has the closest deposit box if you "
+					+ "bank the opulent salvage to sort later.")
 				.build()
 		);
 	}

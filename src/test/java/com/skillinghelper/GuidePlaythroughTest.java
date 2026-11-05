@@ -98,7 +98,8 @@ public class GuidePlaythroughTest
 			bank.put(ItemID.COINS, 50_000_000);
 			for (Skill s : Skill.values())
 			{
-				int level = s == method.getSkill() ? Math.max(1, method.getMinLevel()) : 70;
+				int level = s == method.getSkill() ? Math.max(1, method.getMinLevel())
+					: Math.max(70, method.getSkillLevels().getOrDefault(s, 0));
 				levels.put(s, level);
 				xp.put(s, Experience.getXpForLevel(level));
 			}

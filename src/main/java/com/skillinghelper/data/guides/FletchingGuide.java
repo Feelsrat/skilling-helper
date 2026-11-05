@@ -63,6 +63,61 @@ final class FletchingGuide
 			ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE_UNFEATHERED, 10, ItemID.XBOWS_CROSSBOW_BOLTS_ADAMANTITE).build());
 		m.add(ammo("fletch_runite_bolts", "Runite bolts", 69, 100, "Runite bolts (unf)",
 			ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE_UNFEATHERED, 10, ItemID.XBOWS_CROSSBOW_BOLTS_RUNITE).build());
+
+		// From the wiki's AFK guide: one click does a whole inventory
+		m.add(cut("fletch_battlestaves", "Battlestaves", 40, 80, "Celastrus bark", ItemID.CELASTRUS_WOOD,
+			ItemID.BATTLESTAFF)
+			.notes("The best Fletching xp from 40 to 80, and a fletching knife makes it faster. Celastrus bark comes "
+				+ "from the Farming Guild's celastrus tree or the GE.")
+			.wikiPage("Fletching_training#Level_40–80:_Battlestaves")
+			.build());
+		m.add(Method.builder()
+			.id("fletch_redwood_shields")
+			.skill(Skill.FLETCHING)
+			.type(MethodType.PROCESS)
+			.name("Cut redwood shields")
+			.minLevel(92)
+			.xpPerAction(216)
+			// About 780 shields an hour (wiki: 168k xp/hr, 193k with a fletching knife)
+			.xpPerHour(216 * 780)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.tool(KNIFE)
+			.input(ItemReq.consumed("Redwood logs", 26, 2, ItemID.REDWOOD_LOGS))
+			.product(ItemID.REDWOOD_SHIELD)
+			.useItem(ItemID.KNIFE).useItem(ItemID.REDWOOD_LOGS)
+			.instruction("Use the knife on the redwood logs and choose the redwood shield")
+			.notes("Each shield takes two redwood logs. A fletching knife makes it faster.")
+			.wikiPage("Fletching_training#Level_92–99:_Redwood_shields")
+			.howTo(HowTo.bankStanding("your knife and 26 redwood logs",
+				"the knife, then a log (in the menu pick the redwood shield)", "redwood shields"))
+			.build());
+		m.add(Method.builder()
+			.id("fletch_diamond_bolt_tips")
+			.skill(Skill.FLETCHING)
+			.type(MethodType.PROCESS)
+			.name("Cut diamond bolt tips")
+			.minLevel(65)
+			.xpPerAction(7)
+			// About 1,200 diamonds an hour (wiki AFK guide: 8,400 xp/hr)
+			.xpPerHour(7 * 1_200)
+			.members(true)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.tool(ItemReq.tool("Chisel", ItemID.CHISEL))
+			.input(ItemReq.consumed("Diamonds (cut)", 27, 1, ItemID.DIAMOND))
+			.product(ItemID.XBOWS_BOLT_TIPS_DIAMOND)
+			.useItem(ItemID.CHISEL).useItem(ItemID.DIAMOND)
+			.instruction("Use the chisel on the diamonds and pick the bolt tips; each diamond makes 12")
+			.notes("Low xp, but over a minute between clicks. Any cut gem works the same way (opal from 11, sapphire "
+				+ "56, ruby 63, dragonstone 71, onyx 73).")
+			.wikiPage("Bolt_tips")
+			.howTo(HowTo.bankStanding("your chisel and 27 cut diamonds",
+				"the chisel, then a diamond (in the menu pick the bolt tips)", "diamond bolt tips"))
+			.build());
 		return m;
 	}
 
