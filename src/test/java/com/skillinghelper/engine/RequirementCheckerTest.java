@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import net.runelite.api.Skill;
 import net.runelite.api.gameval.ItemID;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -136,10 +137,20 @@ public class RequirementCheckerTest
 			rangedAt(45, ItemCounts.of(ItemID.WILLOW_SHORTBOW, 1, ItemID.IRON_ARROW, 100)), 100));
 		assertTrue(willow.contains("Gear upgrade (ammo): Mithril arrows (~50 gp on the GE)"));
 		assertTrue(willow.contains("Gear upgrade (weapon): Yew shortbow (~50 gp on the GE)"));
-		assertTrue(willow.get(0).startsWith("Arrows (0 carried, 100 in bank"));
+		assertTrue(willow.get(0).startsWith("Iron arrows (0 carried, 100 in bank"));
 
 		List<String> msb = texts(checker.check(ranged(), rangedAt(55, ItemCounts.of(ItemID.MAGIC_SHORTBOW, 1)), 100));
 		assertTrue(msb.contains("Gear upgrade (ammo): Amethyst arrows (~50 gp on the GE)"));
+	}
+
+	@Test
+	public void onlyTheBestAmmoYouOwnIsSuggested()
+	{
+		List<Requirement> reqs = checker.check(ranged(), rangedAt(55,
+			ItemCounts.of(ItemID.MAGIC_SHORTBOW, 1, ItemID.IRON_ARROW, 500, ItemID.RUNE_ARROW, 200)), 100);
+		assertTrue(reqs.get(0).getText().startsWith("Rune arrows (0 carried, 200 in bank"));
+		assertArrayEquals(new int[]{ItemID.RUNE_ARROW}, reqs.get(0).getItemIds());
+		assertTrue(texts(reqs).stream().noneMatch(t -> t.contains("Iron arrows")));
 	}
 
 	@Test

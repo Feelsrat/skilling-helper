@@ -3,8 +3,6 @@ package com.skillinghelper.engine;
 import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.CombatSpell;
 import com.skillinghelper.data.ItemReq;
-import java.util.ArrayList;
-import java.util.List;
 import net.runelite.api.Skill;
 
 /**
@@ -71,8 +69,8 @@ final class CombatGearAdvisor
 	/**
 	 * Spell rune inputs become the runes of the player's best spell, or null when that spell doesn't use one.
 	 * Any other input but the generic ammo one is returned as it is. The ammo input is named after what the player
-	 * should use: the kind they fire if they already have some, otherwise the exact ammo to buy, which is also what
-	 * its price comes from. It is null when the weapon needs no ammo.
+	 * should use: the best ammo they own and can fire, otherwise the best they can buy. Lower tiers they also own are
+	 * left out. It is null when the weapon needs no ammo.
 	 */
 	static ItemReq resolve(ItemReq input, PlayerState s)
 	{
@@ -90,35 +88,41 @@ final class CombatGearAdvisor
 			// The bow of faerdhinen makes its own arrows
 			return null;
 		}
-		CombatGear.Tier best = bestAmmo(s);
+		CombatGear.Tier best = bestOwnedAmmo(s);
+		if (best == null)
+		{
+			best = bestAmmo(s);
+		}
 		if (best == null)
 		{
 			return input;
 		}
-		List<Integer> ids = new ArrayList<>();
-		for (int id : best.getIds())
-		{
-			ids.add(id);
-		}
-		for (CombatGear.Tier t : CombatGear.RANGED_AMMO.getTiers())
-		{
-			if (t.getAmmo() == best.getAmmo() && t != best)
-			{
-				for (int id : t.getIds())
-				{
-					ids.add(id);
-				}
-			}
-		}
-		int[] kindIds = ids.stream().mapToInt(Integer::intValue).toArray();
+		// Only the one best tier: lower ammo the player also owns isn't suggested
 		if (best.getAmmo() != CombatGear.Ammo.DARTS)
 		{
 			input = input.withSubstituteName(null).withSubstituteIds(null);
 		}
-		boolean hasSome = s.owned(kindIds) > 0;
-		String name = hasSome ? best.getAmmo().name().charAt(0) + best.getAmmo().name().substring(1).toLowerCase()
-			: best.getName();
-		return input.withName(name).withIds(kindIds);
+		return input.withName(best.getName()).withIds(best.getIds().clone());
+	}
+
+	/**
+	 * The best ammo the player owns and can fire from the weapon they'll use, or null.
+	 */
+	static CombatGear.Tier bestOwnedAmmo(PlayerState s)
+	{
+		CombatGear.Tier weapon = rangedWeapon(s);
+		if (weapon == null)
+		{
+			return null;
+		}
+		for (CombatGear.Tier t : CombatGear.RANGED_AMMO.getTiers())
+		{
+			if (t.firedFrom(weapon) && canWear(t, s) && s.owned(t.getIds()) > 0)
+			{
+				return t;
+			}
+		}
+		return null;
 	}
 
 	/**

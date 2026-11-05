@@ -1,6 +1,8 @@
 package com.skillinghelper.engine;
 
+import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.ToolType;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import lombok.Value;
 import net.runelite.api.Skill;
@@ -105,6 +107,33 @@ public final class ToolAdvisor
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * An item that is "any tool of this family" (e.g. any pickaxe) becomes the best one the player owns and can use,
+	 * so lower tiers aren't suggested. Anything else, or when they own none, is returned as it is.
+	 */
+	public static ItemReq bestOf(ItemReq req, PlayerState state)
+	{
+		for (ToolType type : ToolType.values())
+		{
+			int[] all = type.allIds().clone();
+			int[] ids = req.getIds().clone();
+			Arrays.sort(all);
+			Arrays.sort(ids);
+			if (!Arrays.equals(all, ids))
+			{
+				continue;
+			}
+			OwnedTool owned = bestOwned(type, state);
+			if (owned == null)
+			{
+				return req;
+			}
+			return req.withName(owned.getTier().getName() + req.getName().replaceFirst("^[^(]*", " "))
+				.withIds(owned.getTier().getIds().clone());
+		}
+		return req;
 	}
 
 	/**

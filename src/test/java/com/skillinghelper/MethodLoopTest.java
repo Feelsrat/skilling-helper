@@ -1,5 +1,6 @@
 package com.skillinghelper;
 
+import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.guides.GuideRepository;
@@ -44,6 +45,7 @@ public class MethodLoopTest
 			}
 
 			Map<Integer, Integer> carried = new HashMap<>();
+			Map<Integer, Integer> worn = new HashMap<>();
 			int slots = 0;
 			if (m.getToolType() != null)
 			{
@@ -58,17 +60,25 @@ public class MethodLoopTest
 			}
 			for (ItemReq input : m.getInputs())
 			{
+				if (input == CombatGear.AMMO_INPUT)
+				{
+					// Worn in the quiver; iron arrows fire from any bow, better ammo may not fit the guide's weapon
+					worn.put(ItemID.IRON_ARROW, 1_000);
+					continue;
+				}
 				carried.merge(input.getIds()[0], input.isWholeStack() ? 1_000 : Math.max(1, input.getQuantity()),
 					Integer::sum);
 				slots++;
 			}
 			Map<Integer, Integer> bank = new HashMap<>(carried);
+			bank.putAll(worn);
 			bank.put(ItemID.COINS, 10_000_000);
 
 			PlayerState ready = PlayerState.builder()
 				.levels(levels)
 				.xp(xp)
 				.inventory(new ItemCounts(carried))
+				.equipment(new ItemCounts(worn))
 				.bank(new ItemCounts(bank))
 				.freeInventorySlots(28 - slots)
 				.membersWorld(true)
@@ -82,7 +92,8 @@ public class MethodLoopTest
 
 			if (!m.getInputs().isEmpty() || !m.getTools().isEmpty() || m.getToolType() != null)
 			{
-				PlayerState empty = ready.toBuilder().inventory(ItemCounts.EMPTY).freeInventorySlots(28).build();
+				PlayerState empty = ready.toBuilder().inventory(ItemCounts.EMPTY).equipment(ItemCounts.EMPTY)
+					.freeInventorySlots(28).build();
 				step = resolver.resolve(m, empty, target, false, resolver.requirements(m, empty, 100));
 				assertEquals(m.getId() + ": " + step.getTitle(), StepType.BANK, step.getType());
 			}

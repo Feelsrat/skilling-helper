@@ -51,7 +51,7 @@ final class RequirementChecker
 		addCombatGear(m, s, reqs);
 		for (ItemReq supply : m.getSupplies())
 		{
-			reqs.add(supplyRequirement(supply, s));
+			reqs.add(supplyRequirement(ToolAdvisor.bestOf(supply, s), s));
 		}
 		for (Quest q : m.getQuests())
 		{
@@ -107,9 +107,9 @@ final class RequirementChecker
 		ToolAdvisor.OwnedTool carried = ToolAdvisor.bestCarried(toolType, s);
 		if (carried != null)
 		{
-			// A usable tool is already carried, so the better one in the bank is a recommendation only
-			reqs.add(item(carried.getTier().getName(), Requirement.Status.READY, carried.getItemId()));
-			reqs.add(item("Better: " + name + " is in your bank", Requirement.Status.OPTIONAL, owned.getItemId()));
+			// Only the best one is suggested: swap the carried one for it next time you bank
+			reqs.add(item(name + " (in bank, swap your " + carried.getTier().getName().toLowerCase()
+				+ " for it next time you bank)", Requirement.Status.OPTIONAL, owned.getItemId()));
 		}
 		else
 		{

@@ -23,7 +23,7 @@ final class Supplies
 	/**
 	 * Any pickaxe, to mine the Gemstone Crab's shell for gems after it burrows. The price shown is a rune pickaxe's.
 	 */
-	static final ItemReq PICKAXE = ItemReq.supply("Pickaxe (any, to mine the crab's shell for gems)", 1,
+	static final ItemReq PICKAXE = ItemReq.supply("Pickaxe (to mine the crab's shell for gems)", 1,
 		IntStream.concat(IntStream.of(ItemID.RUNE_PICKAXE),
 			Arrays.stream(ToolType.PICKAXE.allIds()).filter(id -> id != ItemID.RUNE_PICKAXE)).toArray());
 

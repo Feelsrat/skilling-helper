@@ -181,7 +181,7 @@ public class LoadoutPlan
 		}
 
 		List<Supply> wanted = new ArrayList<>();
-		Supply ammo = weapon == null ? null : Supplies.ammoFor(weapon, s.level(Skill.RANGED));
+		Supply ammo = weapon == null ? null : bestOwnedOnly(Supplies.ammoFor(weapon, s.level(Skill.RANGED)), s);
 		if (ammo != null)
 		{
 			wanted.add(ammo);
@@ -285,6 +285,26 @@ public class LoadoutPlan
 			: s.inventory(owned.getIds()) > 0 ? Have.CARRIED : Have.IN_BANK;
 		// bestBuy can only be set before the owned piece was reached, so it's an upgrade
 		return new GearLine(slot.getName(), owned, have, id, 0, bestBuy, bestBuyPrice, false);
+	}
+
+	/**
+	 * Narrows a tiered supply (ammo, best first) to the best option the player owns, so lower tiers they also have
+	 * aren't suggested; more of that one is bought if they're short. Unchanged when they own none.
+	 */
+	static Supply bestOwnedOnly(Supply sup, GuideState s)
+	{
+		if (sup == null)
+		{
+			return null;
+		}
+		for (Supply.Option o : sup.getOptions())
+		{
+			if (s.carried(o.getIds()) > 0 || s.banked(o.getIds()) > 0)
+			{
+				return sup.withOptions(List.of(o));
+			}
+		}
+		return sup.withOptions(List.of(sup.getOptions().get(0)));
 	}
 
 	private static int ownedId(Gear g, GuideState s)
