@@ -33,7 +33,8 @@ public class DiaryDataTest
 		DiaryRegion.FALADOR, new int[]{11, 14, 11, 6},
 		DiaryRegion.KARAMJA, new int[]{10, 19, 10, 5},
 		DiaryRegion.ARDOUGNE, new int[]{10, 12, 12, 8},
-		DiaryRegion.DESERT, new int[]{11, 12, 10, 6});
+		DiaryRegion.DESERT, new int[]{11, 12, 10, 6},
+		DiaryRegion.KANDARIN, new int[]{11, 14, 11, 7});
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()
