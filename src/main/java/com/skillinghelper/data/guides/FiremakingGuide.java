@@ -31,6 +31,10 @@ final class FiremakingGuide
 		methods.add(logs("fm_maple", "Maple logs", 45, 135, ItemID.MAPLE_LOGS).build());
 		methods.add(logs("fm_yew", "Yew logs", 60, 202.5, ItemID.YEW_LOGS).build());
 		methods.add(logs("fm_magic", "Magic logs", 75, 303.8, ItemID.MAGIC_LOGS).build());
+		methods.add(campfire("fm_campfire_maple", "Maple logs", 45, 135, ItemID.MAPLE_LOGS).build());
+		methods.add(campfire("fm_campfire_yew", "Yew logs", 60, 202.5, ItemID.YEW_LOGS).build());
+		methods.add(campfire("fm_campfire_magic", "Magic logs", 75, 303.8, ItemID.MAGIC_LOGS).build());
+		methods.add(campfire("fm_campfire_redwood", "Redwood logs", 90, 350, ItemID.REDWOOD_LOGS).build());
 		methods.add(Method.builder()
 			.id("fm_wintertodt")
 			.skill(Skill.FIREMAKING)
@@ -102,6 +106,43 @@ final class FiremakingGuide
 			.howTo("Straight away use the tinderbox on the next log, and keep going until every log is lit.")
 			.howTo("Walk back to the bankers in the middle, take out 27 more logs and start a new row.")
 			.wikiPage("Pay-to-play_Firemaking_training");
+	}
+
+	/**
+	 * Feeding a whole inventory into a forester's campfire in one click: the wiki AFK guide's Firemaking method. Full
+	 * xp per log, about 680 logs an hour (238k xp/hr with redwoods).
+	 */
+	private static Method.MethodBuilder campfire(String id, String logName, int level, double xp, int logId)
+	{
+		return Method.builder()
+			.id(id)
+			.skill(Skill.FIREMAKING)
+			.type(MethodType.PROCESS)
+			.name(logName + " on a forester's campfire")
+			.minLevel(level)
+			.xpPerAction(xp)
+			.xpPerHour((int) (xp * 680))
+			.members(level >= 90)
+			.tag(MethodTag.BANKSTANDING).tag(MethodTag.AFK)
+			.location(Banks.GRAND_EXCHANGE)
+			.bank(Banks.GRAND_EXCHANGE)
+			.tool(TINDERBOX)
+			.input(ItemReq.consumed(logName, 27, 1, logId))
+			.target(Target.object(null, "Forester's Campfire", "Fire"))
+			.useItem(logId)
+			.instruction("Use your " + logName.toLowerCase() + " on the forester's campfire and press Space to add "
+				+ "them all")
+			.notes("Same xp per log as lighting lines, but one click burns the whole inventory. Join someone "
+				+ "else's campfire if there's one going.")
+			.howTo("At the Grand Exchange bank, keep your tinderbox and take out 27 " + logName.toLowerCase() + ".")
+			.howTo("Walk just outside the bank booths. If a forester's campfire is already burning there, skip to "
+				+ "the next step. If not, use the tinderbox on a log to light a fire, then use a log on that fire to "
+				+ "turn it into a forester's campfire.")
+			.howTo("Use a log on the highlighted campfire (or click it). A menu pops up: press Space to add all your "
+				+ "logs. Your character keeps feeding the fire by themselves.")
+			.howTo("When the logs are gone, bank, take out 27 more and do it again. The fire keeps burning for a "
+				+ "while, so you can go straight back to it.")
+			.wikiPage("Forester's_Campfire");
 	}
 
 	private FiremakingGuide()

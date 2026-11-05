@@ -33,12 +33,14 @@ final class AfkRatings
 		COMBAT.put("sand_crabs", 60);
 		COMBAT.put("rock_crabs", 60);
 		COMBAT.put("ammonite_crabs", 60);
-		COMBAT.put("nmz", 40); // absorption sips and a rock cake every few minutes
-		COMBAT.put("sulphur_naguas", 250);
-		COMBAT.put("maniacal_monkeys", 200);
+		COMBAT.put("nmz", 60); // absorption sips and a rock cake every few minutes (wiki: 21 clicks per 20 minutes)
+		COMBAT.put("sulphur_naguas", 120); // aggressive, so mostly picking up drops and stepping back
+		COMBAT.put("maniacal_monkeys", 60); // wiki AFK guide: a reset every 10 minutes
 		COMBAT.put("skeletal_monkeys", 200);
 		COMBAT.put("gargoyles", 250);
 		COMBAT.put("ogres_cannon", 150);
+		COMBAT.put("vyrewatch_sentinels", 20); // wiki AFK guide: up to 17 minutes between clicks
+		COMBAT.put("desert_bandits", 20);
 
 		// Agility: one click per obstacle, plus marks of grace
 		for (String id : new String[]{"gnome", "draynor", "al_kharid", "varrock", "barbarian", "canifis",
@@ -49,8 +51,8 @@ final class AfkRatings
 		}
 		clicks("agility_brimhaven", 800);
 		clicks("agility_pyramid", 900);
-		clicks("agility_wyrm_basic", 600);
-		clicks("agility_wyrm_advanced", 600);
+		clicks("agility_wyrm_basic", 360); // wiki AFK guide: 6 clicks per 60-second lap
+		clicks("agility_wyrm_advanced", 360);
 		clicks("agility_prifddinas", 550);
 		clicks("agility_sepulchre", 1200);
 
@@ -65,11 +67,11 @@ final class AfkRatings
 		clicks("con_oak_doors", 1500);
 		clicks("con_mahogany_homes", 600);
 
-		// Cooking: ~8 clicks per inventory at a range, ~6 per bank-standing inventory of 14
+		// Cooking: ~5 clicks per inventory at a range (wiki AFK guide: 1:07 per inventory), ~6 per bank-standing 14
 		for (String id : new String[]{"shrimp", "trout", "salmon", "karambwan", "tuna", "lobster", "swordfish",
 			"monkfish", "shark", "anglerfish", "dark_crab"})
 		{
-			clicks("cook_" + id, 400);
+			clicks("cook_" + id, 300);
 		}
 		clicks("cook_wine", 1000);
 		clicks("cook_pineapple_pizza", 1000);
@@ -119,7 +121,7 @@ final class AfkRatings
 		clicks("fish_tempoross", 800);
 		clicks("fish_lobster_catherby", 100);
 		clicks("fish_aerial_molch", 1500);
-		clicks("fish_barbarian_otto", 800);
+		clicks("fish_barbarian_otto", 500);
 		clicks("fish_monkfish_piscatoris", 150);
 		clicks("fish_sharks_catherby", 80);
 		clicks("fish_anglerfish_piscarilius", 80);
@@ -144,7 +146,7 @@ final class AfkRatings
 			clicks("fletch_" + id, 3000);
 		}
 
-		// Herblore: potions ~5 clicks per 14, cleaning a click per herb
+		// Herblore: potions ~5 clicks per 14, cleaning ~5 per inventory
 		for (String id : new String[]{"attack", "antipoison", "strength", "energy", "prayer", "super_attack",
 			"super_antipoison", "super_energy", "super_strength", "super_restore", "super_defence", "antifire",
 			"ranging", "magic", "saradomin_brew", "super_combat"})
@@ -154,7 +156,7 @@ final class AfkRatings
 		for (String id : new String[]{"guam", "marrentill", "tarromin", "harralander", "ranarr", "toadflax", "irit",
 			"avantoe", "kwuarm", "snapdragon", "cadantine", "lantadyme", "dwarf_weed", "torstol"})
 		{
-			clicks("herb_clean_" + id, 4500);
+			clicks("herb_clean_" + id, 550); // one click cleans the whole inventory (wiki: 34s, 5 clicks)
 		}
 		clicks("herb_druidic_ritual", 300);
 
@@ -178,9 +180,10 @@ final class AfkRatings
 
 		// Magic: two clicks per cast on an item, one per teleport
 		clicks("magic_enchant_opal_bolts", 600);
-		clicks("magic_enchant_recoil", 2400);
-		clicks("magic_enchant_power", 2400);
-		clicks("magic_enchant_glory", 2400);
+		// Enchanting jewellery and Plank Make repeat on the whole inventory by themselves (wiki AFK guide)
+		clicks("magic_enchant_recoil", 200);
+		clicks("magic_enchant_power", 200);
+		clicks("magic_enchant_glory", 200);
 		clicks("magic_low_alch", 2400);
 		clicks("magic_high_alch_magic", 2400);
 		clicks("magic_high_alch_yew", 2400);
@@ -189,9 +192,9 @@ final class AfkRatings
 		clicks("magic_camelot_tele", 1500);
 		clicks("magic_superheat_iron", 2200);
 		clicks("magic_string_jewellery", 250);
-		clicks("magic_plank_make_oak", 2000);
-		clicks("magic_plank_make_teak", 2000);
-		clicks("magic_plank_make_mahogany", 2000);
+		clicks("magic_plank_make_oak", 240);
+		clicks("magic_plank_make_teak", 240);
+		clicks("magic_plank_make_mahogany", 240);
 
 		// Mining
 		clicks("mine_copper_tin_varrock", 1500);
@@ -215,18 +218,23 @@ final class AfkRatings
 		{
 			clicks("rc_" + id, 400);
 		}
-		clicks("rc_ourania", 300);
+		clicks("rc_ourania", 800); // wiki AFK guide: 25s runs between bursts of ~15 clicks
 		clicks("rc_lava", 700);
 		clicks("rc_gotr", 1000);
-		clicks("rc_blood_arceuus", 250);
-		clicks("rc_soul_arceuus", 250);
+		clicks("rc_blood_arceuus", 1000); // wiki AFK guide: long loop, ~56 clicks between 55s waits
+		clicks("rc_soul_arceuus", 1000);
 
 		// Sailing
 		clicks("sail_pandemonium", 500);
-		for (String id : new String[]{"small", "fishy", "barracuda", "large"})
-		{
-			clicks("sail_salvage_" + id, 300);
-		}
+		// Salvaging: wiki AFK guide, about 30 clicks (sort, drop, re-hook) every time the wreck fills the inventory
+		clicks("sail_salvage_small", 180);
+		clicks("sail_salvage_fishy", 800);
+		clicks("sail_salvage_barracuda", 750);
+		clicks("sail_salvage_large", 700);
+		clicks("sail_salvage_pirate", 680);
+		clicks("sail_salvage_mercenary", 550);
+		clicks("sail_salvage_fremennik", 500);
+		clicks("sail_salvage_merchant", 450);
 
 		// Slayer
 		clicks("slayer_turael", 400);
@@ -251,7 +259,7 @@ final class AfkRatings
 		{
 			clicks("smith_" + id, 350);
 		}
-		clicks("smith_cannonballs", 80);
+		clicks("smith_cannonballs", 120); // wiki AFK guide: ~1 minute per inventory with the double mould
 		clicks("smith_giants_foundry", 800);
 		clicks("smith_blast_furnace_gold", 2000);
 
@@ -275,12 +283,53 @@ final class AfkRatings
 		clicks("wc_oaks_varrock", 600);
 		clicks("wc_willows_draynor", 600);
 		clicks("wc_teak_grove", 600);
-		clicks("wc_maples_seers", 400);
-		clicks("wc_mahogany_grove", 300);
+		clicks("wc_maples_seers", 200); // wiki AFK guide: a click a minute plus banking
+		clicks("wc_mahogany_grove", 200);
 		clicks("wc_yews_edgeville", 150);
 		clicks("wc_yews_guild", 150);
 		clicks("wc_magic_guild", 80);
 		clicks("wc_redwood_guild", 40);
+
+		// Methods from the wiki's "Guide:AFK Skilling Methods": 3600 / AFK time x clicks per AFK, from its table
+		clicks("wc_infected_roots", 120);
+		clicks("wc_engorged_bloodwood", 100);
+		clicks("wc_camphor_conch", 150);
+		clicks("wc_ironwood_sunbleak", 100);
+		clicks("wc_rosewood_drumstick", 80);
+		clicks("mine_barronite", 200);
+		clicks("mine_daeyalt", 80);
+		clicks("mine_infernal_shale", 450);
+		clicks("mine_salax_salt", 15);
+		clicks("mine_sunstone_monolith", 120);
+		clicks("mine_ascension_rocks", 40);
+		clicks("fish_karambwan", 120);
+		clicks("fish_karambwanji", 5);
+		clicks("fish_dark_crabs", 70);
+		clicks("fish_sacred_eels", 90);
+		clicks("fish_infernal_eels", 90);
+		clicks("fish_civitas_keys", 230);
+		clicks("agility_bf_pedals", 45);
+		clicks("agility_poh_traps", 15);
+		clicks("agility_vampyrium_rockslide", 16);
+		clicks("strength_bf_pump", 5);
+		clicks("thieve_summer_garden", 200);
+		clicks("hunter_maniacal_monkeys", 150);
+		clicks("hunter_stymphikes", 240);
+		clicks("magic_splashing", 5);
+		clicks("magic_barrage_monkeys", 40);
+		clicks("herb_guam_tar", 460);
+		clicks("herb_harralander_tar", 460);
+		clicks("herb_irit_tar", 460);
+		clicks("herb_stamina", 700);
+		clicks("herb_anti_venom", 700);
+		clicks("fletch_battlestaves", 370);
+		clicks("fletch_redwood_shields", 380);
+		clicks("fletch_diamond_bolt_tips", 270);
+		for (String log : new String[]{"maple", "yew", "magic", "redwood"})
+		{
+			clicks("fm_campfire_" + log, 100);
+		}
+		clicks("craft_fire_pot_lids", 150);
 	}
 
 	private AfkRatings()

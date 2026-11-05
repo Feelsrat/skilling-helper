@@ -370,6 +370,57 @@ final class LevelRanges
 		range("wc_yews_guild", 99); // 60+ Yew trees (Woodcutting Guild)
 		range("wc_magic_guild", 99); // 75+ Magic trees (Woodcutting Guild)
 		range("wc_redwood_guild", 99); // 90+ Redwood trees (Woodcutting Guild)
+
+		// From the wiki's "Guide:AFK Skilling Methods" (2026-11-05). AFK methods stay worth it to 99 unless a better
+		// AFK method of the same kind takes over.
+		range("wc_infected_roots", 99); // 80+ Infected roots
+		range("wc_engorged_bloodwood", 99); // 77+ Engorged bloodwood tree
+		range("wc_camphor_conch", 99); // 66+ Camphor trees
+		range("wc_ironwood_sunbleak", 99); // 80+ Ironwood trees
+		range("wc_rosewood_drumstick", 99); // 92+ Rosewood trees
+		range("mine_barronite", 99); // 14+ Barronite rocks
+		range("mine_daeyalt", 99); // 60+ Daeyalt essence
+		range("mine_infernal_shale", 99); // 78+ Infernal shale
+		range("mine_salax_salt", 99); // 72+ Salt deposits
+		range("mine_sunstone_monolith", 99); // 53+ Sunstone monolith
+		range("mine_ascension_rocks", 99); // 80+ Ascension rocks
+		range("fish_karambwan", 99); // 65+ Karambwans
+		range("fish_karambwanji", 99); // 5+ Karambwanji
+		range("fish_dark_crabs", 99); // 85+ Dark crabs
+		range("fish_sacred_eels", 99); // 87+ Sacred eels
+		range("fish_infernal_eels", 99); // 80+ Infernal eels
+		range("fish_civitas_keys", 99); // 1+ House keys pond
+		range("agility_bf_pedals", 99); // 30+ Blast Furnace pedals
+		range("agility_poh_traps", 99); // 1+ POH teleport-trap course
+		range("agility_vampyrium_rockslide", 99); // 78+ Vampyrium rockslide
+		range("strength_bf_pump", 99); // 30+ Blast Furnace pump
+		range("thieve_summer_garden", 99); // 65+ Summer garden
+		range("hunter_maniacal_monkeys", 99); // 60+ Maniacal monkeys
+		range("hunter_stymphikes", 99); // 82+ Stymphikes
+		range("magic_splashing", 99); // 1+ Splashing
+		range("magic_barrage_monkeys", 99); // 94+ Ice Barrage maniacal monkeys
+		range("sail_salvage_pirate", 73); // 64+ Pirate shipwrecks
+		range("sail_salvage_mercenary", 80); // 73+ Mercenary shipwrecks
+		range("sail_salvage_fremennik", 87); // 80+ Fremennik shipwrecks
+		range("sail_salvage_merchant", 99); // 87+ Merchant shipwrecks
+		range("herb_guam_tar", 44); // 19+ Guam tar
+		range("herb_harralander_tar", 55); // 44+ Harralander tar
+		range("herb_irit_tar", 99); // 55+ Irit tar
+		range("herb_stamina", 87); // 77+ Stamina potions
+		range("herb_anti_venom", 99); // 87+ Anti-venoms
+		range("fletch_battlestaves", 80); // 40+ Battlestaves
+		range("fletch_redwood_shields", 99); // 92+ Redwood shields
+		range("fletch_diamond_bolt_tips", 99); // 65+ Diamond bolt tips
+		range("fm_campfire_maple", 60); // 45+ Maple logs on a campfire
+		range("fm_campfire_yew", 75); // 60+ Yew logs on a campfire
+		range("fm_campfire_magic", 90); // 75+ Magic logs on a campfire
+		range("fm_campfire_redwood", 99); // 90+ Redwood logs on a campfire
+		range("craft_fire_pot_lids", 99); // 25+ Firing pot lids
+		for (String skill : new String[]{"attack", "strength", "defence", "hitpoints"})
+		{
+			range(skill + "_vyrewatch_sentinels", 99); // 70+ Vyrewatch Sentinels
+			range(skill + "_desert_bandits", 99); // 75+ Desert bandits with Hallowfell
+		}
 	}
 
 	private LevelRanges()

@@ -41,6 +41,7 @@ public class GuideRepository
 		all.addAll(FarmingGuide.methods());
 		all.addAll(ConstructionGuide.methods());
 		all.addAll(SailingGuide.methods());
+		all.addAll(AfkGuide.methods());
 		bySkill.putAll(all.stream().map(LevelRanges::apply).map(AfkRatings::apply).collect(Collectors.groupingBy(Method::getSkill, () -> new EnumMap<>(Skill.class),
 			Collectors.toUnmodifiableList())));
 	}

@@ -440,7 +440,39 @@ final class CombatGuide
 					+ "it (the Gargoyle smasher Slayer reward does this for you)",
 				"Pick up the noted drops and the alchables, and keep going until you run out of food")
 			.tool(ItemReq.tool("Rock hammer", ItemID.SLAYER_ROCK_HAMMER, ItemID.GRANITE_HAMMER,
-				ItemID.SLAYER_ROCK_THROWNHAMMER))
+				ItemID.SLAYER_ROCK_THROWNHAMMER)),
+		// From the wiki's AFK guide (combat table)
+		new Monster("vyrewatch_sentinels", "Vyrewatch Sentinels (Darkmeyer)", new String[]{"Vyrewatch Sentinel"}, 150,
+			70, 45_000, true, Location.of("Darkmeyer Vyrewatch Sentinels", 3600, 3340, 25),
+			"AFK for up to 17 minutes at a time with Protect from Melee and good prayer bonus, and the blood shards "
+				+ "they drop are worth a lot.",
+			"Sins of the Father, and a blisterwood flail, Ivandis flail or blisterwood sickle (nothing else hurts "
+				+ "them)", true, 85, 50_000, 99, 54_000)
+			.quest(Quest.SINS_OF_THE_FATHER).meleeOnly()
+			.tool(ItemReq.tool("Blisterwood flail, Ivandis flail or blisterwood sickle", ItemID.BLISTERWOOD_FLAIL,
+				ItemID.IVANDIS_FLAIL, ItemID.BLISTERWOOD_SICKLE, ItemID.BLISTERWOOD_SICKLE_ENHANCED))
+			.howTo("Teleport to Darkmeyer with Drakan's medallion. Wear your vyre noble clothes in the city unless "
+					+ "you've reached the end of The Blood Moon Rises",
+				"Wield your blisterwood flail (or Ivandis flail or blisterwood sickle): only these weapons hurt "
+					+ "Vyrewatch",
+				"Walk to the upper-class streets where the Vyrewatch Sentinels patrol, turn on Protect from Melee and "
+					+ "auto-retaliate, and attack one",
+				"They keep coming to you. Pick up the blood shards they drop, and drink a prayer potion when your "
+					+ "prayer gets low (about every 17 minutes)"),
+		new Monster("desert_bandits", "Desert bandits with Hallowfell (Bandit Camp)", new String[]{"Bandit"}, 50, 75,
+			110_000, true, Location.of("Bandit Camp (Kharidian Desert)", 3165, 2982, 12),
+			"Hallowfell hits up to three bandits at once, and the bandits attack anyone wearing a Saradomin or "
+				+ "Zamorak item, so they keep coming for about 17 minutes.",
+			"Hallowfell (75 Attack, from the Mad Angel on Wyrmscraig)", true, 99, 130_000)
+			.meleeOnly()
+			.tool(ItemReq.tool("Hallowfell", ItemID.HALLOWFELL))
+			.howTo("Wield Hallowfell and wear one Saradomin or Zamorak item (a god book, cape or stole works): the "
+					+ "bandits attack anyone wearing one",
+				"Teleport to the Bandit Camp in the Kharidian Desert (the camulet, or fairy ring B-I-Q and walk "
+					+ "south-west). Desert heat doesn't reach inside the camp",
+				"Stand in the middle of the camp with auto-retaliate on. Bandits come from all sides, and Hallowfell "
+					+ "hits up to three at once",
+				"Eat when you need to. When they stop attacking (about 10 minutes), walk out of the camp and back in")
 	);
 
 	static List<Method> methods()

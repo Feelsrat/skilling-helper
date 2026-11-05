@@ -118,6 +118,36 @@ agility_barbarian weak owns-all-in-bank	a5753eec253e4419
 agility_barbarian weak parts-carried	a5753eec253e4419
 agility_barbarian weak parts-carried-away	a5753eec253e4419
 agility_barbarian weak parts-in-bank	a5753eec253e4419
+agility_bf_pedals strong bank-empty	1c849bc5ca515ef4
+agility_bf_pedals strong bank-empty-rich	1c849bc5ca515ef4
+agility_bf_pedals strong bank-unknown	1c849bc5ca515ef4
+agility_bf_pedals strong full-of-products	0d1c45679bfede5c
+agility_bf_pedals strong gear-carried	0d1c45679bfede5c
+agility_bf_pedals strong goal-reached	343e5dececea545c
+agility_bf_pedals strong in-instance	0d1c45679bfede5c
+agility_bf_pedals strong kit-at-spot	0d1c45679bfede5c
+agility_bf_pedals strong kit-away	5afcab71db1f413a
+agility_bf_pedals strong kit-worn-at-spot	0d1c45679bfede5c
+agility_bf_pedals strong owns-all-at-bank	5afcab71db1f413a
+agility_bf_pedals strong owns-all-in-bank	5afcab71db1f413a
+agility_bf_pedals strong parts-carried	0d1c45679bfede5c
+agility_bf_pedals strong parts-carried-away	5afcab71db1f413a
+agility_bf_pedals strong parts-in-bank	5afcab71db1f413a
+agility_bf_pedals weak bank-empty	1c849bc5ca515ef4
+agility_bf_pedals weak bank-empty-rich	1c849bc5ca515ef4
+agility_bf_pedals weak bank-unknown	1c849bc5ca515ef4
+agility_bf_pedals weak full-of-products	0d1c45679bfede5c
+agility_bf_pedals weak gear-carried	0d1c45679bfede5c
+agility_bf_pedals weak goal-reached	343e5dececea545c
+agility_bf_pedals weak in-instance	0d1c45679bfede5c
+agility_bf_pedals weak kit-at-spot	0d1c45679bfede5c
+agility_bf_pedals weak kit-away	5afcab71db1f413a
+agility_bf_pedals weak kit-worn-at-spot	0d1c45679bfede5c
+agility_bf_pedals weak owns-all-at-bank	5afcab71db1f413a
+agility_bf_pedals weak owns-all-in-bank	5afcab71db1f413a
+agility_bf_pedals weak parts-carried	0d1c45679bfede5c
+agility_bf_pedals weak parts-carried-away	5afcab71db1f413a
+agility_bf_pedals weak parts-in-bank	5afcab71db1f413a
 agility_brimhaven strong bank-empty	6db5e98f13428d50
 agility_brimhaven strong bank-empty-rich	4b0dd66fc2ea361c
 agility_brimhaven strong bank-unknown	9f3883f38db8ef9d
@@ -268,6 +298,36 @@ agility_gnome weak owns-all-in-bank	6228ff8c52ed6401
 agility_gnome weak parts-carried	8fde30566a3a694f
 agility_gnome weak parts-carried-away	6228ff8c52ed6401
 agility_gnome weak parts-in-bank	6228ff8c52ed6401
+agility_poh_traps strong bank-empty	9b04bb34e4ac7d32
+agility_poh_traps strong bank-empty-rich	9b04bb34e4ac7d32
+agility_poh_traps strong bank-unknown	9b04bb34e4ac7d32
+agility_poh_traps strong full-of-products	9b04bb34e4ac7d32
+agility_poh_traps strong gear-carried	9b04bb34e4ac7d32
+agility_poh_traps strong goal-reached	82ca9e53f6496b16
+agility_poh_traps strong in-instance	9b04bb34e4ac7d32
+agility_poh_traps strong kit-at-spot	9b04bb34e4ac7d32
+agility_poh_traps strong kit-away	9b04bb34e4ac7d32
+agility_poh_traps strong kit-worn-at-spot	9b04bb34e4ac7d32
+agility_poh_traps strong owns-all-at-bank	9b04bb34e4ac7d32
+agility_poh_traps strong owns-all-in-bank	9b04bb34e4ac7d32
+agility_poh_traps strong parts-carried	9b04bb34e4ac7d32
+agility_poh_traps strong parts-carried-away	9b04bb34e4ac7d32
+agility_poh_traps strong parts-in-bank	9b04bb34e4ac7d32
+agility_poh_traps weak bank-empty	9b04bb34e4ac7d32
+agility_poh_traps weak bank-empty-rich	9b04bb34e4ac7d32
+agility_poh_traps weak bank-unknown	9b04bb34e4ac7d32
+agility_poh_traps weak full-of-products	9b04bb34e4ac7d32
+agility_poh_traps weak gear-carried	9b04bb34e4ac7d32
+agility_poh_traps weak goal-reached	82ca9e53f6496b16
+agility_poh_traps weak in-instance	9b04bb34e4ac7d32
+agility_poh_traps weak kit-at-spot	9b04bb34e4ac7d32
+agility_poh_traps weak kit-away	9b04bb34e4ac7d32
+agility_poh_traps weak kit-worn-at-spot	9b04bb34e4ac7d32
+agility_poh_traps weak owns-all-at-bank	9b04bb34e4ac7d32
+agility_poh_traps weak owns-all-in-bank	9b04bb34e4ac7d32
+agility_poh_traps weak parts-carried	9b04bb34e4ac7d32
+agility_poh_traps weak parts-carried-away	9b04bb34e4ac7d32
+agility_poh_traps weak parts-in-bank	9b04bb34e4ac7d32
 agility_pollnivneach strong bank-empty	c7b78d575ca8c29b
 agility_pollnivneach strong bank-empty-rich	c7b78d575ca8c29b
 agility_pollnivneach strong bank-unknown	c7b78d575ca8c29b
@@ -478,6 +538,36 @@ agility_shayzien_advanced weak owns-all-in-bank	828ebb34baeb2605
 agility_shayzien_advanced weak parts-carried	3f74fa2a99116781
 agility_shayzien_advanced weak parts-carried-away	cee3ad66af5fa57e
 agility_shayzien_advanced weak parts-in-bank	828ebb34baeb2605
+agility_vampyrium_rockslide strong bank-empty	47703ba9b39e8379
+agility_vampyrium_rockslide strong bank-empty-rich	47703ba9b39e8379
+agility_vampyrium_rockslide strong bank-unknown	47703ba9b39e8379
+agility_vampyrium_rockslide strong full-of-products	24e945ab975c59ef
+agility_vampyrium_rockslide strong gear-carried	24e945ab975c59ef
+agility_vampyrium_rockslide strong goal-reached	3b8a01205daa675c
+agility_vampyrium_rockslide strong in-instance	24e945ab975c59ef
+agility_vampyrium_rockslide strong kit-at-spot	24e945ab975c59ef
+agility_vampyrium_rockslide strong kit-away	47703ba9b39e8379
+agility_vampyrium_rockslide strong kit-worn-at-spot	24e945ab975c59ef
+agility_vampyrium_rockslide strong owns-all-at-bank	47703ba9b39e8379
+agility_vampyrium_rockslide strong owns-all-in-bank	47703ba9b39e8379
+agility_vampyrium_rockslide strong parts-carried	24e945ab975c59ef
+agility_vampyrium_rockslide strong parts-carried-away	47703ba9b39e8379
+agility_vampyrium_rockslide strong parts-in-bank	47703ba9b39e8379
+agility_vampyrium_rockslide weak bank-empty	0a4b3b663feec179
+agility_vampyrium_rockslide weak bank-empty-rich	0a4b3b663feec179
+agility_vampyrium_rockslide weak bank-unknown	0a4b3b663feec179
+agility_vampyrium_rockslide weak full-of-products	0a4b3b663feec179
+agility_vampyrium_rockslide weak gear-carried	0a4b3b663feec179
+agility_vampyrium_rockslide weak goal-reached	45a615b1d62b2666
+agility_vampyrium_rockslide weak in-instance	0a4b3b663feec179
+agility_vampyrium_rockslide weak kit-at-spot	0a4b3b663feec179
+agility_vampyrium_rockslide weak kit-away	0a4b3b663feec179
+agility_vampyrium_rockslide weak kit-worn-at-spot	0a4b3b663feec179
+agility_vampyrium_rockslide weak owns-all-at-bank	0a4b3b663feec179
+agility_vampyrium_rockslide weak owns-all-in-bank	0a4b3b663feec179
+agility_vampyrium_rockslide weak parts-carried	0a4b3b663feec179
+agility_vampyrium_rockslide weak parts-carried-away	0a4b3b663feec179
+agility_vampyrium_rockslide weak parts-in-bank	0a4b3b663feec179
 agility_varrock strong bank-empty	86698b6d1c09cf26
 agility_varrock strong bank-empty-rich	86698b6d1c09cf26
 agility_varrock strong bank-unknown	86698b6d1c09cf26
@@ -748,6 +838,36 @@ attack_cows weak owns-all-in-bank	ac46b1679750b900
 attack_cows weak parts-carried	4d84bacc005ee043
 attack_cows weak parts-carried-away	ac46b1679750b900
 attack_cows weak parts-in-bank	ac46b1679750b900
+attack_desert_bandits strong bank-empty	47702026e956d123
+attack_desert_bandits strong bank-empty-rich	203d7beef4336056
+attack_desert_bandits strong bank-unknown	026d4caae7231316
+attack_desert_bandits strong full-of-products	f705dfcfab80e684
+attack_desert_bandits strong gear-carried	4363abbd1bac40df
+attack_desert_bandits strong goal-reached	9e6c8d3ebd1f6c4a
+attack_desert_bandits strong in-instance	f705dfcfab80e684
+attack_desert_bandits strong kit-at-spot	f705dfcfab80e684
+attack_desert_bandits strong kit-away	a5bd96bdea65c935
+attack_desert_bandits strong kit-worn-at-spot	f705dfcfab80e684
+attack_desert_bandits strong owns-all-at-bank	8caefaca0bdc68da
+attack_desert_bandits strong owns-all-in-bank	8caefaca0bdc68da
+attack_desert_bandits strong parts-carried	f705dfcfab80e684
+attack_desert_bandits strong parts-carried-away	a5bd96bdea65c935
+attack_desert_bandits strong parts-in-bank	8caefaca0bdc68da
+attack_desert_bandits weak bank-empty	aa3b4b77276ce492
+attack_desert_bandits weak bank-empty-rich	12f9ddb6f356723d
+attack_desert_bandits weak bank-unknown	026d4caae7231316
+attack_desert_bandits weak full-of-products	977401d3a8ad7267
+attack_desert_bandits weak gear-carried	8fd43d643e921c38
+attack_desert_bandits weak goal-reached	baa19693027e706d
+attack_desert_bandits weak in-instance	977401d3a8ad7267
+attack_desert_bandits weak kit-at-spot	977401d3a8ad7267
+attack_desert_bandits weak kit-away	70b142c8e66b21ab
+attack_desert_bandits weak kit-worn-at-spot	977401d3a8ad7267
+attack_desert_bandits weak owns-all-at-bank	659946be082b363f
+attack_desert_bandits weak owns-all-in-bank	659946be082b363f
+attack_desert_bandits weak parts-carried	977401d3a8ad7267
+attack_desert_bandits weak parts-carried-away	70b142c8e66b21ab
+attack_desert_bandits weak parts-in-bank	659946be082b363f
 attack_gargoyles strong bank-empty	c73ac3a8e154cc01
 attack_gargoyles strong bank-empty-rich	c73ac3a8e154cc01
 attack_gargoyles strong bank-unknown	e257fd6bb3fde86e
@@ -988,6 +1108,36 @@ attack_sulphur_naguas weak owns-all-in-bank	bd550d46ccc078ff
 attack_sulphur_naguas weak parts-carried	bd550d46ccc078ff
 attack_sulphur_naguas weak parts-carried-away	bd550d46ccc078ff
 attack_sulphur_naguas weak parts-in-bank	bd550d46ccc078ff
+attack_vyrewatch_sentinels strong bank-empty	61614848779e8989
+attack_vyrewatch_sentinels strong bank-empty-rich	80fd1f5760597493
+attack_vyrewatch_sentinels strong bank-unknown	826e0a94fc4a63bb
+attack_vyrewatch_sentinels strong full-of-products	90c9b62dee4315f5
+attack_vyrewatch_sentinels strong gear-carried	d7da1a959a7e1aa4
+attack_vyrewatch_sentinels strong goal-reached	36eb2f7f3bd0ceb0
+attack_vyrewatch_sentinels strong in-instance	90c9b62dee4315f5
+attack_vyrewatch_sentinels strong kit-at-spot	90c9b62dee4315f5
+attack_vyrewatch_sentinels strong kit-away	b5fa3dc0d611a81a
+attack_vyrewatch_sentinels strong kit-worn-at-spot	90c9b62dee4315f5
+attack_vyrewatch_sentinels strong owns-all-at-bank	fb8de65feb1e6c74
+attack_vyrewatch_sentinels strong owns-all-in-bank	fb8de65feb1e6c74
+attack_vyrewatch_sentinels strong parts-carried	90c9b62dee4315f5
+attack_vyrewatch_sentinels strong parts-carried-away	b5fa3dc0d611a81a
+attack_vyrewatch_sentinels strong parts-in-bank	fb8de65feb1e6c74
+attack_vyrewatch_sentinels weak bank-empty	726ad3cda9bb03ee
+attack_vyrewatch_sentinels weak bank-empty-rich	726ad3cda9bb03ee
+attack_vyrewatch_sentinels weak bank-unknown	d1c02a197338321d
+attack_vyrewatch_sentinels weak full-of-products	a130308996804db6
+attack_vyrewatch_sentinels weak gear-carried	8882707af113cf39
+attack_vyrewatch_sentinels weak goal-reached	f8d98bf1b2d2d02a
+attack_vyrewatch_sentinels weak in-instance	a130308996804db6
+attack_vyrewatch_sentinels weak kit-at-spot	a130308996804db6
+attack_vyrewatch_sentinels weak kit-away	a130308996804db6
+attack_vyrewatch_sentinels weak kit-worn-at-spot	a130308996804db6
+attack_vyrewatch_sentinels weak owns-all-at-bank	7286e7b81bb7f5c3
+attack_vyrewatch_sentinels weak owns-all-in-bank	7286e7b81bb7f5c3
+attack_vyrewatch_sentinels weak parts-carried	a130308996804db6
+attack_vyrewatch_sentinels weak parts-carried-away	a130308996804db6
+attack_vyrewatch_sentinels weak parts-in-bank	7286e7b81bb7f5c3
 con_bookcases strong bank-empty	eefeff1dd131b6a3
 con_bookcases strong bank-empty-rich	e8a24f1161d78ad5
 con_bookcases strong bank-unknown	878ce5350c47f2d8
@@ -2128,6 +2278,36 @@ craft_fire_battlestaff weak owns-all-in-bank	123bf470eea99946
 craft_fire_battlestaff weak parts-carried	70db693b68d2acaf
 craft_fire_battlestaff weak parts-carried-away	85b73afa94c52278
 craft_fire_battlestaff weak parts-in-bank	018b501b739cfa97
+craft_fire_pot_lids strong bank-empty	ae505a0f18e7b732
+craft_fire_pot_lids strong bank-empty-rich	b3b19e572be0a968
+craft_fire_pot_lids strong bank-unknown	4a45941d975456f2
+craft_fire_pot_lids strong full-of-products	672b10785021a118
+craft_fire_pot_lids strong gear-carried	672b10785021a118
+craft_fire_pot_lids strong goal-reached	b3aab7087d9d5476
+craft_fire_pot_lids strong in-instance	672b10785021a118
+craft_fire_pot_lids strong kit-at-spot	672b10785021a118
+craft_fire_pot_lids strong kit-away	826ffbb4a95aa33d
+craft_fire_pot_lids strong kit-worn-at-spot	5460a237c06aeb59
+craft_fire_pot_lids strong owns-all-at-bank	b52183d10fd70bf2
+craft_fire_pot_lids strong owns-all-in-bank	72c2f1c341703a51
+craft_fire_pot_lids strong parts-carried	d08edbd6e302e331
+craft_fire_pot_lids strong parts-carried-away	d3eb5ec1074cf467
+craft_fire_pot_lids strong parts-in-bank	11e65437416b68ce
+craft_fire_pot_lids weak bank-empty	ae505a0f18e7b732
+craft_fire_pot_lids weak bank-empty-rich	b3b19e572be0a968
+craft_fire_pot_lids weak bank-unknown	4a45941d975456f2
+craft_fire_pot_lids weak full-of-products	672b10785021a118
+craft_fire_pot_lids weak gear-carried	672b10785021a118
+craft_fire_pot_lids weak goal-reached	b3aab7087d9d5476
+craft_fire_pot_lids weak in-instance	672b10785021a118
+craft_fire_pot_lids weak kit-at-spot	672b10785021a118
+craft_fire_pot_lids weak kit-away	826ffbb4a95aa33d
+craft_fire_pot_lids weak kit-worn-at-spot	5460a237c06aeb59
+craft_fire_pot_lids weak owns-all-at-bank	b52183d10fd70bf2
+craft_fire_pot_lids weak owns-all-in-bank	72c2f1c341703a51
+craft_fire_pot_lids weak parts-carried	d08edbd6e302e331
+craft_fire_pot_lids weak parts-carried-away	d3eb5ec1074cf467
+craft_fire_pot_lids weak parts-in-bank	11e65437416b68ce
 craft_glass_beer strong bank-empty	686e67ce5971ae27
 craft_glass_beer strong bank-empty-rich	4a6abbc11288d424
 craft_glass_beer strong bank-unknown	2b612f2a6bf7c365
@@ -2788,6 +2968,36 @@ defence_cows weak owns-all-in-bank	5dba49ac4cb54ebc
 defence_cows weak parts-carried	db0edfc76abd6738
 defence_cows weak parts-carried-away	5dba49ac4cb54ebc
 defence_cows weak parts-in-bank	5dba49ac4cb54ebc
+defence_desert_bandits strong bank-empty	55ec404efd123042
+defence_desert_bandits strong bank-empty-rich	31a3f7faf35ca62c
+defence_desert_bandits strong bank-unknown	026d4caae7231316
+defence_desert_bandits strong full-of-products	5605ea812245afc8
+defence_desert_bandits strong gear-carried	3765bd1acf3db543
+defence_desert_bandits strong goal-reached	3a45bde72bb4a414
+defence_desert_bandits strong in-instance	5605ea812245afc8
+defence_desert_bandits strong kit-at-spot	5605ea812245afc8
+defence_desert_bandits strong kit-away	6d3db5e4614c7be5
+defence_desert_bandits strong kit-worn-at-spot	5605ea812245afc8
+defence_desert_bandits strong owns-all-at-bank	13d551e92f27fdba
+defence_desert_bandits strong owns-all-in-bank	13d551e92f27fdba
+defence_desert_bandits strong parts-carried	5605ea812245afc8
+defence_desert_bandits strong parts-carried-away	6d3db5e4614c7be5
+defence_desert_bandits strong parts-in-bank	13d551e92f27fdba
+defence_desert_bandits weak bank-empty	f33261aa524351c3
+defence_desert_bandits weak bank-empty-rich	a5c1bfdc17d7d1a9
+defence_desert_bandits weak bank-unknown	026d4caae7231316
+defence_desert_bandits weak full-of-products	0c99a902f327adfa
+defence_desert_bandits weak gear-carried	fa7d2d6c3994ad06
+defence_desert_bandits weak goal-reached	66b33b829a069bd2
+defence_desert_bandits weak in-instance	0c99a902f327adfa
+defence_desert_bandits weak kit-at-spot	0c99a902f327adfa
+defence_desert_bandits weak kit-away	cd8fc8dfe4deeea1
+defence_desert_bandits weak kit-worn-at-spot	0c99a902f327adfa
+defence_desert_bandits weak owns-all-at-bank	e121b08a407e7bce
+defence_desert_bandits weak owns-all-in-bank	e121b08a407e7bce
+defence_desert_bandits weak parts-carried	0c99a902f327adfa
+defence_desert_bandits weak parts-carried-away	cd8fc8dfe4deeea1
+defence_desert_bandits weak parts-in-bank	e121b08a407e7bce
 defence_gargoyles strong bank-empty	6a76b11691e78c87
 defence_gargoyles strong bank-empty-rich	6a76b11691e78c87
 defence_gargoyles strong bank-unknown	e257fd6bb3fde86e
@@ -3028,6 +3238,36 @@ defence_sulphur_naguas weak owns-all-in-bank	18a62124004a2c5b
 defence_sulphur_naguas weak parts-carried	18a62124004a2c5b
 defence_sulphur_naguas weak parts-carried-away	18a62124004a2c5b
 defence_sulphur_naguas weak parts-in-bank	18a62124004a2c5b
+defence_vyrewatch_sentinels strong bank-empty	61614848779e8989
+defence_vyrewatch_sentinels strong bank-empty-rich	80fd1f5760597493
+defence_vyrewatch_sentinels strong bank-unknown	826e0a94fc4a63bb
+defence_vyrewatch_sentinels strong full-of-products	f57c0787bc74ad3f
+defence_vyrewatch_sentinels strong gear-carried	d7da1a959a7e1aa4
+defence_vyrewatch_sentinels strong goal-reached	43d186e0a1d469e6
+defence_vyrewatch_sentinels strong in-instance	f57c0787bc74ad3f
+defence_vyrewatch_sentinels strong kit-at-spot	f57c0787bc74ad3f
+defence_vyrewatch_sentinels strong kit-away	88041507d99c48ea
+defence_vyrewatch_sentinels strong kit-worn-at-spot	f57c0787bc74ad3f
+defence_vyrewatch_sentinels strong owns-all-at-bank	fb8de65feb1e6c74
+defence_vyrewatch_sentinels strong owns-all-in-bank	fb8de65feb1e6c74
+defence_vyrewatch_sentinels strong parts-carried	f57c0787bc74ad3f
+defence_vyrewatch_sentinels strong parts-carried-away	88041507d99c48ea
+defence_vyrewatch_sentinels strong parts-in-bank	fb8de65feb1e6c74
+defence_vyrewatch_sentinels weak bank-empty	f916e93f66137358
+defence_vyrewatch_sentinels weak bank-empty-rich	f916e93f66137358
+defence_vyrewatch_sentinels weak bank-unknown	d1c02a197338321d
+defence_vyrewatch_sentinels weak full-of-products	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak gear-carried	77b36d85ce44b305
+defence_vyrewatch_sentinels weak goal-reached	e716d8dfbf046d2b
+defence_vyrewatch_sentinels weak in-instance	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak kit-at-spot	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak kit-away	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak kit-worn-at-spot	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak owns-all-at-bank	2bc75aed50da7dc9
+defence_vyrewatch_sentinels weak owns-all-in-bank	2bc75aed50da7dc9
+defence_vyrewatch_sentinels weak parts-carried	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak parts-carried-away	f5a5e0a03dc875d3
+defence_vyrewatch_sentinels weak parts-in-bank	2bc75aed50da7dc9
 farm_allotments strong bank-empty	7e84f5c6bcc08a7b
 farm_allotments strong bank-empty-rich	d701adbceb6b1c47
 farm_allotments strong bank-unknown	6521c07891f3a1ba
@@ -3386,6 +3626,66 @@ fish_barbarian_otto weak owns-all-in-bank	f634da0841900218
 fish_barbarian_otto weak parts-carried	2b72a14c474bb999
 fish_barbarian_otto weak parts-carried-away	cc56681981f2ab9a
 fish_barbarian_otto weak parts-in-bank	f634da0841900218
+fish_civitas_keys strong bank-empty	f6fe3ded2635ab18
+fish_civitas_keys strong bank-empty-rich	cd9fc900516cbca7
+fish_civitas_keys strong bank-unknown	515c4b8d30e3480c
+fish_civitas_keys strong full-of-products	f05c8b3906edf2b6
+fish_civitas_keys strong gear-carried	f0ab3444eaf59a7c
+fish_civitas_keys strong goal-reached	934c5ebd2e9b1ef3
+fish_civitas_keys strong in-instance	f05c8b3906edf2b6
+fish_civitas_keys strong kit-at-spot	f05c8b3906edf2b6
+fish_civitas_keys strong kit-away	dd1a3c6f5e5c1d1e
+fish_civitas_keys strong kit-worn-at-spot	f05c8b3906edf2b6
+fish_civitas_keys strong owns-all-at-bank	9a3e1533448c08e2
+fish_civitas_keys strong owns-all-in-bank	9a3e1533448c08e2
+fish_civitas_keys strong parts-carried	f05c8b3906edf2b6
+fish_civitas_keys strong parts-carried-away	dd1a3c6f5e5c1d1e
+fish_civitas_keys strong parts-in-bank	9a3e1533448c08e2
+fish_civitas_keys weak bank-empty	f6fe3ded2635ab18
+fish_civitas_keys weak bank-empty-rich	cd9fc900516cbca7
+fish_civitas_keys weak bank-unknown	515c4b8d30e3480c
+fish_civitas_keys weak full-of-products	f05c8b3906edf2b6
+fish_civitas_keys weak gear-carried	f0ab3444eaf59a7c
+fish_civitas_keys weak goal-reached	934c5ebd2e9b1ef3
+fish_civitas_keys weak in-instance	f05c8b3906edf2b6
+fish_civitas_keys weak kit-at-spot	f05c8b3906edf2b6
+fish_civitas_keys weak kit-away	dd1a3c6f5e5c1d1e
+fish_civitas_keys weak kit-worn-at-spot	f05c8b3906edf2b6
+fish_civitas_keys weak owns-all-at-bank	9a3e1533448c08e2
+fish_civitas_keys weak owns-all-in-bank	9a3e1533448c08e2
+fish_civitas_keys weak parts-carried	f05c8b3906edf2b6
+fish_civitas_keys weak parts-carried-away	dd1a3c6f5e5c1d1e
+fish_civitas_keys weak parts-in-bank	9a3e1533448c08e2
+fish_dark_crabs strong bank-empty	4b77ed6fb8d64415
+fish_dark_crabs strong bank-empty-rich	c48e4af87630fa2a
+fish_dark_crabs strong bank-unknown	920b11c6022fbb2a
+fish_dark_crabs strong full-of-products	b677f58c66f67be0
+fish_dark_crabs strong gear-carried	207fb91e8c9b913b
+fish_dark_crabs strong goal-reached	3695da200723dd4b
+fish_dark_crabs strong in-instance	b677f58c66f67be0
+fish_dark_crabs strong kit-at-spot	b677f58c66f67be0
+fish_dark_crabs strong kit-away	9152033fe74fc252
+fish_dark_crabs strong kit-worn-at-spot	b677f58c66f67be0
+fish_dark_crabs strong owns-all-at-bank	a6fa4cbacb300936
+fish_dark_crabs strong owns-all-in-bank	a6fa4cbacb300936
+fish_dark_crabs strong parts-carried	b677f58c66f67be0
+fish_dark_crabs strong parts-carried-away	9152033fe74fc252
+fish_dark_crabs strong parts-in-bank	a6fa4cbacb300936
+fish_dark_crabs weak bank-empty	4b77ed6fb8d64415
+fish_dark_crabs weak bank-empty-rich	c48e4af87630fa2a
+fish_dark_crabs weak bank-unknown	920b11c6022fbb2a
+fish_dark_crabs weak full-of-products	b677f58c66f67be0
+fish_dark_crabs weak gear-carried	207fb91e8c9b913b
+fish_dark_crabs weak goal-reached	3695da200723dd4b
+fish_dark_crabs weak in-instance	b677f58c66f67be0
+fish_dark_crabs weak kit-at-spot	b677f58c66f67be0
+fish_dark_crabs weak kit-away	9152033fe74fc252
+fish_dark_crabs weak kit-worn-at-spot	b677f58c66f67be0
+fish_dark_crabs weak owns-all-at-bank	a6fa4cbacb300936
+fish_dark_crabs weak owns-all-in-bank	a6fa4cbacb300936
+fish_dark_crabs weak parts-carried	b677f58c66f67be0
+fish_dark_crabs weak parts-carried-away	9152033fe74fc252
+fish_dark_crabs weak parts-in-bank	a6fa4cbacb300936
 fish_fly_barbarian strong bank-empty	bb9768986a12dd64
 fish_fly_barbarian strong bank-empty-rich	54b2f86cd0e4d4a5
 fish_fly_barbarian strong bank-unknown	3a7bd509d5ffc662
@@ -3416,6 +3716,96 @@ fish_fly_barbarian weak owns-all-in-bank	073e11eb99e16cb1
 fish_fly_barbarian weak parts-carried	6e75671a16be4177
 fish_fly_barbarian weak parts-carried-away	5a33ecdc9cf7a93a
 fish_fly_barbarian weak parts-in-bank	743a11e05345b17b
+fish_infernal_eels strong bank-empty	0812e3a734d9f05a
+fish_infernal_eels strong bank-empty-rich	6fbeb8e91175ee12
+fish_infernal_eels strong bank-unknown	90e314667acc67fe
+fish_infernal_eels strong full-of-products	4de2cd1363ac18fe
+fish_infernal_eels strong gear-carried	49ce9d368ab787d8
+fish_infernal_eels strong goal-reached	ef8b85d3bb50224b
+fish_infernal_eels strong in-instance	4de2cd1363ac18fe
+fish_infernal_eels strong kit-at-spot	4de2cd1363ac18fe
+fish_infernal_eels strong kit-away	7ed984171dce6f9a
+fish_infernal_eels strong kit-worn-at-spot	4de2cd1363ac18fe
+fish_infernal_eels strong owns-all-at-bank	9e5abec69cbc2336
+fish_infernal_eels strong owns-all-in-bank	9e5abec69cbc2336
+fish_infernal_eels strong parts-carried	4de2cd1363ac18fe
+fish_infernal_eels strong parts-carried-away	7ed984171dce6f9a
+fish_infernal_eels strong parts-in-bank	9e5abec69cbc2336
+fish_infernal_eels weak bank-empty	0812e3a734d9f05a
+fish_infernal_eels weak bank-empty-rich	6fbeb8e91175ee12
+fish_infernal_eels weak bank-unknown	90e314667acc67fe
+fish_infernal_eels weak full-of-products	4de2cd1363ac18fe
+fish_infernal_eels weak gear-carried	49ce9d368ab787d8
+fish_infernal_eels weak goal-reached	ef8b85d3bb50224b
+fish_infernal_eels weak in-instance	4de2cd1363ac18fe
+fish_infernal_eels weak kit-at-spot	4de2cd1363ac18fe
+fish_infernal_eels weak kit-away	7ed984171dce6f9a
+fish_infernal_eels weak kit-worn-at-spot	4de2cd1363ac18fe
+fish_infernal_eels weak owns-all-at-bank	9e5abec69cbc2336
+fish_infernal_eels weak owns-all-in-bank	9e5abec69cbc2336
+fish_infernal_eels weak parts-carried	4de2cd1363ac18fe
+fish_infernal_eels weak parts-carried-away	7ed984171dce6f9a
+fish_infernal_eels weak parts-in-bank	9e5abec69cbc2336
+fish_karambwan strong bank-empty	74f7542d7288a2f3
+fish_karambwan strong bank-empty-rich	9740af3ec8669ae7
+fish_karambwan strong bank-unknown	1f7df4f61fa44049
+fish_karambwan strong full-of-products	730fce85bc6f6aff
+fish_karambwan strong gear-carried	9aab20f9c2ef5ba4
+fish_karambwan strong goal-reached	af291ce9531a2514
+fish_karambwan strong in-instance	730fce85bc6f6aff
+fish_karambwan strong kit-at-spot	730fce85bc6f6aff
+fish_karambwan strong kit-away	3c30f724ba1bb38f
+fish_karambwan strong kit-worn-at-spot	730fce85bc6f6aff
+fish_karambwan strong owns-all-at-bank	07dc119c2e5656e9
+fish_karambwan strong owns-all-in-bank	07dc119c2e5656e9
+fish_karambwan strong parts-carried	730fce85bc6f6aff
+fish_karambwan strong parts-carried-away	3c30f724ba1bb38f
+fish_karambwan strong parts-in-bank	07dc119c2e5656e9
+fish_karambwan weak bank-empty	153a41d4d40091f9
+fish_karambwan weak bank-empty-rich	153a41d4d40091f9
+fish_karambwan weak bank-unknown	cbaca3ca3cf389c8
+fish_karambwan weak full-of-products	144c0bc436c13f75
+fish_karambwan weak gear-carried	70822d5d3372898e
+fish_karambwan weak goal-reached	2048201aa90377c0
+fish_karambwan weak in-instance	144c0bc436c13f75
+fish_karambwan weak kit-at-spot	144c0bc436c13f75
+fish_karambwan weak kit-away	144c0bc436c13f75
+fish_karambwan weak kit-worn-at-spot	144c0bc436c13f75
+fish_karambwan weak owns-all-at-bank	0aebb40ea6c2c5fe
+fish_karambwan weak owns-all-in-bank	0aebb40ea6c2c5fe
+fish_karambwan weak parts-carried	144c0bc436c13f75
+fish_karambwan weak parts-carried-away	144c0bc436c13f75
+fish_karambwan weak parts-in-bank	0aebb40ea6c2c5fe
+fish_karambwanji strong bank-empty	93c6d0e6d30b1b80
+fish_karambwanji strong bank-empty-rich	73d92b628325c5fa
+fish_karambwanji strong bank-unknown	9a237d60697ca81a
+fish_karambwanji strong full-of-products	2366649b36c704e2
+fish_karambwanji strong gear-carried	4bb6d3e32a424869
+fish_karambwanji strong goal-reached	ccb71b61a208ca56
+fish_karambwanji strong in-instance	2366649b36c704e2
+fish_karambwanji strong kit-at-spot	2366649b36c704e2
+fish_karambwanji strong kit-away	a371d5442e97c82f
+fish_karambwanji strong kit-worn-at-spot	2366649b36c704e2
+fish_karambwanji strong owns-all-at-bank	db8cd8f5100d5a65
+fish_karambwanji strong owns-all-in-bank	db8cd8f5100d5a65
+fish_karambwanji strong parts-carried	2366649b36c704e2
+fish_karambwanji strong parts-carried-away	a371d5442e97c82f
+fish_karambwanji strong parts-in-bank	db8cd8f5100d5a65
+fish_karambwanji weak bank-empty	31f7dfd181781afe
+fish_karambwanji weak bank-empty-rich	31f7dfd181781afe
+fish_karambwanji weak bank-unknown	1a63264f87d13c45
+fish_karambwanji weak full-of-products	c2f710e1c63a75dc
+fish_karambwanji weak gear-carried	108ef50e68445748
+fish_karambwanji weak goal-reached	37c675a09a234f25
+fish_karambwanji weak in-instance	c2f710e1c63a75dc
+fish_karambwanji weak kit-at-spot	c2f710e1c63a75dc
+fish_karambwanji weak kit-away	c2f710e1c63a75dc
+fish_karambwanji weak kit-worn-at-spot	c2f710e1c63a75dc
+fish_karambwanji weak owns-all-at-bank	d0e5a3d6f37fb7e1
+fish_karambwanji weak owns-all-in-bank	d0e5a3d6f37fb7e1
+fish_karambwanji weak parts-carried	c2f710e1c63a75dc
+fish_karambwanji weak parts-carried-away	c2f710e1c63a75dc
+fish_karambwanji weak parts-in-bank	d0e5a3d6f37fb7e1
 fish_lobster_catherby strong bank-empty	95b1e101c2023f71
 fish_lobster_catherby strong bank-empty-rich	910ca509ab2806ce
 fish_lobster_catherby strong bank-unknown	a0478f203bd91e5a
@@ -3476,6 +3866,36 @@ fish_monkfish_piscatoris weak owns-all-in-bank	1fc021b545c74261
 fish_monkfish_piscatoris weak parts-carried	02cd8361c36aa08d
 fish_monkfish_piscatoris weak parts-carried-away	02cd8361c36aa08d
 fish_monkfish_piscatoris weak parts-in-bank	1fc021b545c74261
+fish_sacred_eels strong bank-empty	2d6e1a38545c7f60
+fish_sacred_eels strong bank-empty-rich	dad6cc472506d11e
+fish_sacred_eels strong bank-unknown	501a7abebad176ec
+fish_sacred_eels strong full-of-products	4404c8b5adb27b08
+fish_sacred_eels strong gear-carried	dad89f102ad86711
+fish_sacred_eels strong goal-reached	915bbcae91d0d68b
+fish_sacred_eels strong in-instance	4404c8b5adb27b08
+fish_sacred_eels strong kit-at-spot	4404c8b5adb27b08
+fish_sacred_eels strong kit-away	e0f8ff15d0610fe5
+fish_sacred_eels strong kit-worn-at-spot	4404c8b5adb27b08
+fish_sacred_eels strong owns-all-at-bank	4212581ffb89a500
+fish_sacred_eels strong owns-all-in-bank	4212581ffb89a500
+fish_sacred_eels strong parts-carried	4404c8b5adb27b08
+fish_sacred_eels strong parts-carried-away	e0f8ff15d0610fe5
+fish_sacred_eels strong parts-in-bank	4212581ffb89a500
+fish_sacred_eels weak bank-empty	784d55dd07eff617
+fish_sacred_eels weak bank-empty-rich	784d55dd07eff617
+fish_sacred_eels weak bank-unknown	996cdfd38002aff7
+fish_sacred_eels weak full-of-products	1ea8ea0a240b6848
+fish_sacred_eels weak gear-carried	1fdf2b355f0eaeda
+fish_sacred_eels weak goal-reached	e62e47b146327d41
+fish_sacred_eels weak in-instance	1ea8ea0a240b6848
+fish_sacred_eels weak kit-at-spot	1ea8ea0a240b6848
+fish_sacred_eels weak kit-away	1ea8ea0a240b6848
+fish_sacred_eels weak kit-worn-at-spot	1ea8ea0a240b6848
+fish_sacred_eels weak owns-all-at-bank	8811862d37e78ad8
+fish_sacred_eels weak owns-all-in-bank	8811862d37e78ad8
+fish_sacred_eels weak parts-carried	1ea8ea0a240b6848
+fish_sacred_eels weak parts-carried-away	1ea8ea0a240b6848
+fish_sacred_eels weak parts-in-bank	8811862d37e78ad8
 fish_sharks_catherby strong bank-empty	4ff89d8b12f680a0
 fish_sharks_catherby strong bank-empty-rich	f6e819847df64131
 fish_sharks_catherby strong bank-unknown	10ff396912560f97
@@ -3716,6 +4136,66 @@ fletch_arrow_shafts weak owns-all-in-bank	86b4b05f722b33bb
 fletch_arrow_shafts weak parts-carried	c814459afe8ab77c
 fletch_arrow_shafts weak parts-carried-away	0e534219509febbe
 fletch_arrow_shafts weak parts-in-bank	e3a30e2f4da41abb
+fletch_battlestaves strong bank-empty	473b19ce4ffd0373
+fletch_battlestaves strong bank-empty-rich	667858fe5919670c
+fletch_battlestaves strong bank-unknown	591c67dec70d5ea9
+fletch_battlestaves strong full-of-products	23e12f98ffde7d6d
+fletch_battlestaves strong gear-carried	23e12f98ffde7d6d
+fletch_battlestaves strong goal-reached	a67fb50c7c748474
+fletch_battlestaves strong in-instance	23e12f98ffde7d6d
+fletch_battlestaves strong kit-at-spot	23e12f98ffde7d6d
+fletch_battlestaves strong kit-away	f9d9cc8b520ad7e0
+fletch_battlestaves strong kit-worn-at-spot	60e8f2532f65b519
+fletch_battlestaves strong owns-all-at-bank	a1c0118852001f96
+fletch_battlestaves strong owns-all-in-bank	5e1e351c7c8ecf0e
+fletch_battlestaves strong parts-carried	23e12f98ffde7d6d
+fletch_battlestaves strong parts-carried-away	f9d9cc8b520ad7e0
+fletch_battlestaves strong parts-in-bank	a1c0118852001f96
+fletch_battlestaves weak bank-empty	473b19ce4ffd0373
+fletch_battlestaves weak bank-empty-rich	667858fe5919670c
+fletch_battlestaves weak bank-unknown	591c67dec70d5ea9
+fletch_battlestaves weak full-of-products	23e12f98ffde7d6d
+fletch_battlestaves weak gear-carried	23e12f98ffde7d6d
+fletch_battlestaves weak goal-reached	a67fb50c7c748474
+fletch_battlestaves weak in-instance	23e12f98ffde7d6d
+fletch_battlestaves weak kit-at-spot	23e12f98ffde7d6d
+fletch_battlestaves weak kit-away	f9d9cc8b520ad7e0
+fletch_battlestaves weak kit-worn-at-spot	60e8f2532f65b519
+fletch_battlestaves weak owns-all-at-bank	a1c0118852001f96
+fletch_battlestaves weak owns-all-in-bank	5e1e351c7c8ecf0e
+fletch_battlestaves weak parts-carried	23e12f98ffde7d6d
+fletch_battlestaves weak parts-carried-away	f9d9cc8b520ad7e0
+fletch_battlestaves weak parts-in-bank	a1c0118852001f96
+fletch_diamond_bolt_tips strong bank-empty	d287ee3972b7be7e
+fletch_diamond_bolt_tips strong bank-empty-rich	20cf42bb93a5ef35
+fletch_diamond_bolt_tips strong bank-unknown	a858b5fbc348b1c2
+fletch_diamond_bolt_tips strong full-of-products	68319e4d6dc84454
+fletch_diamond_bolt_tips strong gear-carried	68319e4d6dc84454
+fletch_diamond_bolt_tips strong goal-reached	d1386b00d5c2d09a
+fletch_diamond_bolt_tips strong in-instance	68319e4d6dc84454
+fletch_diamond_bolt_tips strong kit-at-spot	68319e4d6dc84454
+fletch_diamond_bolt_tips strong kit-away	52d01df70ea5b27d
+fletch_diamond_bolt_tips strong kit-worn-at-spot	332c250afb76b62e
+fletch_diamond_bolt_tips strong owns-all-at-bank	b848c3621bcb6a90
+fletch_diamond_bolt_tips strong owns-all-in-bank	4456c829f718f231
+fletch_diamond_bolt_tips strong parts-carried	68319e4d6dc84454
+fletch_diamond_bolt_tips strong parts-carried-away	52d01df70ea5b27d
+fletch_diamond_bolt_tips strong parts-in-bank	b848c3621bcb6a90
+fletch_diamond_bolt_tips weak bank-empty	d287ee3972b7be7e
+fletch_diamond_bolt_tips weak bank-empty-rich	20cf42bb93a5ef35
+fletch_diamond_bolt_tips weak bank-unknown	a858b5fbc348b1c2
+fletch_diamond_bolt_tips weak full-of-products	68319e4d6dc84454
+fletch_diamond_bolt_tips weak gear-carried	68319e4d6dc84454
+fletch_diamond_bolt_tips weak goal-reached	d1386b00d5c2d09a
+fletch_diamond_bolt_tips weak in-instance	68319e4d6dc84454
+fletch_diamond_bolt_tips weak kit-at-spot	68319e4d6dc84454
+fletch_diamond_bolt_tips weak kit-away	52d01df70ea5b27d
+fletch_diamond_bolt_tips weak kit-worn-at-spot	332c250afb76b62e
+fletch_diamond_bolt_tips weak owns-all-at-bank	b848c3621bcb6a90
+fletch_diamond_bolt_tips weak owns-all-in-bank	4456c829f718f231
+fletch_diamond_bolt_tips weak parts-carried	68319e4d6dc84454
+fletch_diamond_bolt_tips weak parts-carried-away	52d01df70ea5b27d
+fletch_diamond_bolt_tips weak parts-in-bank	b848c3621bcb6a90
 fletch_headless_arrows strong bank-empty	e7254a3eb597f1bb
 fletch_headless_arrows strong bank-empty-rich	9d24b657d0a646c2
 fletch_headless_arrows strong bank-unknown	4437b20f11d16691
@@ -3986,6 +4466,36 @@ fletch_oak_short weak owns-all-in-bank	a2011b95faf62869
 fletch_oak_short weak parts-carried	847210d82a0be3d5
 fletch_oak_short weak parts-carried-away	0e62ebb91b50b15e
 fletch_oak_short weak parts-in-bank	b0bef5de79636122
+fletch_redwood_shields strong bank-empty	ec75d68cbca3c368
+fletch_redwood_shields strong bank-empty-rich	1d0d98ab19f97f53
+fletch_redwood_shields strong bank-unknown	6f351c6821778098
+fletch_redwood_shields strong full-of-products	4ab2e528770a8fe5
+fletch_redwood_shields strong gear-carried	4ab2e528770a8fe5
+fletch_redwood_shields strong goal-reached	b67d833aaa8cc35d
+fletch_redwood_shields strong in-instance	4ab2e528770a8fe5
+fletch_redwood_shields strong kit-at-spot	4ab2e528770a8fe5
+fletch_redwood_shields strong kit-away	8db39b1d99938375
+fletch_redwood_shields strong kit-worn-at-spot	8ba143c3affaf594
+fletch_redwood_shields strong owns-all-at-bank	5b0fc35b6971ae63
+fletch_redwood_shields strong owns-all-in-bank	149568597a279233
+fletch_redwood_shields strong parts-carried	4ab2e528770a8fe5
+fletch_redwood_shields strong parts-carried-away	8db39b1d99938375
+fletch_redwood_shields strong parts-in-bank	5b0fc35b6971ae63
+fletch_redwood_shields weak bank-empty	ec75d68cbca3c368
+fletch_redwood_shields weak bank-empty-rich	1d0d98ab19f97f53
+fletch_redwood_shields weak bank-unknown	6f351c6821778098
+fletch_redwood_shields weak full-of-products	4ab2e528770a8fe5
+fletch_redwood_shields weak gear-carried	4ab2e528770a8fe5
+fletch_redwood_shields weak goal-reached	b67d833aaa8cc35d
+fletch_redwood_shields weak in-instance	4ab2e528770a8fe5
+fletch_redwood_shields weak kit-at-spot	4ab2e528770a8fe5
+fletch_redwood_shields weak kit-away	8db39b1d99938375
+fletch_redwood_shields weak kit-worn-at-spot	8ba143c3affaf594
+fletch_redwood_shields weak owns-all-at-bank	5b0fc35b6971ae63
+fletch_redwood_shields weak owns-all-in-bank	149568597a279233
+fletch_redwood_shields weak parts-carried	4ab2e528770a8fe5
+fletch_redwood_shields weak parts-carried-away	8db39b1d99938375
+fletch_redwood_shields weak parts-in-bank	5b0fc35b6971ae63
 fletch_rune_arrows strong bank-empty	9cd71b3dfe18e6c3
 fletch_rune_arrows strong bank-empty-rich	3c44550d36edbb9d
 fletch_rune_arrows strong bank-unknown	4f18fe2fee0f0c46
@@ -4376,6 +4886,126 @@ fletch_yew_short weak owns-all-in-bank	1a038df283a642f5
 fletch_yew_short weak parts-carried	76fa7d1157120c08
 fletch_yew_short weak parts-carried-away	f8afc52df09b16fe
 fletch_yew_short weak parts-in-bank	7d9f665898a56a97
+fm_campfire_magic strong bank-empty	4b8d48dfa0735835
+fm_campfire_magic strong bank-empty-rich	df88736771a7cb3e
+fm_campfire_magic strong bank-unknown	53349f36c40e9760
+fm_campfire_magic strong full-of-products	4894b1e335bf508b
+fm_campfire_magic strong gear-carried	1d436713a50a6c4a
+fm_campfire_magic strong goal-reached	ce9851886e48d60c
+fm_campfire_magic strong in-instance	4894b1e335bf508b
+fm_campfire_magic strong kit-at-spot	4894b1e335bf508b
+fm_campfire_magic strong kit-away	0f941f195f64d2a6
+fm_campfire_magic strong kit-worn-at-spot	941e996b223dc8b7
+fm_campfire_magic strong owns-all-at-bank	49db4fc7ef30555a
+fm_campfire_magic strong owns-all-in-bank	1985f8cd8b30413e
+fm_campfire_magic strong parts-carried	4894b1e335bf508b
+fm_campfire_magic strong parts-carried-away	0f941f195f64d2a6
+fm_campfire_magic strong parts-in-bank	49db4fc7ef30555a
+fm_campfire_magic weak bank-empty	4b8d48dfa0735835
+fm_campfire_magic weak bank-empty-rich	df88736771a7cb3e
+fm_campfire_magic weak bank-unknown	53349f36c40e9760
+fm_campfire_magic weak full-of-products	4894b1e335bf508b
+fm_campfire_magic weak gear-carried	1d436713a50a6c4a
+fm_campfire_magic weak goal-reached	ce9851886e48d60c
+fm_campfire_magic weak in-instance	4894b1e335bf508b
+fm_campfire_magic weak kit-at-spot	4894b1e335bf508b
+fm_campfire_magic weak kit-away	0f941f195f64d2a6
+fm_campfire_magic weak kit-worn-at-spot	941e996b223dc8b7
+fm_campfire_magic weak owns-all-at-bank	49db4fc7ef30555a
+fm_campfire_magic weak owns-all-in-bank	1985f8cd8b30413e
+fm_campfire_magic weak parts-carried	4894b1e335bf508b
+fm_campfire_magic weak parts-carried-away	0f941f195f64d2a6
+fm_campfire_magic weak parts-in-bank	49db4fc7ef30555a
+fm_campfire_maple strong bank-empty	bc940ddd615f42c2
+fm_campfire_maple strong bank-empty-rich	ee5ca92fc82ee169
+fm_campfire_maple strong bank-unknown	2b52d578d6a54346
+fm_campfire_maple strong full-of-products	f88f6ea9874cfc53
+fm_campfire_maple strong gear-carried	aa2123c774567d76
+fm_campfire_maple strong goal-reached	c4434a926c79ad44
+fm_campfire_maple strong in-instance	f88f6ea9874cfc53
+fm_campfire_maple strong kit-at-spot	f88f6ea9874cfc53
+fm_campfire_maple strong kit-away	06cc1fd42c6bb4da
+fm_campfire_maple strong kit-worn-at-spot	4b44305e2d4e8fb3
+fm_campfire_maple strong owns-all-at-bank	ee1e285403026a28
+fm_campfire_maple strong owns-all-in-bank	39d1c75e1b9b5e61
+fm_campfire_maple strong parts-carried	f88f6ea9874cfc53
+fm_campfire_maple strong parts-carried-away	06cc1fd42c6bb4da
+fm_campfire_maple strong parts-in-bank	ee1e285403026a28
+fm_campfire_maple weak bank-empty	bc940ddd615f42c2
+fm_campfire_maple weak bank-empty-rich	ee5ca92fc82ee169
+fm_campfire_maple weak bank-unknown	2b52d578d6a54346
+fm_campfire_maple weak full-of-products	f88f6ea9874cfc53
+fm_campfire_maple weak gear-carried	aa2123c774567d76
+fm_campfire_maple weak goal-reached	c4434a926c79ad44
+fm_campfire_maple weak in-instance	f88f6ea9874cfc53
+fm_campfire_maple weak kit-at-spot	f88f6ea9874cfc53
+fm_campfire_maple weak kit-away	06cc1fd42c6bb4da
+fm_campfire_maple weak kit-worn-at-spot	4b44305e2d4e8fb3
+fm_campfire_maple weak owns-all-at-bank	ee1e285403026a28
+fm_campfire_maple weak owns-all-in-bank	39d1c75e1b9b5e61
+fm_campfire_maple weak parts-carried	f88f6ea9874cfc53
+fm_campfire_maple weak parts-carried-away	06cc1fd42c6bb4da
+fm_campfire_maple weak parts-in-bank	ee1e285403026a28
+fm_campfire_redwood strong bank-empty	23a8cc71e9f8aacb
+fm_campfire_redwood strong bank-empty-rich	2e0cce324b5d52a5
+fm_campfire_redwood strong bank-unknown	44d40e1142303f41
+fm_campfire_redwood strong full-of-products	1fd9138c846138ef
+fm_campfire_redwood strong gear-carried	e5d0e5017164bd71
+fm_campfire_redwood strong goal-reached	77e9272ef1016926
+fm_campfire_redwood strong in-instance	1fd9138c846138ef
+fm_campfire_redwood strong kit-at-spot	1fd9138c846138ef
+fm_campfire_redwood strong kit-away	6e198b0aaaad192f
+fm_campfire_redwood strong kit-worn-at-spot	9797cdd43c9535f5
+fm_campfire_redwood strong owns-all-at-bank	1e8c47f842ed7507
+fm_campfire_redwood strong owns-all-in-bank	39817388b7ccb271
+fm_campfire_redwood strong parts-carried	1fd9138c846138ef
+fm_campfire_redwood strong parts-carried-away	6e198b0aaaad192f
+fm_campfire_redwood strong parts-in-bank	1e8c47f842ed7507
+fm_campfire_redwood weak bank-empty	23a8cc71e9f8aacb
+fm_campfire_redwood weak bank-empty-rich	2e0cce324b5d52a5
+fm_campfire_redwood weak bank-unknown	44d40e1142303f41
+fm_campfire_redwood weak full-of-products	1fd9138c846138ef
+fm_campfire_redwood weak gear-carried	e5d0e5017164bd71
+fm_campfire_redwood weak goal-reached	77e9272ef1016926
+fm_campfire_redwood weak in-instance	1fd9138c846138ef
+fm_campfire_redwood weak kit-at-spot	1fd9138c846138ef
+fm_campfire_redwood weak kit-away	6e198b0aaaad192f
+fm_campfire_redwood weak kit-worn-at-spot	9797cdd43c9535f5
+fm_campfire_redwood weak owns-all-at-bank	1e8c47f842ed7507
+fm_campfire_redwood weak owns-all-in-bank	39817388b7ccb271
+fm_campfire_redwood weak parts-carried	1fd9138c846138ef
+fm_campfire_redwood weak parts-carried-away	6e198b0aaaad192f
+fm_campfire_redwood weak parts-in-bank	1e8c47f842ed7507
+fm_campfire_yew strong bank-empty	391c0e33004e3f8f
+fm_campfire_yew strong bank-empty-rich	aca6f26c3b12b3b7
+fm_campfire_yew strong bank-unknown	6092407c81223875
+fm_campfire_yew strong full-of-products	5a0f120b4bb3ee5c
+fm_campfire_yew strong gear-carried	8590f7540e42c2d3
+fm_campfire_yew strong goal-reached	9d32472dcf4ad20f
+fm_campfire_yew strong in-instance	5a0f120b4bb3ee5c
+fm_campfire_yew strong kit-at-spot	5a0f120b4bb3ee5c
+fm_campfire_yew strong kit-away	7e3b3490db1761e3
+fm_campfire_yew strong kit-worn-at-spot	2b6001e173224fde
+fm_campfire_yew strong owns-all-at-bank	ab8b5224f400839b
+fm_campfire_yew strong owns-all-in-bank	07bd339b74ac411a
+fm_campfire_yew strong parts-carried	5a0f120b4bb3ee5c
+fm_campfire_yew strong parts-carried-away	7e3b3490db1761e3
+fm_campfire_yew strong parts-in-bank	ab8b5224f400839b
+fm_campfire_yew weak bank-empty	391c0e33004e3f8f
+fm_campfire_yew weak bank-empty-rich	aca6f26c3b12b3b7
+fm_campfire_yew weak bank-unknown	6092407c81223875
+fm_campfire_yew weak full-of-products	5a0f120b4bb3ee5c
+fm_campfire_yew weak gear-carried	8590f7540e42c2d3
+fm_campfire_yew weak goal-reached	9d32472dcf4ad20f
+fm_campfire_yew weak in-instance	5a0f120b4bb3ee5c
+fm_campfire_yew weak kit-at-spot	5a0f120b4bb3ee5c
+fm_campfire_yew weak kit-away	7e3b3490db1761e3
+fm_campfire_yew weak kit-worn-at-spot	2b6001e173224fde
+fm_campfire_yew weak owns-all-at-bank	ab8b5224f400839b
+fm_campfire_yew weak owns-all-in-bank	07bd339b74ac411a
+fm_campfire_yew weak parts-carried	5a0f120b4bb3ee5c
+fm_campfire_yew weak parts-carried-away	7e3b3490db1761e3
+fm_campfire_yew weak parts-in-bank	ab8b5224f400839b
 fm_logs strong bank-empty	aa5ed86673d84d0e
 fm_logs strong bank-empty-rich	4f968dbc9b9df11e
 fm_logs strong bank-unknown	8714f231ec925d46
@@ -4586,6 +5216,36 @@ fm_yew weak owns-all-in-bank	07bd339b74ac411a
 fm_yew weak parts-carried	dba0ac45efb4f9e4
 fm_yew weak parts-carried-away	26d78634b37ec5d1
 fm_yew weak parts-in-bank	ab8b5224f400839b
+herb_anti_venom strong bank-empty	641aa404dff98511
+herb_anti_venom strong bank-empty-rich	09bc5b8b4dd06d95
+herb_anti_venom strong bank-unknown	3a89f2f9738a170f
+herb_anti_venom strong full-of-products	0d9c1b17631c4f2e
+herb_anti_venom strong gear-carried	f0ee2bce3f6e8984
+herb_anti_venom strong goal-reached	1ba9dd198bfa6913
+herb_anti_venom strong in-instance	0d9c1b17631c4f2e
+herb_anti_venom strong kit-at-spot	0d9c1b17631c4f2e
+herb_anti_venom strong kit-away	6b75a517d3747c6d
+herb_anti_venom strong kit-worn-at-spot	9e7f532551903cbd
+herb_anti_venom strong owns-all-at-bank	201583644b060677
+herb_anti_venom strong owns-all-in-bank	e0f5fc2598c73eb1
+herb_anti_venom strong parts-carried	0d9c1b17631c4f2e
+herb_anti_venom strong parts-carried-away	6b75a517d3747c6d
+herb_anti_venom strong parts-in-bank	201583644b060677
+herb_anti_venom weak bank-empty	2493706bd87d89f4
+herb_anti_venom weak bank-empty-rich	2493706bd87d89f4
+herb_anti_venom weak bank-unknown	2493706bd87d89f4
+herb_anti_venom weak full-of-products	2c5a2634b386a63b
+herb_anti_venom weak gear-carried	d4eae0c31f01e104
+herb_anti_venom weak goal-reached	532f7e09871c1eff
+herb_anti_venom weak in-instance	2c5a2634b386a63b
+herb_anti_venom weak kit-at-spot	2c5a2634b386a63b
+herb_anti_venom weak kit-away	2c5a2634b386a63b
+herb_anti_venom weak kit-worn-at-spot	97d24ba85f0d1b23
+herb_anti_venom weak owns-all-at-bank	b8121cd6c5754fc9
+herb_anti_venom weak owns-all-in-bank	b8121cd6c5754fc9
+herb_anti_venom weak parts-carried	2c5a2634b386a63b
+herb_anti_venom weak parts-carried-away	2c5a2634b386a63b
+herb_anti_venom weak parts-in-bank	b8121cd6c5754fc9
 herb_antifire strong bank-empty	6d1fbb477b4adbfa
 herb_antifire strong bank-empty-rich	2d90db8c42e7b7db
 herb_antifire strong bank-unknown	eea69f5dce8c60ff
@@ -4679,17 +5339,17 @@ herb_attack weak parts-in-bank	b62a4c6f25a00a09
 herb_clean_avantoe strong bank-empty	ceaf154953f8e371
 herb_clean_avantoe strong bank-empty-rich	738bccf8e710741b
 herb_clean_avantoe strong bank-unknown	1ef61a10543dbccf
-herb_clean_avantoe strong full-of-products	455b2218811632fb
+herb_clean_avantoe strong full-of-products	6010d14cb432ac12
 herb_clean_avantoe strong gear-carried	55a300f7c61cdc69
 herb_clean_avantoe strong goal-reached	f8568a334a0efa47
-herb_clean_avantoe strong in-instance	455b2218811632fb
-herb_clean_avantoe strong kit-at-spot	455b2218811632fb
-herb_clean_avantoe strong kit-away	ae825c9024f3ece7
-herb_clean_avantoe strong kit-worn-at-spot	793026ed495138ff
+herb_clean_avantoe strong in-instance	6010d14cb432ac12
+herb_clean_avantoe strong kit-at-spot	6010d14cb432ac12
+herb_clean_avantoe strong kit-away	f286a16a3276cf9e
+herb_clean_avantoe strong kit-worn-at-spot	cb5857a73b938dff
 herb_clean_avantoe strong owns-all-at-bank	e6341cf584c8f506
 herb_clean_avantoe strong owns-all-in-bank	aec0a3114e892b40
-herb_clean_avantoe strong parts-carried	455b2218811632fb
-herb_clean_avantoe strong parts-carried-away	ae825c9024f3ece7
+herb_clean_avantoe strong parts-carried	6010d14cb432ac12
+herb_clean_avantoe strong parts-carried-away	f286a16a3276cf9e
 herb_clean_avantoe strong parts-in-bank	e6341cf584c8f506
 herb_clean_avantoe weak bank-empty	97aed1e3b8c809c5
 herb_clean_avantoe weak bank-empty-rich	97aed1e3b8c809c5
@@ -4709,17 +5369,17 @@ herb_clean_avantoe weak parts-in-bank	cd1994eaa91908d5
 herb_clean_cadantine strong bank-empty	37d1d1310da239d0
 herb_clean_cadantine strong bank-empty-rich	71c555c56ad622ad
 herb_clean_cadantine strong bank-unknown	b98b6a220966e9e6
-herb_clean_cadantine strong full-of-products	f86fb9a5b5bbf58f
+herb_clean_cadantine strong full-of-products	cc212cbe7affdb72
 herb_clean_cadantine strong gear-carried	c23323f72b4feace
 herb_clean_cadantine strong goal-reached	e18553937b2db585
-herb_clean_cadantine strong in-instance	f86fb9a5b5bbf58f
-herb_clean_cadantine strong kit-at-spot	f86fb9a5b5bbf58f
-herb_clean_cadantine strong kit-away	27034365ac105cf7
-herb_clean_cadantine strong kit-worn-at-spot	9b68be2e89a0df93
+herb_clean_cadantine strong in-instance	cc212cbe7affdb72
+herb_clean_cadantine strong kit-at-spot	cc212cbe7affdb72
+herb_clean_cadantine strong kit-away	a78ee9e5475c5904
+herb_clean_cadantine strong kit-worn-at-spot	41876ed42b45523d
 herb_clean_cadantine strong owns-all-at-bank	003a27a263158d9b
 herb_clean_cadantine strong owns-all-in-bank	906fff64225e9e52
-herb_clean_cadantine strong parts-carried	f86fb9a5b5bbf58f
-herb_clean_cadantine strong parts-carried-away	27034365ac105cf7
+herb_clean_cadantine strong parts-carried	cc212cbe7affdb72
+herb_clean_cadantine strong parts-carried-away	a78ee9e5475c5904
 herb_clean_cadantine strong parts-in-bank	003a27a263158d9b
 herb_clean_cadantine weak bank-empty	bde6320841cb266e
 herb_clean_cadantine weak bank-empty-rich	bde6320841cb266e
@@ -4739,17 +5399,17 @@ herb_clean_cadantine weak parts-in-bank	60860cfea2f43330
 herb_clean_dwarf_weed strong bank-empty	2523048b8549d29e
 herb_clean_dwarf_weed strong bank-empty-rich	261e77607d46094f
 herb_clean_dwarf_weed strong bank-unknown	1cdc84e2b7f02656
-herb_clean_dwarf_weed strong full-of-products	ebb30562d59ea377
+herb_clean_dwarf_weed strong full-of-products	364dc28f3d172fc3
 herb_clean_dwarf_weed strong gear-carried	63bb1865cea90614
 herb_clean_dwarf_weed strong goal-reached	4c42e4e5080d7892
-herb_clean_dwarf_weed strong in-instance	ebb30562d59ea377
-herb_clean_dwarf_weed strong kit-at-spot	ebb30562d59ea377
-herb_clean_dwarf_weed strong kit-away	2b6b2dff8c176d4d
-herb_clean_dwarf_weed strong kit-worn-at-spot	05b8d28e900a7a32
+herb_clean_dwarf_weed strong in-instance	364dc28f3d172fc3
+herb_clean_dwarf_weed strong kit-at-spot	364dc28f3d172fc3
+herb_clean_dwarf_weed strong kit-away	dd1562650d53de9e
+herb_clean_dwarf_weed strong kit-worn-at-spot	e5bc8c4dd1a08831
 herb_clean_dwarf_weed strong owns-all-at-bank	297f9134bad2fa05
 herb_clean_dwarf_weed strong owns-all-in-bank	9f753cdf1a64da1b
-herb_clean_dwarf_weed strong parts-carried	ebb30562d59ea377
-herb_clean_dwarf_weed strong parts-carried-away	2b6b2dff8c176d4d
+herb_clean_dwarf_weed strong parts-carried	364dc28f3d172fc3
+herb_clean_dwarf_weed strong parts-carried-away	dd1562650d53de9e
 herb_clean_dwarf_weed strong parts-in-bank	297f9134bad2fa05
 herb_clean_dwarf_weed weak bank-empty	4b11ce7b20e037b7
 herb_clean_dwarf_weed weak bank-empty-rich	4b11ce7b20e037b7
@@ -4769,17 +5429,17 @@ herb_clean_dwarf_weed weak parts-in-bank	6e391aa7f9ff11a7
 herb_clean_guam strong bank-empty	7a6caf44eda9df9e
 herb_clean_guam strong bank-empty-rich	90084326190ca92e
 herb_clean_guam strong bank-unknown	ebe3e63e87d25f9e
-herb_clean_guam strong full-of-products	3af4f9804ead0090
+herb_clean_guam strong full-of-products	75ae73d2783c1169
 herb_clean_guam strong gear-carried	be6bea61970d19b0
 herb_clean_guam strong goal-reached	846a36c52f4a1764
-herb_clean_guam strong in-instance	3af4f9804ead0090
-herb_clean_guam strong kit-at-spot	3af4f9804ead0090
-herb_clean_guam strong kit-away	a0569749ae466fb4
-herb_clean_guam strong kit-worn-at-spot	ccd3e4ade7626d5e
+herb_clean_guam strong in-instance	75ae73d2783c1169
+herb_clean_guam strong kit-at-spot	75ae73d2783c1169
+herb_clean_guam strong kit-away	fcf782abae739b5f
+herb_clean_guam strong kit-worn-at-spot	4a1fd633aba7e8f1
 herb_clean_guam strong owns-all-at-bank	33d0e7460ebc0214
 herb_clean_guam strong owns-all-in-bank	6745920560a1340f
-herb_clean_guam strong parts-carried	3af4f9804ead0090
-herb_clean_guam strong parts-carried-away	a0569749ae466fb4
+herb_clean_guam strong parts-carried	75ae73d2783c1169
+herb_clean_guam strong parts-carried-away	fcf782abae739b5f
 herb_clean_guam strong parts-in-bank	33d0e7460ebc0214
 herb_clean_guam weak bank-empty	aa59921a36218f49
 herb_clean_guam weak bank-empty-rich	aa59921a36218f49
@@ -4799,17 +5459,17 @@ herb_clean_guam weak parts-in-bank	05dac3a1f32a30bb
 herb_clean_harralander strong bank-empty	cb8e2140bb07ee99
 herb_clean_harralander strong bank-empty-rich	98fdf4a3e5a38f4c
 herb_clean_harralander strong bank-unknown	cf687486abf048d7
-herb_clean_harralander strong full-of-products	7c08e3afd55ff1a5
+herb_clean_harralander strong full-of-products	5b1c2a967d685ec7
 herb_clean_harralander strong gear-carried	bc477fe9d57271ba
 herb_clean_harralander strong goal-reached	172d415dc29eee33
-herb_clean_harralander strong in-instance	7c08e3afd55ff1a5
-herb_clean_harralander strong kit-at-spot	7c08e3afd55ff1a5
-herb_clean_harralander strong kit-away	a5f5dbade39bfecd
-herb_clean_harralander strong kit-worn-at-spot	5edf39b298b63642
+herb_clean_harralander strong in-instance	5b1c2a967d685ec7
+herb_clean_harralander strong kit-at-spot	5b1c2a967d685ec7
+herb_clean_harralander strong kit-away	1994853f19de47d8
+herb_clean_harralander strong kit-worn-at-spot	cef7d275fda0a83d
 herb_clean_harralander strong owns-all-at-bank	30f1bf734e429a3b
 herb_clean_harralander strong owns-all-in-bank	145cf2e60b19fe3a
-herb_clean_harralander strong parts-carried	7c08e3afd55ff1a5
-herb_clean_harralander strong parts-carried-away	a5f5dbade39bfecd
+herb_clean_harralander strong parts-carried	5b1c2a967d685ec7
+herb_clean_harralander strong parts-carried-away	1994853f19de47d8
 herb_clean_harralander strong parts-in-bank	30f1bf734e429a3b
 herb_clean_harralander weak bank-empty	fcfc5f9e8932316a
 herb_clean_harralander weak bank-empty-rich	fcfc5f9e8932316a
@@ -4829,17 +5489,17 @@ herb_clean_harralander weak parts-in-bank	3e77c4d2b9747875
 herb_clean_irit strong bank-empty	590796fbf06d06ef
 herb_clean_irit strong bank-empty-rich	68089810f1acaf4b
 herb_clean_irit strong bank-unknown	4c58b44b8b6a9f2a
-herb_clean_irit strong full-of-products	f3040306d5098a3e
+herb_clean_irit strong full-of-products	7f62187540fbdf8c
 herb_clean_irit strong gear-carried	5bc8089f6e2b7124
 herb_clean_irit strong goal-reached	d992b37df5962801
-herb_clean_irit strong in-instance	f3040306d5098a3e
-herb_clean_irit strong kit-at-spot	f3040306d5098a3e
-herb_clean_irit strong kit-away	5b28339ce6f44c6c
-herb_clean_irit strong kit-worn-at-spot	ad71462cde27c4be
+herb_clean_irit strong in-instance	7f62187540fbdf8c
+herb_clean_irit strong kit-at-spot	7f62187540fbdf8c
+herb_clean_irit strong kit-away	e49751f60a15ddc3
+herb_clean_irit strong kit-worn-at-spot	da3939740be27a3a
 herb_clean_irit strong owns-all-at-bank	85252e1e756e7c80
 herb_clean_irit strong owns-all-in-bank	b2531a288bcce3d0
-herb_clean_irit strong parts-carried	f3040306d5098a3e
-herb_clean_irit strong parts-carried-away	5b28339ce6f44c6c
+herb_clean_irit strong parts-carried	7f62187540fbdf8c
+herb_clean_irit strong parts-carried-away	e49751f60a15ddc3
 herb_clean_irit strong parts-in-bank	85252e1e756e7c80
 herb_clean_irit weak bank-empty	f73bc3309a444f8b
 herb_clean_irit weak bank-empty-rich	f73bc3309a444f8b
@@ -4859,17 +5519,17 @@ herb_clean_irit weak parts-in-bank	4e4a66d36fba4688
 herb_clean_kwuarm strong bank-empty	aa874fd386928399
 herb_clean_kwuarm strong bank-empty-rich	d137a1d87adc4923
 herb_clean_kwuarm strong bank-unknown	9db51e52115ac62a
-herb_clean_kwuarm strong full-of-products	f230d84d229ab19a
+herb_clean_kwuarm strong full-of-products	9a9ce2be5197187c
 herb_clean_kwuarm strong gear-carried	35ab174e600c31b4
 herb_clean_kwuarm strong goal-reached	73a5a883128bd93f
-herb_clean_kwuarm strong in-instance	f230d84d229ab19a
-herb_clean_kwuarm strong kit-at-spot	f230d84d229ab19a
-herb_clean_kwuarm strong kit-away	873eea316e0eaac0
-herb_clean_kwuarm strong kit-worn-at-spot	04f1ee301543bd05
+herb_clean_kwuarm strong in-instance	9a9ce2be5197187c
+herb_clean_kwuarm strong kit-at-spot	9a9ce2be5197187c
+herb_clean_kwuarm strong kit-away	5219c66a3b4fef8a
+herb_clean_kwuarm strong kit-worn-at-spot	e340437e126d468c
 herb_clean_kwuarm strong owns-all-at-bank	4d7447eced0cc99e
 herb_clean_kwuarm strong owns-all-in-bank	1bbdbe209d9a098e
-herb_clean_kwuarm strong parts-carried	f230d84d229ab19a
-herb_clean_kwuarm strong parts-carried-away	873eea316e0eaac0
+herb_clean_kwuarm strong parts-carried	9a9ce2be5197187c
+herb_clean_kwuarm strong parts-carried-away	5219c66a3b4fef8a
 herb_clean_kwuarm strong parts-in-bank	4d7447eced0cc99e
 herb_clean_kwuarm weak bank-empty	e60b0eb76d47b75d
 herb_clean_kwuarm weak bank-empty-rich	e60b0eb76d47b75d
@@ -4889,17 +5549,17 @@ herb_clean_kwuarm weak parts-in-bank	92eaa0585708d5f1
 herb_clean_lantadyme strong bank-empty	bcfe772f24f60341
 herb_clean_lantadyme strong bank-empty-rich	9fc0e6a4c5970355
 herb_clean_lantadyme strong bank-unknown	10f8936a1f762b2a
-herb_clean_lantadyme strong full-of-products	f5a83ade48eaddf4
+herb_clean_lantadyme strong full-of-products	c52b53318490778c
 herb_clean_lantadyme strong gear-carried	c66922a6336f24f3
 herb_clean_lantadyme strong goal-reached	6995998f1981ecda
-herb_clean_lantadyme strong in-instance	f5a83ade48eaddf4
-herb_clean_lantadyme strong kit-at-spot	f5a83ade48eaddf4
-herb_clean_lantadyme strong kit-away	b0f730b27b125e84
-herb_clean_lantadyme strong kit-worn-at-spot	5b124288bc4a7557
+herb_clean_lantadyme strong in-instance	c52b53318490778c
+herb_clean_lantadyme strong kit-at-spot	c52b53318490778c
+herb_clean_lantadyme strong kit-away	06d1c40b261edec2
+herb_clean_lantadyme strong kit-worn-at-spot	c83d0ca3b34a7040
 herb_clean_lantadyme strong owns-all-at-bank	3072e160e5365eb3
 herb_clean_lantadyme strong owns-all-in-bank	88e996cc483300f5
-herb_clean_lantadyme strong parts-carried	f5a83ade48eaddf4
-herb_clean_lantadyme strong parts-carried-away	b0f730b27b125e84
+herb_clean_lantadyme strong parts-carried	c52b53318490778c
+herb_clean_lantadyme strong parts-carried-away	06d1c40b261edec2
 herb_clean_lantadyme strong parts-in-bank	3072e160e5365eb3
 herb_clean_lantadyme weak bank-empty	a31c8a2a799e266a
 herb_clean_lantadyme weak bank-empty-rich	a31c8a2a799e266a
@@ -4919,17 +5579,17 @@ herb_clean_lantadyme weak parts-in-bank	764a906e80db3782
 herb_clean_marrentill strong bank-empty	83c42fa323741be9
 herb_clean_marrentill strong bank-empty-rich	79214a5c94686e07
 herb_clean_marrentill strong bank-unknown	d0f447d6bea3dbf9
-herb_clean_marrentill strong full-of-products	8c1e8c203ebee691
+herb_clean_marrentill strong full-of-products	146a52ee3cffede6
 herb_clean_marrentill strong gear-carried	4d8063e1a72e05cd
 herb_clean_marrentill strong goal-reached	db8ed3c47e63d62c
-herb_clean_marrentill strong in-instance	8c1e8c203ebee691
-herb_clean_marrentill strong kit-at-spot	8c1e8c203ebee691
-herb_clean_marrentill strong kit-away	2167e92e4ab44020
-herb_clean_marrentill strong kit-worn-at-spot	8437bb72664cfc0b
+herb_clean_marrentill strong in-instance	146a52ee3cffede6
+herb_clean_marrentill strong kit-at-spot	146a52ee3cffede6
+herb_clean_marrentill strong kit-away	8c2e9cce076d0d37
+herb_clean_marrentill strong kit-worn-at-spot	4f4d06d2a144cff7
 herb_clean_marrentill strong owns-all-at-bank	b9a4e04c05697d31
 herb_clean_marrentill strong owns-all-in-bank	454eb292595d7166
-herb_clean_marrentill strong parts-carried	8c1e8c203ebee691
-herb_clean_marrentill strong parts-carried-away	2167e92e4ab44020
+herb_clean_marrentill strong parts-carried	146a52ee3cffede6
+herb_clean_marrentill strong parts-carried-away	8c2e9cce076d0d37
 herb_clean_marrentill strong parts-in-bank	b9a4e04c05697d31
 herb_clean_marrentill weak bank-empty	37a810e7e0518c7a
 herb_clean_marrentill weak bank-empty-rich	37a810e7e0518c7a
@@ -4949,17 +5609,17 @@ herb_clean_marrentill weak parts-in-bank	a934f4988679a3ad
 herb_clean_ranarr strong bank-empty	ad775b5b1f485ed2
 herb_clean_ranarr strong bank-empty-rich	5fc7a6e49f8979cd
 herb_clean_ranarr strong bank-unknown	28a7f5f38b49c61b
-herb_clean_ranarr strong full-of-products	cc84ae6e7a28f7a2
+herb_clean_ranarr strong full-of-products	4a74f0dfe347ab32
 herb_clean_ranarr strong gear-carried	9a6339b4c958ae46
 herb_clean_ranarr strong goal-reached	8a86d685b15c0a9b
-herb_clean_ranarr strong in-instance	cc84ae6e7a28f7a2
-herb_clean_ranarr strong kit-at-spot	cc84ae6e7a28f7a2
-herb_clean_ranarr strong kit-away	581f3d925cbd56f3
-herb_clean_ranarr strong kit-worn-at-spot	e57d3fc1355516d2
+herb_clean_ranarr strong in-instance	4a74f0dfe347ab32
+herb_clean_ranarr strong kit-at-spot	4a74f0dfe347ab32
+herb_clean_ranarr strong kit-away	851213c80c2a2b52
+herb_clean_ranarr strong kit-worn-at-spot	b3ec013ace065026
 herb_clean_ranarr strong owns-all-at-bank	c20a9cd8efb42b51
 herb_clean_ranarr strong owns-all-in-bank	355498b73cfc7c15
-herb_clean_ranarr strong parts-carried	cc84ae6e7a28f7a2
-herb_clean_ranarr strong parts-carried-away	581f3d925cbd56f3
+herb_clean_ranarr strong parts-carried	4a74f0dfe347ab32
+herb_clean_ranarr strong parts-carried-away	851213c80c2a2b52
 herb_clean_ranarr strong parts-in-bank	c20a9cd8efb42b51
 herb_clean_ranarr weak bank-empty	68a2834adabde0a7
 herb_clean_ranarr weak bank-empty-rich	68a2834adabde0a7
@@ -4979,17 +5639,17 @@ herb_clean_ranarr weak parts-in-bank	7b61178e32b83007
 herb_clean_snapdragon strong bank-empty	eb9f60bda1c3cded
 herb_clean_snapdragon strong bank-empty-rich	dbfc690272a6c160
 herb_clean_snapdragon strong bank-unknown	97dcad8bf29b7dc4
-herb_clean_snapdragon strong full-of-products	0ca2f288176cfcee
+herb_clean_snapdragon strong full-of-products	3dec4dc550be2698
 herb_clean_snapdragon strong gear-carried	e5264c7d90e11656
 herb_clean_snapdragon strong goal-reached	d75a770026c138ed
-herb_clean_snapdragon strong in-instance	0ca2f288176cfcee
-herb_clean_snapdragon strong kit-at-spot	0ca2f288176cfcee
-herb_clean_snapdragon strong kit-away	22bbbb91f90d4b0f
-herb_clean_snapdragon strong kit-worn-at-spot	7fbf63c55b9f0432
+herb_clean_snapdragon strong in-instance	3dec4dc550be2698
+herb_clean_snapdragon strong kit-at-spot	3dec4dc550be2698
+herb_clean_snapdragon strong kit-away	89dd45b5759cd6ec
+herb_clean_snapdragon strong kit-worn-at-spot	839131ddc0582eb5
 herb_clean_snapdragon strong owns-all-at-bank	17f03a8acdffc675
 herb_clean_snapdragon strong owns-all-in-bank	d496c5abc6a5668d
-herb_clean_snapdragon strong parts-carried	0ca2f288176cfcee
-herb_clean_snapdragon strong parts-carried-away	22bbbb91f90d4b0f
+herb_clean_snapdragon strong parts-carried	3dec4dc550be2698
+herb_clean_snapdragon strong parts-carried-away	89dd45b5759cd6ec
 herb_clean_snapdragon strong parts-in-bank	17f03a8acdffc675
 herb_clean_snapdragon weak bank-empty	e19cd7a1ebe915d9
 herb_clean_snapdragon weak bank-empty-rich	e19cd7a1ebe915d9
@@ -5009,17 +5669,17 @@ herb_clean_snapdragon weak parts-in-bank	7e0547ac534bed6f
 herb_clean_tarromin strong bank-empty	134f596861ea18ca
 herb_clean_tarromin strong bank-empty-rich	8d375ddffce29646
 herb_clean_tarromin strong bank-unknown	73574374647dec8d
-herb_clean_tarromin strong full-of-products	698c8ae63cba70b0
+herb_clean_tarromin strong full-of-products	5695cdaa9cec9dc3
 herb_clean_tarromin strong gear-carried	490b51380fdd27d2
 herb_clean_tarromin strong goal-reached	b9ff024458f89cc4
-herb_clean_tarromin strong in-instance	698c8ae63cba70b0
-herb_clean_tarromin strong kit-at-spot	698c8ae63cba70b0
-herb_clean_tarromin strong kit-away	d9ff77736fcffb88
-herb_clean_tarromin strong kit-worn-at-spot	d50c4900fe59f149
+herb_clean_tarromin strong in-instance	5695cdaa9cec9dc3
+herb_clean_tarromin strong kit-at-spot	5695cdaa9cec9dc3
+herb_clean_tarromin strong kit-away	eea15ea8335daaca
+herb_clean_tarromin strong kit-worn-at-spot	30b7a0679877023c
 herb_clean_tarromin strong owns-all-at-bank	6bdd3d364283a7b4
 herb_clean_tarromin strong owns-all-in-bank	4af86000a2f5b9ab
-herb_clean_tarromin strong parts-carried	698c8ae63cba70b0
-herb_clean_tarromin strong parts-carried-away	d9ff77736fcffb88
+herb_clean_tarromin strong parts-carried	5695cdaa9cec9dc3
+herb_clean_tarromin strong parts-carried-away	eea15ea8335daaca
 herb_clean_tarromin strong parts-in-bank	6bdd3d364283a7b4
 herb_clean_tarromin weak bank-empty	7acd9c907f01518b
 herb_clean_tarromin weak bank-empty-rich	7acd9c907f01518b
@@ -5039,17 +5699,17 @@ herb_clean_tarromin weak parts-in-bank	deecd718880d2c34
 herb_clean_toadflax strong bank-empty	342b8be0ff40667e
 herb_clean_toadflax strong bank-empty-rich	d21a1d47fde30705
 herb_clean_toadflax strong bank-unknown	e1b3ce497667d85d
-herb_clean_toadflax strong full-of-products	ea5124f8df694f2b
+herb_clean_toadflax strong full-of-products	d98607a79d0f0867
 herb_clean_toadflax strong gear-carried	1b88bc625defdc41
 herb_clean_toadflax strong goal-reached	9c6620b676aec35a
-herb_clean_toadflax strong in-instance	ea5124f8df694f2b
-herb_clean_toadflax strong kit-at-spot	ea5124f8df694f2b
-herb_clean_toadflax strong kit-away	a2ffdd615b9b443c
-herb_clean_toadflax strong kit-worn-at-spot	19348b0986fca708
+herb_clean_toadflax strong in-instance	d98607a79d0f0867
+herb_clean_toadflax strong kit-at-spot	d98607a79d0f0867
+herb_clean_toadflax strong kit-away	e671df42c3798f78
+herb_clean_toadflax strong kit-worn-at-spot	477aa4f35831dbe4
 herb_clean_toadflax strong owns-all-at-bank	dbdeff91fe88e613
 herb_clean_toadflax strong owns-all-in-bank	1faedf471f8246d6
-herb_clean_toadflax strong parts-carried	ea5124f8df694f2b
-herb_clean_toadflax strong parts-carried-away	a2ffdd615b9b443c
+herb_clean_toadflax strong parts-carried	d98607a79d0f0867
+herb_clean_toadflax strong parts-carried-away	e671df42c3798f78
 herb_clean_toadflax strong parts-in-bank	dbdeff91fe88e613
 herb_clean_toadflax weak bank-empty	91e74197a7f7ec9a
 herb_clean_toadflax weak bank-empty-rich	91e74197a7f7ec9a
@@ -5069,17 +5729,17 @@ herb_clean_toadflax weak parts-in-bank	d0ad59c41351e6ba
 herb_clean_torstol strong bank-empty	072a22fcddf95238
 herb_clean_torstol strong bank-empty-rich	3c9c19195334f436
 herb_clean_torstol strong bank-unknown	29bc4b9a3a930f99
-herb_clean_torstol strong full-of-products	e23e11033bf50633
+herb_clean_torstol strong full-of-products	5e6d1cb874176052
 herb_clean_torstol strong gear-carried	a2f8e088534965a4
 herb_clean_torstol strong goal-reached	e4a5dfcb20f30fa7
-herb_clean_torstol strong in-instance	e23e11033bf50633
-herb_clean_torstol strong kit-at-spot	e23e11033bf50633
-herb_clean_torstol strong kit-away	9d288b9aad08e465
-herb_clean_torstol strong kit-worn-at-spot	9b2f847059cba6c9
+herb_clean_torstol strong in-instance	5e6d1cb874176052
+herb_clean_torstol strong kit-at-spot	5e6d1cb874176052
+herb_clean_torstol strong kit-away	0d7bbd6e6a3412bc
+herb_clean_torstol strong kit-worn-at-spot	297b2f8570095958
 herb_clean_torstol strong owns-all-at-bank	42144e249bfe32cc
 herb_clean_torstol strong owns-all-in-bank	54b6a658166c75a9
-herb_clean_torstol strong parts-carried	e23e11033bf50633
-herb_clean_torstol strong parts-carried-away	9d288b9aad08e465
+herb_clean_torstol strong parts-carried	5e6d1cb874176052
+herb_clean_torstol strong parts-carried-away	0d7bbd6e6a3412bc
 herb_clean_torstol strong parts-in-bank	42144e249bfe32cc
 herb_clean_torstol weak bank-empty	65de2620db17a46d
 herb_clean_torstol weak bank-empty-rich	65de2620db17a46d
@@ -5156,6 +5816,96 @@ herb_energy weak owns-all-in-bank	91afd73a2e01a916
 herb_energy weak parts-carried	f55a054cbcd41c25
 herb_energy weak parts-carried-away	f55a054cbcd41c25
 herb_energy weak parts-in-bank	d259780b4251738e
+herb_guam_tar strong bank-empty	cabde2403ef854b4
+herb_guam_tar strong bank-empty-rich	8d551ca1683326fb
+herb_guam_tar strong bank-unknown	032e682befe5fad6
+herb_guam_tar strong full-of-products	abe07b78725e2828
+herb_guam_tar strong gear-carried	8b6e3e2490555489
+herb_guam_tar strong goal-reached	b04592d517b6315d
+herb_guam_tar strong in-instance	abe07b78725e2828
+herb_guam_tar strong kit-at-spot	abe07b78725e2828
+herb_guam_tar strong kit-away	2b2312f1d35f1080
+herb_guam_tar strong kit-worn-at-spot	d42c0e99a3cfa38b
+herb_guam_tar strong owns-all-at-bank	5fac55d24c3d9e00
+herb_guam_tar strong owns-all-in-bank	d6af1e8ec70853c0
+herb_guam_tar strong parts-carried	abe07b78725e2828
+herb_guam_tar strong parts-carried-away	2b2312f1d35f1080
+herb_guam_tar strong parts-in-bank	5fac55d24c3d9e00
+herb_guam_tar weak bank-empty	356ca1cb6bc3e9af
+herb_guam_tar weak bank-empty-rich	356ca1cb6bc3e9af
+herb_guam_tar weak bank-unknown	356ca1cb6bc3e9af
+herb_guam_tar weak full-of-products	3705012721488a0e
+herb_guam_tar weak gear-carried	39f90eb084a8cb03
+herb_guam_tar weak goal-reached	0cf0d3c36b771bb2
+herb_guam_tar weak in-instance	3705012721488a0e
+herb_guam_tar weak kit-at-spot	3705012721488a0e
+herb_guam_tar weak kit-away	3705012721488a0e
+herb_guam_tar weak kit-worn-at-spot	4c1fa93430bc4a8a
+herb_guam_tar weak owns-all-at-bank	80700ed1d294e7be
+herb_guam_tar weak owns-all-in-bank	80700ed1d294e7be
+herb_guam_tar weak parts-carried	3705012721488a0e
+herb_guam_tar weak parts-carried-away	3705012721488a0e
+herb_guam_tar weak parts-in-bank	80700ed1d294e7be
+herb_harralander_tar strong bank-empty	7be3adde37e58f15
+herb_harralander_tar strong bank-empty-rich	5c16308be20daf0a
+herb_harralander_tar strong bank-unknown	9940ee7f5f7e5772
+herb_harralander_tar strong full-of-products	4c203fc1063b0497
+herb_harralander_tar strong gear-carried	233ad199543cd7d2
+herb_harralander_tar strong goal-reached	2fd7ba32dd3814fa
+herb_harralander_tar strong in-instance	4c203fc1063b0497
+herb_harralander_tar strong kit-at-spot	4c203fc1063b0497
+herb_harralander_tar strong kit-away	9e82707b82d91d91
+herb_harralander_tar strong kit-worn-at-spot	5aabeb85cb93e865
+herb_harralander_tar strong owns-all-at-bank	4b36ec5fcb1a4de7
+herb_harralander_tar strong owns-all-in-bank	8e2c220958ecefd7
+herb_harralander_tar strong parts-carried	4c203fc1063b0497
+herb_harralander_tar strong parts-carried-away	9e82707b82d91d91
+herb_harralander_tar strong parts-in-bank	4b36ec5fcb1a4de7
+herb_harralander_tar weak bank-empty	52548fa1d9570836
+herb_harralander_tar weak bank-empty-rich	52548fa1d9570836
+herb_harralander_tar weak bank-unknown	52548fa1d9570836
+herb_harralander_tar weak full-of-products	329eda688632c17a
+herb_harralander_tar weak gear-carried	2f5318b4dad71786
+herb_harralander_tar weak goal-reached	e3480c90ebadf550
+herb_harralander_tar weak in-instance	329eda688632c17a
+herb_harralander_tar weak kit-at-spot	329eda688632c17a
+herb_harralander_tar weak kit-away	329eda688632c17a
+herb_harralander_tar weak kit-worn-at-spot	6eb218cbd582f0ca
+herb_harralander_tar weak owns-all-at-bank	faf09d1498ae5b4e
+herb_harralander_tar weak owns-all-in-bank	faf09d1498ae5b4e
+herb_harralander_tar weak parts-carried	329eda688632c17a
+herb_harralander_tar weak parts-carried-away	329eda688632c17a
+herb_harralander_tar weak parts-in-bank	faf09d1498ae5b4e
+herb_irit_tar strong bank-empty	f44e443b16130d89
+herb_irit_tar strong bank-empty-rich	83c0293e0f37177b
+herb_irit_tar strong bank-unknown	5aac4d4ad1f5f716
+herb_irit_tar strong full-of-products	ec8993bf2f6bfbe6
+herb_irit_tar strong gear-carried	e9cadb77b5156e9a
+herb_irit_tar strong goal-reached	8c039641efa5bc90
+herb_irit_tar strong in-instance	ec8993bf2f6bfbe6
+herb_irit_tar strong kit-at-spot	ec8993bf2f6bfbe6
+herb_irit_tar strong kit-away	89f929db543993cd
+herb_irit_tar strong kit-worn-at-spot	7bb6a068bd63fb5a
+herb_irit_tar strong owns-all-at-bank	a7c356a3479d6276
+herb_irit_tar strong owns-all-in-bank	7c05e3209f919c5c
+herb_irit_tar strong parts-carried	ec8993bf2f6bfbe6
+herb_irit_tar strong parts-carried-away	89f929db543993cd
+herb_irit_tar strong parts-in-bank	a7c356a3479d6276
+herb_irit_tar weak bank-empty	22b79dd02b765f99
+herb_irit_tar weak bank-empty-rich	22b79dd02b765f99
+herb_irit_tar weak bank-unknown	22b79dd02b765f99
+herb_irit_tar weak full-of-products	50b41b7e2b78522d
+herb_irit_tar weak gear-carried	048cb21da74bd679
+herb_irit_tar weak goal-reached	cf1cf8e7e710c88f
+herb_irit_tar weak in-instance	50b41b7e2b78522d
+herb_irit_tar weak kit-at-spot	50b41b7e2b78522d
+herb_irit_tar weak kit-away	50b41b7e2b78522d
+herb_irit_tar weak kit-worn-at-spot	811748cdb7c82595
+herb_irit_tar weak owns-all-at-bank	8f89e9b90ca9b728
+herb_irit_tar weak owns-all-in-bank	8f89e9b90ca9b728
+herb_irit_tar weak parts-carried	50b41b7e2b78522d
+herb_irit_tar weak parts-carried-away	50b41b7e2b78522d
+herb_irit_tar weak parts-in-bank	8f89e9b90ca9b728
 herb_magic strong bank-empty	1051e2f4d767b609
 herb_magic strong bank-empty-rich	cd7341b018be1d9a
 herb_magic strong bank-unknown	bb9fcd71b21beb58
@@ -5276,6 +6026,36 @@ herb_saradomin_brew weak owns-all-in-bank	b1c8f4301bd996d4
 herb_saradomin_brew weak parts-carried	b8e1e858ca1ccbae
 herb_saradomin_brew weak parts-carried-away	b8e1e858ca1ccbae
 herb_saradomin_brew weak parts-in-bank	2777f993649dcc20
+herb_stamina strong bank-empty	579208380769accd
+herb_stamina strong bank-empty-rich	441b9402a24e762b
+herb_stamina strong bank-unknown	f3da2815b3477484
+herb_stamina strong full-of-products	23dca399cb97a93b
+herb_stamina strong gear-carried	e11326b2a3de69b1
+herb_stamina strong goal-reached	3131208f5acda053
+herb_stamina strong in-instance	23dca399cb97a93b
+herb_stamina strong kit-at-spot	23dca399cb97a93b
+herb_stamina strong kit-away	4230015e9873e350
+herb_stamina strong kit-worn-at-spot	47243bfae969ae72
+herb_stamina strong owns-all-at-bank	5aae96769acf24d3
+herb_stamina strong owns-all-in-bank	4e737f443b996fac
+herb_stamina strong parts-carried	23dca399cb97a93b
+herb_stamina strong parts-carried-away	4230015e9873e350
+herb_stamina strong parts-in-bank	5aae96769acf24d3
+herb_stamina weak bank-empty	9ea68fecc4863fed
+herb_stamina weak bank-empty-rich	9ea68fecc4863fed
+herb_stamina weak bank-unknown	9ea68fecc4863fed
+herb_stamina weak full-of-products	71b44922aa67a052
+herb_stamina weak gear-carried	259ba7f9e1064fb1
+herb_stamina weak goal-reached	b143564403c25a1c
+herb_stamina weak in-instance	71b44922aa67a052
+herb_stamina weak kit-at-spot	71b44922aa67a052
+herb_stamina weak kit-away	71b44922aa67a052
+herb_stamina weak kit-worn-at-spot	f2aebfb93bf9abba
+herb_stamina weak owns-all-at-bank	117564fa4d5dfca6
+herb_stamina weak owns-all-in-bank	117564fa4d5dfca6
+herb_stamina weak parts-carried	71b44922aa67a052
+herb_stamina weak parts-carried-away	71b44922aa67a052
+herb_stamina weak parts-in-bank	117564fa4d5dfca6
 herb_strength strong bank-empty	02ee7e22c3e24625
 herb_strength strong bank-empty-rich	e81967393cb1bd6f
 herb_strength strong bank-unknown	bb706673d4f974f1
@@ -5636,6 +6416,36 @@ hitpoints_cows weak owns-all-in-bank	d7b52b6acd6ed939
 hitpoints_cows weak parts-carried	99e84edb7fcf8715
 hitpoints_cows weak parts-carried-away	d7b52b6acd6ed939
 hitpoints_cows weak parts-in-bank	d7b52b6acd6ed939
+hitpoints_desert_bandits strong bank-empty	6585676a58ccd870
+hitpoints_desert_bandits strong bank-empty-rich	4c65d4e3d881533a
+hitpoints_desert_bandits strong bank-unknown	026d4caae7231316
+hitpoints_desert_bandits strong full-of-products	f942a60a6bc8f28f
+hitpoints_desert_bandits strong gear-carried	0b82126e601e9dd6
+hitpoints_desert_bandits strong goal-reached	5573af63f99e1700
+hitpoints_desert_bandits strong in-instance	f942a60a6bc8f28f
+hitpoints_desert_bandits strong kit-at-spot	f942a60a6bc8f28f
+hitpoints_desert_bandits strong kit-away	48060d837f53e2b6
+hitpoints_desert_bandits strong kit-worn-at-spot	f942a60a6bc8f28f
+hitpoints_desert_bandits strong owns-all-at-bank	3384d7da7a2d6469
+hitpoints_desert_bandits strong owns-all-in-bank	3384d7da7a2d6469
+hitpoints_desert_bandits strong parts-carried	f942a60a6bc8f28f
+hitpoints_desert_bandits strong parts-carried-away	48060d837f53e2b6
+hitpoints_desert_bandits strong parts-in-bank	3384d7da7a2d6469
+hitpoints_desert_bandits weak bank-empty	9031cded5c59b370
+hitpoints_desert_bandits weak bank-empty-rich	55942fd2427b663f
+hitpoints_desert_bandits weak bank-unknown	026d4caae7231316
+hitpoints_desert_bandits weak full-of-products	c1ab06aa6dbc6550
+hitpoints_desert_bandits weak gear-carried	327fbe5f4e31df45
+hitpoints_desert_bandits weak goal-reached	299b5551c576a7b0
+hitpoints_desert_bandits weak in-instance	c1ab06aa6dbc6550
+hitpoints_desert_bandits weak kit-at-spot	c1ab06aa6dbc6550
+hitpoints_desert_bandits weak kit-away	47b5295661e3d26b
+hitpoints_desert_bandits weak kit-worn-at-spot	c1ab06aa6dbc6550
+hitpoints_desert_bandits weak owns-all-at-bank	e5c6f0a2a007c703
+hitpoints_desert_bandits weak owns-all-in-bank	e5c6f0a2a007c703
+hitpoints_desert_bandits weak parts-carried	c1ab06aa6dbc6550
+hitpoints_desert_bandits weak parts-carried-away	47b5295661e3d26b
+hitpoints_desert_bandits weak parts-in-bank	e5c6f0a2a007c703
 hitpoints_gargoyles strong bank-empty	54fd4e58106c6a36
 hitpoints_gargoyles strong bank-empty-rich	54fd4e58106c6a36
 hitpoints_gargoyles strong bank-unknown	e257fd6bb3fde86e
@@ -5876,6 +6686,36 @@ hitpoints_sulphur_naguas weak owns-all-in-bank	42765c89d92ff1eb
 hitpoints_sulphur_naguas weak parts-carried	42765c89d92ff1eb
 hitpoints_sulphur_naguas weak parts-carried-away	42765c89d92ff1eb
 hitpoints_sulphur_naguas weak parts-in-bank	42765c89d92ff1eb
+hitpoints_vyrewatch_sentinels strong bank-empty	61614848779e8989
+hitpoints_vyrewatch_sentinels strong bank-empty-rich	80fd1f5760597493
+hitpoints_vyrewatch_sentinels strong bank-unknown	826e0a94fc4a63bb
+hitpoints_vyrewatch_sentinels strong full-of-products	14db3e225e439bbc
+hitpoints_vyrewatch_sentinels strong gear-carried	d7da1a959a7e1aa4
+hitpoints_vyrewatch_sentinels strong goal-reached	88fbc644d46b199f
+hitpoints_vyrewatch_sentinels strong in-instance	14db3e225e439bbc
+hitpoints_vyrewatch_sentinels strong kit-at-spot	14db3e225e439bbc
+hitpoints_vyrewatch_sentinels strong kit-away	bf7ad385d84d1bd4
+hitpoints_vyrewatch_sentinels strong kit-worn-at-spot	14db3e225e439bbc
+hitpoints_vyrewatch_sentinels strong owns-all-at-bank	fb8de65feb1e6c74
+hitpoints_vyrewatch_sentinels strong owns-all-in-bank	fb8de65feb1e6c74
+hitpoints_vyrewatch_sentinels strong parts-carried	14db3e225e439bbc
+hitpoints_vyrewatch_sentinels strong parts-carried-away	bf7ad385d84d1bd4
+hitpoints_vyrewatch_sentinels strong parts-in-bank	fb8de65feb1e6c74
+hitpoints_vyrewatch_sentinels weak bank-empty	0d354e1ed6387d05
+hitpoints_vyrewatch_sentinels weak bank-empty-rich	0d354e1ed6387d05
+hitpoints_vyrewatch_sentinels weak bank-unknown	d1c02a197338321d
+hitpoints_vyrewatch_sentinels weak full-of-products	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak gear-carried	619730f70f457cca
+hitpoints_vyrewatch_sentinels weak goal-reached	bc2bb27cd867db79
+hitpoints_vyrewatch_sentinels weak in-instance	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak kit-at-spot	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak kit-away	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak kit-worn-at-spot	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak owns-all-at-bank	2755b6fee372f519
+hitpoints_vyrewatch_sentinels weak owns-all-in-bank	2755b6fee372f519
+hitpoints_vyrewatch_sentinels weak parts-carried	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak parts-carried-away	efdc029103ce3589
+hitpoints_vyrewatch_sentinels weak parts-in-bank	2755b6fee372f519
 hunter_birdhouses strong bank-empty	9e82a890ae24e146
 hunter_birdhouses strong bank-empty-rich	8c13d3d047757408
 hunter_birdhouses strong bank-unknown	9c3b4e3bda7309be
@@ -6150,6 +6990,36 @@ hunter_jerboas weak owns-all-in-bank	1a0926b2ce6b9113
 hunter_jerboas weak parts-carried	3b86e88727c71e2b
 hunter_jerboas weak parts-carried-away	3b86e88727c71e2b
 hunter_jerboas weak parts-in-bank	1a0926b2ce6b9113
+hunter_maniacal_monkeys strong bank-empty	b4320a5872a2e83d
+hunter_maniacal_monkeys strong bank-empty-rich	b4320a5872a2e83d
+hunter_maniacal_monkeys strong bank-unknown	b4320a5872a2e83d
+hunter_maniacal_monkeys strong full-of-products	e135749e14c37109
+hunter_maniacal_monkeys strong gear-carried	e135749e14c37109
+hunter_maniacal_monkeys strong goal-reached	5f20da11f53a96b4
+hunter_maniacal_monkeys strong in-instance	e135749e14c37109
+hunter_maniacal_monkeys strong kit-at-spot	e135749e14c37109
+hunter_maniacal_monkeys strong kit-away	0768f402a8a2bd5d
+hunter_maniacal_monkeys strong kit-worn-at-spot	e135749e14c37109
+hunter_maniacal_monkeys strong owns-all-at-bank	0768f402a8a2bd5d
+hunter_maniacal_monkeys strong owns-all-in-bank	0768f402a8a2bd5d
+hunter_maniacal_monkeys strong parts-carried	e135749e14c37109
+hunter_maniacal_monkeys strong parts-carried-away	0768f402a8a2bd5d
+hunter_maniacal_monkeys strong parts-in-bank	0768f402a8a2bd5d
+hunter_maniacal_monkeys weak bank-empty	9dc8bc8915ab7493
+hunter_maniacal_monkeys weak bank-empty-rich	9dc8bc8915ab7493
+hunter_maniacal_monkeys weak bank-unknown	9dc8bc8915ab7493
+hunter_maniacal_monkeys weak full-of-products	d1eb5582acc5446e
+hunter_maniacal_monkeys weak gear-carried	d1eb5582acc5446e
+hunter_maniacal_monkeys weak goal-reached	11f9475fa6eeee5b
+hunter_maniacal_monkeys weak in-instance	d1eb5582acc5446e
+hunter_maniacal_monkeys weak kit-at-spot	d1eb5582acc5446e
+hunter_maniacal_monkeys weak kit-away	d1eb5582acc5446e
+hunter_maniacal_monkeys weak kit-worn-at-spot	d1eb5582acc5446e
+hunter_maniacal_monkeys weak owns-all-at-bank	d1eb5582acc5446e
+hunter_maniacal_monkeys weak owns-all-in-bank	d1eb5582acc5446e
+hunter_maniacal_monkeys weak parts-carried	d1eb5582acc5446e
+hunter_maniacal_monkeys weak parts-carried-away	d1eb5582acc5446e
+hunter_maniacal_monkeys weak parts-in-bank	d1eb5582acc5446e
 hunter_orange_salamanders strong bank-empty	c6b9f83f713ec24b
 hunter_orange_salamanders strong bank-empty-rich	b6cf2f9d06c66cad
 hunter_orange_salamanders strong bank-unknown	1ad424b8f7da0657
@@ -6300,6 +7170,36 @@ hunter_ruby_harvest weak owns-all-in-bank	d158c85e3570bab1
 hunter_ruby_harvest weak parts-carried	47b84cf6a79143c3
 hunter_ruby_harvest weak parts-carried-away	92137b146c0a98c3
 hunter_ruby_harvest weak parts-in-bank	d158c85e3570bab1
+hunter_stymphikes strong bank-empty	c000c5dc785fca27
+hunter_stymphikes strong bank-empty-rich	6d986c62d1ffd6ff
+hunter_stymphikes strong bank-unknown	bdc450fe12520870
+hunter_stymphikes strong full-of-products	4c2a6e88c2540b53
+hunter_stymphikes strong gear-carried	4c2a6e88c2540b53
+hunter_stymphikes strong goal-reached	4364cca658adf3ce
+hunter_stymphikes strong in-instance	4c2a6e88c2540b53
+hunter_stymphikes strong kit-at-spot	4c2a6e88c2540b53
+hunter_stymphikes strong kit-away	57b8924786902168
+hunter_stymphikes strong kit-worn-at-spot	4c2a6e88c2540b53
+hunter_stymphikes strong owns-all-at-bank	dd558920957e0a53
+hunter_stymphikes strong owns-all-in-bank	dd558920957e0a53
+hunter_stymphikes strong parts-carried	4c2a6e88c2540b53
+hunter_stymphikes strong parts-carried-away	57b8924786902168
+hunter_stymphikes strong parts-in-bank	dd558920957e0a53
+hunter_stymphikes weak bank-empty	783b259f410609cf
+hunter_stymphikes weak bank-empty-rich	783b259f410609cf
+hunter_stymphikes weak bank-unknown	783b259f410609cf
+hunter_stymphikes weak full-of-products	eb336217ce8b7851
+hunter_stymphikes weak gear-carried	eb336217ce8b7851
+hunter_stymphikes weak goal-reached	ccf9fbe6d5701ea1
+hunter_stymphikes weak in-instance	eb336217ce8b7851
+hunter_stymphikes weak kit-at-spot	eb336217ce8b7851
+hunter_stymphikes weak kit-away	eb336217ce8b7851
+hunter_stymphikes weak kit-worn-at-spot	eb336217ce8b7851
+hunter_stymphikes weak owns-all-at-bank	e7516dd1585b9d07
+hunter_stymphikes weak owns-all-in-bank	e7516dd1585b9d07
+hunter_stymphikes weak parts-carried	eb336217ce8b7851
+hunter_stymphikes weak parts-carried-away	eb336217ce8b7851
+hunter_stymphikes weak parts-in-bank	e7516dd1585b9d07
 hunter_swamp_lizards strong bank-empty	ce79716f9a5c8d9d
 hunter_swamp_lizards strong bank-empty-rich	03326f719433b64f
 hunter_swamp_lizards strong bank-unknown	1d8d8238f8ace752
@@ -6360,6 +7260,36 @@ hunter_tropical_wagtail weak owns-all-in-bank	ba53bcc0bfb23004
 hunter_tropical_wagtail weak parts-carried	6732bc5a4249a0ad
 hunter_tropical_wagtail weak parts-carried-away	33e138b109d57a33
 hunter_tropical_wagtail weak parts-in-bank	ba53bcc0bfb23004
+magic_barrage_monkeys strong bank-empty	3cf384a4051eaa89
+magic_barrage_monkeys strong bank-empty-rich	3cf384a4051eaa89
+magic_barrage_monkeys strong bank-unknown	3cf384a4051eaa89
+magic_barrage_monkeys strong full-of-products	83bc63c32dd5d0a5
+magic_barrage_monkeys strong gear-carried	83bc63c32dd5d0a5
+magic_barrage_monkeys strong goal-reached	1846dbaadc4abc11
+magic_barrage_monkeys strong in-instance	83bc63c32dd5d0a5
+magic_barrage_monkeys strong kit-at-spot	83bc63c32dd5d0a5
+magic_barrage_monkeys strong kit-away	6c53b5954e511d6b
+magic_barrage_monkeys strong kit-worn-at-spot	83bc63c32dd5d0a5
+magic_barrage_monkeys strong owns-all-at-bank	6c53b5954e511d6b
+magic_barrage_monkeys strong owns-all-in-bank	6c53b5954e511d6b
+magic_barrage_monkeys strong parts-carried	83bc63c32dd5d0a5
+magic_barrage_monkeys strong parts-carried-away	6c53b5954e511d6b
+magic_barrage_monkeys strong parts-in-bank	6c53b5954e511d6b
+magic_barrage_monkeys weak bank-empty	07e16d8921cbaeaf
+magic_barrage_monkeys weak bank-empty-rich	07e16d8921cbaeaf
+magic_barrage_monkeys weak bank-unknown	07e16d8921cbaeaf
+magic_barrage_monkeys weak full-of-products	a6ed97017fc0dd0b
+magic_barrage_monkeys weak gear-carried	a6ed97017fc0dd0b
+magic_barrage_monkeys weak goal-reached	0a257f4b5b59014b
+magic_barrage_monkeys weak in-instance	a6ed97017fc0dd0b
+magic_barrage_monkeys weak kit-at-spot	a6ed97017fc0dd0b
+magic_barrage_monkeys weak kit-away	a6ed97017fc0dd0b
+magic_barrage_monkeys weak kit-worn-at-spot	a6ed97017fc0dd0b
+magic_barrage_monkeys weak owns-all-at-bank	a6ed97017fc0dd0b
+magic_barrage_monkeys weak owns-all-in-bank	a6ed97017fc0dd0b
+magic_barrage_monkeys weak parts-carried	a6ed97017fc0dd0b
+magic_barrage_monkeys weak parts-carried-away	a6ed97017fc0dd0b
+magic_barrage_monkeys weak parts-in-bank	a6ed97017fc0dd0b
 magic_camelot_tele strong bank-empty	cc088e6ce31eb7c4
 magic_camelot_tele strong bank-empty-rich	4147fdaacf3bc389
 magic_camelot_tele strong bank-unknown	8fdad412e29e089b
@@ -6780,6 +7710,36 @@ magic_plank_make_teak weak owns-all-in-bank	957c50d3ac63d991
 magic_plank_make_teak weak parts-carried	c2f813613b1654ce
 magic_plank_make_teak weak parts-carried-away	c2f813613b1654ce
 magic_plank_make_teak weak parts-in-bank	957c50d3ac63d991
+magic_splashing strong bank-empty	9f17263e04c6fc0f
+magic_splashing strong bank-empty-rich	9f17263e04c6fc0f
+magic_splashing strong bank-unknown	9f17263e04c6fc0f
+magic_splashing strong full-of-products	fe6feeac4738ae3d
+magic_splashing strong gear-carried	fe6feeac4738ae3d
+magic_splashing strong goal-reached	0d568d1550b549e5
+magic_splashing strong in-instance	fe6feeac4738ae3d
+magic_splashing strong kit-at-spot	fe6feeac4738ae3d
+magic_splashing strong kit-away	f7d9d3ddfc977a40
+magic_splashing strong kit-worn-at-spot	fe6feeac4738ae3d
+magic_splashing strong owns-all-at-bank	f7d9d3ddfc977a40
+magic_splashing strong owns-all-in-bank	f7d9d3ddfc977a40
+magic_splashing strong parts-carried	fe6feeac4738ae3d
+magic_splashing strong parts-carried-away	f7d9d3ddfc977a40
+magic_splashing strong parts-in-bank	f7d9d3ddfc977a40
+magic_splashing weak bank-empty	9f17263e04c6fc0f
+magic_splashing weak bank-empty-rich	9f17263e04c6fc0f
+magic_splashing weak bank-unknown	9f17263e04c6fc0f
+magic_splashing weak full-of-products	fe6feeac4738ae3d
+magic_splashing weak gear-carried	fe6feeac4738ae3d
+magic_splashing weak goal-reached	0d568d1550b549e5
+magic_splashing weak in-instance	fe6feeac4738ae3d
+magic_splashing weak kit-at-spot	fe6feeac4738ae3d
+magic_splashing weak kit-away	f7d9d3ddfc977a40
+magic_splashing weak kit-worn-at-spot	fe6feeac4738ae3d
+magic_splashing weak owns-all-at-bank	f7d9d3ddfc977a40
+magic_splashing weak owns-all-in-bank	f7d9d3ddfc977a40
+magic_splashing weak parts-carried	fe6feeac4738ae3d
+magic_splashing weak parts-carried-away	f7d9d3ddfc977a40
+magic_splashing weak parts-in-bank	f7d9d3ddfc977a40
 magic_string_jewellery strong bank-empty	1651128f55fedc1c
 magic_string_jewellery strong bank-empty-rich	0ccbfcf640913bac
 magic_string_jewellery strong bank-unknown	4b13a1f7d0b7cff6
@@ -6900,6 +7860,66 @@ mine_amethyst_guild weak owns-all-in-bank	6f332f08e306091b
 mine_amethyst_guild weak parts-carried	42647a7d6c327fdc
 mine_amethyst_guild weak parts-carried-away	c6c69c18d199a403
 mine_amethyst_guild weak parts-in-bank	efae274de60196b3
+mine_ascension_rocks strong bank-empty	a78ef20335b6b552
+mine_ascension_rocks strong bank-empty-rich	a79896e24e3c6590
+mine_ascension_rocks strong bank-unknown	a94cb46036302710
+mine_ascension_rocks strong full-of-products	bf1e2e7a84b208b9
+mine_ascension_rocks strong gear-carried	e8884c0c6713e498
+mine_ascension_rocks strong goal-reached	823c95070d1110ec
+mine_ascension_rocks strong in-instance	bf1e2e7a84b208b9
+mine_ascension_rocks strong kit-at-spot	bf1e2e7a84b208b9
+mine_ascension_rocks strong kit-away	09dfa1f63edeebb7
+mine_ascension_rocks strong kit-worn-at-spot	bf1e2e7a84b208b9
+mine_ascension_rocks strong owns-all-at-bank	155a7da74421046b
+mine_ascension_rocks strong owns-all-in-bank	155a7da74421046b
+mine_ascension_rocks strong parts-carried	bf1e2e7a84b208b9
+mine_ascension_rocks strong parts-carried-away	09dfa1f63edeebb7
+mine_ascension_rocks strong parts-in-bank	155a7da74421046b
+mine_ascension_rocks weak bank-empty	94237ce32f46fef5
+mine_ascension_rocks weak bank-empty-rich	94237ce32f46fef5
+mine_ascension_rocks weak bank-unknown	43cf536917522190
+mine_ascension_rocks weak full-of-products	0fa15847caf32779
+mine_ascension_rocks weak gear-carried	70b8eeef68dba664
+mine_ascension_rocks weak goal-reached	c6c8145c36ea2098
+mine_ascension_rocks weak in-instance	0fa15847caf32779
+mine_ascension_rocks weak kit-at-spot	0fa15847caf32779
+mine_ascension_rocks weak kit-away	0fa15847caf32779
+mine_ascension_rocks weak kit-worn-at-spot	0fa15847caf32779
+mine_ascension_rocks weak owns-all-at-bank	9424ce06817a8843
+mine_ascension_rocks weak owns-all-in-bank	9424ce06817a8843
+mine_ascension_rocks weak parts-carried	0fa15847caf32779
+mine_ascension_rocks weak parts-carried-away	0fa15847caf32779
+mine_ascension_rocks weak parts-in-bank	9424ce06817a8843
+mine_barronite strong bank-empty	1eb4baad3d70789f
+mine_barronite strong bank-empty-rich	6225ef14c4f62b63
+mine_barronite strong bank-unknown	1b5ff750124b3d92
+mine_barronite strong full-of-products	3190e496f0e84345
+mine_barronite strong gear-carried	3b123522746a0f5a
+mine_barronite strong goal-reached	5834d8a05c3748ae
+mine_barronite strong in-instance	3190e496f0e84345
+mine_barronite strong kit-at-spot	3190e496f0e84345
+mine_barronite strong kit-away	1e5189d526c50bde
+mine_barronite strong kit-worn-at-spot	3190e496f0e84345
+mine_barronite strong owns-all-at-bank	bbf3ed986e627ea5
+mine_barronite strong owns-all-in-bank	bbf3ed986e627ea5
+mine_barronite strong parts-carried	3190e496f0e84345
+mine_barronite strong parts-carried-away	1e5189d526c50bde
+mine_barronite strong parts-in-bank	bbf3ed986e627ea5
+mine_barronite weak bank-empty	e52d8eb412811340
+mine_barronite weak bank-empty-rich	e52d8eb412811340
+mine_barronite weak bank-unknown	25b844b2d2534de1
+mine_barronite weak full-of-products	791c143343c36c2f
+mine_barronite weak gear-carried	a78b01ca28d2657f
+mine_barronite weak goal-reached	bf113a892ab98ac0
+mine_barronite weak in-instance	791c143343c36c2f
+mine_barronite weak kit-at-spot	791c143343c36c2f
+mine_barronite weak kit-away	791c143343c36c2f
+mine_barronite weak kit-worn-at-spot	791c143343c36c2f
+mine_barronite weak owns-all-at-bank	2e2f0b8c0acee4ab
+mine_barronite weak owns-all-in-bank	2e2f0b8c0acee4ab
+mine_barronite weak parts-carried	791c143343c36c2f
+mine_barronite weak parts-carried-away	791c143343c36c2f
+mine_barronite weak parts-in-bank	2e2f0b8c0acee4ab
 mine_copper_tin_varrock strong bank-empty	5ed4e0520b80fdb3
 mine_copper_tin_varrock strong bank-empty-rich	41282a0a4b4f75c0
 mine_copper_tin_varrock strong bank-unknown	7c8575e709197e4c
@@ -6930,6 +7950,36 @@ mine_copper_tin_varrock weak owns-all-in-bank	9a2eeb94ba1765be
 mine_copper_tin_varrock weak parts-carried	a53e460f2c5ff36d
 mine_copper_tin_varrock weak parts-carried-away	7dfcd38eff1d3bfd
 mine_copper_tin_varrock weak parts-in-bank	d914c12a2c01f796
+mine_daeyalt strong bank-empty	3d48429d0d29a0e4
+mine_daeyalt strong bank-empty-rich	b257ea53d89a5c0a
+mine_daeyalt strong bank-unknown	d5b171561eae2787
+mine_daeyalt strong full-of-products	7393b5354c83dc06
+mine_daeyalt strong gear-carried	8396c47b48f30b36
+mine_daeyalt strong goal-reached	d5ce079ab65a50bb
+mine_daeyalt strong in-instance	7393b5354c83dc06
+mine_daeyalt strong kit-at-spot	7393b5354c83dc06
+mine_daeyalt strong kit-away	819d681a9c55c580
+mine_daeyalt strong kit-worn-at-spot	7393b5354c83dc06
+mine_daeyalt strong owns-all-at-bank	427bbd58229df3bb
+mine_daeyalt strong owns-all-in-bank	427bbd58229df3bb
+mine_daeyalt strong parts-carried	7393b5354c83dc06
+mine_daeyalt strong parts-carried-away	819d681a9c55c580
+mine_daeyalt strong parts-in-bank	427bbd58229df3bb
+mine_daeyalt weak bank-empty	0e2ac248ddd10cf4
+mine_daeyalt weak bank-empty-rich	0e2ac248ddd10cf4
+mine_daeyalt weak bank-unknown	60cdc5c9889f6b6f
+mine_daeyalt weak full-of-products	c017f612a83627e9
+mine_daeyalt weak gear-carried	0c2ff65ba9bcd67f
+mine_daeyalt weak goal-reached	adbd1e52f6ffe316
+mine_daeyalt weak in-instance	c017f612a83627e9
+mine_daeyalt weak kit-at-spot	c017f612a83627e9
+mine_daeyalt weak kit-away	c017f612a83627e9
+mine_daeyalt weak kit-worn-at-spot	c017f612a83627e9
+mine_daeyalt weak owns-all-at-bank	7fe58281bd6063fd
+mine_daeyalt weak owns-all-in-bank	7fe58281bd6063fd
+mine_daeyalt weak parts-carried	c017f612a83627e9
+mine_daeyalt weak parts-carried-away	c017f612a83627e9
+mine_daeyalt weak parts-in-bank	7fe58281bd6063fd
 mine_gem_shilo strong bank-empty	8392e7ad8b5a6663
 mine_gem_shilo strong bank-empty-rich	70443b1362268b7a
 mine_gem_shilo strong bank-unknown	baf0a6ab6566db5d
@@ -6990,6 +8040,36 @@ mine_granite_quarry weak owns-all-in-bank	a60cbfbfa27f5f99
 mine_granite_quarry weak parts-carried	1db2519a91f050fa
 mine_granite_quarry weak parts-carried-away	e4e1097f1976ae3b
 mine_granite_quarry weak parts-in-bank	a60cbfbfa27f5f99
+mine_infernal_shale strong bank-empty	f33cbc140db9e44b
+mine_infernal_shale strong bank-empty-rich	2842b308083c5eeb
+mine_infernal_shale strong bank-unknown	5e134baaa6e25407
+mine_infernal_shale strong full-of-products	8f341044d7abed13
+mine_infernal_shale strong gear-carried	aad2eccad71d87e2
+mine_infernal_shale strong goal-reached	e293aa4fa2c3c44f
+mine_infernal_shale strong in-instance	8f341044d7abed13
+mine_infernal_shale strong kit-at-spot	8f341044d7abed13
+mine_infernal_shale strong kit-away	fc929cbc432caa42
+mine_infernal_shale strong kit-worn-at-spot	8f341044d7abed13
+mine_infernal_shale strong owns-all-at-bank	4343278d59453a6c
+mine_infernal_shale strong owns-all-in-bank	4343278d59453a6c
+mine_infernal_shale strong parts-carried	8f341044d7abed13
+mine_infernal_shale strong parts-carried-away	fc929cbc432caa42
+mine_infernal_shale strong parts-in-bank	4343278d59453a6c
+mine_infernal_shale weak bank-empty	38ee44b7c9ee022a
+mine_infernal_shale weak bank-empty-rich	38ee44b7c9ee022a
+mine_infernal_shale weak bank-unknown	e87ac3d39c136853
+mine_infernal_shale weak full-of-products	ab58c513a1bcb781
+mine_infernal_shale weak gear-carried	c44b7f9fe9edaf6d
+mine_infernal_shale weak goal-reached	a36759a24096ac6a
+mine_infernal_shale weak in-instance	ab58c513a1bcb781
+mine_infernal_shale weak kit-at-spot	ab58c513a1bcb781
+mine_infernal_shale weak kit-away	ab58c513a1bcb781
+mine_infernal_shale weak kit-worn-at-spot	ab58c513a1bcb781
+mine_infernal_shale weak owns-all-at-bank	bb2781f63411a4a5
+mine_infernal_shale weak owns-all-in-bank	bb2781f63411a4a5
+mine_infernal_shale weak parts-carried	ab58c513a1bcb781
+mine_infernal_shale weak parts-carried-away	ab58c513a1bcb781
+mine_infernal_shale weak parts-in-bank	bb2781f63411a4a5
 mine_iron_al_kharid strong bank-empty	c30d4991b20ce896
 mine_iron_al_kharid strong bank-empty-rich	aa852203d2eb88c3
 mine_iron_al_kharid strong bank-unknown	3bfdef37caa7f442
@@ -7080,86 +8160,146 @@ mine_motherlode weak owns-all-in-bank	c97d36ab91633996
 mine_motherlode weak parts-carried	2712731e444fb60a
 mine_motherlode weak parts-carried-away	19e4bd545a2db9d2
 mine_motherlode weak parts-in-bank	c97d36ab91633996
-plan AGILITY 1 poor AFK	90d63ba14fc8ee95
-plan AGILITY 1 poor Cheapest	3bac7db3050fa22f
-plan AGILITY 1 poor Fastest	3bac7db3050fa22f
-plan AGILITY 1 poor Profit	582ba4c181b1664a
-plan AGILITY 1 poor Recommended	3bac7db3050fa22f
-plan AGILITY 1 rich AFK	4a82913a9416b9ea
-plan AGILITY 1 rich Cheapest	a922427d069e7a4d
-plan AGILITY 1 rich Fastest	a922427d069e7a4d
-plan AGILITY 1 rich Profit	ca4594803dc1ac07
-plan AGILITY 1 rich Recommended	a922427d069e7a4d
-plan AGILITY 30 poor AFK	0d2e35301b9aec1c
-plan AGILITY 30 poor Cheapest	c4375023a4f12780
-plan AGILITY 30 poor Fastest	c4375023a4f12780
-plan AGILITY 30 poor Profit	b60b944044561412
-plan AGILITY 30 poor Recommended	c4375023a4f12780
-plan AGILITY 30 rich AFK	00abb5d2a5f63663
-plan AGILITY 30 rich Cheapest	1c44b472f32a584b
-plan AGILITY 30 rich Fastest	1c44b472f32a584b
-plan AGILITY 30 rich Profit	9c09c5e126b5d3e1
-plan AGILITY 30 rich Recommended	1c44b472f32a584b
-plan AGILITY 60 poor AFK	2c7673c197db618f
-plan AGILITY 60 poor Cheapest	f139f008d968bfaa
-plan AGILITY 60 poor Fastest	f139f008d968bfaa
-plan AGILITY 60 poor Profit	2a7330387cd2a609
-plan AGILITY 60 poor Recommended	f139f008d968bfaa
-plan AGILITY 60 rich AFK	b3dbf68ba34623c8
-plan AGILITY 60 rich Cheapest	7a2ea42932e56139
-plan AGILITY 60 rich Fastest	7a2ea42932e56139
-plan AGILITY 60 rich Profit	a3c2c2d0205c0eff
-plan AGILITY 60 rich Recommended	7a2ea42932e56139
-plan AGILITY 90 poor AFK	4112f2e256a43051
-plan AGILITY 90 poor Cheapest	703619f84a1cf56b
-plan AGILITY 90 poor Fastest	703619f84a1cf56b
-plan AGILITY 90 poor Profit	f3ce28e81bd1dab3
-plan AGILITY 90 poor Recommended	703619f84a1cf56b
-plan AGILITY 90 rich AFK	b5aa43598e9b62ca
-plan AGILITY 90 rich Cheapest	33d7ad72b8c192f0
-plan AGILITY 90 rich Fastest	33d7ad72b8c192f0
-plan AGILITY 90 rich Profit	890c4ffa05d7f265
-plan AGILITY 90 rich Recommended	33d7ad72b8c192f0
-plan ATTACK 1 poor AFK	a81acfbb87ae911e
-plan ATTACK 1 poor Cheapest	b6344d96617bef7e
-plan ATTACK 1 poor Fastest	b6344d96617bef7e
-plan ATTACK 1 poor Profit	6cb00b09b988ef46
-plan ATTACK 1 poor Recommended	9e2939da87ee0727
-plan ATTACK 1 rich AFK	1539852df43a6116
-plan ATTACK 1 rich Cheapest	9de3eaa27a69519f
-plan ATTACK 1 rich Fastest	9de3eaa27a69519f
-plan ATTACK 1 rich Profit	0a38cf1a29be2141
-plan ATTACK 1 rich Recommended	42f8078f57e296aa
-plan ATTACK 30 poor AFK	ca8d5f44d695fe0f
-plan ATTACK 30 poor Cheapest	5937152ffc022629
-plan ATTACK 30 poor Fastest	5937152ffc022629
-plan ATTACK 30 poor Profit	47f532a80bfff43a
-plan ATTACK 30 poor Recommended	d04a346df796e136
-plan ATTACK 30 rich AFK	27d456e94ec39dbe
-plan ATTACK 30 rich Cheapest	1fec9adfd52107f2
-plan ATTACK 30 rich Fastest	1fec9adfd52107f2
-plan ATTACK 30 rich Profit	cc4c83167a3a17a1
-plan ATTACK 30 rich Recommended	7d062e464667ccea
-plan ATTACK 60 poor AFK	3d14f5159242d045
-plan ATTACK 60 poor Cheapest	fe71b6ac8c1bed4e
-plan ATTACK 60 poor Fastest	fe71b6ac8c1bed4e
-plan ATTACK 60 poor Profit	ed37a5a0ce670a29
-plan ATTACK 60 poor Recommended	5fd7a06ed4c28bd0
-plan ATTACK 60 rich AFK	344a33fcd96ec375
-plan ATTACK 60 rich Cheapest	321522f907b2cf6a
-plan ATTACK 60 rich Fastest	321522f907b2cf6a
-plan ATTACK 60 rich Profit	7c6acf9cf90321a2
-plan ATTACK 60 rich Recommended	0b268b4ea3bb86e9
-plan ATTACK 90 poor AFK	2cbb39613b9e9434
-plan ATTACK 90 poor Cheapest	313305bf160eacc6
-plan ATTACK 90 poor Fastest	313305bf160eacc6
-plan ATTACK 90 poor Profit	27401dc7bddd2d69
-plan ATTACK 90 poor Recommended	2a0438f7d6801587
-plan ATTACK 90 rich AFK	0bbb28b9ab372019
-plan ATTACK 90 rich Cheapest	5509b7b69cfc12a3
-plan ATTACK 90 rich Fastest	5509b7b69cfc12a3
-plan ATTACK 90 rich Profit	656b52ca95fbdb9b
-plan ATTACK 90 rich Recommended	86dc9a47d69363f6
+mine_salax_salt strong bank-empty	79486b4222406d33
+mine_salax_salt strong bank-empty-rich	0857006e3522a9e0
+mine_salax_salt strong bank-unknown	ea5fb164f79ddf3f
+mine_salax_salt strong full-of-products	b96e7139cc056b76
+mine_salax_salt strong gear-carried	0ecc8a0e10f561bd
+mine_salax_salt strong goal-reached	26dec4afdc1aec2f
+mine_salax_salt strong in-instance	b96e7139cc056b76
+mine_salax_salt strong kit-at-spot	b96e7139cc056b76
+mine_salax_salt strong kit-away	59741785d7ac5985
+mine_salax_salt strong kit-worn-at-spot	b96e7139cc056b76
+mine_salax_salt strong owns-all-at-bank	6799923233290dc0
+mine_salax_salt strong owns-all-in-bank	6799923233290dc0
+mine_salax_salt strong parts-carried	b96e7139cc056b76
+mine_salax_salt strong parts-carried-away	59741785d7ac5985
+mine_salax_salt strong parts-in-bank	6799923233290dc0
+mine_salax_salt weak bank-empty	fd7cb21f0bc43556
+mine_salax_salt weak bank-empty-rich	fd7cb21f0bc43556
+mine_salax_salt weak bank-unknown	2d4c3df4d8be88ed
+mine_salax_salt weak full-of-products	819a87fc815973b5
+mine_salax_salt weak gear-carried	c739de846439d457
+mine_salax_salt weak goal-reached	57b664d5da14511a
+mine_salax_salt weak in-instance	819a87fc815973b5
+mine_salax_salt weak kit-at-spot	819a87fc815973b5
+mine_salax_salt weak kit-away	819a87fc815973b5
+mine_salax_salt weak kit-worn-at-spot	819a87fc815973b5
+mine_salax_salt weak owns-all-at-bank	443d1a6bdc788484
+mine_salax_salt weak owns-all-in-bank	443d1a6bdc788484
+mine_salax_salt weak parts-carried	819a87fc815973b5
+mine_salax_salt weak parts-carried-away	819a87fc815973b5
+mine_salax_salt weak parts-in-bank	443d1a6bdc788484
+mine_sunstone_monolith strong bank-empty	bfcd4b6c761a0c55
+mine_sunstone_monolith strong bank-empty-rich	85024272ad00581d
+mine_sunstone_monolith strong bank-unknown	51da124ea5f2bc77
+mine_sunstone_monolith strong full-of-products	f155e20a7e853164
+mine_sunstone_monolith strong gear-carried	912747b740261d9a
+mine_sunstone_monolith strong goal-reached	2458d5d34467e3e5
+mine_sunstone_monolith strong in-instance	f155e20a7e853164
+mine_sunstone_monolith strong kit-at-spot	f155e20a7e853164
+mine_sunstone_monolith strong kit-away	d1e77f77ec9f9f94
+mine_sunstone_monolith strong kit-worn-at-spot	f155e20a7e853164
+mine_sunstone_monolith strong owns-all-at-bank	2e49f4d1eacf92bc
+mine_sunstone_monolith strong owns-all-in-bank	2e49f4d1eacf92bc
+mine_sunstone_monolith strong parts-carried	f155e20a7e853164
+mine_sunstone_monolith strong parts-carried-away	d1e77f77ec9f9f94
+mine_sunstone_monolith strong parts-in-bank	2e49f4d1eacf92bc
+mine_sunstone_monolith weak bank-empty	59bd0d029abfe7cc
+mine_sunstone_monolith weak bank-empty-rich	59bd0d029abfe7cc
+mine_sunstone_monolith weak bank-unknown	cdffbc5ede108b15
+mine_sunstone_monolith weak full-of-products	d4ca97208daef658
+mine_sunstone_monolith weak gear-carried	3b185b0116583324
+mine_sunstone_monolith weak goal-reached	62bc17b7ba070704
+mine_sunstone_monolith weak in-instance	d4ca97208daef658
+mine_sunstone_monolith weak kit-at-spot	d4ca97208daef658
+mine_sunstone_monolith weak kit-away	d4ca97208daef658
+mine_sunstone_monolith weak kit-worn-at-spot	d4ca97208daef658
+mine_sunstone_monolith weak owns-all-at-bank	6c1f2b67fc7286be
+mine_sunstone_monolith weak owns-all-in-bank	6c1f2b67fc7286be
+mine_sunstone_monolith weak parts-carried	d4ca97208daef658
+mine_sunstone_monolith weak parts-carried-away	d4ca97208daef658
+mine_sunstone_monolith weak parts-in-bank	6c1f2b67fc7286be
+plan AGILITY 1 poor AFK	34a90a8f57dee4d6
+plan AGILITY 1 poor Cheapest	f6c5829a854a07a3
+plan AGILITY 1 poor Fastest	f6c5829a854a07a3
+plan AGILITY 1 poor Profit	8eeaf15c244399db
+plan AGILITY 1 poor Recommended	7cae61e00009134d
+plan AGILITY 1 rich AFK	9682fbaacbfc8790
+plan AGILITY 1 rich Cheapest	5b8b889842c413e0
+plan AGILITY 1 rich Fastest	5b8b889842c413e0
+plan AGILITY 1 rich Profit	000e9af928eb731d
+plan AGILITY 1 rich Recommended	3897768b574a059c
+plan AGILITY 30 poor AFK	22189e95e6d49063
+plan AGILITY 30 poor Cheapest	87e277a33060a6a5
+plan AGILITY 30 poor Fastest	87e277a33060a6a5
+plan AGILITY 30 poor Profit	0d8f2e1a13c7ec8d
+plan AGILITY 30 poor Recommended	de40fa8760e7c8e7
+plan AGILITY 30 rich AFK	9b3b227308c88eeb
+plan AGILITY 30 rich Cheapest	02ea6e5987f9218c
+plan AGILITY 30 rich Fastest	02ea6e5987f9218c
+plan AGILITY 30 rich Profit	58c04c2765c556d8
+plan AGILITY 30 rich Recommended	94f68674ba04386e
+plan AGILITY 60 poor AFK	db64a742ce204c6f
+plan AGILITY 60 poor Cheapest	5dfa41cce9087d88
+plan AGILITY 60 poor Fastest	5dfa41cce9087d88
+plan AGILITY 60 poor Profit	1d1735d25aa98b94
+plan AGILITY 60 poor Recommended	7ae9d3c19da3a448
+plan AGILITY 60 rich AFK	24d837ebab946606
+plan AGILITY 60 rich Cheapest	4be33ea09ba6280c
+plan AGILITY 60 rich Fastest	4be33ea09ba6280c
+plan AGILITY 60 rich Profit	0c3df8bd179e52b2
+plan AGILITY 60 rich Recommended	ca4b79a33fffa7eb
+plan AGILITY 90 poor AFK	752825de5a667e2d
+plan AGILITY 90 poor Cheapest	147bf1ace64211f3
+plan AGILITY 90 poor Fastest	147bf1ace64211f3
+plan AGILITY 90 poor Profit	fb23207bd272cdff
+plan AGILITY 90 poor Recommended	3a0e70b9c2fd133d
+plan AGILITY 90 rich AFK	6f65d51b0c088199
+plan AGILITY 90 rich Cheapest	24e6889557028b38
+plan AGILITY 90 rich Fastest	24e6889557028b38
+plan AGILITY 90 rich Profit	b640c8e9995084ba
+plan AGILITY 90 rich Recommended	715fb8a42edb6207
+plan ATTACK 1 poor AFK	dff2a931127946da
+plan ATTACK 1 poor Cheapest	7d0f211393b0b828
+plan ATTACK 1 poor Fastest	7d0f211393b0b828
+plan ATTACK 1 poor Profit	1e09af20ed1ebfce
+plan ATTACK 1 poor Recommended	ba3a7383a6e09fc5
+plan ATTACK 1 rich AFK	6aee7b147ca45425
+plan ATTACK 1 rich Cheapest	6d347011d9650b01
+plan ATTACK 1 rich Fastest	6d347011d9650b01
+plan ATTACK 1 rich Profit	cb38600811911b66
+plan ATTACK 1 rich Recommended	0b0b7f897dcf331d
+plan ATTACK 30 poor AFK	377886ef37d848ca
+plan ATTACK 30 poor Cheapest	f3acadf2c5241db8
+plan ATTACK 30 poor Fastest	f3acadf2c5241db8
+plan ATTACK 30 poor Profit	4d93219336ec1718
+plan ATTACK 30 poor Recommended	1c7d940532d55122
+plan ATTACK 30 rich AFK	40669d9dfa0d5daf
+plan ATTACK 30 rich Cheapest	c7561093d5fb82a8
+plan ATTACK 30 rich Fastest	c7561093d5fb82a8
+plan ATTACK 30 rich Profit	46220cd1732fe328
+plan ATTACK 30 rich Recommended	9401bc3e9fdab86e
+plan ATTACK 60 poor AFK	b97f5f7dcb534049
+plan ATTACK 60 poor Cheapest	a7a2f7a71d4b2a4e
+plan ATTACK 60 poor Fastest	a7a2f7a71d4b2a4e
+plan ATTACK 60 poor Profit	a6ef2324ee21287c
+plan ATTACK 60 poor Recommended	c54abb2d35bfc728
+plan ATTACK 60 rich AFK	03a8c5908a17f9c7
+plan ATTACK 60 rich Cheapest	abe880598cbbc087
+plan ATTACK 60 rich Fastest	abe880598cbbc087
+plan ATTACK 60 rich Profit	537a5fe3725a5360
+plan ATTACK 60 rich Recommended	74365736d0dca5ad
+plan ATTACK 90 poor AFK	c7c9e917833e9f6d
+plan ATTACK 90 poor Cheapest	20c2f2ece070045f
+plan ATTACK 90 poor Fastest	20c2f2ece070045f
+plan ATTACK 90 poor Profit	1902ca192b102c10
+plan ATTACK 90 poor Recommended	240ac1a3b95e9ba6
+plan ATTACK 90 rich AFK	58ef1fdefdab5c72
+plan ATTACK 90 rich Cheapest	4ce9f7aac36cd7e8
+plan ATTACK 90 rich Fastest	4ce9f7aac36cd7e8
+plan ATTACK 90 rich Profit	1de6794e63b73ed9
+plan ATTACK 90 rich Recommended	ffe917d62317e8c7
 plan CONSTRUCTION 1 poor AFK	5ed3f526be2bead5
 plan CONSTRUCTION 1 poor Cheapest	f4fda901b84c7a06
 plan CONSTRUCTION 1 poor Fastest	b38eb0455572a184
@@ -7240,86 +8380,86 @@ plan COOKING 90 rich Cheapest	eed98e538e8e70c9
 plan COOKING 90 rich Fastest	ddd70ad747c2eb1e
 plan COOKING 90 rich Profit	ab1bdc5b74600285
 plan COOKING 90 rich Recommended	8b5e795888329a2a
-plan CRAFTING 1 poor AFK	42e602fc8ec4613e
-plan CRAFTING 1 poor Cheapest	fcefca9e8e79f642
-plan CRAFTING 1 poor Fastest	1f3cc643d14f8213
-plan CRAFTING 1 poor Profit	f91e649d59c8f6ae
-plan CRAFTING 1 poor Recommended	fdf3a4ea9694487b
-plan CRAFTING 1 rich AFK	ae0ad19a8b7f255c
-plan CRAFTING 1 rich Cheapest	120944955c2d6913
-plan CRAFTING 1 rich Fastest	f7765e595f17ea60
-plan CRAFTING 1 rich Profit	77c468a8cb1e6e87
-plan CRAFTING 1 rich Recommended	abdbe4938367e396
-plan CRAFTING 30 poor AFK	f1528ab6e26d491d
-plan CRAFTING 30 poor Cheapest	6778d122d6b062c6
-plan CRAFTING 30 poor Fastest	9c6a6fea7f107343
-plan CRAFTING 30 poor Profit	ee632eae339cc349
-plan CRAFTING 30 poor Recommended	4ec8ff37a0b728c8
-plan CRAFTING 30 rich AFK	12728696aa017c8d
-plan CRAFTING 30 rich Cheapest	e9ab854290b7e014
-plan CRAFTING 30 rich Fastest	0abe2799993bb4ef
-plan CRAFTING 30 rich Profit	163a6d6ec1c9d8fe
-plan CRAFTING 30 rich Recommended	59661495c1c2c1db
-plan CRAFTING 60 poor AFK	4104529b0fea84aa
-plan CRAFTING 60 poor Cheapest	70500192fd66c881
-plan CRAFTING 60 poor Fastest	98e38ec4dc29a6ec
-plan CRAFTING 60 poor Profit	842f6c273d918a85
-plan CRAFTING 60 poor Recommended	2505ca7fa6a5c810
-plan CRAFTING 60 rich AFK	3856c17b4c1b1370
-plan CRAFTING 60 rich Cheapest	c1ddac264497d1e3
-plan CRAFTING 60 rich Fastest	3cd382b3e08db465
-plan CRAFTING 60 rich Profit	55f47574668fe6dd
-plan CRAFTING 60 rich Recommended	f2f16d8f6bdd030b
-plan CRAFTING 90 poor AFK	8b0a108aa4c2388c
-plan CRAFTING 90 poor Cheapest	b8b92371f4e32f8a
-plan CRAFTING 90 poor Fastest	376a43fb83ff07e3
-plan CRAFTING 90 poor Profit	3a79b914147433ca
-plan CRAFTING 90 poor Recommended	d21bcd34bab50729
-plan CRAFTING 90 rich AFK	3e07e834d92cd613
-plan CRAFTING 90 rich Cheapest	a3d005a005c9ebc4
-plan CRAFTING 90 rich Fastest	b335cc2469819f64
-plan CRAFTING 90 rich Profit	a12ea649a7ec954e
-plan CRAFTING 90 rich Recommended	b1b7e30530d44cda
-plan DEFENCE 1 poor AFK	cf4fdb1da5ac2e0c
-plan DEFENCE 1 poor Cheapest	93c835578517dab2
-plan DEFENCE 1 poor Fastest	93c835578517dab2
-plan DEFENCE 1 poor Profit	82d896683149a241
-plan DEFENCE 1 poor Recommended	9eb1e4226d2b3eb4
-plan DEFENCE 1 rich AFK	ea397ea390a65e31
-plan DEFENCE 1 rich Cheapest	66689cb5866f5a3b
-plan DEFENCE 1 rich Fastest	66689cb5866f5a3b
-plan DEFENCE 1 rich Profit	e3786bed229b2ffe
-plan DEFENCE 1 rich Recommended	43889871e24ea0c0
-plan DEFENCE 30 poor AFK	d973d478cce03d5d
-plan DEFENCE 30 poor Cheapest	1d3ea0c9df50abd5
-plan DEFENCE 30 poor Fastest	1d3ea0c9df50abd5
-plan DEFENCE 30 poor Profit	c545b7b9589f8020
-plan DEFENCE 30 poor Recommended	7c831fa786f4fc8f
-plan DEFENCE 30 rich AFK	f125f13c6f638092
-plan DEFENCE 30 rich Cheapest	9bd285cc3e149158
-plan DEFENCE 30 rich Fastest	9bd285cc3e149158
-plan DEFENCE 30 rich Profit	e064da14cd7068fd
-plan DEFENCE 30 rich Recommended	65fb8c91c1a8522e
-plan DEFENCE 60 poor AFK	d2ae18c0fd3d3aaa
-plan DEFENCE 60 poor Cheapest	80e48235a00211c1
-plan DEFENCE 60 poor Fastest	80e48235a00211c1
-plan DEFENCE 60 poor Profit	472e103dac20bb70
-plan DEFENCE 60 poor Recommended	129c206ef6522661
-plan DEFENCE 60 rich AFK	87a71dc302889852
-plan DEFENCE 60 rich Cheapest	d504fd51ee21f833
-plan DEFENCE 60 rich Fastest	d504fd51ee21f833
-plan DEFENCE 60 rich Profit	bbf2b6f75ea50fe3
-plan DEFENCE 60 rich Recommended	cb6a7f873199ab72
-plan DEFENCE 90 poor AFK	c39a258288c8d475
-plan DEFENCE 90 poor Cheapest	2e22689acc46bd2c
-plan DEFENCE 90 poor Fastest	2e22689acc46bd2c
-plan DEFENCE 90 poor Profit	3bb9d478644dfd2e
-plan DEFENCE 90 poor Recommended	7381fbf57aa1a6fe
-plan DEFENCE 90 rich AFK	00e3356aa8b49ca2
-plan DEFENCE 90 rich Cheapest	e7458e7d13873faf
-plan DEFENCE 90 rich Fastest	e7458e7d13873faf
-plan DEFENCE 90 rich Profit	bf5d84c4679b4988
-plan DEFENCE 90 rich Recommended	7ee2de40f696c5a3
+plan CRAFTING 1 poor AFK	a241e1d03d2e980e
+plan CRAFTING 1 poor Cheapest	5405106f0fe463fb
+plan CRAFTING 1 poor Fastest	e3bff4c351d01adb
+plan CRAFTING 1 poor Profit	cd1136fd4018dfe2
+plan CRAFTING 1 poor Recommended	04d7f0608db9e401
+plan CRAFTING 1 rich AFK	a8a443382413e523
+plan CRAFTING 1 rich Cheapest	f5733529936efb3d
+plan CRAFTING 1 rich Fastest	5e892171d3bbddf0
+plan CRAFTING 1 rich Profit	7f2aeb814b873970
+plan CRAFTING 1 rich Recommended	20c1d737ba11edee
+plan CRAFTING 30 poor AFK	fc4edd5a8b65ba77
+plan CRAFTING 30 poor Cheapest	9571f58ef2fd031d
+plan CRAFTING 30 poor Fastest	94c497b76e7541f8
+plan CRAFTING 30 poor Profit	dc88945f5d76badf
+plan CRAFTING 30 poor Recommended	3aa18d28794a423e
+plan CRAFTING 30 rich AFK	7ea666689d83a944
+plan CRAFTING 30 rich Cheapest	18cbacb807310a45
+plan CRAFTING 30 rich Fastest	eb1cf34c8d3b41af
+plan CRAFTING 30 rich Profit	89c2fd1a477eb12d
+plan CRAFTING 30 rich Recommended	a9c952c89d1c3049
+plan CRAFTING 60 poor AFK	23f8713de67b3254
+plan CRAFTING 60 poor Cheapest	085949e707b78edf
+plan CRAFTING 60 poor Fastest	b0648be2631a2edc
+plan CRAFTING 60 poor Profit	d9d578b65429a7f9
+plan CRAFTING 60 poor Recommended	9563d90109f28df6
+plan CRAFTING 60 rich AFK	94dce0885049673f
+plan CRAFTING 60 rich Cheapest	99458813206ef3a9
+plan CRAFTING 60 rich Fastest	c357b4950b6f44dd
+plan CRAFTING 60 rich Profit	616bd54ada10af35
+plan CRAFTING 60 rich Recommended	30e4b11783c1e806
+plan CRAFTING 90 poor AFK	4cbb71d7136b7d31
+plan CRAFTING 90 poor Cheapest	8447dba046a67d95
+plan CRAFTING 90 poor Fastest	81fd314c42a67bc9
+plan CRAFTING 90 poor Profit	40b83e6e218e2e3a
+plan CRAFTING 90 poor Recommended	29e89ce7b9237119
+plan CRAFTING 90 rich AFK	bc49f6b1b56f0b6d
+plan CRAFTING 90 rich Cheapest	58afc5676ec56e1e
+plan CRAFTING 90 rich Fastest	4d7a3c3a53823ad9
+plan CRAFTING 90 rich Profit	17511ee13058019a
+plan CRAFTING 90 rich Recommended	0bca81281d7a8153
+plan DEFENCE 1 poor AFK	de281da884964bf8
+plan DEFENCE 1 poor Cheapest	e378453c3d3da94c
+plan DEFENCE 1 poor Fastest	e378453c3d3da94c
+plan DEFENCE 1 poor Profit	bcd694a740d9275d
+plan DEFENCE 1 poor Recommended	d5db407d909e0a2d
+plan DEFENCE 1 rich AFK	84fa7c409f8f7fac
+plan DEFENCE 1 rich Cheapest	9e9e4ade48bee4d2
+plan DEFENCE 1 rich Fastest	9e9e4ade48bee4d2
+plan DEFENCE 1 rich Profit	da7b33611a20a826
+plan DEFENCE 1 rich Recommended	2ae5f228d3a20e85
+plan DEFENCE 30 poor AFK	59e7b7e48b20bcef
+plan DEFENCE 30 poor Cheapest	2352b59da48161ef
+plan DEFENCE 30 poor Fastest	2352b59da48161ef
+plan DEFENCE 30 poor Profit	f33dd8735a1ea0ad
+plan DEFENCE 30 poor Recommended	3c51e1a247dbea52
+plan DEFENCE 30 rich AFK	10b738ce1c276c6e
+plan DEFENCE 30 rich Cheapest	d88a88134d7422d4
+plan DEFENCE 30 rich Fastest	d88a88134d7422d4
+plan DEFENCE 30 rich Profit	4f62b81de8f8d04a
+plan DEFENCE 30 rich Recommended	463bb9843a474bad
+plan DEFENCE 60 poor AFK	60dc7609814ca666
+plan DEFENCE 60 poor Cheapest	2a2b5222a885aa14
+plan DEFENCE 60 poor Fastest	2a2b5222a885aa14
+plan DEFENCE 60 poor Profit	e5f776853ffa82e2
+plan DEFENCE 60 poor Recommended	c3705559c37c1d17
+plan DEFENCE 60 rich AFK	e71279574de20b40
+plan DEFENCE 60 rich Cheapest	4bd8e58c7159d22b
+plan DEFENCE 60 rich Fastest	4bd8e58c7159d22b
+plan DEFENCE 60 rich Profit	6c04da7e9fccad23
+plan DEFENCE 60 rich Recommended	651e404a793ed86d
+plan DEFENCE 90 poor AFK	32c0caba52789e00
+plan DEFENCE 90 poor Cheapest	7fd541b169c12a52
+plan DEFENCE 90 poor Fastest	7fd541b169c12a52
+plan DEFENCE 90 poor Profit	0ba3a47aa25b51ff
+plan DEFENCE 90 poor Recommended	967e4dbc4146027a
+plan DEFENCE 90 rich AFK	48db4bb2b7b957f7
+plan DEFENCE 90 rich Cheapest	145509645fd34806
+plan DEFENCE 90 rich Fastest	145509645fd34806
+plan DEFENCE 90 rich Profit	d8bbde973aa44667
+plan DEFENCE 90 rich Recommended	8601f99408dd7571
 plan FARMING 1 poor AFK	a7864d15380e8880
 plan FARMING 1 poor Cheapest	eb479b1726d57e2b
 plan FARMING 1 poor Fastest	e9f5a1ad343bc2de
@@ -7360,326 +8500,326 @@ plan FARMING 90 rich Cheapest	05eb72cd5bf9de27
 plan FARMING 90 rich Fastest	e634be62c28f73de
 plan FARMING 90 rich Profit	f4e5c8bc642133c5
 plan FARMING 90 rich Recommended	d9cdee8bafb2f034
-plan FIREMAKING 1 poor AFK	a459998ad73e3bf1
-plan FIREMAKING 1 poor Cheapest	57182632ee9eac5e
-plan FIREMAKING 1 poor Fastest	e5c21837dad52840
-plan FIREMAKING 1 poor Profit	4d98625d02a6e768
-plan FIREMAKING 1 poor Recommended	ccf99b63a0734dd7
-plan FIREMAKING 1 rich AFK	bb54cf39bd20dc7a
-plan FIREMAKING 1 rich Cheapest	53ec1f45a7533b7f
-plan FIREMAKING 1 rich Fastest	da22ce8e4345e39b
-plan FIREMAKING 1 rich Profit	6aa74f62e20ce38d
-plan FIREMAKING 1 rich Recommended	65b6937f87fd2b75
-plan FIREMAKING 30 poor AFK	75edc8582296c2df
-plan FIREMAKING 30 poor Cheapest	efa410d834640fa4
-plan FIREMAKING 30 poor Fastest	a675aeae65719890
-plan FIREMAKING 30 poor Profit	913640805b1170e3
-plan FIREMAKING 30 poor Recommended	35049a300c0e3795
-plan FIREMAKING 30 rich AFK	9156c7d728cd0562
-plan FIREMAKING 30 rich Cheapest	05df8a3637798baa
-plan FIREMAKING 30 rich Fastest	51bfa40cb2f78cc1
-plan FIREMAKING 30 rich Profit	8fcca95b0147c3a4
-plan FIREMAKING 30 rich Recommended	1829cc1dd8a99783
-plan FIREMAKING 60 poor AFK	d14db1c69e78585d
-plan FIREMAKING 60 poor Cheapest	22f07764e5dff055
-plan FIREMAKING 60 poor Fastest	6866eedb5cd2d123
-plan FIREMAKING 60 poor Profit	00a30a42e074329f
-plan FIREMAKING 60 poor Recommended	e433d8afdf7cbb87
-plan FIREMAKING 60 rich AFK	d4d17d421b536e88
-plan FIREMAKING 60 rich Cheapest	5be942a854c21b63
-plan FIREMAKING 60 rich Fastest	c6e7b3fdcc905667
-plan FIREMAKING 60 rich Profit	f6782f9c623e4b29
-plan FIREMAKING 60 rich Recommended	560641661f470443
-plan FIREMAKING 90 poor AFK	14b56f86155f5e95
-plan FIREMAKING 90 poor Cheapest	0e8aab0965cee0e9
-plan FIREMAKING 90 poor Fastest	af75c68ef977a4af
-plan FIREMAKING 90 poor Profit	d13b812dc4b2bb7e
-plan FIREMAKING 90 poor Recommended	32c5c50ca03eb6d7
-plan FIREMAKING 90 rich AFK	9e3a4772143c7f9b
-plan FIREMAKING 90 rich Cheapest	708af213a374974c
-plan FIREMAKING 90 rich Fastest	2e2e95789dcad837
-plan FIREMAKING 90 rich Profit	4a1844104cc6e742
-plan FIREMAKING 90 rich Recommended	0acd6ac83edf4c57
-plan FISHING 1 poor AFK	a51291e4d7226cc2
-plan FISHING 1 poor Cheapest	fc48a539ecfe5ef1
-plan FISHING 1 poor Fastest	b166aa8f6a0688a6
-plan FISHING 1 poor Profit	99d3cc68cb7b351a
-plan FISHING 1 poor Recommended	559ddacab5608af5
-plan FISHING 1 rich AFK	1fdef2f0d1ba086e
-plan FISHING 1 rich Cheapest	9fbbce7d41a8b28e
-plan FISHING 1 rich Fastest	c4497180b5881a50
-plan FISHING 1 rich Profit	003ffd5915fdd5f2
-plan FISHING 1 rich Recommended	ae213a938d5d776a
-plan FISHING 30 poor AFK	8007f42b5ad7741f
-plan FISHING 30 poor Cheapest	dc12837b5082108f
-plan FISHING 30 poor Fastest	2e3fa2c0eacb1048
-plan FISHING 30 poor Profit	0766e8d22e39fca9
-plan FISHING 30 poor Recommended	6c2eb71d412aae0c
-plan FISHING 30 rich AFK	cde07f5294126410
-plan FISHING 30 rich Cheapest	f3982aa1f63a81a1
-plan FISHING 30 rich Fastest	f10b2b0b1490a42c
-plan FISHING 30 rich Profit	254642ed3ddc06fa
-plan FISHING 30 rich Recommended	19a408cb1fa151f8
-plan FISHING 60 poor AFK	34150b6d930b65ea
-plan FISHING 60 poor Cheapest	0315150f6834bb1e
-plan FISHING 60 poor Fastest	0572162bd805e74a
-plan FISHING 60 poor Profit	6e10d0a91cb6b11e
-plan FISHING 60 poor Recommended	93606cda014791ee
-plan FISHING 60 rich AFK	4a04dda1f307ebc8
-plan FISHING 60 rich Cheapest	78df5a053472df31
-plan FISHING 60 rich Fastest	35ed815f2f821646
-plan FISHING 60 rich Profit	2a9a46cadbe709f5
-plan FISHING 60 rich Recommended	2002c872c6c77f5b
-plan FISHING 90 poor AFK	c08c560731726276
-plan FISHING 90 poor Cheapest	85962fcdc4663156
-plan FISHING 90 poor Fastest	0519671cf10b197a
-plan FISHING 90 poor Profit	c98c53027124207a
-plan FISHING 90 poor Recommended	99076d12cf75b386
-plan FISHING 90 rich AFK	76eb04ce2e1addbf
-plan FISHING 90 rich Cheapest	8eae6c7439858beb
-plan FISHING 90 rich Fastest	40180f34e27108c5
-plan FISHING 90 rich Profit	2d2c11d1b8687a12
-plan FISHING 90 rich Recommended	5865ee044be10a2f
-plan FLETCHING 1 poor AFK	49a24179c1d9d57d
-plan FLETCHING 1 poor Cheapest	8ae31b3c4367d420
-plan FLETCHING 1 poor Fastest	2697942d41274453
-plan FLETCHING 1 poor Profit	3ab5a62505389d39
-plan FLETCHING 1 poor Recommended	23b3bcca2fff119a
-plan FLETCHING 1 rich AFK	f4ab0ad3139d7aae
-plan FLETCHING 1 rich Cheapest	a675c3424b9dd20c
-plan FLETCHING 1 rich Fastest	a9b6f1cd424bf85e
-plan FLETCHING 1 rich Profit	a74aeae7c0cd8749
-plan FLETCHING 1 rich Recommended	643bd203213b9bb0
-plan FLETCHING 30 poor AFK	35ac68483c1fe941
-plan FLETCHING 30 poor Cheapest	6b1d19eaeae8debf
-plan FLETCHING 30 poor Fastest	7eed2079e4e90a2f
-plan FLETCHING 30 poor Profit	aa5df4d2bf4acc8e
-plan FLETCHING 30 poor Recommended	d963a86595521522
-plan FLETCHING 30 rich AFK	3b08c0fb027d6c65
-plan FLETCHING 30 rich Cheapest	5bb8b2dfb0375047
-plan FLETCHING 30 rich Fastest	356dac5576625ac6
-plan FLETCHING 30 rich Profit	254f23a554279fa9
-plan FLETCHING 30 rich Recommended	35ff935c3f0253ab
-plan FLETCHING 60 poor AFK	26d8c3618cbdfb50
-plan FLETCHING 60 poor Cheapest	01a7b6cf11f26dc0
-plan FLETCHING 60 poor Fastest	c8978185d5c823e9
-plan FLETCHING 60 poor Profit	8046da2c5de06f7c
-plan FLETCHING 60 poor Recommended	a589fb84b41e24ca
-plan FLETCHING 60 rich AFK	2a94fe8749da6bc4
-plan FLETCHING 60 rich Cheapest	140c92b568e908bc
-plan FLETCHING 60 rich Fastest	14d694dba52e56f7
-plan FLETCHING 60 rich Profit	4e79527779721ddd
-plan FLETCHING 60 rich Recommended	3656000698041161
-plan FLETCHING 90 poor AFK	c8f8ef410b951eac
-plan FLETCHING 90 poor Cheapest	af16075a61642d89
-plan FLETCHING 90 poor Fastest	fb45a800a403b3e8
-plan FLETCHING 90 poor Profit	0991aae1d6d51096
-plan FLETCHING 90 poor Recommended	6b5db26e7568ab3e
-plan FLETCHING 90 rich AFK	2383b1eb73ae8d7f
-plan FLETCHING 90 rich Cheapest	7c911993b4da1aa1
-plan FLETCHING 90 rich Fastest	b56bac4bba2dbe7b
-plan FLETCHING 90 rich Profit	170d36f508387885
-plan FLETCHING 90 rich Recommended	c923233759ed2682
-plan HERBLORE 1 poor AFK	0359d496a7268707
-plan HERBLORE 1 poor Cheapest	e82a9bce17fd4205
-plan HERBLORE 1 poor Fastest	dd0a9b865fc75b46
-plan HERBLORE 1 poor Profit	eed33bc3be19a4c2
-plan HERBLORE 1 poor Recommended	8dc075162e5ae257
-plan HERBLORE 1 rich AFK	cf256a11b5f66196
-plan HERBLORE 1 rich Cheapest	f198227dad2de966
-plan HERBLORE 1 rich Fastest	ecc276bca210c5af
-plan HERBLORE 1 rich Profit	ce97b66c83040eb1
-plan HERBLORE 1 rich Recommended	16b2b20bf8d71043
-plan HERBLORE 30 poor AFK	1c63b98a153a9d62
-plan HERBLORE 30 poor Cheapest	8b73eeb9ee88599a
-plan HERBLORE 30 poor Fastest	fb9860535393509f
-plan HERBLORE 30 poor Profit	5350c03e4746f671
-plan HERBLORE 30 poor Recommended	e881d88d9ef04fa4
-plan HERBLORE 30 rich AFK	7879cd46382e66d5
-plan HERBLORE 30 rich Cheapest	b276a00278330108
-plan HERBLORE 30 rich Fastest	c4e11402e2864968
-plan HERBLORE 30 rich Profit	3faad3ae7d9d901f
-plan HERBLORE 30 rich Recommended	3dc82bbe40669a53
-plan HERBLORE 60 poor AFK	c8e9a3527ecd58f2
-plan HERBLORE 60 poor Cheapest	977cf5ec076ae841
-plan HERBLORE 60 poor Fastest	72ebf7485c92a34b
-plan HERBLORE 60 poor Profit	fef81d74f073e6f2
-plan HERBLORE 60 poor Recommended	c4d165cc99acfd1e
-plan HERBLORE 60 rich AFK	8ad33bf338e4e418
-plan HERBLORE 60 rich Cheapest	7ca6a3bc92d0345d
-plan HERBLORE 60 rich Fastest	43a37e6dba07bdf5
-plan HERBLORE 60 rich Profit	bb4b409555da17bd
-plan HERBLORE 60 rich Recommended	46eff98e09b233b2
-plan HERBLORE 90 poor AFK	0041adedbdf7a3e0
-plan HERBLORE 90 poor Cheapest	20fe7416117f3c5a
-plan HERBLORE 90 poor Fastest	1ec719ae446842ab
-plan HERBLORE 90 poor Profit	a7dd55291ed44da4
-plan HERBLORE 90 poor Recommended	c6695315c50e41e3
-plan HERBLORE 90 rich AFK	6e821a63f2e6eced
-plan HERBLORE 90 rich Cheapest	340bea18720a36bf
-plan HERBLORE 90 rich Fastest	a80c1b680a14f4e0
-plan HERBLORE 90 rich Profit	f662c7414472a0eb
-plan HERBLORE 90 rich Recommended	1e2ee6dafa84d622
-plan HITPOINTS 1 poor AFK	374bf740646e7163
-plan HITPOINTS 1 poor Cheapest	a4bdef7be5d74c5a
-plan HITPOINTS 1 poor Fastest	a4bdef7be5d74c5a
-plan HITPOINTS 1 poor Profit	3dfae534328a637a
-plan HITPOINTS 1 poor Recommended	97a4a541329e25c3
-plan HITPOINTS 1 rich AFK	3004c2b32b2b129b
-plan HITPOINTS 1 rich Cheapest	0aaa5f56609fd170
-plan HITPOINTS 1 rich Fastest	0aaa5f56609fd170
-plan HITPOINTS 1 rich Profit	280bed81ebe6fa81
-plan HITPOINTS 1 rich Recommended	2b009029bd5111a8
-plan HITPOINTS 30 poor AFK	fae6d1ebf5031068
-plan HITPOINTS 30 poor Cheapest	50c231cafae38d5e
-plan HITPOINTS 30 poor Fastest	50c231cafae38d5e
-plan HITPOINTS 30 poor Profit	ca4e20e37a04c6f6
-plan HITPOINTS 30 poor Recommended	be7116f99b40a23a
-plan HITPOINTS 30 rich AFK	ef97dd06afe19f70
-plan HITPOINTS 30 rich Cheapest	afb8d4da8f62eda4
-plan HITPOINTS 30 rich Fastest	afb8d4da8f62eda4
-plan HITPOINTS 30 rich Profit	1b4e0700b5dd1efd
-plan HITPOINTS 30 rich Recommended	05cc6e0192c0fcd2
-plan HITPOINTS 60 poor AFK	10b563a6e5857bee
-plan HITPOINTS 60 poor Cheapest	7c5a83b2f54214ab
-plan HITPOINTS 60 poor Fastest	7c5a83b2f54214ab
-plan HITPOINTS 60 poor Profit	5bccb4d3a95bbe9d
-plan HITPOINTS 60 poor Recommended	e21e3d03e9916600
-plan HITPOINTS 60 rich AFK	6bf1df7521571c0f
-plan HITPOINTS 60 rich Cheapest	89a0dc3656677f5a
-plan HITPOINTS 60 rich Fastest	89a0dc3656677f5a
-plan HITPOINTS 60 rich Profit	fb96178d1d770cb8
-plan HITPOINTS 60 rich Recommended	0204405d5add8b82
-plan HITPOINTS 90 poor AFK	259edf512e693966
-plan HITPOINTS 90 poor Cheapest	a80ff8365a13a00f
-plan HITPOINTS 90 poor Fastest	a80ff8365a13a00f
-plan HITPOINTS 90 poor Profit	115562241f92622f
-plan HITPOINTS 90 poor Recommended	35a3690d9e3fdb6c
-plan HITPOINTS 90 rich AFK	eedbb383124bff64
-plan HITPOINTS 90 rich Cheapest	ed18e64b3bf1bed3
-plan HITPOINTS 90 rich Fastest	ed18e64b3bf1bed3
-plan HITPOINTS 90 rich Profit	b62012134b94451b
-plan HITPOINTS 90 rich Recommended	59325b421492d88d
-plan HUNTER 1 poor AFK	d8f68ced1143e9b6
-plan HUNTER 1 poor Cheapest	a2b98eb6a2fc09a6
-plan HUNTER 1 poor Fastest	07ddacb99df81afd
-plan HUNTER 1 poor Profit	6b7ee372eed13e2f
-plan HUNTER 1 poor Recommended	03f52cb214832ece
-plan HUNTER 1 rich AFK	30eecc014b23651f
-plan HUNTER 1 rich Cheapest	e1f94d81089adccd
-plan HUNTER 1 rich Fastest	4415e9106e98dbc9
-plan HUNTER 1 rich Profit	7560e922dfb8cae8
-plan HUNTER 1 rich Recommended	544bfcdaefa10931
-plan HUNTER 30 poor AFK	99f1c2be900af577
-plan HUNTER 30 poor Cheapest	1580dfc184a90b9a
-plan HUNTER 30 poor Fastest	7475425f9d65cf41
-plan HUNTER 30 poor Profit	8ceac3e54e73ebf5
-plan HUNTER 30 poor Recommended	a66d115ab6a4b2fd
-plan HUNTER 30 rich AFK	cd02732a5b06b4e6
-plan HUNTER 30 rich Cheapest	1372168a3a5a2f69
-plan HUNTER 30 rich Fastest	592c98d588619e80
-plan HUNTER 30 rich Profit	0792312f49a64e00
-plan HUNTER 30 rich Recommended	6100dc88641de921
-plan HUNTER 60 poor AFK	e3238095ad0d2842
-plan HUNTER 60 poor Cheapest	00d87d3303c13890
-plan HUNTER 60 poor Fastest	a140f65018c04feb
-plan HUNTER 60 poor Profit	33f147169c917cee
-plan HUNTER 60 poor Recommended	e9d75a608e25ebff
-plan HUNTER 60 rich AFK	9a88b3dd303b75d2
-plan HUNTER 60 rich Cheapest	c3048644630df387
-plan HUNTER 60 rich Fastest	c2e4a4a5d246a531
-plan HUNTER 60 rich Profit	7079eb0ad9d71641
-plan HUNTER 60 rich Recommended	4cb02a9b2fe91582
-plan HUNTER 90 poor AFK	542901cf330f823e
-plan HUNTER 90 poor Cheapest	5c933087af9b7c18
-plan HUNTER 90 poor Fastest	a463e7c6e67af63f
-plan HUNTER 90 poor Profit	a965e9bbef162fad
-plan HUNTER 90 poor Recommended	bd6e807d44e2bce3
-plan HUNTER 90 rich AFK	bd3cbac5d21461a3
-plan HUNTER 90 rich Cheapest	fdeb37762aa3060a
-plan HUNTER 90 rich Fastest	004427f857e396f5
-plan HUNTER 90 rich Profit	e7d2a620b0e84dc2
-plan HUNTER 90 rich Recommended	24f5e9feed2ef2ab
-plan MAGIC 1 poor AFK	c7ad3cd1067d6afb
-plan MAGIC 1 poor Cheapest	647ec1a9bf2f481b
-plan MAGIC 1 poor Fastest	bc9ba10ffb1df94a
-plan MAGIC 1 poor Profit	46a27dddaa49d3f2
-plan MAGIC 1 poor Recommended	050579ac3b80889b
-plan MAGIC 1 rich AFK	0625469df2866cbe
-plan MAGIC 1 rich Cheapest	449338ce5d84ab9e
-plan MAGIC 1 rich Fastest	ebd62bb1b4e6312f
-plan MAGIC 1 rich Profit	e3fb9de13e93d943
-plan MAGIC 1 rich Recommended	668a1fb84164718d
-plan MAGIC 30 poor AFK	198a7a1ee2c3e3e3
-plan MAGIC 30 poor Cheapest	27b4d0426587b003
-plan MAGIC 30 poor Fastest	09152e5d45555147
-plan MAGIC 30 poor Profit	5f16e26f7bdd8cc5
-plan MAGIC 30 poor Recommended	fd3ec29e6a900a31
-plan MAGIC 30 rich AFK	95e45f90b0420c56
-plan MAGIC 30 rich Cheapest	b815a08e44a467c1
-plan MAGIC 30 rich Fastest	0cab30539c15ad25
-plan MAGIC 30 rich Profit	7f718cc0562c2d16
-plan MAGIC 30 rich Recommended	c121f2a67568ae78
-plan MAGIC 60 poor AFK	8ff9851294407edc
-plan MAGIC 60 poor Cheapest	5b14d29e93dc251e
-plan MAGIC 60 poor Fastest	f69f9d28015b6d2c
-plan MAGIC 60 poor Profit	d0ea3e939c407e28
-plan MAGIC 60 poor Recommended	00d23195f93f2f14
-plan MAGIC 60 rich AFK	a96289b47687cedb
-plan MAGIC 60 rich Cheapest	eb1c9a286dec9b68
-plan MAGIC 60 rich Fastest	61bc0d0770b095be
-plan MAGIC 60 rich Profit	793b67e2688b486c
-plan MAGIC 60 rich Recommended	dea0a0baf9855dd7
-plan MAGIC 90 poor AFK	3261e55f7fce18b0
-plan MAGIC 90 poor Cheapest	3a77a69b64de4816
-plan MAGIC 90 poor Fastest	6cda4e169279d298
-plan MAGIC 90 poor Profit	70e8feb961b9acee
-plan MAGIC 90 poor Recommended	7f48a2e5ffdaacc6
-plan MAGIC 90 rich AFK	cd773b802ccdf5ae
-plan MAGIC 90 rich Cheapest	f8cfdbca913d0ff2
-plan MAGIC 90 rich Fastest	0d4529f7c5ae3dca
-plan MAGIC 90 rich Profit	c02ca7b17ea1d038
-plan MAGIC 90 rich Recommended	ee949e2b457669fc
-plan MINING 1 poor AFK	be483065897bdd65
-plan MINING 1 poor Cheapest	6bf59ee583000da1
-plan MINING 1 poor Fastest	6bf59ee583000da1
-plan MINING 1 poor Profit	6e53987a90a55e87
-plan MINING 1 poor Recommended	fe799cf182893641
-plan MINING 1 rich AFK	ee8b9682fd884836
-plan MINING 1 rich Cheapest	e5546264d40ea99f
-plan MINING 1 rich Fastest	e5546264d40ea99f
-plan MINING 1 rich Profit	eab41e3156bb1b45
-plan MINING 1 rich Recommended	5a5e5b649160f1ef
-plan MINING 30 poor AFK	4b048c0ac586a943
-plan MINING 30 poor Cheapest	25790ab3f0ae684a
-plan MINING 30 poor Fastest	25790ab3f0ae684a
-plan MINING 30 poor Profit	6f0d55f49c609afe
-plan MINING 30 poor Recommended	d779a5865e8fe720
-plan MINING 30 rich AFK	eb68d64c602b5162
-plan MINING 30 rich Cheapest	de669d286aa121db
-plan MINING 30 rich Fastest	de669d286aa121db
-plan MINING 30 rich Profit	75df30cef37eb8b4
-plan MINING 30 rich Recommended	85f85124e3994f3c
-plan MINING 60 poor AFK	f69302011f7c09c3
-plan MINING 60 poor Cheapest	b1e51ced895ddd97
-plan MINING 60 poor Fastest	b1e51ced895ddd97
-plan MINING 60 poor Profit	58a35f246e54f9eb
-plan MINING 60 poor Recommended	5dcb8d4f2420cbc2
-plan MINING 60 rich AFK	8e3ff299067c54ba
-plan MINING 60 rich Cheapest	885bd7fdecc4afee
-plan MINING 60 rich Fastest	885bd7fdecc4afee
-plan MINING 60 rich Profit	d9c18af2d341b362
-plan MINING 60 rich Recommended	976774dffc40ed48
-plan MINING 90 poor AFK	ca88fb3e7959720e
-plan MINING 90 poor Cheapest	c506a47f1b846b73
-plan MINING 90 poor Fastest	c506a47f1b846b73
-plan MINING 90 poor Profit	5fcc697bd6931e6f
-plan MINING 90 poor Recommended	18512cb669fcd8b7
-plan MINING 90 rich AFK	7a8bcb9d30e0cfdb
-plan MINING 90 rich Cheapest	869b0a41a617f74a
-plan MINING 90 rich Fastest	869b0a41a617f74a
-plan MINING 90 rich Profit	403e47a7e147aef2
-plan MINING 90 rich Recommended	20c9e1f786bc67ea
+plan FIREMAKING 1 poor AFK	9ab0acb46e3ea62b
+plan FIREMAKING 1 poor Cheapest	e9a41fc75db6e87f
+plan FIREMAKING 1 poor Fastest	0763886020a7e97e
+plan FIREMAKING 1 poor Profit	b5e85d238d20c2c8
+plan FIREMAKING 1 poor Recommended	cd3c65e7490fa82e
+plan FIREMAKING 1 rich AFK	a97b4e59baf4f8fb
+plan FIREMAKING 1 rich Cheapest	5864deeafc6c18df
+plan FIREMAKING 1 rich Fastest	b4a7d03490b5146b
+plan FIREMAKING 1 rich Profit	d71e33de992a66da
+plan FIREMAKING 1 rich Recommended	215ac14967709a47
+plan FIREMAKING 30 poor AFK	b6f0bac63261bca2
+plan FIREMAKING 30 poor Cheapest	511ef16766759bdf
+plan FIREMAKING 30 poor Fastest	7cee038391e481b7
+plan FIREMAKING 30 poor Profit	b6679df20c574425
+plan FIREMAKING 30 poor Recommended	58ff5cc8cf6f0e61
+plan FIREMAKING 30 rich AFK	a55fb0878f9e4fa3
+plan FIREMAKING 30 rich Cheapest	a3b7d3e7aab66cd6
+plan FIREMAKING 30 rich Fastest	d465c547c45ba3fd
+plan FIREMAKING 30 rich Profit	cee30de834da447e
+plan FIREMAKING 30 rich Recommended	a8dd77bd5efc410f
+plan FIREMAKING 60 poor AFK	6e90fc8690d2e06e
+plan FIREMAKING 60 poor Cheapest	7a4873a1ff048333
+plan FIREMAKING 60 poor Fastest	1deed51e42b18d97
+plan FIREMAKING 60 poor Profit	d99150cb276faade
+plan FIREMAKING 60 poor Recommended	7d384eb35eadaffa
+plan FIREMAKING 60 rich AFK	a4da9faa85439f4e
+plan FIREMAKING 60 rich Cheapest	9cb31f22f1cfed7b
+plan FIREMAKING 60 rich Fastest	f7a338ba675d92c9
+plan FIREMAKING 60 rich Profit	03e3cec9a1fdaf37
+plan FIREMAKING 60 rich Recommended	571edf3987ab5da1
+plan FIREMAKING 90 poor AFK	4e3b984e7e1c3e54
+plan FIREMAKING 90 poor Cheapest	cffaebb8a3a28890
+plan FIREMAKING 90 poor Fastest	fab4e587c3038cd9
+plan FIREMAKING 90 poor Profit	9bab768217caed28
+plan FIREMAKING 90 poor Recommended	88f49e642147276d
+plan FIREMAKING 90 rich AFK	bf366f2763a9a712
+plan FIREMAKING 90 rich Cheapest	93478de5efaa624c
+plan FIREMAKING 90 rich Fastest	957b3da4bc34c87d
+plan FIREMAKING 90 rich Profit	07d2db785ea57703
+plan FIREMAKING 90 rich Recommended	0d2ecaadbf8edf9e
+plan FISHING 1 poor AFK	6d53abcdc58e2eef
+plan FISHING 1 poor Cheapest	702aa08ec93811fa
+plan FISHING 1 poor Fastest	3bd07829717caf30
+plan FISHING 1 poor Profit	31115f8c30ea6519
+plan FISHING 1 poor Recommended	5fe01be7d64a6bea
+plan FISHING 1 rich AFK	5e7438f8a35e9c8e
+plan FISHING 1 rich Cheapest	a0106381ed7e1c01
+plan FISHING 1 rich Fastest	6992761d54c09a18
+plan FISHING 1 rich Profit	67ba7d1d3923b3a9
+plan FISHING 1 rich Recommended	cebda64780dc80aa
+plan FISHING 30 poor AFK	941d70d221b7fb34
+plan FISHING 30 poor Cheapest	723c93a0f9a12730
+plan FISHING 30 poor Fastest	7ff40704d80f0e5f
+plan FISHING 30 poor Profit	78295b1aadbe79cd
+plan FISHING 30 poor Recommended	550ea251cfe83ce8
+plan FISHING 30 rich AFK	d7d8401f2dc6e4b9
+plan FISHING 30 rich Cheapest	b5467152668e638d
+plan FISHING 30 rich Fastest	ae2ce032060e0110
+plan FISHING 30 rich Profit	9a4074a32a1ca31d
+plan FISHING 30 rich Recommended	1cd3979216a8d374
+plan FISHING 60 poor AFK	d3abe69d11be12f1
+plan FISHING 60 poor Cheapest	2c3b3d80e995d045
+plan FISHING 60 poor Fastest	f676f2602ee34948
+plan FISHING 60 poor Profit	329dcf75ae267efc
+plan FISHING 60 poor Recommended	bf76c6b0d1174869
+plan FISHING 60 rich AFK	f74b0fbee6cabbe7
+plan FISHING 60 rich Cheapest	00d1c34b19c290f9
+plan FISHING 60 rich Fastest	b7e774734a31db5d
+plan FISHING 60 rich Profit	f40320390e5beca8
+plan FISHING 60 rich Recommended	ef539db927f97d1d
+plan FISHING 90 poor AFK	55ef864d9d81f534
+plan FISHING 90 poor Cheapest	d009d6f8f87d7356
+plan FISHING 90 poor Fastest	9b2003d3787b91b7
+plan FISHING 90 poor Profit	f5f65b1ee4ef55a2
+plan FISHING 90 poor Recommended	a891a0321ea27e91
+plan FISHING 90 rich AFK	9be0dcda729a7b28
+plan FISHING 90 rich Cheapest	57ade0eba3ff9b0d
+plan FISHING 90 rich Fastest	8911bf522f30b4f0
+plan FISHING 90 rich Profit	169fbab92f88a0d4
+plan FISHING 90 rich Recommended	498ec16d32dc8032
+plan FLETCHING 1 poor AFK	d51009032e63642e
+plan FLETCHING 1 poor Cheapest	8a85016d44ee9aa6
+plan FLETCHING 1 poor Fastest	c402f527dca32ea9
+plan FLETCHING 1 poor Profit	8c5c7b2f92baa471
+plan FLETCHING 1 poor Recommended	ae6ae42e8a7a8d5d
+plan FLETCHING 1 rich AFK	0040760d48d2733b
+plan FLETCHING 1 rich Cheapest	293a0406b4dc9a37
+plan FLETCHING 1 rich Fastest	9e6030bc40c322f1
+plan FLETCHING 1 rich Profit	d1d4b58a5b959119
+plan FLETCHING 1 rich Recommended	3210d5b874b641a4
+plan FLETCHING 30 poor AFK	b5905db7362e107f
+plan FLETCHING 30 poor Cheapest	ad4b822345366127
+plan FLETCHING 30 poor Fastest	bab3050ed2662804
+plan FLETCHING 30 poor Profit	82106f0f90e3a637
+plan FLETCHING 30 poor Recommended	7b653a181729d6d1
+plan FLETCHING 30 rich AFK	d684d9626d6a8ba1
+plan FLETCHING 30 rich Cheapest	2bcfdfd51b63c9f0
+plan FLETCHING 30 rich Fastest	da8d971651d19691
+plan FLETCHING 30 rich Profit	764ebb7404d9c3f4
+plan FLETCHING 30 rich Recommended	f695870fb473ddec
+plan FLETCHING 60 poor AFK	eebc4c430a108e69
+plan FLETCHING 60 poor Cheapest	3ff2c49283318b07
+plan FLETCHING 60 poor Fastest	cd7944d27e6f6b99
+plan FLETCHING 60 poor Profit	5dbfe873a5e9daa8
+plan FLETCHING 60 poor Recommended	51aeb95679ad8f96
+plan FLETCHING 60 rich AFK	10dd4a04e12fd272
+plan FLETCHING 60 rich Cheapest	840beff5476eef2c
+plan FLETCHING 60 rich Fastest	91720534483ea965
+plan FLETCHING 60 rich Profit	20438f0bfb19e846
+plan FLETCHING 60 rich Recommended	dde3620360347549
+plan FLETCHING 90 poor AFK	d9ad711827de9e49
+plan FLETCHING 90 poor Cheapest	9385ae715c6a7741
+plan FLETCHING 90 poor Fastest	68a34bf2301f3983
+plan FLETCHING 90 poor Profit	dedb418a0ce1205e
+plan FLETCHING 90 poor Recommended	d1ddb15836dd67c6
+plan FLETCHING 90 rich AFK	b932cc443c67a5d2
+plan FLETCHING 90 rich Cheapest	8cea91575a8309fc
+plan FLETCHING 90 rich Fastest	7eff3688bd27b8a7
+plan FLETCHING 90 rich Profit	a39323eb87238450
+plan FLETCHING 90 rich Recommended	983224c73fce5562
+plan HERBLORE 1 poor AFK	58658b3a0d6e7456
+plan HERBLORE 1 poor Cheapest	8c6f67c457a5ae0f
+plan HERBLORE 1 poor Fastest	6e078434f1966cf3
+plan HERBLORE 1 poor Profit	500f77fcb74901a3
+plan HERBLORE 1 poor Recommended	ae0c2089dec7356f
+plan HERBLORE 1 rich AFK	d4ddf5f4a418893f
+plan HERBLORE 1 rich Cheapest	fe1e878a4d2fbc11
+plan HERBLORE 1 rich Fastest	0ab24ab06ff6bd7e
+plan HERBLORE 1 rich Profit	9f80e3da4f177e6a
+plan HERBLORE 1 rich Recommended	f4ed46a53221160d
+plan HERBLORE 30 poor AFK	028450c7e247dba6
+plan HERBLORE 30 poor Cheapest	f95f4de372b1a000
+plan HERBLORE 30 poor Fastest	ab461fe55d7e1037
+plan HERBLORE 30 poor Profit	9c7b06c954d17eb7
+plan HERBLORE 30 poor Recommended	d4b817f1c481db0a
+plan HERBLORE 30 rich AFK	088e6ee28fd09c11
+plan HERBLORE 30 rich Cheapest	c65dc8f0268cdd85
+plan HERBLORE 30 rich Fastest	68452d54769e2655
+plan HERBLORE 30 rich Profit	42e21aa5cf33f959
+plan HERBLORE 30 rich Recommended	ddad02d5abdddcdc
+plan HERBLORE 60 poor AFK	156fe466ccebc2ff
+plan HERBLORE 60 poor Cheapest	c14678619967df5d
+plan HERBLORE 60 poor Fastest	5ba70dec62c850a0
+plan HERBLORE 60 poor Profit	9c14918ff831c6ac
+plan HERBLORE 60 poor Recommended	c21927d79572be1d
+plan HERBLORE 60 rich AFK	91c211d7c07b22a3
+plan HERBLORE 60 rich Cheapest	3f2b5731509c14fc
+plan HERBLORE 60 rich Fastest	1ebbbe175347ac83
+plan HERBLORE 60 rich Profit	fcebb5f78389dc2b
+plan HERBLORE 60 rich Recommended	3ed8ff365bf53f27
+plan HERBLORE 90 poor AFK	4c5ff5ea256189d4
+plan HERBLORE 90 poor Cheapest	f2c5a502e8232544
+plan HERBLORE 90 poor Fastest	de7d34b16a9506b9
+plan HERBLORE 90 poor Profit	260c6ee12cd79967
+plan HERBLORE 90 poor Recommended	e4ccd4b3f494bbee
+plan HERBLORE 90 rich AFK	8c84c6a290d488ba
+plan HERBLORE 90 rich Cheapest	4bb255c79e0a1b33
+plan HERBLORE 90 rich Fastest	ceaf3ad62b9075fb
+plan HERBLORE 90 rich Profit	75fb300eaac4af9c
+plan HERBLORE 90 rich Recommended	627e1dbf8c46d1b8
+plan HITPOINTS 1 poor AFK	0870f696eb5fdfd5
+plan HITPOINTS 1 poor Cheapest	7daa411bcc677f73
+plan HITPOINTS 1 poor Fastest	7daa411bcc677f73
+plan HITPOINTS 1 poor Profit	7885fab3879ae0a9
+plan HITPOINTS 1 poor Recommended	8b806c6f218b8943
+plan HITPOINTS 1 rich AFK	8cad5c94f28bc51e
+plan HITPOINTS 1 rich Cheapest	2aa444c82d70c5fb
+plan HITPOINTS 1 rich Fastest	2aa444c82d70c5fb
+plan HITPOINTS 1 rich Profit	940a62c47b024661
+plan HITPOINTS 1 rich Recommended	2facf5783f145855
+plan HITPOINTS 30 poor AFK	16fb59224285cac0
+plan HITPOINTS 30 poor Cheapest	487c17876a9f2845
+plan HITPOINTS 30 poor Fastest	487c17876a9f2845
+plan HITPOINTS 30 poor Profit	6f3307f0966eee31
+plan HITPOINTS 30 poor Recommended	3314806f623a084a
+plan HITPOINTS 30 rich AFK	bd9c57b00484fdd0
+plan HITPOINTS 30 rich Cheapest	e273b4ce324f1f7f
+plan HITPOINTS 30 rich Fastest	e273b4ce324f1f7f
+plan HITPOINTS 30 rich Profit	4c0ad3cd812eb006
+plan HITPOINTS 30 rich Recommended	181b6ddec7d3bd17
+plan HITPOINTS 60 poor AFK	a77897b5eb6a763e
+plan HITPOINTS 60 poor Cheapest	bf46898b7643d529
+plan HITPOINTS 60 poor Fastest	bf46898b7643d529
+plan HITPOINTS 60 poor Profit	206d6291ca1ed9ef
+plan HITPOINTS 60 poor Recommended	d96abbdfc72c801b
+plan HITPOINTS 60 rich AFK	33760f92d88b68b4
+plan HITPOINTS 60 rich Cheapest	97be41ccc0b16839
+plan HITPOINTS 60 rich Fastest	97be41ccc0b16839
+plan HITPOINTS 60 rich Profit	6b94d4dd9c5b79dd
+plan HITPOINTS 60 rich Recommended	6338c12bcc552d62
+plan HITPOINTS 90 poor AFK	d7c4f14e87481716
+plan HITPOINTS 90 poor Cheapest	40f9c2cc1e5a54c5
+plan HITPOINTS 90 poor Fastest	40f9c2cc1e5a54c5
+plan HITPOINTS 90 poor Profit	330fe79f64c20600
+plan HITPOINTS 90 poor Recommended	8916b73ddb1c7a44
+plan HITPOINTS 90 rich AFK	5dfc2b6d70a96ba0
+plan HITPOINTS 90 rich Cheapest	d0aa8609c7a4546b
+plan HITPOINTS 90 rich Fastest	d0aa8609c7a4546b
+plan HITPOINTS 90 rich Profit	6594bdf4622dd836
+plan HITPOINTS 90 rich Recommended	466087b2e29a9661
+plan HUNTER 1 poor AFK	2288b8ac07b74a28
+plan HUNTER 1 poor Cheapest	ec0def04593270f5
+plan HUNTER 1 poor Fastest	6b1ccba51b196099
+plan HUNTER 1 poor Profit	5025e51f06bc7780
+plan HUNTER 1 poor Recommended	899afcc1ce179565
+plan HUNTER 1 rich AFK	e6a083ede73aa314
+plan HUNTER 1 rich Cheapest	29dfc837e588b923
+plan HUNTER 1 rich Fastest	ef2523736f3159c3
+plan HUNTER 1 rich Profit	a0f691e717d73cb3
+plan HUNTER 1 rich Recommended	05d828cf01eaccdc
+plan HUNTER 30 poor AFK	ed83c3a2fdbb759d
+plan HUNTER 30 poor Cheapest	84c87ca9884ff803
+plan HUNTER 30 poor Fastest	52c11296c73bff5f
+plan HUNTER 30 poor Profit	48f299a44264bf3a
+plan HUNTER 30 poor Recommended	648be29d8428f417
+plan HUNTER 30 rich AFK	b24dd1b90beb320c
+plan HUNTER 30 rich Cheapest	a7a1c99d297d2c35
+plan HUNTER 30 rich Fastest	b1fd87822beede93
+plan HUNTER 30 rich Profit	a2862c4e863fc131
+plan HUNTER 30 rich Recommended	70c07e63673ac90d
+plan HUNTER 60 poor AFK	24c3a3fb599f6ac6
+plan HUNTER 60 poor Cheapest	15bc55d377c78460
+plan HUNTER 60 poor Fastest	6549b5abf522c40f
+plan HUNTER 60 poor Profit	c63d6d7f1b536afd
+plan HUNTER 60 poor Recommended	f10d3d534243d322
+plan HUNTER 60 rich AFK	6ffecc151b6e6107
+plan HUNTER 60 rich Cheapest	d48f43b562258fa2
+plan HUNTER 60 rich Fastest	e9dd778de7b5228c
+plan HUNTER 60 rich Profit	62b667da2073f528
+plan HUNTER 60 rich Recommended	cfddf319b0a867cb
+plan HUNTER 90 poor AFK	7f4f633dc94bba84
+plan HUNTER 90 poor Cheapest	53cef22eadd339f7
+plan HUNTER 90 poor Fastest	83be8e9e515d5681
+plan HUNTER 90 poor Profit	6c4ccf1c916776ab
+plan HUNTER 90 poor Recommended	e838ec6c45a17bd2
+plan HUNTER 90 rich AFK	88442a11757b2d11
+plan HUNTER 90 rich Cheapest	cf0986ca7409795c
+plan HUNTER 90 rich Fastest	14b280d91c18ac0a
+plan HUNTER 90 rich Profit	01db02a0216fabd7
+plan HUNTER 90 rich Recommended	3ae52bfa7affc75d
+plan MAGIC 1 poor AFK	f022e05de46f4638
+plan MAGIC 1 poor Cheapest	37a53f3c099a3289
+plan MAGIC 1 poor Fastest	4f6dd710e344541d
+plan MAGIC 1 poor Profit	3d956f0e5e032047
+plan MAGIC 1 poor Recommended	8eec2236c4fd48df
+plan MAGIC 1 rich AFK	6beb7c611ebbb79e
+plan MAGIC 1 rich Cheapest	e452e460a111efaa
+plan MAGIC 1 rich Fastest	d5098bb472b1ce96
+plan MAGIC 1 rich Profit	622ab76be878babf
+plan MAGIC 1 rich Recommended	3e57e94619fe07da
+plan MAGIC 30 poor AFK	86519c79803f35d2
+plan MAGIC 30 poor Cheapest	69ca77a7c703a5b3
+plan MAGIC 30 poor Fastest	2498163debbe050b
+plan MAGIC 30 poor Profit	9172bc99085477cf
+plan MAGIC 30 poor Recommended	e57f07e6600a225f
+plan MAGIC 30 rich AFK	b79642044bbb6d49
+plan MAGIC 30 rich Cheapest	04d0e1e23ee92ae1
+plan MAGIC 30 rich Fastest	6b6bd1890a4045f5
+plan MAGIC 30 rich Profit	8bdeb25c9f3762d5
+plan MAGIC 30 rich Recommended	0e308b5701fa9f0c
+plan MAGIC 60 poor AFK	81ea2ef37d12b5a4
+plan MAGIC 60 poor Cheapest	ecebea43ec699b75
+plan MAGIC 60 poor Fastest	0b0fdf1514423519
+plan MAGIC 60 poor Profit	1b29a64ba7464f60
+plan MAGIC 60 poor Recommended	b8d0a4660a9ba674
+plan MAGIC 60 rich AFK	e1d12fb08f872fdf
+plan MAGIC 60 rich Cheapest	d57b5b75826f37b3
+plan MAGIC 60 rich Fastest	a33232ee7161ec06
+plan MAGIC 60 rich Profit	efbb10dcaccc8b23
+plan MAGIC 60 rich Recommended	4c4e4ded8e346c3d
+plan MAGIC 90 poor AFK	7df151168940d336
+plan MAGIC 90 poor Cheapest	6ffed6d93e8a5f77
+plan MAGIC 90 poor Fastest	319f8a9b584ec002
+plan MAGIC 90 poor Profit	e30012592a81c7dc
+plan MAGIC 90 poor Recommended	b551cfe51b9c074b
+plan MAGIC 90 rich AFK	b7fc7062b64fc428
+plan MAGIC 90 rich Cheapest	71fd691e8191320e
+plan MAGIC 90 rich Fastest	4e01044853a2cc59
+plan MAGIC 90 rich Profit	0d4d96bf5b3ca6d4
+plan MAGIC 90 rich Recommended	6c93267bacb91b01
+plan MINING 1 poor AFK	a33a6be9b661f027
+plan MINING 1 poor Cheapest	907ad52125164146
+plan MINING 1 poor Fastest	907ad52125164146
+plan MINING 1 poor Profit	7551ba43d983fe9c
+plan MINING 1 poor Recommended	5c5af585aba47bf1
+plan MINING 1 rich AFK	61b74d573005ce76
+plan MINING 1 rich Cheapest	385c637778364f58
+plan MINING 1 rich Fastest	385c637778364f58
+plan MINING 1 rich Profit	7760b6dda75069d4
+plan MINING 1 rich Recommended	1a983c216226a149
+plan MINING 30 poor AFK	e57475509765e6a7
+plan MINING 30 poor Cheapest	d906eabc960441b8
+plan MINING 30 poor Fastest	d906eabc960441b8
+plan MINING 30 poor Profit	6dfebf78e0bb8315
+plan MINING 30 poor Recommended	0a628584b33553f2
+plan MINING 30 rich AFK	e48c568bfbad8b30
+plan MINING 30 rich Cheapest	2a49757a8ed033e0
+plan MINING 30 rich Fastest	2a49757a8ed033e0
+plan MINING 30 rich Profit	2d207c4385a4ff62
+plan MINING 30 rich Recommended	6d5cc46b5cf5b72b
+plan MINING 60 poor AFK	b9906ecc3bfea80c
+plan MINING 60 poor Cheapest	ba5f056722395b67
+plan MINING 60 poor Fastest	ba5f056722395b67
+plan MINING 60 poor Profit	8257cdea36a779b7
+plan MINING 60 poor Recommended	1b83a2a52b8997d7
+plan MINING 60 rich AFK	a0609794f93f5765
+plan MINING 60 rich Cheapest	049dc4b10617d7bd
+plan MINING 60 rich Fastest	049dc4b10617d7bd
+plan MINING 60 rich Profit	fc94a31221e0c931
+plan MINING 60 rich Recommended	66a925e82395bac3
+plan MINING 90 poor AFK	fc5b7fc0b883271a
+plan MINING 90 poor Cheapest	4c29bdf0af884cf6
+plan MINING 90 poor Fastest	4c29bdf0af884cf6
+plan MINING 90 poor Profit	6bd5c4832fcc33e2
+plan MINING 90 poor Recommended	104b140ec178b858
+plan MINING 90 rich AFK	b0dd316c0291032a
+plan MINING 90 rich Cheapest	105b077feba1b6b2
+plan MINING 90 rich Fastest	105b077feba1b6b2
+plan MINING 90 rich Profit	1ceb9f176a195934
+plan MINING 90 rich Recommended	718f31c1f25fab43
 plan PRAYER 1 poor AFK	b8b1e72066d0f120
 plan PRAYER 1 poor Cheapest	939f82f6bfb1d083
 plan PRAYER 1 poor Fastest	0c0c458b8cfaed61
@@ -7800,46 +8940,46 @@ plan RUNECRAFT 90 rich Cheapest	6821964586015d3c
 plan RUNECRAFT 90 rich Fastest	f54795b1308e7232
 plan RUNECRAFT 90 rich Profit	4b3d41d9f3966e22
 plan RUNECRAFT 90 rich Recommended	bc334ea00d1a093b
-plan SAILING 1 poor AFK	6efda2b31680e2ab
-plan SAILING 1 poor Cheapest	d6c7793c8485ff2e
-plan SAILING 1 poor Fastest	d6c7793c8485ff2e
-plan SAILING 1 poor Profit	efe01f7c9a4a7f67
-plan SAILING 1 poor Recommended	985d3db32bc98919
-plan SAILING 1 rich AFK	9c22dfbd217307da
-plan SAILING 1 rich Cheapest	c4bdb12f4f1d0926
-plan SAILING 1 rich Fastest	c4bdb12f4f1d0926
-plan SAILING 1 rich Profit	97e3afa6ac4d562f
-plan SAILING 1 rich Recommended	ecffed336ef0198c
-plan SAILING 30 poor AFK	d51afeaefb66aac0
-plan SAILING 30 poor Cheapest	c2f05a40e351cdc3
-plan SAILING 30 poor Fastest	c2f05a40e351cdc3
-plan SAILING 30 poor Profit	b40c1f53e555375f
-plan SAILING 30 poor Recommended	383df25283f4dc85
-plan SAILING 30 rich AFK	29ebb0fdc8a195b2
-plan SAILING 30 rich Cheapest	bba7d09db04b26b0
-plan SAILING 30 rich Fastest	bba7d09db04b26b0
-plan SAILING 30 rich Profit	6e2b6af9cb9096df
-plan SAILING 30 rich Recommended	5eeeaafe7beb6e88
-plan SAILING 60 poor AFK	24202516a5bae9b1
-plan SAILING 60 poor Cheapest	fa3afbd529de2539
-plan SAILING 60 poor Fastest	fa3afbd529de2539
-plan SAILING 60 poor Profit	d2379f898b2777c1
-plan SAILING 60 poor Recommended	6c18f02743d351af
-plan SAILING 60 rich AFK	3614fbacb0c11234
-plan SAILING 60 rich Cheapest	3244c5674931402f
-plan SAILING 60 rich Fastest	3244c5674931402f
-plan SAILING 60 rich Profit	6d43dd46b6b85b32
-plan SAILING 60 rich Recommended	ccd7bf19091535c7
-plan SAILING 90 poor AFK	d37062d7ecf168ae
-plan SAILING 90 poor Cheapest	89777206befc5f26
-plan SAILING 90 poor Fastest	89777206befc5f26
-plan SAILING 90 poor Profit	addd2204bc4c7748
-plan SAILING 90 poor Recommended	688c9312563729fa
-plan SAILING 90 rich AFK	4bfe8670ab6cbd4f
-plan SAILING 90 rich Cheapest	05e214a01064eb3d
-plan SAILING 90 rich Fastest	05e214a01064eb3d
-plan SAILING 90 rich Profit	5870f774e153d6f2
-plan SAILING 90 rich Recommended	da19c61556a6c40f
+plan SAILING 1 poor AFK	922358e89f655e11
+plan SAILING 1 poor Cheapest	6ce0e1156701c15c
+plan SAILING 1 poor Fastest	6ce0e1156701c15c
+plan SAILING 1 poor Profit	165ca55b7858ca64
+plan SAILING 1 poor Recommended	b492e2ddc8a4e63c
+plan SAILING 1 rich AFK	9beb086916778f80
+plan SAILING 1 rich Cheapest	3865ff48e6e82ff3
+plan SAILING 1 rich Fastest	3865ff48e6e82ff3
+plan SAILING 1 rich Profit	a7a609a2f0d0e4a0
+plan SAILING 1 rich Recommended	e250da504ed8c6ea
+plan SAILING 30 poor AFK	7d58640b6455dd8d
+plan SAILING 30 poor Cheapest	9c14e4cd069ef254
+plan SAILING 30 poor Fastest	9c14e4cd069ef254
+plan SAILING 30 poor Profit	53c68e057c7516bb
+plan SAILING 30 poor Recommended	6a4daadde8bc0353
+plan SAILING 30 rich AFK	297033728c021406
+plan SAILING 30 rich Cheapest	900aef0ad9066921
+plan SAILING 30 rich Fastest	900aef0ad9066921
+plan SAILING 30 rich Profit	e277e1c1ad3e8cda
+plan SAILING 30 rich Recommended	a28d18b90edc15e6
+plan SAILING 60 poor AFK	1b8980f312c5a937
+plan SAILING 60 poor Cheapest	7c10a7cd0524d3d7
+plan SAILING 60 poor Fastest	7c10a7cd0524d3d7
+plan SAILING 60 poor Profit	dc339345952f86c5
+plan SAILING 60 poor Recommended	c7675c287b009ef2
+plan SAILING 60 rich AFK	18a0b8b99fcc0ade
+plan SAILING 60 rich Cheapest	d40c831b17bc4bb9
+plan SAILING 60 rich Fastest	d40c831b17bc4bb9
+plan SAILING 60 rich Profit	4b1d64804df72511
+plan SAILING 60 rich Recommended	7e50157cc03b1511
+plan SAILING 90 poor AFK	52ffad2399bf88c4
+plan SAILING 90 poor Cheapest	67899cdf89a45445
+plan SAILING 90 poor Fastest	67899cdf89a45445
+plan SAILING 90 poor Profit	096dd491ed1b9d9a
+plan SAILING 90 poor Recommended	c6aba32395df8765
+plan SAILING 90 rich AFK	bb8e17524a82db94
+plan SAILING 90 rich Cheapest	1ba736c771495df6
+plan SAILING 90 rich Fastest	1ba736c771495df6
+plan SAILING 90 rich Profit	4b517d0a37846294
+plan SAILING 90 rich Recommended	da3533ced7335837
 plan SLAYER 1 poor AFK	e471482479502132
 plan SLAYER 1 poor Cheapest	5026e89a8385b805
 plan SLAYER 1 poor Fastest	5026e89a8385b805
@@ -7920,126 +9060,126 @@ plan SMITHING 90 rich Cheapest	0a24fe1e43cc18a3
 plan SMITHING 90 rich Fastest	d85ae9f64c7b8ba1
 plan SMITHING 90 rich Profit	38a9b61e0e253221
 plan SMITHING 90 rich Recommended	d129fa99e092a18b
-plan STRENGTH 1 poor AFK	a3f2218e7ffb078f
-plan STRENGTH 1 poor Cheapest	5bfae9b21c1ddb4f
-plan STRENGTH 1 poor Fastest	5bfae9b21c1ddb4f
-plan STRENGTH 1 poor Profit	1b513d9f04829196
-plan STRENGTH 1 poor Recommended	5f7686a71ad9eb5a
-plan STRENGTH 1 rich AFK	2accfb4c691397e8
-plan STRENGTH 1 rich Cheapest	a9a3119ba156bccc
-plan STRENGTH 1 rich Fastest	a9a3119ba156bccc
-plan STRENGTH 1 rich Profit	8d51d01a5cee0d2a
-plan STRENGTH 1 rich Recommended	3d1d0fda43265ce3
-plan STRENGTH 30 poor AFK	e9704414e381594f
-plan STRENGTH 30 poor Cheapest	4ea8e6184952dd6c
-plan STRENGTH 30 poor Fastest	4ea8e6184952dd6c
-plan STRENGTH 30 poor Profit	e0c9721a8982804b
-plan STRENGTH 30 poor Recommended	6635196bfad44515
-plan STRENGTH 30 rich AFK	84e07ae8cab2bdda
-plan STRENGTH 30 rich Cheapest	bd9ebb68802d7c29
-plan STRENGTH 30 rich Fastest	bd9ebb68802d7c29
-plan STRENGTH 30 rich Profit	6ea5ae5afa52a9fc
-plan STRENGTH 30 rich Recommended	ea7af8b0d46d2dec
-plan STRENGTH 60 poor AFK	e0a3571cb1d8a150
-plan STRENGTH 60 poor Cheapest	3a48ce0633b24d60
-plan STRENGTH 60 poor Fastest	3a48ce0633b24d60
-plan STRENGTH 60 poor Profit	c3b4f246aa8a20b3
-plan STRENGTH 60 poor Recommended	d167c406b6b940bc
-plan STRENGTH 60 rich AFK	0dc423df55d88e4a
-plan STRENGTH 60 rich Cheapest	3718a7835ba682b0
-plan STRENGTH 60 rich Fastest	3718a7835ba682b0
-plan STRENGTH 60 rich Profit	12df71134fd1a002
-plan STRENGTH 60 rich Recommended	c76415bf66a9b809
-plan STRENGTH 90 poor AFK	1286ce429b854c40
-plan STRENGTH 90 poor Cheapest	55c271823050ec03
-plan STRENGTH 90 poor Fastest	55c271823050ec03
-plan STRENGTH 90 poor Profit	8d727dfabd25bf52
-plan STRENGTH 90 poor Recommended	d333236b4f8221bb
-plan STRENGTH 90 rich AFK	3fa531440d25f19f
-plan STRENGTH 90 rich Cheapest	1d0edf504f558651
-plan STRENGTH 90 rich Fastest	1d0edf504f558651
-plan STRENGTH 90 rich Profit	22986c522392c6bc
-plan STRENGTH 90 rich Recommended	44cbdcb5a2945015
-plan THIEVING 1 poor AFK	5613aaf9626cb1a5
-plan THIEVING 1 poor Cheapest	e93d0cdbd66f31b1
-plan THIEVING 1 poor Fastest	e93d0cdbd66f31b1
-plan THIEVING 1 poor Profit	03df9a7f6a6554e0
-plan THIEVING 1 poor Recommended	f50bda654bb3ba86
-plan THIEVING 1 rich AFK	f09d0db139447828
-plan THIEVING 1 rich Cheapest	51c201c015a9cb8b
-plan THIEVING 1 rich Fastest	51c201c015a9cb8b
-plan THIEVING 1 rich Profit	7dd8eb10e0c5a797
-plan THIEVING 1 rich Recommended	a33c19ff0fb2f4f6
-plan THIEVING 30 poor AFK	c0213dabea3a6a92
-plan THIEVING 30 poor Cheapest	ac5d86504de9960a
-plan THIEVING 30 poor Fastest	ac5d86504de9960a
-plan THIEVING 30 poor Profit	fbc8e3d807aae9ff
-plan THIEVING 30 poor Recommended	779fcde685552454
-plan THIEVING 30 rich AFK	86a19c56f17f2976
-plan THIEVING 30 rich Cheapest	8401c2b1837064ab
-plan THIEVING 30 rich Fastest	8401c2b1837064ab
-plan THIEVING 30 rich Profit	0fe00320d7c23abe
-plan THIEVING 30 rich Recommended	468ce04c38408e3f
-plan THIEVING 60 poor AFK	7fafdd7dc35cf959
-plan THIEVING 60 poor Cheapest	050b55565b4af75c
-plan THIEVING 60 poor Fastest	050b55565b4af75c
-plan THIEVING 60 poor Profit	f6d9ff2f5d728400
-plan THIEVING 60 poor Recommended	9f892b98c51055a8
-plan THIEVING 60 rich AFK	35967e682cdb354d
-plan THIEVING 60 rich Cheapest	b9b70ac8bc3b1859
-plan THIEVING 60 rich Fastest	b9b70ac8bc3b1859
-plan THIEVING 60 rich Profit	0c1c1df77c948917
-plan THIEVING 60 rich Recommended	63f46e8b0c6d5446
-plan THIEVING 90 poor AFK	8d06081074406261
-plan THIEVING 90 poor Cheapest	0f5271449ad02bdf
-plan THIEVING 90 poor Fastest	0f5271449ad02bdf
-plan THIEVING 90 poor Profit	5c86e5608b1e8e48
-plan THIEVING 90 poor Recommended	12512f566def0bcb
-plan THIEVING 90 rich AFK	1811d6715e1706f8
-plan THIEVING 90 rich Cheapest	3f6654b231f7ad28
-plan THIEVING 90 rich Fastest	3f6654b231f7ad28
-plan THIEVING 90 rich Profit	3e3fd751745dd411
-plan THIEVING 90 rich Recommended	d6e48833279eb6e1
-plan WOODCUTTING 1 poor AFK	2d1f1d09e600dd2e
-plan WOODCUTTING 1 poor Cheapest	7d64a836bfa24813
-plan WOODCUTTING 1 poor Fastest	7d64a836bfa24813
-plan WOODCUTTING 1 poor Profit	3aeee191925a9366
-plan WOODCUTTING 1 poor Recommended	b35dec41bf648ef8
-plan WOODCUTTING 1 rich AFK	2e296937375f79a2
-plan WOODCUTTING 1 rich Cheapest	3bc92eca7ec4e254
-plan WOODCUTTING 1 rich Fastest	3bc92eca7ec4e254
-plan WOODCUTTING 1 rich Profit	fb46dd518a8a9cf7
-plan WOODCUTTING 1 rich Recommended	c6b3fc696fb7331b
-plan WOODCUTTING 30 poor AFK	54b0cdc63cb9f187
-plan WOODCUTTING 30 poor Cheapest	1857db522a959f87
-plan WOODCUTTING 30 poor Fastest	1857db522a959f87
-plan WOODCUTTING 30 poor Profit	5e50f6f9bbb2e04f
-plan WOODCUTTING 30 poor Recommended	66189e9e31c79ff6
-plan WOODCUTTING 30 rich AFK	0c802e4493bc0436
-plan WOODCUTTING 30 rich Cheapest	2118c029c8da2b0d
-plan WOODCUTTING 30 rich Fastest	2118c029c8da2b0d
-plan WOODCUTTING 30 rich Profit	67a43664b975cea3
-plan WOODCUTTING 30 rich Recommended	b6ab9695f10979d5
-plan WOODCUTTING 60 poor AFK	868a6a4b4c32b8d6
-plan WOODCUTTING 60 poor Cheapest	816efc3005619324
-plan WOODCUTTING 60 poor Fastest	816efc3005619324
-plan WOODCUTTING 60 poor Profit	209a4683baf090e1
-plan WOODCUTTING 60 poor Recommended	d79d4383ab140051
-plan WOODCUTTING 60 rich AFK	76da33c7afb92893
-plan WOODCUTTING 60 rich Cheapest	af8ad6f2476eecef
-plan WOODCUTTING 60 rich Fastest	af8ad6f2476eecef
-plan WOODCUTTING 60 rich Profit	05ccafc412b9d543
-plan WOODCUTTING 60 rich Recommended	56ef900a30fe725f
-plan WOODCUTTING 90 poor AFK	a9c7971818a57333
-plan WOODCUTTING 90 poor Cheapest	73a2dcb7834bf231
-plan WOODCUTTING 90 poor Fastest	73a2dcb7834bf231
-plan WOODCUTTING 90 poor Profit	9ec37277f4194435
-plan WOODCUTTING 90 poor Recommended	88954db47e83744d
-plan WOODCUTTING 90 rich AFK	f3fe1ae8d87c9d11
-plan WOODCUTTING 90 rich Cheapest	07cda6ab622fa85d
-plan WOODCUTTING 90 rich Fastest	07cda6ab622fa85d
-plan WOODCUTTING 90 rich Profit	761e08d0169d0d7e
-plan WOODCUTTING 90 rich Recommended	30d321665d8315b8
+plan STRENGTH 1 poor AFK	844707722d0bd5ce
+plan STRENGTH 1 poor Cheapest	0f50a9b65bab16d3
+plan STRENGTH 1 poor Fastest	0f50a9b65bab16d3
+plan STRENGTH 1 poor Profit	ccc49279633faff3
+plan STRENGTH 1 poor Recommended	6824301e27773e3d
+plan STRENGTH 1 rich AFK	21b8032bcb551d78
+plan STRENGTH 1 rich Cheapest	3c1e20b6f9be9677
+plan STRENGTH 1 rich Fastest	3c1e20b6f9be9677
+plan STRENGTH 1 rich Profit	1524568d8c7a08ac
+plan STRENGTH 1 rich Recommended	9a639887d3a18824
+plan STRENGTH 30 poor AFK	de12d528cf327180
+plan STRENGTH 30 poor Cheapest	6cb54001e47fecb6
+plan STRENGTH 30 poor Fastest	6cb54001e47fecb6
+plan STRENGTH 30 poor Profit	0f723e4dee27e233
+plan STRENGTH 30 poor Recommended	57d149e49cb9fb3d
+plan STRENGTH 30 rich AFK	b2ae104ce4ed3abf
+plan STRENGTH 30 rich Cheapest	13e77a2cc836b61a
+plan STRENGTH 30 rich Fastest	13e77a2cc836b61a
+plan STRENGTH 30 rich Profit	0c020178e3161cd8
+plan STRENGTH 30 rich Recommended	8923577777849ea6
+plan STRENGTH 60 poor AFK	f81f55597c0b057e
+plan STRENGTH 60 poor Cheapest	eef8fbbd91608261
+plan STRENGTH 60 poor Fastest	eef8fbbd91608261
+plan STRENGTH 60 poor Profit	fce95b6bda3a5714
+plan STRENGTH 60 poor Recommended	ffc42fb057fedd36
+plan STRENGTH 60 rich AFK	b37e5c43db1dc7a9
+plan STRENGTH 60 rich Cheapest	d76fdc0bee2ad148
+plan STRENGTH 60 rich Fastest	d76fdc0bee2ad148
+plan STRENGTH 60 rich Profit	6e8e6c8acfe7a1af
+plan STRENGTH 60 rich Recommended	dcd2af6b606a703a
+plan STRENGTH 90 poor AFK	d017521ff2a4bedb
+plan STRENGTH 90 poor Cheapest	372b516c2d9ed654
+plan STRENGTH 90 poor Fastest	372b516c2d9ed654
+plan STRENGTH 90 poor Profit	c7129f71c6fd6fc3
+plan STRENGTH 90 poor Recommended	a138dc2156278db4
+plan STRENGTH 90 rich AFK	999e7cbd3ea75760
+plan STRENGTH 90 rich Cheapest	89e7cd01f046fe93
+plan STRENGTH 90 rich Fastest	89e7cd01f046fe93
+plan STRENGTH 90 rich Profit	8d1797ea81198044
+plan STRENGTH 90 rich Recommended	014b16d7b9f1118e
+plan THIEVING 1 poor AFK	67c4e6224841cd07
+plan THIEVING 1 poor Cheapest	a94ea6d59c093be4
+plan THIEVING 1 poor Fastest	a94ea6d59c093be4
+plan THIEVING 1 poor Profit	60d7b25ab407f84a
+plan THIEVING 1 poor Recommended	41fd9d937401671d
+plan THIEVING 1 rich AFK	7057f676de80a5c9
+plan THIEVING 1 rich Cheapest	e4a0540fb52ddab9
+plan THIEVING 1 rich Fastest	e4a0540fb52ddab9
+plan THIEVING 1 rich Profit	393c918dd49c6ce4
+plan THIEVING 1 rich Recommended	9b99bc1f7c5891d4
+plan THIEVING 30 poor AFK	0ddd92a2647bb862
+plan THIEVING 30 poor Cheapest	49c4b2a1bfbd366e
+plan THIEVING 30 poor Fastest	49c4b2a1bfbd366e
+plan THIEVING 30 poor Profit	b45957976905c06b
+plan THIEVING 30 poor Recommended	ca8a37f7c2e500de
+plan THIEVING 30 rich AFK	b114b2fec5b3f965
+plan THIEVING 30 rich Cheapest	330c33d04c652b49
+plan THIEVING 30 rich Fastest	330c33d04c652b49
+plan THIEVING 30 rich Profit	c3573156a29c4c1c
+plan THIEVING 30 rich Recommended	236c98c5dc4c6263
+plan THIEVING 60 poor AFK	fd604443dbdd74fd
+plan THIEVING 60 poor Cheapest	ad2a07ad51540b25
+plan THIEVING 60 poor Fastest	ad2a07ad51540b25
+plan THIEVING 60 poor Profit	c2512aca96ed0fb8
+plan THIEVING 60 poor Recommended	0727a7da0fe8b0a8
+plan THIEVING 60 rich AFK	802b75da28e3d123
+plan THIEVING 60 rich Cheapest	ac3eed7d5e32f414
+plan THIEVING 60 rich Fastest	ac3eed7d5e32f414
+plan THIEVING 60 rich Profit	e6a24610608d03f6
+plan THIEVING 60 rich Recommended	a35ccaf2e2b6b21a
+plan THIEVING 90 poor AFK	eb0f8a9440ae2142
+plan THIEVING 90 poor Cheapest	f7197928dcabc952
+plan THIEVING 90 poor Fastest	f7197928dcabc952
+plan THIEVING 90 poor Profit	01594b9413f5fa3e
+plan THIEVING 90 poor Recommended	c16497d7d14ca527
+plan THIEVING 90 rich AFK	5932bf597f140bb3
+plan THIEVING 90 rich Cheapest	7ca348f721b473ab
+plan THIEVING 90 rich Fastest	7ca348f721b473ab
+plan THIEVING 90 rich Profit	b2f8c8a83f7f9a5e
+plan THIEVING 90 rich Recommended	4d8cde8e6b9eb39a
+plan WOODCUTTING 1 poor AFK	130253151d1d0e1e
+plan WOODCUTTING 1 poor Cheapest	792492580fbc763c
+plan WOODCUTTING 1 poor Fastest	792492580fbc763c
+plan WOODCUTTING 1 poor Profit	d5f62afb70c5e8a9
+plan WOODCUTTING 1 poor Recommended	553746b38fbef39c
+plan WOODCUTTING 1 rich AFK	8bdca0331fb8f7d3
+plan WOODCUTTING 1 rich Cheapest	3384c23d0e76eb67
+plan WOODCUTTING 1 rich Fastest	3384c23d0e76eb67
+plan WOODCUTTING 1 rich Profit	c0bd58c8d3336528
+plan WOODCUTTING 1 rich Recommended	d179b42544b499f7
+plan WOODCUTTING 30 poor AFK	1a6fb2ebc6a851ba
+plan WOODCUTTING 30 poor Cheapest	7cda1e73f915af16
+plan WOODCUTTING 30 poor Fastest	7cda1e73f915af16
+plan WOODCUTTING 30 poor Profit	7b5672d6bef7dc97
+plan WOODCUTTING 30 poor Recommended	e8c452dacee00e18
+plan WOODCUTTING 30 rich AFK	9787a9f6eb9c1f96
+plan WOODCUTTING 30 rich Cheapest	9e127739aaf17fc7
+plan WOODCUTTING 30 rich Fastest	9e127739aaf17fc7
+plan WOODCUTTING 30 rich Profit	3711748b3ace4526
+plan WOODCUTTING 30 rich Recommended	49acded2b6e5a73d
+plan WOODCUTTING 60 poor AFK	1083cf545ec46d33
+plan WOODCUTTING 60 poor Cheapest	c9a1558d4a08f657
+plan WOODCUTTING 60 poor Fastest	c9a1558d4a08f657
+plan WOODCUTTING 60 poor Profit	f59367a4f94e0245
+plan WOODCUTTING 60 poor Recommended	43993085b0b69627
+plan WOODCUTTING 60 rich AFK	5cebeb455acbd3db
+plan WOODCUTTING 60 rich Cheapest	c9d4ff859e225dfa
+plan WOODCUTTING 60 rich Fastest	c9d4ff859e225dfa
+plan WOODCUTTING 60 rich Profit	3157eece3bf844e5
+plan WOODCUTTING 60 rich Recommended	92542c90cb3cbe4e
+plan WOODCUTTING 90 poor AFK	b7ae4e8514c03abd
+plan WOODCUTTING 90 poor Cheapest	52d0ebf2ced70e51
+plan WOODCUTTING 90 poor Fastest	52d0ebf2ced70e51
+plan WOODCUTTING 90 poor Profit	b32f9d50ee9066da
+plan WOODCUTTING 90 poor Recommended	7b9942141c7c2921
+plan WOODCUTTING 90 rich AFK	c141d47f0fd96f2a
+plan WOODCUTTING 90 rich Cheapest	1e3688dc3eb68876
+plan WOODCUTTING 90 rich Fastest	1e3688dc3eb68876
+plan WOODCUTTING 90 rich Profit	85a0ca3a8c67d921
+plan WOODCUTTING 90 rich Recommended	e8367562bed641ff
 prayer_bury_big_bones strong bank-empty	694a73d9bcf9528b
 prayer_bury_big_bones strong bank-empty-rich	cdf70e3a48d3d011
 prayer_bury_big_bones strong bank-unknown	3f1faaf35a8b68ac
@@ -9090,6 +10230,36 @@ sail_salvage_fishy weak owns-all-in-bank	52570fd35a7efee6
 sail_salvage_fishy weak parts-carried	52570fd35a7efee6
 sail_salvage_fishy weak parts-carried-away	52570fd35a7efee6
 sail_salvage_fishy weak parts-in-bank	52570fd35a7efee6
+sail_salvage_fremennik strong bank-empty	50e9585cc41f8212
+sail_salvage_fremennik strong bank-empty-rich	50e9585cc41f8212
+sail_salvage_fremennik strong bank-unknown	50e9585cc41f8212
+sail_salvage_fremennik strong full-of-products	4c6b5fda1823b046
+sail_salvage_fremennik strong gear-carried	4c6b5fda1823b046
+sail_salvage_fremennik strong goal-reached	a230555ad459032a
+sail_salvage_fremennik strong in-instance	4c6b5fda1823b046
+sail_salvage_fremennik strong kit-at-spot	4c6b5fda1823b046
+sail_salvage_fremennik strong kit-away	50e9585cc41f8212
+sail_salvage_fremennik strong kit-worn-at-spot	4c6b5fda1823b046
+sail_salvage_fremennik strong owns-all-at-bank	50e9585cc41f8212
+sail_salvage_fremennik strong owns-all-in-bank	50e9585cc41f8212
+sail_salvage_fremennik strong parts-carried	4c6b5fda1823b046
+sail_salvage_fremennik strong parts-carried-away	50e9585cc41f8212
+sail_salvage_fremennik strong parts-in-bank	50e9585cc41f8212
+sail_salvage_fremennik weak bank-empty	52570fd35a7efee6
+sail_salvage_fremennik weak bank-empty-rich	52570fd35a7efee6
+sail_salvage_fremennik weak bank-unknown	52570fd35a7efee6
+sail_salvage_fremennik weak full-of-products	52570fd35a7efee6
+sail_salvage_fremennik weak gear-carried	52570fd35a7efee6
+sail_salvage_fremennik weak goal-reached	13e1ef2be336f928
+sail_salvage_fremennik weak in-instance	52570fd35a7efee6
+sail_salvage_fremennik weak kit-at-spot	52570fd35a7efee6
+sail_salvage_fremennik weak kit-away	52570fd35a7efee6
+sail_salvage_fremennik weak kit-worn-at-spot	52570fd35a7efee6
+sail_salvage_fremennik weak owns-all-at-bank	52570fd35a7efee6
+sail_salvage_fremennik weak owns-all-in-bank	52570fd35a7efee6
+sail_salvage_fremennik weak parts-carried	52570fd35a7efee6
+sail_salvage_fremennik weak parts-carried-away	52570fd35a7efee6
+sail_salvage_fremennik weak parts-in-bank	52570fd35a7efee6
 sail_salvage_large strong bank-empty	631d61c5327dec44
 sail_salvage_large strong bank-empty-rich	631d61c5327dec44
 sail_salvage_large strong bank-unknown	631d61c5327dec44
@@ -9120,6 +10290,96 @@ sail_salvage_large weak owns-all-in-bank	52570fd35a7efee6
 sail_salvage_large weak parts-carried	52570fd35a7efee6
 sail_salvage_large weak parts-carried-away	52570fd35a7efee6
 sail_salvage_large weak parts-in-bank	52570fd35a7efee6
+sail_salvage_mercenary strong bank-empty	71e0a86964d47173
+sail_salvage_mercenary strong bank-empty-rich	71e0a86964d47173
+sail_salvage_mercenary strong bank-unknown	71e0a86964d47173
+sail_salvage_mercenary strong full-of-products	3a35e99feb7b7c1f
+sail_salvage_mercenary strong gear-carried	3a35e99feb7b7c1f
+sail_salvage_mercenary strong goal-reached	a230555ad459032a
+sail_salvage_mercenary strong in-instance	3a35e99feb7b7c1f
+sail_salvage_mercenary strong kit-at-spot	3a35e99feb7b7c1f
+sail_salvage_mercenary strong kit-away	71e0a86964d47173
+sail_salvage_mercenary strong kit-worn-at-spot	3a35e99feb7b7c1f
+sail_salvage_mercenary strong owns-all-at-bank	71e0a86964d47173
+sail_salvage_mercenary strong owns-all-in-bank	71e0a86964d47173
+sail_salvage_mercenary strong parts-carried	3a35e99feb7b7c1f
+sail_salvage_mercenary strong parts-carried-away	71e0a86964d47173
+sail_salvage_mercenary strong parts-in-bank	71e0a86964d47173
+sail_salvage_mercenary weak bank-empty	52570fd35a7efee6
+sail_salvage_mercenary weak bank-empty-rich	52570fd35a7efee6
+sail_salvage_mercenary weak bank-unknown	52570fd35a7efee6
+sail_salvage_mercenary weak full-of-products	52570fd35a7efee6
+sail_salvage_mercenary weak gear-carried	52570fd35a7efee6
+sail_salvage_mercenary weak goal-reached	13e1ef2be336f928
+sail_salvage_mercenary weak in-instance	52570fd35a7efee6
+sail_salvage_mercenary weak kit-at-spot	52570fd35a7efee6
+sail_salvage_mercenary weak kit-away	52570fd35a7efee6
+sail_salvage_mercenary weak kit-worn-at-spot	52570fd35a7efee6
+sail_salvage_mercenary weak owns-all-at-bank	52570fd35a7efee6
+sail_salvage_mercenary weak owns-all-in-bank	52570fd35a7efee6
+sail_salvage_mercenary weak parts-carried	52570fd35a7efee6
+sail_salvage_mercenary weak parts-carried-away	52570fd35a7efee6
+sail_salvage_mercenary weak parts-in-bank	52570fd35a7efee6
+sail_salvage_merchant strong bank-empty	737650f8dfc04a6c
+sail_salvage_merchant strong bank-empty-rich	737650f8dfc04a6c
+sail_salvage_merchant strong bank-unknown	737650f8dfc04a6c
+sail_salvage_merchant strong full-of-products	001d0d6d1241b7ba
+sail_salvage_merchant strong gear-carried	001d0d6d1241b7ba
+sail_salvage_merchant strong goal-reached	a230555ad459032a
+sail_salvage_merchant strong in-instance	001d0d6d1241b7ba
+sail_salvage_merchant strong kit-at-spot	001d0d6d1241b7ba
+sail_salvage_merchant strong kit-away	737650f8dfc04a6c
+sail_salvage_merchant strong kit-worn-at-spot	001d0d6d1241b7ba
+sail_salvage_merchant strong owns-all-at-bank	737650f8dfc04a6c
+sail_salvage_merchant strong owns-all-in-bank	737650f8dfc04a6c
+sail_salvage_merchant strong parts-carried	001d0d6d1241b7ba
+sail_salvage_merchant strong parts-carried-away	737650f8dfc04a6c
+sail_salvage_merchant strong parts-in-bank	737650f8dfc04a6c
+sail_salvage_merchant weak bank-empty	52570fd35a7efee6
+sail_salvage_merchant weak bank-empty-rich	52570fd35a7efee6
+sail_salvage_merchant weak bank-unknown	52570fd35a7efee6
+sail_salvage_merchant weak full-of-products	52570fd35a7efee6
+sail_salvage_merchant weak gear-carried	52570fd35a7efee6
+sail_salvage_merchant weak goal-reached	13e1ef2be336f928
+sail_salvage_merchant weak in-instance	52570fd35a7efee6
+sail_salvage_merchant weak kit-at-spot	52570fd35a7efee6
+sail_salvage_merchant weak kit-away	52570fd35a7efee6
+sail_salvage_merchant weak kit-worn-at-spot	52570fd35a7efee6
+sail_salvage_merchant weak owns-all-at-bank	52570fd35a7efee6
+sail_salvage_merchant weak owns-all-in-bank	52570fd35a7efee6
+sail_salvage_merchant weak parts-carried	52570fd35a7efee6
+sail_salvage_merchant weak parts-carried-away	52570fd35a7efee6
+sail_salvage_merchant weak parts-in-bank	52570fd35a7efee6
+sail_salvage_pirate strong bank-empty	8dc5c4e45e27d77b
+sail_salvage_pirate strong bank-empty-rich	8dc5c4e45e27d77b
+sail_salvage_pirate strong bank-unknown	8dc5c4e45e27d77b
+sail_salvage_pirate strong full-of-products	8d39e4da105eef53
+sail_salvage_pirate strong gear-carried	8d39e4da105eef53
+sail_salvage_pirate strong goal-reached	a230555ad459032a
+sail_salvage_pirate strong in-instance	8d39e4da105eef53
+sail_salvage_pirate strong kit-at-spot	8d39e4da105eef53
+sail_salvage_pirate strong kit-away	8dc5c4e45e27d77b
+sail_salvage_pirate strong kit-worn-at-spot	8d39e4da105eef53
+sail_salvage_pirate strong owns-all-at-bank	8dc5c4e45e27d77b
+sail_salvage_pirate strong owns-all-in-bank	8dc5c4e45e27d77b
+sail_salvage_pirate strong parts-carried	8d39e4da105eef53
+sail_salvage_pirate strong parts-carried-away	8dc5c4e45e27d77b
+sail_salvage_pirate strong parts-in-bank	8dc5c4e45e27d77b
+sail_salvage_pirate weak bank-empty	52570fd35a7efee6
+sail_salvage_pirate weak bank-empty-rich	52570fd35a7efee6
+sail_salvage_pirate weak bank-unknown	52570fd35a7efee6
+sail_salvage_pirate weak full-of-products	52570fd35a7efee6
+sail_salvage_pirate weak gear-carried	52570fd35a7efee6
+sail_salvage_pirate weak goal-reached	13e1ef2be336f928
+sail_salvage_pirate weak in-instance	52570fd35a7efee6
+sail_salvage_pirate weak kit-at-spot	52570fd35a7efee6
+sail_salvage_pirate weak kit-away	52570fd35a7efee6
+sail_salvage_pirate weak kit-worn-at-spot	52570fd35a7efee6
+sail_salvage_pirate weak owns-all-at-bank	52570fd35a7efee6
+sail_salvage_pirate weak owns-all-in-bank	52570fd35a7efee6
+sail_salvage_pirate weak parts-carried	52570fd35a7efee6
+sail_salvage_pirate weak parts-carried-away	52570fd35a7efee6
+sail_salvage_pirate weak parts-in-bank	52570fd35a7efee6
 sail_salvage_small strong bank-empty	228acfe9fa881afb
 sail_salvage_small strong bank-empty-rich	228acfe9fa881afb
 sail_salvage_small strong bank-unknown	228acfe9fa881afb
@@ -9930,6 +11190,36 @@ strength_ammonite_crabs weak owns-all-in-bank	527150204aeca185
 strength_ammonite_crabs weak parts-carried	527150204aeca185
 strength_ammonite_crabs weak parts-carried-away	527150204aeca185
 strength_ammonite_crabs weak parts-in-bank	527150204aeca185
+strength_bf_pump strong bank-empty	23e5b46b79fedf14
+strength_bf_pump strong bank-empty-rich	23e5b46b79fedf14
+strength_bf_pump strong bank-unknown	23e5b46b79fedf14
+strength_bf_pump strong full-of-products	99e098d51f3974f9
+strength_bf_pump strong gear-carried	99e098d51f3974f9
+strength_bf_pump strong goal-reached	1bdd5cbc28f0c93f
+strength_bf_pump strong in-instance	99e098d51f3974f9
+strength_bf_pump strong kit-at-spot	99e098d51f3974f9
+strength_bf_pump strong kit-away	23e5b46b79fedf14
+strength_bf_pump strong kit-worn-at-spot	99e098d51f3974f9
+strength_bf_pump strong owns-all-at-bank	23e5b46b79fedf14
+strength_bf_pump strong owns-all-in-bank	23e5b46b79fedf14
+strength_bf_pump strong parts-carried	99e098d51f3974f9
+strength_bf_pump strong parts-carried-away	23e5b46b79fedf14
+strength_bf_pump strong parts-in-bank	23e5b46b79fedf14
+strength_bf_pump weak bank-empty	23e5b46b79fedf14
+strength_bf_pump weak bank-empty-rich	23e5b46b79fedf14
+strength_bf_pump weak bank-unknown	23e5b46b79fedf14
+strength_bf_pump weak full-of-products	99e098d51f3974f9
+strength_bf_pump weak gear-carried	99e098d51f3974f9
+strength_bf_pump weak goal-reached	1bdd5cbc28f0c93f
+strength_bf_pump weak in-instance	99e098d51f3974f9
+strength_bf_pump weak kit-at-spot	99e098d51f3974f9
+strength_bf_pump weak kit-away	23e5b46b79fedf14
+strength_bf_pump weak kit-worn-at-spot	99e098d51f3974f9
+strength_bf_pump weak owns-all-at-bank	23e5b46b79fedf14
+strength_bf_pump weak owns-all-in-bank	23e5b46b79fedf14
+strength_bf_pump weak parts-carried	99e098d51f3974f9
+strength_bf_pump weak parts-carried-away	23e5b46b79fedf14
+strength_bf_pump weak parts-in-bank	23e5b46b79fedf14
 strength_chickens strong bank-empty	e7c74f838136b997
 strength_chickens strong bank-empty-rich	e7c74f838136b997
 strength_chickens strong bank-unknown	ff4a403b4640877e
@@ -9990,6 +11280,36 @@ strength_cows weak owns-all-in-bank	c45d5a28753784bb
 strength_cows weak parts-carried	ef696955a4104726
 strength_cows weak parts-carried-away	c45d5a28753784bb
 strength_cows weak parts-in-bank	c45d5a28753784bb
+strength_desert_bandits strong bank-empty	6585676a58ccd870
+strength_desert_bandits strong bank-empty-rich	4c65d4e3d881533a
+strength_desert_bandits strong bank-unknown	026d4caae7231316
+strength_desert_bandits strong full-of-products	6cde79547d4affb5
+strength_desert_bandits strong gear-carried	0b82126e601e9dd6
+strength_desert_bandits strong goal-reached	0a74e2f5ccbcbf9e
+strength_desert_bandits strong in-instance	6cde79547d4affb5
+strength_desert_bandits strong kit-at-spot	6cde79547d4affb5
+strength_desert_bandits strong kit-away	8723c4fdeb6e7e90
+strength_desert_bandits strong kit-worn-at-spot	6cde79547d4affb5
+strength_desert_bandits strong owns-all-at-bank	3384d7da7a2d6469
+strength_desert_bandits strong owns-all-in-bank	3384d7da7a2d6469
+strength_desert_bandits strong parts-carried	6cde79547d4affb5
+strength_desert_bandits strong parts-carried-away	8723c4fdeb6e7e90
+strength_desert_bandits strong parts-in-bank	3384d7da7a2d6469
+strength_desert_bandits weak bank-empty	9031cded5c59b370
+strength_desert_bandits weak bank-empty-rich	55942fd2427b663f
+strength_desert_bandits weak bank-unknown	026d4caae7231316
+strength_desert_bandits weak full-of-products	67c9922c1b04e9c6
+strength_desert_bandits weak gear-carried	327fbe5f4e31df45
+strength_desert_bandits weak goal-reached	af5a0afd1de196fb
+strength_desert_bandits weak in-instance	67c9922c1b04e9c6
+strength_desert_bandits weak kit-at-spot	67c9922c1b04e9c6
+strength_desert_bandits weak kit-away	ad2d9d51c4ebe959
+strength_desert_bandits weak kit-worn-at-spot	67c9922c1b04e9c6
+strength_desert_bandits weak owns-all-at-bank	e5c6f0a2a007c703
+strength_desert_bandits weak owns-all-in-bank	e5c6f0a2a007c703
+strength_desert_bandits weak parts-carried	67c9922c1b04e9c6
+strength_desert_bandits weak parts-carried-away	ad2d9d51c4ebe959
+strength_desert_bandits weak parts-in-bank	e5c6f0a2a007c703
 strength_gargoyles strong bank-empty	54fd4e58106c6a36
 strength_gargoyles strong bank-empty-rich	54fd4e58106c6a36
 strength_gargoyles strong bank-unknown	e257fd6bb3fde86e
@@ -10230,6 +11550,36 @@ strength_sulphur_naguas weak owns-all-in-bank	42765c89d92ff1eb
 strength_sulphur_naguas weak parts-carried	42765c89d92ff1eb
 strength_sulphur_naguas weak parts-carried-away	42765c89d92ff1eb
 strength_sulphur_naguas weak parts-in-bank	42765c89d92ff1eb
+strength_vyrewatch_sentinels strong bank-empty	61614848779e8989
+strength_vyrewatch_sentinels strong bank-empty-rich	80fd1f5760597493
+strength_vyrewatch_sentinels strong bank-unknown	826e0a94fc4a63bb
+strength_vyrewatch_sentinels strong full-of-products	c9c9f5981c1036ad
+strength_vyrewatch_sentinels strong gear-carried	d7da1a959a7e1aa4
+strength_vyrewatch_sentinels strong goal-reached	77e22ca3c13ee2c2
+strength_vyrewatch_sentinels strong in-instance	c9c9f5981c1036ad
+strength_vyrewatch_sentinels strong kit-at-spot	c9c9f5981c1036ad
+strength_vyrewatch_sentinels strong kit-away	75ed96cc13effa10
+strength_vyrewatch_sentinels strong kit-worn-at-spot	c9c9f5981c1036ad
+strength_vyrewatch_sentinels strong owns-all-at-bank	fb8de65feb1e6c74
+strength_vyrewatch_sentinels strong owns-all-in-bank	fb8de65feb1e6c74
+strength_vyrewatch_sentinels strong parts-carried	c9c9f5981c1036ad
+strength_vyrewatch_sentinels strong parts-carried-away	75ed96cc13effa10
+strength_vyrewatch_sentinels strong parts-in-bank	fb8de65feb1e6c74
+strength_vyrewatch_sentinels weak bank-empty	0d354e1ed6387d05
+strength_vyrewatch_sentinels weak bank-empty-rich	0d354e1ed6387d05
+strength_vyrewatch_sentinels weak bank-unknown	d1c02a197338321d
+strength_vyrewatch_sentinels weak full-of-products	efdc029103ce3589
+strength_vyrewatch_sentinels weak gear-carried	619730f70f457cca
+strength_vyrewatch_sentinels weak goal-reached	6436a8812733c6ed
+strength_vyrewatch_sentinels weak in-instance	efdc029103ce3589
+strength_vyrewatch_sentinels weak kit-at-spot	efdc029103ce3589
+strength_vyrewatch_sentinels weak kit-away	efdc029103ce3589
+strength_vyrewatch_sentinels weak kit-worn-at-spot	efdc029103ce3589
+strength_vyrewatch_sentinels weak owns-all-at-bank	2755b6fee372f519
+strength_vyrewatch_sentinels weak owns-all-in-bank	2755b6fee372f519
+strength_vyrewatch_sentinels weak parts-carried	efdc029103ce3589
+strength_vyrewatch_sentinels weak parts-carried-away	efdc029103ce3589
+strength_vyrewatch_sentinels weak parts-in-bank	2755b6fee372f519
 thieve_ardougne_knights strong bank-empty	79d6b830d247b5bc
 thieve_ardougne_knights strong bank-empty-rich	79d6b830d247b5bc
 thieve_ardougne_knights strong bank-unknown	02bad24e3b612817
@@ -10530,6 +11880,36 @@ thieve_rogues_den weak owns-all-in-bank	b01af21b46904645
 thieve_rogues_den weak parts-carried	47cf1f99139efcd5
 thieve_rogues_den weak parts-carried-away	b01af21b46904645
 thieve_rogues_den weak parts-in-bank	b01af21b46904645
+thieve_summer_garden strong bank-empty	d1c5ba52419a48fe
+thieve_summer_garden strong bank-empty-rich	d25320593c949942
+thieve_summer_garden strong bank-unknown	b5192160eed65583
+thieve_summer_garden strong full-of-products	9d0e81715a8563b0
+thieve_summer_garden strong gear-carried	90f499ef3f78195a
+thieve_summer_garden strong goal-reached	130dbcd338e15ed3
+thieve_summer_garden strong in-instance	9d0e81715a8563b0
+thieve_summer_garden strong kit-at-spot	9d0e81715a8563b0
+thieve_summer_garden strong kit-away	0050a7580f06f53d
+thieve_summer_garden strong kit-worn-at-spot	9d0e81715a8563b0
+thieve_summer_garden strong owns-all-at-bank	24641d8c47b7f6bf
+thieve_summer_garden strong owns-all-in-bank	24641d8c47b7f6bf
+thieve_summer_garden strong parts-carried	9d0e81715a8563b0
+thieve_summer_garden strong parts-carried-away	0050a7580f06f53d
+thieve_summer_garden strong parts-in-bank	24641d8c47b7f6bf
+thieve_summer_garden weak bank-empty	ba32b189dd3d096a
+thieve_summer_garden weak bank-empty-rich	ba32b189dd3d096a
+thieve_summer_garden weak bank-unknown	935cafa9fe5aafde
+thieve_summer_garden weak full-of-products	7a7b33bf352d4f68
+thieve_summer_garden weak gear-carried	227e33cd1221fd3e
+thieve_summer_garden weak goal-reached	280612857ff04dd3
+thieve_summer_garden weak in-instance	7a7b33bf352d4f68
+thieve_summer_garden weak kit-at-spot	7a7b33bf352d4f68
+thieve_summer_garden weak kit-away	7a7b33bf352d4f68
+thieve_summer_garden weak kit-worn-at-spot	7a7b33bf352d4f68
+thieve_summer_garden weak owns-all-at-bank	b2bb35b5f64d3c82
+thieve_summer_garden weak owns-all-in-bank	b2bb35b5f64d3c82
+thieve_summer_garden weak parts-carried	7a7b33bf352d4f68
+thieve_summer_garden weak parts-carried-away	7a7b33bf352d4f68
+thieve_summer_garden weak parts-in-bank	b2bb35b5f64d3c82
 thieve_tea_stall strong bank-empty	38912a84f1ba6e0e
 thieve_tea_stall strong bank-empty-rich	38912a84f1ba6e0e
 thieve_tea_stall strong bank-unknown	1d4b17bb8e9dcf5d
@@ -10620,6 +12000,126 @@ thieve_vyres weak owns-all-in-bank	abf0294e44ee4f40
 thieve_vyres weak parts-carried	abf0294e44ee4f40
 thieve_vyres weak parts-carried-away	abf0294e44ee4f40
 thieve_vyres weak parts-in-bank	abf0294e44ee4f40
+wc_camphor_conch strong bank-empty	775c0951e09ca2a8
+wc_camphor_conch strong bank-empty-rich	5e92cefbe01e57a6
+wc_camphor_conch strong bank-unknown	b6823a1264ae1517
+wc_camphor_conch strong full-of-products	6b8b386bbb0870ad
+wc_camphor_conch strong gear-carried	2c8fd33c3549b2f7
+wc_camphor_conch strong goal-reached	aef9c7fbd719e497
+wc_camphor_conch strong in-instance	2bb7134c6ac125c8
+wc_camphor_conch strong kit-at-spot	2bb7134c6ac125c8
+wc_camphor_conch strong kit-away	6abfe81dd5d5f93e
+wc_camphor_conch strong kit-worn-at-spot	2bb7134c6ac125c8
+wc_camphor_conch strong owns-all-at-bank	5c16e2fef8f3e4f5
+wc_camphor_conch strong owns-all-in-bank	5c16e2fef8f3e4f5
+wc_camphor_conch strong parts-carried	2bb7134c6ac125c8
+wc_camphor_conch strong parts-carried-away	6abfe81dd5d5f93e
+wc_camphor_conch strong parts-in-bank	5c16e2fef8f3e4f5
+wc_camphor_conch weak bank-empty	17ee29b946466072
+wc_camphor_conch weak bank-empty-rich	17ee29b946466072
+wc_camphor_conch weak bank-unknown	642b8c2d32f049d8
+wc_camphor_conch weak full-of-products	86c133ad9c642939
+wc_camphor_conch weak gear-carried	2161617479d25b4e
+wc_camphor_conch weak goal-reached	2e1f493b0a2a50d0
+wc_camphor_conch weak in-instance	86c133ad9c642939
+wc_camphor_conch weak kit-at-spot	86c133ad9c642939
+wc_camphor_conch weak kit-away	86c133ad9c642939
+wc_camphor_conch weak kit-worn-at-spot	86c133ad9c642939
+wc_camphor_conch weak owns-all-at-bank	762a94270767f153
+wc_camphor_conch weak owns-all-in-bank	762a94270767f153
+wc_camphor_conch weak parts-carried	86c133ad9c642939
+wc_camphor_conch weak parts-carried-away	86c133ad9c642939
+wc_camphor_conch weak parts-in-bank	762a94270767f153
+wc_engorged_bloodwood strong bank-empty	ca3c33bce4794473
+wc_engorged_bloodwood strong bank-empty-rich	a55a1b570d4374ac
+wc_engorged_bloodwood strong bank-unknown	8f4957a760bf3de4
+wc_engorged_bloodwood strong full-of-products	21236abb2eb1afe4
+wc_engorged_bloodwood strong gear-carried	37e4a8d98233e148
+wc_engorged_bloodwood strong goal-reached	408aa2ea247b8ef6
+wc_engorged_bloodwood strong in-instance	21236abb2eb1afe4
+wc_engorged_bloodwood strong kit-at-spot	21236abb2eb1afe4
+wc_engorged_bloodwood strong kit-away	5ddf997fe7fff1bc
+wc_engorged_bloodwood strong kit-worn-at-spot	21236abb2eb1afe4
+wc_engorged_bloodwood strong owns-all-at-bank	d6ea837a576836d8
+wc_engorged_bloodwood strong owns-all-in-bank	d6ea837a576836d8
+wc_engorged_bloodwood strong parts-carried	21236abb2eb1afe4
+wc_engorged_bloodwood strong parts-carried-away	5ddf997fe7fff1bc
+wc_engorged_bloodwood strong parts-in-bank	d6ea837a576836d8
+wc_engorged_bloodwood weak bank-empty	edc2b756685015fc
+wc_engorged_bloodwood weak bank-empty-rich	edc2b756685015fc
+wc_engorged_bloodwood weak bank-unknown	afdca23b7db9b309
+wc_engorged_bloodwood weak full-of-products	54a525054c4112cc
+wc_engorged_bloodwood weak gear-carried	bbd465214b1485b7
+wc_engorged_bloodwood weak goal-reached	c5e5539396df82a2
+wc_engorged_bloodwood weak in-instance	54a525054c4112cc
+wc_engorged_bloodwood weak kit-at-spot	54a525054c4112cc
+wc_engorged_bloodwood weak kit-away	54a525054c4112cc
+wc_engorged_bloodwood weak kit-worn-at-spot	54a525054c4112cc
+wc_engorged_bloodwood weak owns-all-at-bank	23539c6cb63deb9a
+wc_engorged_bloodwood weak owns-all-in-bank	23539c6cb63deb9a
+wc_engorged_bloodwood weak parts-carried	54a525054c4112cc
+wc_engorged_bloodwood weak parts-carried-away	54a525054c4112cc
+wc_engorged_bloodwood weak parts-in-bank	23539c6cb63deb9a
+wc_infected_roots strong bank-empty	6aecdd2722a3d65b
+wc_infected_roots strong bank-empty-rich	34567d8a7956797f
+wc_infected_roots strong bank-unknown	b398dfafdb41e371
+wc_infected_roots strong full-of-products	69db4fafdc9a0e18
+wc_infected_roots strong gear-carried	de22ff43d02ab5d2
+wc_infected_roots strong goal-reached	a2f0f3947f4ff5a5
+wc_infected_roots strong in-instance	69db4fafdc9a0e18
+wc_infected_roots strong kit-at-spot	69db4fafdc9a0e18
+wc_infected_roots strong kit-away	08477176ebde34a5
+wc_infected_roots strong kit-worn-at-spot	69db4fafdc9a0e18
+wc_infected_roots strong owns-all-at-bank	cad339337e7c7c8e
+wc_infected_roots strong owns-all-in-bank	cad339337e7c7c8e
+wc_infected_roots strong parts-carried	69db4fafdc9a0e18
+wc_infected_roots strong parts-carried-away	08477176ebde34a5
+wc_infected_roots strong parts-in-bank	cad339337e7c7c8e
+wc_infected_roots weak bank-empty	ddec0cd1942b8591
+wc_infected_roots weak bank-empty-rich	ddec0cd1942b8591
+wc_infected_roots weak bank-unknown	bbb705215746b7f8
+wc_infected_roots weak full-of-products	1636952db6490965
+wc_infected_roots weak gear-carried	4917fc9a7bab79bf
+wc_infected_roots weak goal-reached	ee41dac6b8b73c5d
+wc_infected_roots weak in-instance	1636952db6490965
+wc_infected_roots weak kit-at-spot	1636952db6490965
+wc_infected_roots weak kit-away	1636952db6490965
+wc_infected_roots weak kit-worn-at-spot	1636952db6490965
+wc_infected_roots weak owns-all-at-bank	f3c98a7a393afc38
+wc_infected_roots weak owns-all-in-bank	f3c98a7a393afc38
+wc_infected_roots weak parts-carried	1636952db6490965
+wc_infected_roots weak parts-carried-away	1636952db6490965
+wc_infected_roots weak parts-in-bank	f3c98a7a393afc38
+wc_ironwood_sunbleak strong bank-empty	41815e865535a8bf
+wc_ironwood_sunbleak strong bank-empty-rich	41815e865535a8bf
+wc_ironwood_sunbleak strong bank-unknown	444999de665c1e7c
+wc_ironwood_sunbleak strong full-of-products	d7a42116bffb808b
+wc_ironwood_sunbleak strong gear-carried	062a63b70ba3d3c2
+wc_ironwood_sunbleak strong goal-reached	4a01c0fd64c37f7d
+wc_ironwood_sunbleak strong in-instance	d7a42116bffb808b
+wc_ironwood_sunbleak strong kit-at-spot	d7a42116bffb808b
+wc_ironwood_sunbleak strong kit-away	d7a42116bffb808b
+wc_ironwood_sunbleak strong kit-worn-at-spot	d7a42116bffb808b
+wc_ironwood_sunbleak strong owns-all-at-bank	95e295dfa3fc1a8a
+wc_ironwood_sunbleak strong owns-all-in-bank	95e295dfa3fc1a8a
+wc_ironwood_sunbleak strong parts-carried	d7a42116bffb808b
+wc_ironwood_sunbleak strong parts-carried-away	d7a42116bffb808b
+wc_ironwood_sunbleak strong parts-in-bank	95e295dfa3fc1a8a
+wc_ironwood_sunbleak weak bank-empty	41815e865535a8bf
+wc_ironwood_sunbleak weak bank-empty-rich	41815e865535a8bf
+wc_ironwood_sunbleak weak bank-unknown	444999de665c1e7c
+wc_ironwood_sunbleak weak full-of-products	d7a42116bffb808b
+wc_ironwood_sunbleak weak gear-carried	062a63b70ba3d3c2
+wc_ironwood_sunbleak weak goal-reached	4a01c0fd64c37f7d
+wc_ironwood_sunbleak weak in-instance	d7a42116bffb808b
+wc_ironwood_sunbleak weak kit-at-spot	d7a42116bffb808b
+wc_ironwood_sunbleak weak kit-away	d7a42116bffb808b
+wc_ironwood_sunbleak weak kit-worn-at-spot	d7a42116bffb808b
+wc_ironwood_sunbleak weak owns-all-at-bank	95e295dfa3fc1a8a
+wc_ironwood_sunbleak weak owns-all-in-bank	95e295dfa3fc1a8a
+wc_ironwood_sunbleak weak parts-carried	d7a42116bffb808b
+wc_ironwood_sunbleak weak parts-carried-away	d7a42116bffb808b
+wc_ironwood_sunbleak weak parts-in-bank	95e295dfa3fc1a8a
 wc_magic_guild strong bank-empty	2436d06a8e171fe2
 wc_magic_guild strong bank-empty-rich	86083cea417213fd
 wc_magic_guild strong bank-unknown	59981b819bd47802
@@ -10770,6 +12270,36 @@ wc_redwood_guild weak owns-all-in-bank	c476bf949bd7c143
 wc_redwood_guild weak parts-carried	769436a2841b6161
 wc_redwood_guild weak parts-carried-away	4d50903a252beec6
 wc_redwood_guild weak parts-in-bank	f2b28e086a28afda
+wc_rosewood_drumstick strong bank-empty	25c5477290271f59
+wc_rosewood_drumstick strong bank-empty-rich	25c5477290271f59
+wc_rosewood_drumstick strong bank-unknown	8a073fddbc320e9f
+wc_rosewood_drumstick strong full-of-products	f45327a1cd575293
+wc_rosewood_drumstick strong gear-carried	d197cde9eb49f2eb
+wc_rosewood_drumstick strong goal-reached	999a43610e7f25d9
+wc_rosewood_drumstick strong in-instance	f45327a1cd575293
+wc_rosewood_drumstick strong kit-at-spot	f45327a1cd575293
+wc_rosewood_drumstick strong kit-away	f45327a1cd575293
+wc_rosewood_drumstick strong kit-worn-at-spot	f45327a1cd575293
+wc_rosewood_drumstick strong owns-all-at-bank	8d763d279a7997db
+wc_rosewood_drumstick strong owns-all-in-bank	8d763d279a7997db
+wc_rosewood_drumstick strong parts-carried	f45327a1cd575293
+wc_rosewood_drumstick strong parts-carried-away	f45327a1cd575293
+wc_rosewood_drumstick strong parts-in-bank	8d763d279a7997db
+wc_rosewood_drumstick weak bank-empty	25c5477290271f59
+wc_rosewood_drumstick weak bank-empty-rich	25c5477290271f59
+wc_rosewood_drumstick weak bank-unknown	8a073fddbc320e9f
+wc_rosewood_drumstick weak full-of-products	f45327a1cd575293
+wc_rosewood_drumstick weak gear-carried	d197cde9eb49f2eb
+wc_rosewood_drumstick weak goal-reached	999a43610e7f25d9
+wc_rosewood_drumstick weak in-instance	f45327a1cd575293
+wc_rosewood_drumstick weak kit-at-spot	f45327a1cd575293
+wc_rosewood_drumstick weak kit-away	f45327a1cd575293
+wc_rosewood_drumstick weak kit-worn-at-spot	f45327a1cd575293
+wc_rosewood_drumstick weak owns-all-at-bank	8d763d279a7997db
+wc_rosewood_drumstick weak owns-all-in-bank	8d763d279a7997db
+wc_rosewood_drumstick weak parts-carried	f45327a1cd575293
+wc_rosewood_drumstick weak parts-carried-away	f45327a1cd575293
+wc_rosewood_drumstick weak parts-in-bank	8d763d279a7997db
 wc_teak_grove strong bank-empty	506c017a4113d62e
 wc_teak_grove strong bank-empty-rich	fcb8efc2d6b7c34e
 wc_teak_grove strong bank-unknown	1081e7d9f069099d
