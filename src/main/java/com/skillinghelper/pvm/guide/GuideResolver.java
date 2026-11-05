@@ -134,6 +134,8 @@ public final class GuideResolver
 				b.line(note.getValue());
 			}
 		}
+		b.line("Click the outlined boss to attack it. Eat when your hitpoints drop below half, and drink your "
+			+ "potions when their boost or prayer runs low.");
 		WeaponSwap swap = fight.getWield().apply(s);
 		if (swap != null)
 		{

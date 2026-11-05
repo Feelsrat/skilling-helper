@@ -45,6 +45,8 @@ public final class PvmGuides
 	private static final Location NECROPOLIS = Location.of("the Necropolis", 3355, 2725, 25);
 	private static final Location QUIDAMORTEM = Location.of("Mount Quidamortem", 1233, 3565, 15);
 	private static final Location VER_SINHAZA = Location.of("Ver Sinhaza", 3650, 3219, 15);
+	private static final Location GOD_WARS_HOLE = Location.of("the God Wars Dungeon entrance", 2917, 3745, 6);
+	private static final Location WARRIORS_GUILD = Location.of("the Warriors' Guild", 2877, 3546, 6);
 	private static final Location BARBARIAN_OUTPOST = Location.of("the Barbarian Outpost", 2531, 3577, 12);
 	private static final int[] MOONLIGHT_POTIONS = {
 		ItemID._4DOSEMOONLIGHTPOTION, ItemID._3DOSEMOONLIGHTPOTION, ItemID._2DOSEMOONLIGHTPOTION,
@@ -237,17 +239,28 @@ public final class PvmGuides
 			.supply(Supplies.food(Supplies.LOBSTERS, 15))
 			.stage(Stage.builder()
 				.title("Earn tokens at the animator")
-				.place(Location.of("the Warriors' Guild animator", 2851, 3536, 6))
-				.line("Use your mithril armour on the Magical Animator and kill the armour it makes. Pick the "
-					+ "pieces back up and repeat until you have 100+ tokens (10 a minute upstairs).")
-				.line("Then climb to the top floor and kill cyclopes until a defender drops; show it to Lorelai for "
-					+ "the next tier.")
+				.place(WARRIORS_GUILD)
+				.line("You need Attack and Strength adding up to 130 (or 99 in one) to get in. Teleport to Burthorpe "
+					+ "with a games necklace and walk west to the guild.")
+				.line("Go to the room with the Magical Animators. Use your mithril helm on an animator (click the "
+					+ "helm, then the animator): your platebody and platelegs come alive as one enemy.")
+				.line("Kill it, pick your three pieces back up and repeat. Each kill gives tokens; you need 100+.")
+				.highlight(Target.object(null, "Magical Animator"))
+				.build())
+			.stage(Stage.builder()
+				.title("Kill cyclopes for defenders")
+				.place(WARRIORS_GUILD)
+				.line("Climb the stairs to the top floor and go through the door by Kamfreena. Entering costs 10 "
+					+ "tokens, and 10 more every minute.")
+				.line("Kill cyclopes with melee until a defender drops (1 in 50). Pick it up, leave the room and "
+					+ "show it to Kamfreena, or the next tier won't drop.")
+				.line("Go back in and repeat up to rune. The dragon defender drops in the basement.")
 				.highlight(Target.object(null, "Magical Animator"))
 				.highlight(Target.npc("Attack", "Cyclops"))
 				.build())
 			.fight(Fight.builder()
 				.boss("Cyclops")
-				.tip("Keep a defender in your shield slot so the next tier can drop.")
+				.tip("Keep your newest defender in your shield slot so the next tier can drop.")
 				.build())
 			.profit(Profit.reward("Bronze to dragon defenders, the best melee off-hand for a long time"))
 			.build(),
@@ -485,12 +498,18 @@ public final class PvmGuides
 				.title("Go to Zul-Andra")
 				.when(s -> !ZUL_ANDRA.contains(s.getLocation()))
 				.place(ZUL_ANDRA)
-				.line("Read a Zul-andra teleport scroll, or take fairy ring B-J-S and walk west.")
+				.line("You need Regicide done up to reaching Port Tyras. Read a Zul-andra teleport scroll, or take "
+					+ "fairy ring B-J-S and walk west.")
+				.line("The first time, talk to High Priestess Zul-Harcinqa and offer to be the sacrifice, or you "
+					+ "can't board the boat.")
 				.use(ItemID.TELEPORTSCROLL_ZULANDRA)
 				.build())
 			.stage(Stage.builder()
 				.title("Board the sacrificial boat")
 				.line("Drink an anti-venom, then take the sacrificial boat at the jetty to Zulrah's shrine.")
+				.line("Zulrah rises from the water as soon as you click. Stay on the platform; the only way out is "
+					+ "killing her, teleporting or dying.")
+				.line("Her loot lands under you. If you die, Priestess Zul-Gwenwynig at the jetty holds your items.")
 				.highlight(Target.object(null, "Sacrificial boat"))
 				.build())
 			.fight(Fight.builder()
@@ -573,12 +592,18 @@ public final class PvmGuides
 				.title("Sail to Ungael")
 				.when(s -> !onUngael(s))
 				.place(RELLEKKA_PIER)
-				.line("Talk to Torfinn on the pier north of Rellekka and travel to Ungael.")
+				.line("You need Dragon Slayer II done. Teleport to Rellekka (Rellekka teleport, enchanted lyre or "
+					+ "Fremennik sea boots) and walk to the third pier from the west.")
+				.line("Right-click Torfinn and pick \"Ungael\". If you die at Vorkath, Torfinn keeps your items "
+					+ "for a fee.")
 				.highlight(Target.npc("Travel", "Torfinn"))
 				.build())
 			.stage(Stage.builder()
 				.title("Climb over the ice")
-				.line("Drink your antifire and anti-venom, then climb over the ice chunks to wake Vorkath.")
+				.line("Drink your antifire and anti-venom, then climb over the ice chunks into the crater.")
+				.line("Vorkath is asleep in the middle. Click him (\"Poke\") to wake him and the fight starts.")
+				.line("When he dies, pick up the loot, climb back over the ice and talk to Torfinn to go again or "
+					+ "teleport to bank.")
 				.highlight(Target.object(null, "Ice chunks"))
 				.build())
 			.fight(Fight.builder()
@@ -605,17 +630,43 @@ public final class PvmGuides
 			.supply(Supplies.food(Supplies.SHARKS))
 			.inside(PvmGuides::inGodWars)
 			.stage(Stage.builder()
+				.title("Go to the God Wars Dungeon")
+				.when(s -> !inGodWars(s))
+				.place(GOD_WARS_HOLE)
+				.line("You need to have beaten Dad in Troll Stronghold first. Fastest is the Trollheim teleport "
+					+ "(after Eadgar's Ruse) or Ghommal's hilt; otherwise teleport to Burthorpe and walk up past "
+					+ "Death Plateau.")
+				.line("Go round to the north side of the mountain. Thrower trolls throw rocks here, so keep running.")
+				.line("Squeeze past the big boulder (60 Strength) or the little crack (60 Agility), then run north to "
+					+ "the large hole in the snow.")
+				.line("The first time, use your rope on the hole (click the rope, then the hole). Then climb down.")
+				.line("Each general's area needs 70 in one stat: Bandos 70 Strength and a hammer, Armadyl 70 Ranged "
+					+ "and a crossbow with a mith grapple, Saradomin 70 Agility and two ropes the first time, Zamorak "
+					+ "70 Hitpoints.")
+				.highlight(Target.object(null, "Boulder"))
+				.highlight(Target.object(null, "Little crack"))
+				.highlight(Target.object(null, "Hole"))
+				.use(ItemID.ROPE)
+				.build())
+			.stage(Stage.builder()
 				.title("Get 40 kill count")
 				.when(s -> inGodWars(s) && GodWars.best(s) < 40)
 				.committed(true)
-				.line("Kill the followers of the god whose general you want until that god shows 40.")
+				.line("Wear one item of each god you don't want attacking you (a god cape, book, blessing or "
+					+ "armour piece). Followers of the gods you show leave you alone.")
+				.line("Walk to the camp of the god whose general you want (Bandos is the usual first) and kill that "
+					+ "god's followers until its kill count, top-left of your screen, shows 40.")
+				.line("Kill count stays while you're inside. Eat when you drop below half hitpoints.")
 				.live(GodWars::progress)
 				.build())
 			.stage(Stage.builder()
 				.title("Enter the general's room")
 				.when(PvmGuides::inGodWars)
 				.committed(true)
-				.line("Go through the big door at the end of that god's area.")
+				.line("Go to the big door at the end of that god's area. For Bandos, have a hammer in your "
+					+ "inventory and click the door to bang the gong; going in uses up your 40 kill count.")
+				.line("Inside you're locked in with the general and three bodyguards until you leave by the door "
+					+ "again (that costs kill count next time too).")
 				.highlight(Target.object(null, "Big door"))
 				.live(GodWars::progress)
 				.build())
