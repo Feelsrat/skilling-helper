@@ -201,7 +201,7 @@ Contents access to this repo) and saves it in `~/.config/skilling-helper-updater
 
 To update every time you start the game, even from Game Mode, say yes when `--install` (or the Update icon) asks.
 It puts `"$HOME/.local/bin/skilling-helper-update" --auto %command%` at the start of the shortcut's launch options
-for you (Steam closes for a few seconds while it saves that; `--enable-auto` does it without asking). Each start shows a small "Checking for Skilling Helper updates..." window and then, for 3 seconds, whether it updated, was already up to date, or failed (put `SKILLING_HELPER_QUIET=1 ` before the launch options to hide it). If there's no internet
+for you (Steam closes for a few seconds while it saves that; `--enable-auto` does it without asking). Each start shows a small "Checking for Skilling Helper updates..." window and then whether it updated, was already up to date, or failed, with a 3-second countdown before it closes (put `SKILLING_HELPER_QUIET=1 ` before the launch options to hide it). If there's no internet
 or GitHub is slow, the game just starts with the jar it has; what happened is logged to
 `~/.cache/skilling-helper-update.log`. Other options: `--list` shows your shortcuts, `--shortcut NAME` picks one,
 `--force` reinstalls.
