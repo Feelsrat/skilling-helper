@@ -159,4 +159,48 @@ final class DiaryStages
 				.line("3. Turn the dials to " + dials + " and click Teleport. " + arrival)
 				.build());
 	}
+
+	static final List<DiaryItem> SCARECROW_ITEMS = List.of(
+		DiaryItem.of("Empty sack", ItemID.SACK_EMPTY),
+		DiaryItem.of("Bronze spear", ItemID.BRONZE_SPEAR),
+		DiaryItem.of("Watermelon", ItemID.WATERMELON));
+
+	/**
+	 * Fill a sack with hay at the Falador farm, build the scarecrow and plant it in a flower patch.
+	 */
+	static List<DiaryStage> scarecrow(Location patch)
+	{
+		return List.of(
+			DiaryStage.builder()
+				.title("Fill the sack with hay")
+				.at(Location.of("Hay bales in the chicken coop south of Falador", 3019, 3297, 0, 3))
+				.object("Hay bales").object("Haystack")
+				.use(ItemID.SACK_EMPTY)
+				.line("1. Use the Empty sack (outlined) on the Hay bales (outlined) in the chicken coop.")
+				.build(),
+			DiaryStage.builder()
+				.title("Put the hay sack on the spear")
+				.carrying(ItemID.SCARECROW_TORSO)
+				.started(true)
+				.use(ItemID.SCARECROW_TORSO).use(ItemID.BRONZE_SPEAR)
+				.line("1. Use the Hay sack on the Bronze spear (both outlined).")
+				.build(),
+			DiaryStage.builder()
+				.title("Add the watermelon head")
+				.carrying(ItemID.SCARECROW_TORSO_SPEAR)
+				.started(true)
+				.use(ItemID.WATERMELON).use(ItemID.SCARECROW_TORSO_SPEAR)
+				.line("1. Use the Watermelon on the hay sack and spear (both outlined).")
+				.build(),
+			DiaryStage.builder()
+				.title("Plant the scarecrow in the flower patch")
+				.carrying(ItemID.SCARECROW_COMPLETE)
+				.started(true)
+				.at(patch)
+				.object("Flower Patch").object("Flower patch")
+				.use(ItemID.SCARECROW_COMPLETE)
+				.line("1. Rake the Flower patch (outlined) if it has weeds.")
+				.line("2. Use the Scarecrow on the Flower patch.")
+				.build());
+	}
 }
