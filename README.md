@@ -164,6 +164,18 @@ starts it and the quest's line in the Quest list, and tells you to right-click i
 Without Quest Helper it warns once in the chat and in the panel. Diary rows send you to Achievement Diary Guides.
 Data is rebuilt with `python3 tools/quests/build_quests.py src/main/resources/com/skillinghelper/quests`.
 
+## Collection Log Guide
+
+Also in the jar: **Collection Log Guide** (red book icon). It shows the collection log slots you don't have yet that
+most players have (the wiki's completion figures, so the quickest ones come first), the pages you're closest to
+finishing, every pet with where it comes from, and the whole log by tab. Pick one for beginner steps: where a full
+guide exists elsewhere in the jar (PvM Progression for bosses and raids, Skilling Helper for Wintertodt, Tempoross,
+Guardians of the Rift, rooftops, skilling pets and more) "Open full guide" starts it; otherwise "Show the way" draws
+the route with Shortest Path and the boss is outlined. Your log is read from the log pages you open in game and from
+the "New item added to your collection log" chat message, and saved per account; items in your bank count until the
+log page says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is rebuilt
+with `python3 tools/collection/build_collection_log.py <cache dir> src/main/resources/com/skillinghelper/collection/collection-log.tsv`.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
