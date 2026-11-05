@@ -2,6 +2,7 @@ package com.skillinghelper.planner;
 
 import com.skillinghelper.SkillingStepProvider;
 import com.skillinghelper.diary.DiaryStepProvider;
+import com.skillinghelper.minigame.MinigameStepProvider;
 import com.skillinghelper.planner.api.PlanStepProvider;
 import com.skillinghelper.pvm.PvmStepProvider;
 import com.skillinghelper.quests.QuestStepProvider;
@@ -19,6 +20,7 @@ public final class StepProviders
 		new QuestStepProvider(),
 		new UnlockStepProvider(),
 		new DiaryStepProvider(),
+		new MinigameStepProvider(),
 		new PvmStepProvider(),
 		new SkillingStepProvider());
 
