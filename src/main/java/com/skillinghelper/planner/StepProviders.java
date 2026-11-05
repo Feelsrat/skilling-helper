@@ -5,6 +5,7 @@ import com.skillinghelper.diary.DiaryStepProvider;
 import com.skillinghelper.planner.api.PlanStepProvider;
 import com.skillinghelper.pvm.PvmStepProvider;
 import com.skillinghelper.quests.QuestStepProvider;
+import com.skillinghelper.unlocks.UnlockStepProvider;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public final class StepProviders
 {
 	public static final List<PlanStepProvider> ALL = List.of(
 		new QuestStepProvider(),
+		new UnlockStepProvider(),
 		new DiaryStepProvider(),
 		new PvmStepProvider(),
 		new SkillingStepProvider());

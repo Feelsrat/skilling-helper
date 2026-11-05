@@ -163,6 +163,25 @@ public class DiaryStepProvider implements PlanStepProvider
 	}
 
 	/**
+	 * "REGION.TIER" of every diary reward claimed.
+	 */
+	public static Set<String> claimedTiers(IntUnaryOperator varbit)
+	{
+		Set<String> out = new HashSet<>();
+		for (DiaryRegion r : DiaryRegion.values())
+		{
+			for (DiaryTier t : DiaryTier.values())
+			{
+				if (varbit.applyAsInt(r.rewardVarbit(t)) > 0)
+				{
+					out.add(r.name() + "." + t.name());
+				}
+			}
+		}
+		return out;
+	}
+
+	/**
 	 * Keys of the diary tasks the game says are done.
 	 */
 	static Set<String> doneTasks(IntUnaryOperator varp, IntUnaryOperator varbit)

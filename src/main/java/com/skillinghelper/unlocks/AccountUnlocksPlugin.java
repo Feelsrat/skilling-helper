@@ -1,6 +1,7 @@
 package com.skillinghelper.unlocks;
 
 import com.google.inject.Provides;
+import com.skillinghelper.OpenUnlockRequest;
 import com.skillinghelper.OpenMethodRequest;
 import com.skillinghelper.QuestHelperLink;
 import com.skillinghelper.ShortestPathLink;
@@ -587,6 +588,20 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 			picked = null;
 			refresh();
 		});
+	}
+
+	/**
+	 * Another plugin in this jar (Account Planner) asked to open one unlock: pick it, start the guide and open the
+	 * panel.
+	 */
+	@Subscribe
+	public void onOpenUnlockRequest(OpenUnlockRequest e)
+	{
+		picked = e.getUnlockId();
+		skipped.remove(picked);
+		running = true;
+		refresh();
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
 
 	@Override
