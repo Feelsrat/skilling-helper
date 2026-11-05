@@ -314,9 +314,12 @@ public final class GuideResolver
 				b.line("✘ No " + l.buyName().toLowerCase() + " in your bank: get " + l.getToBuy() + " first.");
 			}
 		}
-		TravelPick travel = s.getTravel();
-		if (travel != null && !travel.isCarried())
+		for (TravelPick travel : s.getTravel())
 		{
+			if (travel.isCarried())
+			{
+				continue;
+			}
 			b.line("• " + travel.bankLine());
 			b.itemHighlight(travel.getItemId(), ItemHighlight.TRAVEL);
 			// Worth a bank step on its own only while the bank is open anyway
@@ -435,8 +438,7 @@ public final class GuideResolver
 		if (!there)
 		{
 			b.destination(place);
-			TravelPick travel = s.getTravel();
-			if (travel != null)
+			for (TravelPick travel : s.getTravel())
 			{
 				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
 			}

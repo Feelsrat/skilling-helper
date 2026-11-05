@@ -5,10 +5,11 @@ import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.ItemCounts;
 import com.skillinghelper.engine.PlayerState;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -65,17 +66,18 @@ public class TravelAdvisor
 	}
 
 	/**
-	 * The travel item to suggest for heading to {@code destinations}, or null.
+	 * What to bring for heading to {@code destinations}: a travel item and/or coins for a paid transport. Empty when
+	 * walking is fine.
 	 *
 	 * @param wildernessDestination whether the destination itself is in the Wilderness and the player opted in, so a
 	 *                              teleport there is fine
 	 */
-	public TravelPick pick(IntPredicate carried, IntPredicate inBank, WorldPoint from, List<WorldPoint> destinations,
-		String destinationName, boolean wildernessDestination)
+	public List<TravelPick> plan(IntUnaryOperator carried, IntUnaryOperator inBank, WorldPoint from,
+		List<WorldPoint> destinations, String destinationName, boolean wildernessDestination)
 	{
 		if (!enabled() || client.getGameState() != GameState.LOGGED_IN || destinations.isEmpty())
 		{
-			return null;
+			return Collections.emptyList();
 		}
 		long now = System.currentTimeMillis();
 		if (unlocks == null || now - readAt > REFRESH_MILLIS)
@@ -84,7 +86,7 @@ public class TravelAdvisor
 			readAt = now;
 		}
 		boolean allowWild = wildernessDestination && Wilderness.allowed(configManager);
-		return TravelPlanner.pick(TravelData.all(), unlocks, carried, inBank, from, destinations, destinationName,
+		return TravelPlanner.plan(TravelData.all(), unlocks, carried, inBank, from, destinations, destinationName,
 			allowWild);
 	}
 
@@ -127,14 +129,14 @@ public class TravelAdvisor
 	}
 
 	/**
-	 * The travel item to suggest to a Skilling Helper or Banked XP player heading for {@code places}, or null. Nothing
-	 * while sailing, in an instance or for places at sea.
+	 * What to bring (a travel item, coins for a paid transport) for a Skilling Helper or Banked XP player heading
+	 * for {@code places}. Nothing while sailing, in an instance or for places at sea.
 	 */
-	public TravelPick pick(PlayerState s, List<Location> places)
+	public List<TravelPick> plan(PlayerState s, List<Location> places)
 	{
 		if (places.isEmpty() || s.isOnBoat() || s.isInInstance() || places.get(0).isAtSea())
 		{
-			return null;
+			return Collections.emptyList();
 		}
 		List<WorldPoint> points = new ArrayList<>();
 		boolean wild = false;
@@ -144,7 +146,7 @@ public class TravelAdvisor
 			wild |= Wilderness.contains(l);
 		}
 		ItemCounts bank = s.getBank();
-		return pick(id -> s.getInventory().has(id) || s.getEquipment().has(id), id -> bank != null && bank.has(id),
+		return plan(id -> s.getInventory().count(id) + s.getEquipment().count(id), id -> bank == null ? 0 : bank.count(id),
 			s.getLocation(), points, places.get(0).getName(), wild);
 	}
 }

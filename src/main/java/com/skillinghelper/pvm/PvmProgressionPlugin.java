@@ -803,15 +803,17 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		{
 			tripStocked = false;
 		}
-		state = state.toBuilder().tripStocked(tripStocked).travel(travelPick(state)).build();
+		state = state.toBuilder().tripStocked(tripStocked).travel(travelPicks(state)).build();
 		PvmStep next = GuideResolver.resolve(guide, guideContent.getName(), state, plan);
 		showRoute(next.getDestination(), next.isLocalRoute());
 		Set<Integer> items = plan.bankItems();
-		TravelPick pick = state.getTravel();
-		if (pick != null && !pick.isCarried())
+		for (TravelPick pick : state.getTravel())
 		{
-			items = new HashSet<>(items);
-			items.add(pick.getItemId());
+			if (!pick.isCarried())
+			{
+				items = new HashSet<>(items);
+				items.add(pick.getItemId());
+			}
 		}
 		if (!items.equals(bankItems))
 		{
@@ -918,19 +920,19 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	}
 
 	/**
-	 * The travel item worth bringing to the guide's place, or null.
+	 * What's worth bringing to the guide's place: a travel item and/or coins for a paid transport.
 	 */
-	private TravelPick travelPick(GuideState s)
+	private List<TravelPick> travelPicks(GuideState s)
 	{
 		Location place = guide.getPlace();
 		WorldPoint point = place != null ? place.getPoint() : guideContent.getLocation();
 		if (point == null || s.isInInstance())
 		{
-			return null;
+			return List.of();
 		}
 		Map<Integer, Integer> bank = s.getBank();
-		return travel.pick(id -> s.getInventory().containsKey(id) || s.getWorn().containsKey(id),
-			id -> bank != null && bank.getOrDefault(id, 0) > 0, s.getLocation(), List.of(point),
+		return travel.plan(id -> s.getInventory().getOrDefault(id, 0) + s.getWorn().getOrDefault(id, 0),
+			id -> bank == null ? 0 : bank.getOrDefault(id, 0), s.getLocation(), List.of(point),
 			place != null ? place.getName() : guideContent.getName(),
 			guideContent.isWilderness() && Wilderness.contains(point));
 	}

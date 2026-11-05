@@ -533,13 +533,13 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		Map<Integer, Integer> carried = carried();
 		Location spot = running.getSpot();
 		Map<Integer, Integer> bank = bankCounts;
-		TravelPick pick = spot == null || client.getTopLevelWorldView().isInstance() ? null
-			: travel.pick(id -> carried.getOrDefault(id, 0) > 0, id -> bank != null && bank.getOrDefault(id, 0) > 0,
+		List<TravelPick> picks = spot == null || client.getTopLevelWorldView().isInstance() ? List.of()
+			: travel.plan(id -> carried.getOrDefault(id, 0), id -> bank == null ? 0 : bank.getOrDefault(id, 0),
 				here, List.of(spot.getPoint()), spot.getName(), Wilderness.contains(spot));
 		MoneyStep next = MoneyGuide.resolve(option, MoneyGuide.Player.builder()
 			.location(here)
 			.carried(carried)
-			.travel(pick)
+			.travel(picks)
 			.bank(bankCounts == null ? null : new HashMap<>(bankCounts))
 			.bankOpen(bankOpen)
 			.inventoryFull(inv != null && inv.count() >= MoneyGuide.INVENTORY_SLOTS)
@@ -554,9 +554,12 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		targets.track(next.getNpcs(), next.getObjects());
 		showWay(next.getDestination(), running);
 		Set<Integer> wanted = new HashSet<>(inputIds(running));
-		if (pick != null && !pick.isCarried())
+		for (TravelPick pick : picks)
 		{
-			wanted.add(pick.getItemId());
+			if (!pick.isCarried())
+			{
+				wanted.add(pick.getItemId());
+			}
 		}
 		setBankItems(wanted);
 		if (!Objects.equals(previous, next))

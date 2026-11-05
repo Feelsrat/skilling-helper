@@ -20,6 +20,11 @@ public class TravelOption
 		 * A fairy ring code: needs a Dramen or Lunar staff unless the Lumbridge elite diary is done.
 		 */
 		FAIRY_RING,
+		/**
+		 * A transport that costs coins (a boat, charter ship, magic carpet, dungeon entrance...). Shortest Path only
+		 * uses it when the coins are in the inventory.
+		 */
+		FEE,
 	}
 
 	Kind kind;
@@ -47,6 +52,14 @@ public class TravelOption
 	Map<Skill, Integer> skills;
 	List<Check> varbits;
 	List<Check> varps;
+	/**
+	 * Where a {@link Kind#FEE} transport starts, else null.
+	 */
+	WorldPoint origin;
+	/**
+	 * What a {@link Kind#FEE} transport costs, else 0.
+	 */
+	int coins;
 
 	/**
 	 * A game variable that must be equal to, below or above a value.
@@ -78,6 +91,10 @@ public class TravelOption
 	 */
 	public String how()
 	{
+		if (kind == Kind.FEE)
+		{
+			return group;
+		}
 		if (kind == Kind.FAIRY_RING)
 		{
 			return "ZANARIS".equalsIgnoreCase(place) ? "fairy ring to Zanaris" : "fairy ring " + place.replace(' ', '-');

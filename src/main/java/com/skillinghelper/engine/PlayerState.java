@@ -4,6 +4,7 @@ import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Mooring;
 import com.skillinghelper.travel.TravelPick;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.Builder;
@@ -77,9 +78,10 @@ public class PlayerState
 	 */
 	boolean preferShops;
 	/**
-	 * The travel item to bring to the training spot, or null.
+	 * What to bring to the training spot: a travel item and/or coins for a paid transport.
 	 */
-	TravelPick travel;
+	@Builder.Default
+	List<TravelPick> travel = Collections.emptyList();
 
 	public int level(Skill skill)
 	{

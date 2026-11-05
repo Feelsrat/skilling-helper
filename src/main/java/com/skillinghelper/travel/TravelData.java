@@ -16,7 +16,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.gameval.ItemID;
 
 /**
- * Every teleport item and fairy ring, loaded once from {@code travel.tsv}. That file is built from the Shortest Path
+ * Every teleport item, fairy ring and paid transport, loaded once from {@code travel.tsv}. That file is built from the Shortest Path
  * plugin's transport data by {@code tools/travel/build_travel.py}, so whatever the guide suggests is something Shortest
  * Path can route with.
  */
@@ -92,13 +92,11 @@ public final class TravelData
 		{
 			return null;
 		}
-		String[] xyz = c[3].trim().split(" ");
-		if (xyz.length != 3)
+		WorldPoint point = point(c[3]);
+		if (point == null)
 		{
 			return null;
 		}
-		WorldPoint point = new WorldPoint(Integer.parseInt(xyz[0]), Integer.parseInt(xyz[1]),
-			Integer.parseInt(xyz[2]));
 		int[] ids = c[4].isEmpty() ? new int[0]
 			: java.util.Arrays.stream(c[4].split("\\|")).mapToInt(Integer::parseInt).toArray();
 		List<String> quests = new ArrayList<>();
@@ -126,8 +124,35 @@ public final class TravelData
 				}
 			}
 		}
-		return new TravelOption("F".equals(c[0]) ? TravelOption.Kind.FAIRY_RING : TravelOption.Kind.ITEM,
-			c[1], c[2], point, ids, "T".equals(c[5]), quests, skills, checks(c[8]), checks(c[9]));
+		TravelOption.Kind kind = "F".equals(c[0]) ? TravelOption.Kind.FAIRY_RING
+			: "C".equals(c[0]) ? TravelOption.Kind.FEE : TravelOption.Kind.ITEM;
+		WorldPoint origin = null;
+		int coins = 0;
+		if (kind == TravelOption.Kind.FEE)
+		{
+			if (c.length < 12)
+			{
+				return null;
+			}
+			origin = point(c[10]);
+			coins = Integer.parseInt(c[11].trim());
+			if (origin == null)
+			{
+				return null;
+			}
+		}
+		return new TravelOption(kind, c[1], c[2], point, ids, "T".equals(c[5]), quests, skills, checks(c[8]),
+			checks(c[9]), origin, coins);
+	}
+
+	private static WorldPoint point(String text)
+	{
+		String[] xyz = text.trim().split(" ");
+		if (xyz.length != 3)
+		{
+			return null;
+		}
+		return new WorldPoint(Integer.parseInt(xyz[0]), Integer.parseInt(xyz[1]), Integer.parseInt(xyz[2]));
 	}
 
 	private static List<TravelOption.Check> checks(String text)

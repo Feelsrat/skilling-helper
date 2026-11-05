@@ -1,9 +1,12 @@
 package com.skillinghelper.travel;
 
 import com.skillinghelper.data.Wilderness;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Picks the one travel item worth bringing to a destination: the teleport (or fairy ring) the player owns and has
@@ -45,6 +48,109 @@ public final class TravelPlanner
 	}
 
 	/**
+	 * What to bring for heading to {@code destinations}: the best travel item (see {@link #pick}) and, after it,
+	 * coins for a paid transport (boat, charter ship, magic carpet, dungeon entrance) that gets there quicker from
+	 * where the item lands. Empty when walking is fine.
+	 *
+	 * @param carried how many of an item id are in the inventory or worn
+	 * @param inBank  how many of an item id are in the bank (placeholders don't count)
+	 */
+	public static List<TravelPick> plan(List<TravelOption> options, TravelUnlocks unlocks, IntUnaryOperator carried,
+		IntUnaryOperator inBank, WorldPoint from, List<WorldPoint> destinations, String destinationName,
+		boolean allowWild)
+	{
+		List<TravelPick> out = new ArrayList<>();
+		TravelPick item = pick(options, unlocks, id -> carried.applyAsInt(id) > 0, id -> inBank.applyAsInt(id) > 0,
+			from, destinations, destinationName, allowWild);
+		if (item != null)
+		{
+			out.add(item);
+		}
+		// After the item, the player stands where it lands (a fairy ring option is the ring it lands at)
+		WorldPoint feeFrom = item != null ? item.getOption().getPoint() : from;
+		TravelPick fee = fee(options, unlocks, carried.applyAsInt(ItemID.COINS), inBank.applyAsInt(ItemID.COINS),
+			feeFrom, destinations, destinationName, allowWild);
+		if (fee != null)
+		{
+			out.add(fee);
+		}
+		return out;
+	}
+
+	/**
+	 * Coins for the paid transport that gets from {@code from} to a destination quickest, if it beats walking by
+	 * enough, or the destination is in a dungeon that a paid entrance leads into. Null otherwise, or when the
+	 * player doesn't have the coins.
+	 */
+	static TravelPick fee(List<TravelOption> options, TravelUnlocks unlocks, int carriedCoins, int bankCoins,
+		WorldPoint from, List<WorldPoint> destinations, String destinationName, boolean allowWild)
+	{
+		if (from == null || destinations.isEmpty())
+		{
+			return null;
+		}
+		int walk = Integer.MAX_VALUE;
+		boolean underground = false;
+		for (WorldPoint d : destinations)
+		{
+			walk = Math.min(walk, distance(from, d));
+			underground |= isUnderground(d);
+		}
+		TravelOption best = null;
+		int bestCost = Integer.MAX_VALUE;
+		int bestLand = 0;
+		for (int i = 0; i < options.size(); i++)
+		{
+			TravelOption o = options.get(i);
+			if (o.getKind() != TravelOption.Kind.FEE || !unlocks.usable(i)
+				|| (!allowWild && (Wilderness.contains(o.getPoint()) || Wilderness.contains(o.getOrigin())))
+				|| o.getCoins() > carriedCoins + bankCoins)
+			{
+				continue;
+			}
+			int land = Integer.MAX_VALUE;
+			for (WorldPoint d : destinations)
+			{
+				land = Math.min(land, distance(o.getPoint(), d));
+			}
+			int approach = distance(from, o.getOrigin());
+			if (land > MAX_LANDING || approach > MAX_LANDING * 3)
+			{
+				continue;
+			}
+			int cost = approach + land + TELEPORT_COST;
+			// A dungeon behind a paid entrance can't be walked into as the crow flies suggests
+			boolean entrance = underground && isUnderground(o.getPoint()) && !isUnderground(o.getOrigin())
+				&& approach <= MAX_LANDING;
+			if (!entrance && (walk < MIN_WALK || cost + MIN_SAVING > walk))
+			{
+				continue;
+			}
+			if (cost < bestCost)
+			{
+				best = o;
+				bestCost = cost;
+				bestLand = land;
+			}
+		}
+		if (best == null)
+		{
+			return null;
+		}
+		// Boats and carpets are paid both ways; a dungeon entrance only going in
+		int want = isUnderground(best.getPoint()) ? best.getCoins() : best.getCoins() * 2;
+		want = Math.min(want, carriedCoins + bankCoins);
+		boolean enough = carriedCoins >= want;
+		return new TravelPick(best, ItemID.COINS, enough, bestLand, destinationName,
+			enough ? 0 : want - carriedCoins);
+	}
+
+	private static boolean isUnderground(WorldPoint p)
+	{
+		return p.getY() >= UNDERGROUND_OFFSET && p.getY() < 2 * UNDERGROUND_OFFSET && p.getX() < 4000;
+	}
+
+	/**
 	 * The best travel item for getting from {@code from} to any of {@code destinations}, or null when walking is
 	 * fine or the player has nothing that helps.
 	 *
@@ -79,6 +185,10 @@ public final class TravelPlanner
 		{
 			TravelOption o = options.get(i);
 			if (!unlocks.usable(i) || (!allowWild && Wilderness.contains(o.getPoint())))
+			{
+				continue;
+			}
+			if (o.getKind() == TravelOption.Kind.FEE)
 			{
 				continue;
 			}
@@ -180,8 +290,7 @@ public final class TravelPlanner
 
 	private static int surfaceY(WorldPoint p)
 	{
-		int y = p.getY();
-		return y >= UNDERGROUND_OFFSET && y < 2 * UNDERGROUND_OFFSET && p.getX() < 4000 ? y - UNDERGROUND_OFFSET : y;
+		return isUnderground(p) ? p.getY() - UNDERGROUND_OFFSET : p.getY();
 	}
 
 	private static final class Candidate

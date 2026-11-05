@@ -86,9 +86,10 @@ public final class MoneyGuide
 		@Builder.Default
 		IntUnaryOperator buyPrice = id -> 0;
 		/**
-		 * The travel item to bring to the spot, or null.
+		 * What to bring to the spot: a travel item and/or coins for a paid transport.
 		 */
-		TravelPick travel;
+		@Builder.Default
+		List<TravelPick> travel = Collections.emptyList();
 	}
 
 	public static MoneyStep resolve(MoneyOption option, Player p)
@@ -131,12 +132,11 @@ public final class MoneyGuide
 				b.line("About " + me.distanceTo2D(spot.getPoint()) + " tiles away.");
 			}
 			b.line("Follow the yellow arrow, or the line on the ground if you have the Shortest Path plugin.");
-			TravelPick travel = p.getTravel();
-			if (travel != null)
+			for (TravelPick travel : p.getTravel())
 			{
 				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
 			}
-			else
+			if (p.getTravel().isEmpty())
 			{
 				b.line("Teleports save time: check the wiki page (button in the panel) for the fastest way.");
 			}
@@ -304,11 +304,18 @@ public final class MoneyGuide
 	 */
 	private static void travelLine(MoneyStep.MoneyStepBuilder b, Player p)
 	{
-		TravelPick travel = p.getTravel();
-		if (travel != null && !travel.isCarried())
+		Set<Integer> ids = new HashSet<>();
+		for (TravelPick travel : p.getTravel())
 		{
-			b.line("- " + travel.bankLine());
-			b.travel(Set.of(travel.getItemId()));
+			if (!travel.isCarried())
+			{
+				b.line("- " + travel.bankLine());
+				ids.add(travel.getItemId());
+			}
+		}
+		if (!ids.isEmpty())
+		{
+			b.travel(ids);
 		}
 	}
 

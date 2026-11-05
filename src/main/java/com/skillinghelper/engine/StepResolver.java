@@ -391,9 +391,17 @@ public final class StepResolver
 			}
 		}
 		GuideStep.GuideStepBuilder b = bankStep(s, bank, "Bank", withdraw, needs.optionalInBank, m, kept);
-		// Leave a slot for the travel item still to take out
-		PlayerState forInputs = s.getTravel() != null && !s.getTravel().isCarried()
-			? s.toBuilder().freeInventorySlots(Math.max(0, s.getFreeInventorySlots() - 1)).build() : s;
+		// Leave a slot for each travel item still to take out (coins stack with any already carried)
+		int travelSlots = 0;
+		for (TravelPick travel : s.getTravel())
+		{
+			if (!travel.isCarried() && !(travel.isCoins() && s.getInventory().has(travel.getItemId())))
+			{
+				travelSlots++;
+			}
+		}
+		PlayerState forInputs = travelSlots == 0 ? s
+			: s.toBuilder().freeInventorySlots(Math.max(0, s.getFreeInventorySlots() - travelSlots)).build();
 		if (toMake.isEmpty())
 		{
 			trips.withdrawInputs(b, m, forInputs, gather, actionsLeft);
@@ -478,8 +486,7 @@ public final class StepResolver
 			{
 				b.line("• " + step);
 			}
-			TravelPick travel = s.getTravel();
-			if (travel != null)
+			for (TravelPick travel : s.getTravel())
 			{
 				b.line(travel.isCarried() ? travel.carriedLine() : travel.tipLine());
 			}
@@ -613,12 +620,14 @@ public final class StepResolver
 		{
 			depositUnused(b, m, s, kept);
 		}
-		TravelPick travel = s.getTravel();
-		if (travel != null && !travel.isCarried() && m != null)
+		for (TravelPick travel : s.getTravel())
 		{
-			b.line("• " + travel.bankLine());
-			b.itemHighlight(travel.getItemId(), ItemHighlight.TRAVEL);
-			b.withdrawAmount(travel.getItemId(), 1);
+			if (!travel.isCarried() && m != null)
+			{
+				b.line("• " + travel.bankLine());
+				b.itemHighlight(travel.getItemId(), ItemHighlight.TRAVEL);
+				b.withdrawAmount(travel.getItemId(), travel.getAmount());
+			}
 		}
 		for (Requirement r : withdraw)
 		{
@@ -675,7 +684,14 @@ public final class StepResolver
 	 */
 	private static boolean isTravelItem(PlayerState s, int id)
 	{
-		return s.getTravel() != null && s.getTravel().isCarried() && s.getTravel().getItemId() == id;
+		for (TravelPick travel : s.getTravel())
+		{
+			if (travel.getItemId() == id && (travel.isCarried() || travel.isCoins()))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static boolean needsInputs(Method m, PlayerState s, boolean gather, List<ItemReq> toMake)
@@ -886,18 +902,23 @@ public final class StepResolver
 	 */
 	public static Map<Integer, ItemHighlight> bankItems(List<Requirement> reqs, GuideStep step)
 	{
-		return bankItems(reqs, step, null);
+		return bankItems(reqs, step, Collections.emptyList());
 	}
 
 	/**
-	 * Every item id the bank filter should show, plus the travel item still in the bank in its own colour.
+	 * Every item id the bank filter should show, plus the travel items (and coins for a paid transport) still in the
+	 * bank in their own colour.
 	 */
-	public static Map<Integer, ItemHighlight> bankItems(List<Requirement> reqs, GuideStep step, TravelPick travel)
+	public static Map<Integer, ItemHighlight> bankItems(List<Requirement> reqs, GuideStep step,
+		List<TravelPick> travel)
 	{
 		Map<Integer, ItemHighlight> items = bankItemsFor(reqs, step);
-		if (travel != null && !travel.isCarried())
+		for (TravelPick t : travel)
 		{
-			items.put(travel.getItemId(), ItemHighlight.TRAVEL);
+			if (!t.isCarried())
+			{
+				items.put(t.getItemId(), ItemHighlight.TRAVEL);
+			}
 		}
 		return items;
 	}

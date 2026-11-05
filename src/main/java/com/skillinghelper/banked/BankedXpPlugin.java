@@ -416,10 +416,10 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		BankedPlanner.Option current = queue.get(0);
 		announce(current, queue);
 		BankedPlanner.Plan plan = planner.plan(current.getActivity(), state);
-		TravelPick pick = travel.pick(state, StepResolver.destinations(plan.getMethod(), state));
-		if (pick != null)
+		List<TravelPick> picks = travel.plan(state, StepResolver.destinations(plan.getMethod(), state));
+		if (!picks.isEmpty())
 		{
-			state = state.toBuilder().travel(pick).build();
+			state = state.toBuilder().travel(picks).build();
 			plan = planner.plan(current.getActivity(), state);
 		}
 		GuideStep step = withBankTip(plan.getStep());

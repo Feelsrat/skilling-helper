@@ -45,6 +45,8 @@ public class TravelPlannerTest
 	public void dataLoads()
 	{
 		assertTrue(ALL.size() > 400);
+		assertTrue(ALL.stream().anyMatch(o -> o.getKind() == TravelOption.Kind.FEE && o.getCoins() > 0
+			&& o.getOrigin() != null));
 		assertTrue(ALL.stream().anyMatch(o -> o.getKind() == TravelOption.Kind.FAIRY_RING));
 	}
 
@@ -163,6 +165,54 @@ public class TravelPlannerTest
 				assertFalse(none.usable(i));
 			}
 		}
+	}
+
+	private static final WorldPoint DRAYNOR = new WorldPoint(3092, 3245, 0);
+	private static final WorldPoint MUSA_POINT_FISHING = new WorldPoint(2924, 3178, 0);
+
+	private static List<TravelPick> plan(int carriedCoins, int bankCoins, WorldPoint from, WorldPoint to)
+	{
+		return TravelPlanner.plan(ALL, EVERYTHING, id -> id == ItemID.COINS ? carriedCoins : 0,
+			id -> id == ItemID.COINS ? bankCoins : 0, from, List.of(to), "there", false);
+	}
+
+	@Test
+	public void coinsForTheBoatToKaramja()
+	{
+		List<TravelPick> picks = plan(0, 10_000, DRAYNOR, MUSA_POINT_FISHING);
+		assertEquals(1, picks.size());
+		TravelPick coins = picks.get(0);
+		assertTrue(coins.isCoins());
+		assertFalse(coins.isCarried());
+		assertEquals(TravelOption.Kind.FEE, coins.getOption().getKind());
+		assertTrue(coins.getOption().how(), coins.getOption().how().contains("Musa Point"));
+		// There and back
+		assertEquals(60, coins.getAmount());
+		assertTrue(coins.bankLine(), coins.bankLine().contains("take 60 coins"));
+	}
+
+	@Test
+	public void coinsAlreadyCarriedNeedNothingFromTheBank()
+	{
+		List<TravelPick> picks = plan(1_000, 0, DRAYNOR, MUSA_POINT_FISHING);
+		assertEquals(1, picks.size());
+		assertTrue(picks.get(0).isCarried());
+	}
+
+	@Test
+	public void noCoinsNoBoat()
+	{
+		assertTrue(plan(0, 0, DRAYNOR, MUSA_POINT_FISHING).isEmpty());
+	}
+
+	@Test
+	public void coinsForAPaidDungeonEntrance()
+	{
+		WorldPoint brimhaven = new WorldPoint(2760, 3178, 0);
+		WorldPoint dungeon = new WorldPoint(2700, 9500, 0);
+		List<TravelPick> picks = plan(0, 5_000, brimhaven, dungeon);
+		assertEquals(1, picks.size());
+		assertEquals(875, picks.get(0).getAmount());
 	}
 
 	@Test

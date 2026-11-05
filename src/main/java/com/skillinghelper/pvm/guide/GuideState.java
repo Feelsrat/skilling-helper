@@ -1,6 +1,7 @@
 package com.skillinghelper.pvm.guide;
 
 import com.skillinghelper.travel.TravelPick;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -87,9 +88,10 @@ public class GuideState
 	 */
 	TunnelRoute tunnel;
 	/**
-	 * The travel item to bring to the guide's place, or null.
+	 * What to bring to the guide's place: a travel item and/or coins for a paid transport.
 	 */
-	TravelPick travel;
+	@Builder.Default
+	List<TravelPick> travel = java.util.Collections.emptyList();
 
 	public int level(Skill skill)
 	{

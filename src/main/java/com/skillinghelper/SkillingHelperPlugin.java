@@ -1043,7 +1043,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			return b.step(noMethodStep(skill, level, target)).build();
 		}
 		Method method = current.getMethod();
-		state = state.toBuilder().travel(travel.pick(state, StepResolver.destinations(method, state))).build();
+		state = state.toBuilder().travel(travel.plan(state, StepResolver.destinations(method, state))).build();
 		b.player(state);
 		List<Requirement> reqs = resolver.requirements(method, state, current.getActions());
 		// Size trips and batches to this leg of the plan, the same span the requirement amounts cover
