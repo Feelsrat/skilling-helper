@@ -8,6 +8,11 @@ import com.skillinghelper.engine.ItemHighlight;
 import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.StepType;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -375,6 +380,48 @@ public final class TearsOfGuthix
 				}
 				return "Up " + String.join(", ", parts);
 		}
+	}
+
+	private static final DateTimeFormatter CALENDAR_TIME = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'")
+		.withZone(ZoneOffset.UTC);
+	/**
+	 * How long the calendar event lasts: about one run plus getting there.
+	 */
+	private static final long EVENT_SECONDS = 15 * 60;
+
+	/**
+	 * A Google Calendar "add event" link for when the seven days are up, or null when time isn't what's blocking
+	 * (not tracked, ready, or only waiting on xp). Nothing is sent anywhere: the link just opens the form in the
+	 * browser, already filled in, for the player to save.
+	 */
+	public static String calendarUrl(Status s, long now)
+	{
+		if (s.getState() != State.WAIT || s.getReadyAt() <= now)
+		{
+			return null;
+		}
+		StringBuilder details = new StringBuilder("Juna lets you in again: talk to her in the Lumbridge Swamp Caves "
+			+ "(games necklace teleport).");
+		if (s.isEstimated())
+		{
+			details.append(" Time is from Juna's \"come back in N days\", so it may be up to a day off.");
+		}
+		if (s.getXpToGo() > 0)
+		{
+			details.append(String.format(" You also need %,d more total xp (or 1 quest point) by then.",
+				s.getXpToGo()));
+		}
+		long start = s.getReadyAt();
+		return "https://calendar.google.com/calendar/render?action=TEMPLATE"
+			+ "&text=" + encode("OSRS: " + NAME + " is up")
+			+ "&dates=" + CALENDAR_TIME.format(Instant.ofEpochSecond(start)) + "/"
+			+ CALENDAR_TIME.format(Instant.ofEpochSecond(start + EVENT_SECONDS))
+			+ "&details=" + encode(details.toString());
+	}
+
+	private static String encode(String s)
+	{
+		return URLEncoder.encode(s, StandardCharsets.UTF_8).replace("+", "%20");
 	}
 
 	/**

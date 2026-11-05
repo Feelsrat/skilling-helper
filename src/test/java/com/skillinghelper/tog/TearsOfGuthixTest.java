@@ -192,4 +192,21 @@ public class TearsOfGuthixTest
 	{
 		return TearsOfGuthix.Situation.builder().status(s).now(T0).reward("~2,340 xp in Agility (39 tears)");
 	}
+
+	@Test
+	public void calendarLinkOnlyWhileWaitingOnTime()
+	{
+		long now = 1_700_000_000L;
+		TearsOfGuthix.Status waiting = new TearsOfGuthix.Status(TearsOfGuthix.State.WAIT, now + 3600, 0, false);
+		String url = TearsOfGuthix.calendarUrl(waiting, now);
+		assertNotNull(url);
+		assertTrue(url.startsWith("https://calendar.google.com/calendar/render?action=TEMPLATE&text=OSRS%3A%20Tears"));
+		// 1,700,003,600 = 2023-11-14 23:13:20 UTC, event lasts 15 minutes
+		assertTrue(url.contains("&dates=20231114T231320Z/20231114T232820Z&details="));
+		assertFalse(url.contains("+"));
+
+		assertNull(TearsOfGuthix.calendarUrl(new TearsOfGuthix.Status(TearsOfGuthix.State.WAIT, 0, 5000, false), now));
+		assertNull(TearsOfGuthix.calendarUrl(new TearsOfGuthix.Status(TearsOfGuthix.State.READY, 0, 0, false), now));
+		assertNull(TearsOfGuthix.calendarUrl(new TearsOfGuthix.Status(TearsOfGuthix.State.UNKNOWN, 0, 0, false), now));
+	}
 }

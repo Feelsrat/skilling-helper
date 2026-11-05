@@ -823,6 +823,15 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		}
 	}
 
+	@Override
+	public void onOpenLink(String url)
+	{
+		if (url != null)
+		{
+			LinkBrowser.browse(url);
+		}
+	}
+
 	// ---- State ----
 
 	private void loadProfile()
@@ -929,6 +938,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		next = next.toBuilder()
 			.weeklyState(tog.getStatus().getState())
 			.weeklyStatus(TearsOfGuthix.describe(tog.getStatus(), now))
+			.weeklyCalendarUrl(TearsOfGuthix.calendarUrl(tog.getStatus(), now))
 			.build();
 		guide = next;
 		next = showPath(next);

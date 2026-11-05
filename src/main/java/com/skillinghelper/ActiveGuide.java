@@ -74,6 +74,10 @@ public class ActiveGuide
 	TearsOfGuthix.State weeklyState;
 	String weeklyStatus;
 	/**
+	 * A Google Calendar link for when Tears of Guthix is up again, or null when there's no time to remind about.
+	 */
+	String weeklyCalendarUrl;
+	/**
 	 * A quick pick's ranked list of guides, shown in place of a guide until the player opens one. Null otherwise.
 	 */
 	PickList picks;

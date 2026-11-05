@@ -117,6 +117,11 @@ public class SkillingHelperPanel extends PluginPanel
 		void onOpenWiki(String page);
 
 		/**
+		 * Opens a link in the browser, e.g. the Tears of Guthix calendar reminder.
+		 */
+		void onOpenLink(String url);
+
+		/**
 		 * Let every guide pick Wilderness methods, or leave them out again.
 		 */
 		void onAllowWilderness(boolean allow);
@@ -485,6 +490,21 @@ public class SkillingHelperPanel extends PluginPanel
 		content.add(GuideUi.line(guide.getWeeklyStatus(), MUTED, TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(6));
 		content.add(button("Open Tears of Guthix guide", () -> listener.onQuickPick(QuickPick.TEARS_OF_GUTHIX)));
+		addCalendarButton(guide);
+	}
+
+	/**
+	 * While Tears of Guthix is on cooldown: a button that opens a Google Calendar event for when it's up.
+	 */
+	private void addCalendarButton(ActiveGuide guide)
+	{
+		String url = guide.getWeeklyCalendarUrl();
+		if (url == null)
+		{
+			return;
+		}
+		content.add(Box.createVerticalStrut(4));
+		content.add(button("Remind me (Google Calendar)", () -> listener.onOpenLink(url)));
 	}
 
 	private static Color weeklyColor(ActiveGuide guide)
@@ -509,6 +529,7 @@ public class SkillingHelperPanel extends PluginPanel
 				: guide.getWeeklyState() == TearsOfGuthix.State.UNKNOWN ? "Unknown" : "Not yet", weeklyColor(guide)));
 			content.add(Box.createVerticalStrut(2));
 			content.add(GuideUi.line(guide.getWeeklyStatus(), MUTED, TEXT_WIDTH));
+			addCalendarButton(guide);
 			content.add(Box.createVerticalStrut(6));
 		}
 		GuideUi.lines(content, guide.getActivityInfo(), TEXT_WIDTH);
