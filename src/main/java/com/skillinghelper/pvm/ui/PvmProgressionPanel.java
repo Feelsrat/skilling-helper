@@ -23,8 +23,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -112,6 +114,7 @@ public class PvmProgressionPanel extends PluginPanel
 	 */
 	private String pickedId;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 	private List<Readiness> ladder;
 	private boolean wildernessAllowed;
 	private boolean hideOutleveled = true;
@@ -133,7 +136,7 @@ public class PvmProgressionPanel extends PluginPanel
 		super(false);
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
-		JPanel header = GuideUi.header("PvM Progression", "Bosses in the order to learn them, step by step.");
+		JPanel header = GuideUi.header("PvM Progression", null);
 		picker.setRenderer(new PickerRenderer());
 		picker.setMaximumRowCount(20);
 		picker.addActionListener(e ->
@@ -305,6 +308,15 @@ public class PvmProgressionPanel extends PluginPanel
 	{
 		content.removeAll();
 		Readiness shown = (Readiness) picker.getSelectedItem();
+		boolean guiding = shown != null && shown.getContent().getId().equals(guides.getActiveId())
+			&& PvmGuides.forContent(shown.getContent().getId()) != null;
+		if (guiding)
+		{
+			// Guiding: just the step, everything else folded away under it
+			fillStep(guides.getStep());
+			content.add(stepBox);
+			content.add(GuideUi.more());
+		}
 		if (Readiness.next(ladder, wildernessAllowed) == null)
 		{
 			content.add(text("You've done everything on the list. Nice work!", GOOD));
@@ -316,6 +328,8 @@ public class PvmProgressionPanel extends PluginPanel
 		{
 			detail(shown);
 		}
+		GuideUi.foldSections(content, t -> t.equals(GuideUi.MORE) || t.endsWith("Learn the fight")
+			|| t.endsWith("Get the kill"), openSections);
 		content.revalidate();
 		content.repaint();
 	}
@@ -414,8 +428,7 @@ public class PvmProgressionPanel extends PluginPanel
 			content.add(Box.createVerticalStrut(6));
 			if (c.getId().equals(guides.getActiveId()))
 			{
-				fillStep(guides.getStep());
-				content.add(stepBox);
+				content.add(GuideUi.hint("Guide running: its step is at the top."));
 			}
 			else
 			{

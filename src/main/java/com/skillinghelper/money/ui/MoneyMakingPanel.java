@@ -91,6 +91,8 @@ public class MoneyMakingPanel extends PluginPanel
 	private final JButton wikiTab = new JButton("Wiki guides");
 	private final JButton bankTab = new JButton("My bank");
 	private final JLabel intro;
+	private final JLabel moreToggle = new JLabel();
+	private boolean moreOpen;
 	private final BankProfitList bankList;
 	/**
 	 * Showing what the bank can be processed into instead of the wiki's methods.
@@ -127,10 +129,8 @@ public class MoneyMakingPanel extends PluginPanel
 		tabs.add(wikiTab);
 		tabs.add(bankTab);
 		header.add(full(tabs));
-		header.add(Box.createVerticalStrut(6));
+		header.add(Box.createVerticalStrut(4));
 		intro = GuideUi.text(WIKI_INTRO, MUTED, TEXT_WIDTH);
-		header.add(left(intro));
-		header.add(Box.createVerticalStrut(6));
 
 		category.addItem(ALL);
 		category.addActionListener(e -> filtersChanged());
@@ -175,13 +175,10 @@ public class MoneyMakingPanel extends PluginPanel
 		combos.add(effort);
 		filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
 		filters.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		filters.add(full(combos));
-		filters.add(Box.createVerticalStrut(4));
 		filters.add(full(search));
-		filters.add(left(showLocked));
-		filters.add(left(showLosing));
-		filters.add(left(showWilderness));
+		filters.add(Box.createVerticalStrut(2));
 		header.add(full(filters));
+		GuideUi.options(header, GuideUi.subheading("Filter"), full(combos), showLocked, showLosing, showWilderness);
 		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
 		guideBox.setOpaque(false);
 		guideBox.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -193,11 +190,22 @@ public class MoneyMakingPanel extends PluginPanel
 		GuideUi.frame(this, header, body);
 		body.add(guideBox);
 		body.add(Box.createVerticalStrut(6));
+		moreToggle.setFont(FontManager.getRunescapeBoldFont());
+		moreToggle.setForeground(ColorScheme.BRAND_ORANGE);
+		GuideUi.clickable(moreToggle, "Show or fold away the list", () ->
+		{
+			moreOpen = !moreOpen;
+			showMore();
+		});
+		body.add(left(moreToggle));
+		body.add(left(intro));
+		body.add(Box.createVerticalStrut(4));
 		body.add(list);
 
 		list.add(GuideUi.empty("Not logged in", "Log in to see the money makers you can do."));
 		bankList = new BankProfitList(list, listener::onStartBankProfit, listener::onOpenWiki);
 		styleTabs();
+		showMore();
 	}
 
 	private static final String WIKI_INTRO = "OSRS Wiki money making guides, best gp/hr at today's prices first.";
@@ -342,8 +350,25 @@ public class MoneyMakingPanel extends PluginPanel
 			guideBox.add(GuideUi.stepCard(HINT, "Now", step.getTitle(), lines, listener::onStopGuide, have,
 				page == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(page.replace(' ', '_')))));
 		}
+		showMore();
 		guideBox.revalidate();
 		guideBox.repaint();
+	}
+
+	/**
+	 * While a guide runs, only its step shows: the list folds away under "More about this guide".
+	 */
+	private void showMore()
+	{
+		boolean folded = step != null;
+		boolean show = !folded || moreOpen;
+		moreToggle.setVisible(folded);
+		moreToggle.setText("<html><font face='Dialog' size='-1'>" + (moreOpen ? "▾" : "▸") + "</font>&nbsp;"
+			+ GuideUi.MORE + "</html>");
+		list.setVisible(show);
+		intro.setVisible(show);
+		revalidate();
+		repaint();
 	}
 
 	private boolean isWilderness(String page)

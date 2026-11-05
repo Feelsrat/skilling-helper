@@ -72,6 +72,10 @@ public final class GuideUi
 	private static final Font MARKER_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
 	private static final int GUTTER = 11;
 	private static final String SECTION = "skillinghelper.section";
+	/**
+	 * Title of the fold that holds everything under the running guide's step (see {@link #more}).
+	 */
+	public static final String MORE = "More about this guide";
 	private static final int NUMBER_GUTTER = 14;
 
 	private GuideUi()
@@ -270,10 +274,11 @@ public final class GuideUi
 			{
 				continue;
 			}
+			boolean toEnd = MORE.equals(title);
 			List<Component> inside = new java.util.ArrayList<>();
 			for (int j = i + 1; j < kids.length; j++)
 			{
-				if (kids[j] instanceof JLabel && ((JLabel) kids[j]).getClientProperty(SECTION) != null)
+				if (!toEnd && kids[j] instanceof JLabel && ((JLabel) kids[j]).getClientProperty(SECTION) != null)
 				{
 					break;
 				}
@@ -304,7 +309,22 @@ public final class GuideUi
 				}
 			});
 			show.run();
+			if (toEnd)
+			{
+				// Everything after it is inside this one fold
+				return;
+			}
 		}
+	}
+
+	/**
+	 * The fold under a running guide's step that holds the rest of the panel (lists, rewards, stats), closed until
+	 * the player opens it. Add it right after the step, then call {@link #foldSections} with a test that accepts
+	 * {@link #MORE}.
+	 */
+	public static JComponent more()
+	{
+		return section(MORE);
 	}
 
 	/**
@@ -426,10 +446,13 @@ public final class GuideUi
 	{
 		JPanel header = column();
 		header.setBorder(new EmptyBorder(0, 0, 6, 0));
+		JPanel top = new JPanel(new BorderLayout(4, 0));
+		top.setOpaque(false);
 		JLabel t = new JLabel(title);
 		t.setFont(FontManager.getRunescapeBoldFont());
 		t.setForeground(BRIGHT);
-		header.add(left(t));
+		top.add(t, BorderLayout.WEST);
+		header.add(full(top));
 		if (tagline != null)
 		{
 			header.add(Box.createVerticalStrut(1));
@@ -437,6 +460,40 @@ public final class GuideUi
 		}
 		header.add(Box.createVerticalStrut(6));
 		return header;
+	}
+
+	/**
+	 * Puts a panel's rarely changed settings (tick boxes, sort order) behind an "Options" button on the
+	 * {@link #header}'s title line, so the panel opens on just the guide. Call after adding the header's own
+	 * controls.
+	 */
+	public static void options(JPanel header, JComponent... controls)
+	{
+		JPanel box = column();
+		box.setOpaque(true);
+		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		box.setBorder(new EmptyBorder(4, 6, 4, 6));
+		for (JComponent c : controls)
+		{
+			box.add(left(c));
+		}
+		box.setVisible(false);
+		JButton toggle = small("Options ▾", () ->
+		{
+		});
+		toggle.setFont(MARKER_FONT);
+		toggle.addActionListener(e ->
+		{
+			box.setVisible(!box.isVisible());
+			toggle.setText(box.isVisible() ? "Options ▴" : "Options ▾");
+			header.revalidate();
+			header.repaint();
+		});
+		toggle.setToolTipText("Settings for this panel");
+		JPanel top = (JPanel) header.getComponent(0);
+		top.add(toggle, BorderLayout.EAST);
+		header.add(full(box));
+		header.add(Box.createVerticalStrut(4));
 	}
 
 	/**

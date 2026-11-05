@@ -7,8 +7,10 @@ import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -52,13 +54,14 @@ public class MinigamePanel extends PluginPanel
 
 	private MinigameView view;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public MinigamePanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Minigames", "What each needs, rewards worth it, and how.");
+		JPanel header = GuideUi.header("Minigames", null);
 
 		picker.setRenderer(new DefaultListCellRenderer()
 		{
@@ -83,8 +86,8 @@ public class MinigamePanel extends PluginPanel
 			}
 		});
 		header.add(GuideUi.full(picker));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness minigames are left out.", () ->
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: Wilderness minigames are left out.", () ->
 		{
 			if (!updating)
 			{
@@ -145,6 +148,15 @@ public class MinigamePanel extends PluginPanel
 			finish();
 			return;
 		}
+		DiaryStep step = v.getStep();
+		boolean guiding = v.isRunning() && step != null;
+		if (guiding)
+		{
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide,
+				GuideUi.small("Wiki", listener::onOpenWiki)));
+			body.add(GuideUi.more());
+		}
 		body.add(GuideUi.headline(v.getName(), Color.WHITE, WIDTH));
 		if (v.getLevelRange() != null)
 		{
@@ -167,14 +179,7 @@ public class MinigamePanel extends PluginPanel
 		}
 
 		body.add(Box.createVerticalStrut(8));
-		DiaryStep step = v.getStep();
-		if (v.isRunning() && step != null)
-		{
-			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
-				step.getTitle(), step.getLines(), listener::onStopGuide,
-				GuideUi.small("Wiki", listener::onOpenWiki)));
-		}
-		else
+		if (!guiding)
 		{
 			startButtons(v);
 		}
@@ -209,6 +214,7 @@ public class MinigamePanel extends PluginPanel
 
 		rewards(v);
 		others(v);
+		GuideUi.foldSections(body, t -> t.equals(GuideUi.MORE) || t.equals("Still worth doing"), openSections);
 		finish();
 	}
 

@@ -1,12 +1,13 @@
 package com.skillinghelper.unlocks.ui;
 
 import com.skillinghelper.diary.DiaryStep;
-import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import com.skillinghelper.unlocks.UnlockStep;
 import com.skillinghelper.unlocks.UnlockView;
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -51,20 +52,22 @@ public class UnlocksPanel extends PluginPanel
 	private final JCheckBox hideDone = new JCheckBox("Hide unlocked");
 	private final JPanel body = new JPanel();
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public UnlocksPanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Account Unlocks", "Key unlocks in a good order, guided one by one.");
-		header.add(GuideUi.toggle(hideDone, GuideUi.TEXT, "Leave out the unlocks you already have", () ->
-		{
-			if (!updating)
+		JPanel header = GuideUi.header("Account Unlocks", null);
+		GuideUi.options(header, GuideUi.toggle(hideDone, GuideUi.TEXT, "Leave out the unlocks you already have",
+			() ->
 			{
-				listener.onHideDone(hideDone.isSelected());
-			}
-		}));
+				if (!updating)
+				{
+					listener.onHideDone(hideDone.isSelected());
+				}
+			}));
 		GuideUi.frame(this, header, body);
 		body.add(loggedOut());
 	}
@@ -89,29 +92,33 @@ public class UnlocksPanel extends PluginPanel
 			finish();
 			return;
 		}
-		body.add(GuideUi.progress("Unlocked", v.getDone(), v.getTotal()));
-		body.add(Box.createVerticalStrut(8));
 		UnlockStep step = v.getStep();
 		if (v.isRunning() && step != null)
 		{
+			// Guiding: just the step, everything else folded away under it
 			body.add(stepCard(step, v.getStepWiki()));
+			body.add(GuideUi.more());
 		}
-		else if (v.isRunning())
+		body.add(GuideUi.progress("Unlocked", v.getDone(), v.getTotal()));
+		body.add(Box.createVerticalStrut(8));
+		if (v.isRunning() && step == null)
 		{
 			body.add(GuideUi.button("Stop guide", listener::onStopGuide));
 		}
-		else if (v.getDone() < v.getTotal())
+		else if (!v.isRunning() && v.getDone() < v.getTotal())
 		{
 			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
+			body.add(GuideUi.hint("Guides you to the next unlock, one at a time."));
 		}
 
-		body.add(GuideUi.section("Unlocks"));
-		body.add(GuideUi.hint("In the suggested order. Click one to be guided to it next."));
+		body.add(GuideUi.section("All unlocks"));
+		body.add(GuideUi.hint("Click one to go for it next."));
 		for (UnlockView.Row r : v.getRows())
 		{
 			body.add(row(r));
 			body.add(Box.createVerticalStrut(3));
 		}
+		GuideUi.foldSections(body, GuideUi.MORE::equals, openSections);
 		finish();
 	}
 
@@ -170,33 +177,20 @@ public class UnlocksPanel extends PluginPanel
 				color = GuideUi.TEXT;
 		}
 		row.add(GuideUi.line(marker + " " + r.getName(), color, CARD));
-		row.add(GuideUi.text(r.getCategory(), GuideUi.MUTED, CARD - 12));
-		for (String g : r.getGives())
+		if (!r.getGives().isEmpty())
 		{
-			row.add(GuideUi.text("+ " + g, GuideUi.TEXT, CARD - 12));
+			row.add(GuideUi.text(r.getGives().get(0), GuideUi.MUTED, CARD - 12));
 		}
 		if (r.getState() != UnlockView.RowState.DONE)
 		{
-			if (!r.getHow().isEmpty())
-			{
-				row.add(GuideUi.text("How: " + r.getHow(), GuideUi.HINT, CARD - 12));
-			}
 			for (String m : r.getMissing())
 			{
 				row.add(GuideUi.check(false, m, CARD));
-			}
-			if (r.getCost() > 0)
-			{
-				row.add(GuideUi.text("Costs ~" + Format.gp(r.getCost()), GuideUi.GOLD, CARD - 12));
 			}
 			if (r.getState() == UnlockView.RowState.UNKNOWN)
 			{
 				row.add(GuideUi.text("Open your bank once so the plugin can see if you have it.", GuideUi.WARN,
 					CARD - 12));
-			}
-			if (r.getState() == UnlockView.RowState.SKIPPED)
-			{
-				row.add(GuideUi.text("Skipped for now.", GuideUi.MUTED, CARD));
 			}
 			GuideUi.clickable(row, "Guide me to this unlock", () -> listener.onPick(r.getId()));
 		}

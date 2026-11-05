@@ -28,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -76,6 +77,10 @@ public class BankedXpPanel extends PluginPanel
 	private final JComboBox<Object> skillPicker = new JComboBox<>();
 	private List<Skill> shownSkills;
 	private boolean updating;
+	private final JLabel moreToggle = new JLabel();
+	private boolean moreOpen;
+	private boolean guiding;
+	private boolean focusWanted;
 
 	/**
 	 * Holds back redraws while the panel is closed.
@@ -119,6 +124,14 @@ public class BankedXpPanel extends PluginPanel
 		content.add(focusBox);
 		content.add(guideBox);
 		content.add(Box.createVerticalStrut(8));
+		moreToggle.setFont(FontManager.getRunescapeBoldFont());
+		moreToggle.setForeground(ColorScheme.BRAND_ORANGE);
+		GuideUi.clickable(moreToggle, "Show or fold away the rest", () ->
+		{
+			moreOpen = !moreOpen;
+			showMore(guiding);
+		});
+		content.add(left(moreToggle));
 		content.add(totalsBox);
 		content.add(Box.createVerticalStrut(8));
 		content.add(list);
@@ -142,6 +155,7 @@ public class BankedXpPanel extends PluginPanel
 		{
 			showFocus(view);
 			showGuide(view);
+			guiding = view.isRunning() && view.getCurrent() != null;
 			showTotals(view);
 			if (!Objects.equals(shownGroups, view.getGroups()))
 			{
@@ -153,6 +167,21 @@ public class BankedXpPanel extends PluginPanel
 		{
 			updating = false;
 		}
+		showMore(guiding);
+	}
+
+	/**
+	 * While guiding, only the step shows: the skill picker and lists fold away under "More about this guide".
+	 */
+	private void showMore(boolean folded)
+	{
+		boolean show = !folded || moreOpen;
+		moreToggle.setVisible(folded);
+		moreToggle.setText("<html><font face='Dialog' size='-1'>" + (moreOpen ? "▾" : "▸") + "</font>&nbsp;"
+			+ GuideUi.MORE + "</html>");
+		focusBox.setVisible(show && focusWanted);
+		totalsBox.setVisible(show);
+		list.setVisible(show);
 		revalidate();
 		repaint();
 	}
@@ -161,7 +190,8 @@ public class BankedXpPanel extends PluginPanel
 
 	private void showFocus(BankedView view)
 	{
-		focusBox.setVisible(view.isBankKnown() && (!view.getSkills().isEmpty() || view.getFocus() != null));
+		focusWanted = view.isBankKnown() && (!view.getSkills().isEmpty() || view.getFocus() != null);
+		focusBox.setVisible(focusWanted);
 		if (!Objects.equals(shownSkills, view.getSkills()))
 		{
 			shownSkills = view.getSkills();

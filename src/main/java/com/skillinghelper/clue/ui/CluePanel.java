@@ -77,7 +77,7 @@ public class CluePanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Clue Scrolls", "Get, carry and finish clues of every tier.");
+		JPanel header = GuideUi.header("Clue Scrolls", null);
 		JPanel tiers = new JPanel(new GridLayout(2, 3, 3, 3));
 		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		for (ClueTier t : ClueTier.values())
@@ -90,14 +90,15 @@ public class CluePanel extends PluginPanel
 			tiers.add(b);
 		}
 		header.add(GuideUi.full(tiers));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness ways and STASH units are skipped.", () ->
-		{
-			if (!updating)
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: Wilderness ways and STASH units are skipped.",
+			() ->
 			{
-				listener.onAllowWilderness(wilderness.isSelected());
-			}
-		}));
+				if (!updating)
+				{
+					listener.onAllowWilderness(wilderness.isSelected());
+				}
+			}));
 		GuideUi.frame(this, header, body);
 		body.add(GuideUi.empty("Not logged in", "Log in to see your clues."));
 	}
@@ -157,6 +158,24 @@ public class CluePanel extends PluginPanel
 			body.add(Box.createVerticalStrut(6));
 		}
 
+		DiaryStep step = v.getStep();
+		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
+		if (v.isRunning() && step != null)
+		{
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide, wiki));
+			body.add(GuideUi.more());
+		}
+		else if (v.isRunning())
+		{
+			body.add(GuideUi.actions(GuideUi.small("Stop guide", listener::onStopGuide), wiki));
+		}
+		else
+		{
+			body.add(GuideUi.primary("▶ Start " + tier.getLabel().toLowerCase() + " clue guide", listener::onStartGuide));
+			body.add(GuideUi.hint("Shows how to get a clue, what to bring, then every step."));
+		}
+
 		yourClues(v);
 
 		body.add(GuideUi.section(tier.getLabel() + " clues"));
@@ -171,32 +190,18 @@ public class CluePanel extends PluginPanel
 		{
 			body.add(GuideUi.line("✘ You're on a free world: these clues need a members world.", GuideUi.BAD, WIDTH));
 		}
-		body.add(Box.createVerticalStrut(8));
-		DiaryStep step = v.getStep();
-		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
-		if (v.isRunning() && step != null)
-		{
-			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
-				step.getTitle(), step.getLines(), listener::onStopGuide, wiki));
-		}
-		else if (v.isRunning())
-		{
-			body.add(GuideUi.actions(GuideUi.small("Stop guide", listener::onStopGuide), wiki));
-		}
-		else
-		{
-			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
-			body.add(Box.createVerticalStrut(3));
-			body.add(GuideUi.actions(wiki));
-		}
-
 		getOne(v);
 		bring(v);
 		rewards(v);
 		stash(v);
 		drops(v);
-		GuideUi.foldSections(body, t -> t.equals("Rewards") || t.equals("STASH units") || t.equals("Best drop rates"),
-			openSections);
+		GuideUi.foldSections(body, t -> t.equals(GuideUi.MORE) || t.equals("Rewards") || t.equals("STASH units")
+			|| t.equals("Best drop rates"), openSections);
+		if (!v.isRunning())
+		{
+			body.add(Box.createVerticalStrut(6));
+			body.add(GuideUi.actions(wiki));
+		}
 		finish();
 	}
 

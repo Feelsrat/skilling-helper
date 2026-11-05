@@ -73,7 +73,7 @@ public class CollectionLogPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Collection Log", "The quickest new slots for you, and how.");
+		JPanel header = GuideUi.header("Collection Log", null);
 		modes.addActionListener(e ->
 		{
 			if (!updating && modes.getSelectedItem() != null)
@@ -91,16 +91,16 @@ public class CollectionLogPanel extends PluginPanel
 		});
 		header.add(Box.createVerticalStrut(3));
 		header.add(GuideUi.full(tabs));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness bosses and pets are left out.", () ->
-		{
-			if (!updating)
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header,
+			GuideUi.wilderness(wilderness, "Off: Wilderness bosses and pets are left out.", () ->
 			{
-				listener.onAllowWilderness(wilderness.isSelected());
-			}
-		}));
-		header.add(GuideUi.toggle(locked, GuideUi.TEXT, "Also list what you don't have the quests or levels for yet",
-			() ->
+				if (!updating)
+				{
+					listener.onAllowWilderness(wilderness.isSelected());
+				}
+			}),
+			GuideUi.toggle(locked, GuideUi.TEXT, "Also list what you don't have the quests or levels for yet", () ->
 			{
 				if (!updating)
 				{

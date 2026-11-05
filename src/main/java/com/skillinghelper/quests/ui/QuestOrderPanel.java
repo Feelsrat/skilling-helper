@@ -8,6 +8,8 @@ import com.skillinghelper.quests.QuestView;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -58,13 +60,14 @@ public class QuestOrderPanel extends PluginPanel
 	private final JCheckBox wilderness = new JCheckBox(Wilderness.TOGGLE_LABEL);
 	private final JPanel body = new JPanel();
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public QuestOrderPanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Quest Order Guide", "The wiki's best quest order for your account.");
+		JPanel header = GuideUi.header("Quest Order Guide", null);
 		routes.setToolTipText("Which of the wiki's optimal quest guides to follow");
 		routes.addActionListener(e ->
 		{
@@ -73,15 +76,14 @@ public class QuestOrderPanel extends PluginPanel
 				listener.onRoute((QuestOrderConfig.RouteChoice) routes.getSelectedItem());
 			}
 		});
-		header.add(GuideUi.full(routes));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: quests and diaries in the Wilderness are skipped.", () ->
-		{
-			if (!updating)
+		GuideUi.options(header, GuideUi.subheading("Route"), GuideUi.full(routes),
+			GuideUi.wilderness(wilderness, "Off: quests and diaries in the Wilderness are skipped.", () ->
 			{
-				listener.onAllowWilderness(wilderness.isSelected());
-			}
-		}));
+				if (!updating)
+				{
+					listener.onAllowWilderness(wilderness.isSelected());
+				}
+			}));
 		GuideUi.frame(this, header, body);
 		body.add(GuideUi.empty("Not logged in", "Log in to see your quests in the best order."));
 	}
@@ -118,10 +120,6 @@ public class QuestOrderPanel extends PluginPanel
 		}
 		updating = false;
 
-		body.add(GuideUi.progress("Quests done", v.getDone(), v.getTotal()));
-		body.add(GuideUi.text(v.getRoute().getLabel() + " route · " + v.getQuestPoints() + " Quest points",
-			GuideUi.MUTED, WIDTH));
-		body.add(Box.createVerticalStrut(4));
 		if (!v.isQuestHelper())
 		{
 			body.add(GuideUi.line("⚠ Quest Helper isn't on. Without it this guide only shows where each quest "
@@ -130,7 +128,6 @@ public class QuestOrderPanel extends PluginPanel
 			body.add(GuideUi.button("Get Quest Helper", listener::onGetQuestHelper));
 			body.add(Box.createVerticalStrut(4));
 		}
-		body.add(Box.createVerticalStrut(4));
 
 		QuestStep step = v.getStep();
 		if (step != null)
@@ -164,9 +161,19 @@ public class QuestOrderPanel extends PluginPanel
 			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
 		}
 
+		if (v.isRunning())
+		{
+			body.add(GuideUi.more());
+		}
+		body.add(Box.createVerticalStrut(8));
+		body.add(GuideUi.progress("Quests done", v.getDone(), v.getTotal()));
+		body.add(GuideUi.text(v.getRoute().getLabel() + " route · " + v.getQuestPoints() + " Quest points",
+			GuideUi.MUTED, WIDTH));
+		body.add(Box.createVerticalStrut(4));
+
 		if (!v.getUpcoming().isEmpty())
 		{
-			body.add(GuideUi.section("Up next on the route"));
+			body.add(GuideUi.section("Up next"));
 			body.add(GuideUi.hint("Click one to do it next."));
 			for (QuestView.Row r : v.getUpcoming())
 			{
@@ -176,6 +183,7 @@ public class QuestOrderPanel extends PluginPanel
 		}
 		body.add(Box.createVerticalStrut(6));
 		body.add(GuideUi.actions(GuideUi.small("The wiki's full route", listener::onOpenRoutePage)));
+		GuideUi.foldSections(body, GuideUi.MORE::equals, openSections);
 		finish();
 	}
 

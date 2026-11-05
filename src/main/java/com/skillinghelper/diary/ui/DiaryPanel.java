@@ -12,7 +12,9 @@ import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -63,13 +65,14 @@ public class DiaryPanel extends PluginPanel
 	private DiaryView view;
 	private DiaryTier tier = DiaryTier.EASY;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public DiaryPanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Achievement Diaries", "Every task step by step, with rewards.");
+		JPanel header = GuideUi.header("Achievement Diaries", null);
 		regions.setRenderer(new DefaultListCellRenderer()
 		{
 			@Override
@@ -110,8 +113,8 @@ public class DiaryPanel extends PluginPanel
 			tiers.add(b);
 		}
 		header.add(GuideUi.full(tiers));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness tasks are skipped.", () ->
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: Wilderness tasks are skipped.", () ->
 		{
 			if (!updating)
 			{
@@ -161,6 +164,17 @@ public class DiaryPanel extends PluginPanel
 			return;
 		}
 		DiaryView.TierRow row = v.getTiers().get(tier.ordinal());
+		DiaryStep step = v.getStep();
+		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
+		if (v.isGuided() && v.isRunning() && step != null)
+		{
+			String key = step.getTaskKey();
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide, wiki,
+				key != null && step.getKind() != DiaryStep.Kind.CLAIM
+					? GuideUi.small("Skip task", () -> listener.onSkipTask(key)) : null));
+			body.add(GuideUi.more());
+		}
 		String headline = v.getRegion().getLabel() + " " + tier.getLabel();
 		if (v.isGuided())
 		{
@@ -192,15 +206,10 @@ public class DiaryPanel extends PluginPanel
 		}
 		body.add(Box.createVerticalStrut(8));
 
-		DiaryStep step = v.getStep();
-		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
 		if (v.isGuided() && v.isRunning() && step != null)
 		{
-			String key = step.getTaskKey();
-			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
-				step.getTitle(), step.getLines(), listener::onStopGuide, wiki,
-				key != null && step.getKind() != DiaryStep.Kind.CLAIM
-					? GuideUi.small("Skip task", () -> listener.onSkipTask(key)) : null));
+			// The step card at the top has the buttons
+			body.add(GuideUi.hint("Click a task below to do it next."));
 		}
 		else if (v.isGuided() && v.isRunning())
 		{
@@ -248,6 +257,7 @@ public class DiaryPanel extends PluginPanel
 				body.add(Box.createVerticalStrut(3));
 			}
 		}
+		GuideUi.foldSections(body, t -> t.equals(GuideUi.MORE) || t.equals("Reward"), openSections);
 		finish();
 	}
 

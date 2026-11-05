@@ -23,8 +23,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -146,7 +148,6 @@ public class SkillingHelperPanel extends PluginPanel
 	private final Listener listener;
 	private final SkillIconManager skillIcons;
 	private final JComboBox<Object> skillBox = new JComboBox<>();
-	private final JButton stopButton = new JButton("Stop");
 	private final SpinnerNumberModel targetModel = new SpinnerNumberModel(2, 2, Experience.MAX_REAL_LEVEL, 1);
 	private final JSpinner targetSpinner = new JSpinner(targetModel);
 	private final JComboBox<TrainingPreference> prefBox = new JComboBox<>(TrainingPreference.values());
@@ -154,6 +155,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private final JPanel goalRow = new JPanel();
 	private final JPanel content = new JPanel();
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 	private String lastSignature;
 
 	/**
@@ -175,25 +177,14 @@ public class SkillingHelperPanel extends PluginPanel
 
 	private JPanel header()
 	{
-		JPanel header = new JPanel();
-		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-		header.setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JLabel title = new JLabel("Skilling Helper");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(left(title));
-		header.add(Box.createVerticalStrut(1));
-		header.add(GuideUi.text("Pick a skill: what to click, step by step.", MUTED, TEXT_WIDTH));
-		header.add(Box.createVerticalStrut(6));
+		JPanel header = GuideUi.header("Skilling Helper", null);
 		header.add(full(skillRow()));
-		header.add(Box.createVerticalStrut(6));
+		header.add(Box.createVerticalStrut(4));
 		buildGoalRow();
 		goalRow.setVisible(false);
 		header.add(full(goalRow));
-		header.add(Box.createVerticalStrut(6));
-		header.add(full(styleRow()));
-		header.add(Box.createVerticalStrut(8));
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header, full(styleRow()));
 		return header;
 	}
 
@@ -202,10 +193,6 @@ public class SkillingHelperPanel extends PluginPanel
 		JPanel row = new JPanel(new BorderLayout(4, 0));
 		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		row.add(skillPicker(), BorderLayout.CENTER);
-		stopButton.setToolTipText("Turn the guide off: hides its steps, path and highlights");
-		stopButton.setEnabled(false);
-		stopButton.addActionListener(e -> listener.onStopGuide());
-		row.add(stopButton, BorderLayout.EAST);
 		return row;
 	}
 
@@ -299,7 +286,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private JPanel styleRow()
 	{
 		JPanel row = new JPanel(new BorderLayout(4, 0));
-		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setOpaque(false);
 		JLabel styleLabel = new JLabel("Style");
 		styleLabel.setForeground(Color.WHITE);
 		row.add(styleLabel, BorderLayout.WEST);
@@ -379,7 +366,6 @@ public class SkillingHelperPanel extends PluginPanel
 			{
 				skillBox.setSelectedItem(selected);
 			}
-			stopButton.setEnabled(guide.isActive());
 			if (prefBox.getSelectedItem() != preference)
 			{
 				prefBox.setSelectedItem(preference);
@@ -613,7 +599,18 @@ public class SkillingHelperPanel extends PluginPanel
 	{
 		Method method = guide.getMethod();
 		addCurrentStep(guide.getStep(), bankFilterOn);
-		if (method != null && guide.getOption() != null)
+		MethodOption o = guide.getOption();
+		if (method != null && o != null)
+		{
+			// The one line most people want: what they're doing and how long it takes
+			content.add(Box.createVerticalStrut(6));
+			content.add(GuideUi.stat(method.getName(), guide.getXpRemaining() > 0
+				? duration(o.hours(guide.getXpRemaining())) + " to " + guide.getTargetLevel() : "", TEXT));
+			content.add(GuideUi.stat("XP/hr", String.format("~%,d", Math.round(o.getXpPerHour())), HINT));
+		}
+		content.add(Box.createVerticalStrut(4));
+		content.add(GuideUi.more());
+		if (method != null && o != null)
 		{
 			addSummary(guide);
 		}
@@ -626,13 +623,9 @@ public class SkillingHelperPanel extends PluginPanel
 			content.add(GuideUi.actions(GuideUi.small("Open wiki guide",
 				() -> listener.onOpenWiki(method.getWikiPage()))));
 		}
+		GuideUi.foldSections(content, GuideUi.MORE::equals, openSections);
 	}
 
-	// ---- Sections ----
-
-	/**
-	 * Time to the goal, xp rate, cost or profit, and the player's gold, as label/number rows.
-	 */
 	private void addSummary(ActiveGuide guide)
 	{
 		MethodOption option = guide.getOption();
@@ -748,7 +741,8 @@ public class SkillingHelperPanel extends PluginPanel
 			{
 				lines.add("➜ Follow the arrow on the minimap or world map to " + step.getDestinationName() + ".");
 			}
-			GuideUi.fillStep(stepBox, "Current step", ColorScheme.BRAND_ORANGE, step.getTitle(), lines);
+			GuideUi.fillStep(stepBox, "Now", ColorScheme.BRAND_ORANGE, step.getTitle(), lines);
+			GuideUi.addStop(stepBox, "Now", ColorScheme.BRAND_ORANGE, listener::onStopGuide);
 			if (step.getRoute() != null && step.getRoute().entersWilderness())
 			{
 				stepBox.add(Box.createVerticalStrut(4));
@@ -756,10 +750,12 @@ public class SkillingHelperPanel extends PluginPanel
 					GuideUi.CARD_WIDTH));
 			}
 		}
+		JButton bank = GuideUi.small(bankFilterOn ? "Show whole bank" : "Bank: only what I need",
+			listener::onToggleBankFilter);
+		bank.setToolTipText(bankFilterOn ? "Show every bank item again" : "Show only this guide's items in the bank");
+		stepBox.add(Box.createVerticalStrut(6));
+		stepBox.add(GuideUi.actions(bank));
 		content.add(full(stepBox));
-		content.add(Box.createVerticalStrut(6));
-		content.add(button(bankFilterOn ? "Show all bank items" : "Show only needed items in bank",
-			listener::onToggleBankFilter));
 	}
 
 	private void addRequirements(ActiveGuide guide)

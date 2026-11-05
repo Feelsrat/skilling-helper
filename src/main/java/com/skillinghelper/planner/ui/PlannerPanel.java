@@ -15,9 +15,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -82,15 +84,15 @@ public class PlannerPanel extends PluginPanel
 	 */
 	private String expanded;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public PlannerPanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Account Planner", "Your path to max, one step at a time.");
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: steps in the Wilderness are left out.", () ->
+		JPanel header = GuideUi.header("Account Planner", null);
+		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: steps in the Wilderness are left out.", () ->
 		{
 			if (!updating)
 			{
@@ -141,9 +143,6 @@ public class PlannerPanel extends PluginPanel
 		}
 		else
 		{
-			body.add(GuideUi.stat("Rough time to max", hours(v.getTotalHours()), GuideUi.GOLD));
-			body.add(GuideUi.stat("Steps in the plan", String.format("%,d", v.getPlanSize()), GuideUi.TEXT));
-			body.add(Box.createVerticalStrut(6));
 			body.add(card(rows.get(0), 1, "Next up"));
 			if (rows.size() > 1)
 			{
@@ -172,6 +171,12 @@ public class PlannerPanel extends PluginPanel
 		}
 
 		body.add(GuideUi.section("Progress"));
+		if (!rows.isEmpty())
+		{
+			body.add(GuideUi.stat("Rough time to max", hours(v.getTotalHours()), GuideUi.GOLD));
+			body.add(GuideUi.stat("Steps in the plan", String.format("%,d", v.getPlanSize()), GuideUi.TEXT));
+			body.add(Box.createVerticalStrut(4));
+		}
 		body.add(GuideUi.hint("Untick a kind to leave it out of the plan."));
 		List<StepKind> kinds = new ArrayList<>(v.getProgress().keySet());
 		for (StepKind k : new StepKind[]{StepKind.QUEST, StepKind.MONEY})
@@ -206,6 +211,7 @@ public class PlannerPanel extends PluginPanel
 		body.add(GuideUi.text("Steps come from: " + String.join(", ", v.getProviders()) + ". Times are rough: "
 			+ "Skilling Helper's xp rates at your pace setting, plus a guess per diary task and boss.",
 			GuideUi.MUTED, WIDTH));
+		GuideUi.foldSections(body, "Progress"::equals, openSections);
 		refreshLayout();
 	}
 

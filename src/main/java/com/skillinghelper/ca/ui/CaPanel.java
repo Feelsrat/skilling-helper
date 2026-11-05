@@ -77,7 +77,7 @@ public class CaPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		JPanel header = GuideUi.header("Combat Achievements", "Easiest tasks for you first, step by step.");
+		JPanel header = GuideUi.header("Combat Achievements", null);
 
 		JPanel tiers = new JPanel(new GridLayout(2, 4, 3, 3));
 		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -95,15 +95,14 @@ public class CaPanel extends PluginPanel
 			tierButtons[t.ordinal()] = b;
 			tiers.add(b);
 		}
-		header.add(GuideUi.full(tiers));
-		header.add(Box.createVerticalStrut(2));
-		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness bosses are skipped.", () ->
-		{
-			if (!updating)
+		GuideUi.options(header, GuideUi.subheading("Show tasks of"), GuideUi.full(tiers),
+			GuideUi.wilderness(wilderness, "Off: Wilderness bosses are skipped.", () ->
 			{
-				listener.onAllowWilderness(wilderness.isSelected());
-			}
-		}));
+				if (!updating)
+				{
+					listener.onAllowWilderness(wilderness.isSelected());
+				}
+			}));
 		GuideUi.frame(this, header, body);
 		body.add(GuideUi.empty("Not logged in", "Log in to see the easiest Combat Achievements for you."));
 	}
@@ -156,9 +155,6 @@ public class CaPanel extends PluginPanel
 			finish();
 			return;
 		}
-		points(v);
-		body.add(Box.createVerticalStrut(8));
-
 		DiaryStep step = v.getStep();
 		if (v.isRunning() && step != null)
 		{
@@ -185,6 +181,12 @@ public class CaPanel extends PluginPanel
 		{
 			body.add(GuideUi.primary("▶ Start guide (easiest first)", listener::onStartGuide));
 		}
+		if (v.isRunning() && step != null)
+		{
+			body.add(GuideUi.more());
+		}
+		body.add(Box.createVerticalStrut(8));
+		points(v);
 
 		reward(v);
 
@@ -195,9 +197,7 @@ public class CaPanel extends PluginPanel
 			body.add(GuideUi.button("Show every boss", listener::onClearFocus));
 			body.add(Box.createVerticalStrut(3));
 		}
-		body.add(GuideUi.text(v.getDoneInScope() + " of " + v.getTotalInScope() + " done. Your fighting strength is about "
-			+ v.getPower() + " (" + v.getPowerStyle() + (v.getWeapon() != null ? ", " + v.getWeapon() : "")
-			+ "). Click a task to be guided through it.", GuideUi.MUTED, WIDTH));
+		body.add(GuideUi.hint(v.getDoneInScope() + " of " + v.getTotalInScope() + " done. Click a task to do it next."));
 		body.add(Box.createVerticalStrut(4));
 		for (CaView.TaskRow t : v.getTasks())
 		{
@@ -213,7 +213,8 @@ public class CaPanel extends PluginPanel
 		{
 			body.add(GuideUi.line("✔ Every task here is done.", GuideUi.GOOD, WIDTH));
 		}
-		GuideUi.foldSections(body, t -> t.endsWith(" reward"), openSections);
+		GuideUi.foldSections(body, t -> t.equals(GuideUi.MORE) || t.equals("Tiers") || t.endsWith(" reward"),
+			openSections);
 		finish();
 	}
 
@@ -238,7 +239,7 @@ public class CaPanel extends PluginPanel
 			body.add(GuideUi.line((next.getThreshold() - v.getPoints()) + " more for the " + next.getTier().getLabel()
 				+ " reward (" + next.getThreshold() + ")", GuideUi.GOLD, GuideUi.TEXT, WIDTH));
 		}
-		body.add(Box.createVerticalStrut(3));
+		body.add(GuideUi.section("Tiers"));
 		for (CaView.TierRow row : v.getTiers())
 		{
 			String state;
