@@ -31,6 +31,7 @@ public final class Diaries
 		TASKS.put(DiaryRegion.KANDARIN, KandarinDiary.tasks());
 		TASKS.put(DiaryRegion.MORYTANIA, MorytaniaDiary.tasks());
 		TASKS.put(DiaryRegion.FREMENNIK, FremennikDiary.tasks());
+		TASKS.put(DiaryRegion.KOUREND, KourendDiary.tasks());
 	}
 
 	private Diaries()

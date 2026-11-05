@@ -27,16 +27,17 @@ public class DiaryDataTest
 	/**
 	 * Tasks per tier, from the wiki.
 	 */
-	private static final Map<DiaryRegion, int[]> COUNTS = Map.of(
-		DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6},
-		DiaryRegion.VARROCK, new int[]{14, 13, 10, 5},
-		DiaryRegion.FALADOR, new int[]{11, 14, 11, 6},
-		DiaryRegion.KARAMJA, new int[]{10, 19, 10, 5},
-		DiaryRegion.ARDOUGNE, new int[]{10, 12, 12, 8},
-		DiaryRegion.DESERT, new int[]{11, 12, 10, 6},
-		DiaryRegion.KANDARIN, new int[]{11, 14, 11, 7},
-		DiaryRegion.MORYTANIA, new int[]{11, 11, 10, 6},
-		DiaryRegion.FREMENNIK, new int[]{10, 9, 9, 6});
+	private static final Map<DiaryRegion, int[]> COUNTS = Map.ofEntries(
+		Map.entry(DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6}),
+		Map.entry(DiaryRegion.VARROCK, new int[]{14, 13, 10, 5}),
+		Map.entry(DiaryRegion.FALADOR, new int[]{11, 14, 11, 6}),
+		Map.entry(DiaryRegion.KARAMJA, new int[]{10, 19, 10, 5}),
+		Map.entry(DiaryRegion.ARDOUGNE, new int[]{10, 12, 12, 8}),
+		Map.entry(DiaryRegion.DESERT, new int[]{11, 12, 10, 6}),
+		Map.entry(DiaryRegion.KANDARIN, new int[]{11, 14, 11, 7}),
+		Map.entry(DiaryRegion.MORYTANIA, new int[]{11, 11, 10, 6}),
+		Map.entry(DiaryRegion.FREMENNIK, new int[]{10, 9, 9, 6}),
+		Map.entry(DiaryRegion.KOUREND, new int[]{12, 13, 10, 8}));
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()
