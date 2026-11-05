@@ -842,19 +842,19 @@ auto_progress() {
 }
 
 auto_result() {
-	local rc="$1" out="$2" tag msg kind="info" secs=4
+	local rc="$1" out="$2" tag msg kind="info" secs=3
 	tag="$(sed -n 's/^.*Latest release: //p' "$out" | tail -1)"
 	if [ "$rc" = "124" ]; then
-		kind="warning"; secs=8
+		kind="warning"
 		msg="Update check timed out (GitHub slow or offline). Starting the version you have."
 	elif [ "$rc" != "0" ]; then
-		kind="warning"; secs=8
+		kind="warning"
 		msg="Update failed: $(grep -v '^[[:space:]]*$' "$out" | tail -1 | sed 's/^[0-9-]* [0-9:]* *//')
 Starting the version you have."
 	elif grep -q " Updated .* to v" "$out"; then
 		msg="Updated Skilling Helper to ${tag:-the newest version}."
 	elif grep -q "No Skilling Helper jar in" "$out"; then
-		kind="warning"; secs=8
+		kind="warning"
 		msg="Couldn't find a Skilling Helper jar in this shortcut, so nothing was updated."
 	else
 		msg="Skilling Helper is up to date${tag:+ ($tag)}."
