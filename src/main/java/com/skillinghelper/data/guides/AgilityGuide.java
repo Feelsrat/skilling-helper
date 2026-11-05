@@ -60,6 +60,18 @@ final class AgilityGuide
 					+ "Floor spikes only need 20 Agility; you can pass every obstacle from 40. "
 					+ "Karamja gloves 2 or better give 10% more xp here.")
 				.wikiPage("Brimhaven_Agility_Arena")
+				.getThere("Take the boat from Ardougne docks (or Rimmington) to Brimhaven on Karamja. The arena "
+					+ "is under the building just west of Brimhaven: follow the arrow. Bring at least 200 coins.")
+				.howTo("Talk to Cap'n Izzy No-Beard at the entrance, pay the 200 coins and climb down the ladder "
+					+ "into the arena.")
+				.howTo("The arena is a grid of pillars joined by obstacles. One ticket dispenser at a time has a "
+					+ "flashing yellow arrow over it: make your way to it across the obstacles and click it to "
+					+ "tag it.")
+				.howTo("Then go to the nearest floor spikes and cross them back and forth for xp until a new "
+					+ "dispenser gets the arrow (about every minute). Tag that one too.")
+				.howTo("If an obstacle trips you, you take a little damage; eat when you're low.")
+				.howTo("When you're done, climb out and trade your tickets to Pirate Jackie the Fruit at the "
+					+ "entrance: choose Agility xp (345 xp per ticket).")
 				.build(),
 			course("agility_varrock", "Varrock Rooftop", 30, 270, 14_000, 3219, 3414,
 				"Rough wall", "Clothes line", "Gap", "Ledge", "Edge")
@@ -96,6 +108,20 @@ final class AgilityGuide
 					+ "Expect lots of falls below 60 Agility; nothing fails from 75. "
 					+ "Bring waterskins for the desert heat, or wear a desert amulet 4 or a charged circlet of water.")
 				.wikiPage("Agility_Pyramid")
+				.getThere("The Agility Pyramid is in the desert south of Pollnivneach. Take the magic carpet from "
+					+ "the Shantay Pass to Pollnivneach and run south, or follow the arrow. Bring waterskins and "
+					+ "food.")
+				.howTo("Click the stairs at the front of the pyramid to start. On each floor, click the "
+					+ "highlighted obstacles one after the other (low walls, ledges, planks, gaps) as you go "
+					+ "round, then take the stairs up to the next floor.")
+				.howTo("Moving stone blocks slide across some floors. Wait until the block slides away before you "
+					+ "walk past, or it knocks you down a floor.")
+				.howTo("If you fail an obstacle you drop to the floor below. Just carry on from there.")
+				.howTo("On the top floor, click the climbing rocks to grab the pyramid top FIRST. Then go through "
+					+ "the doorway, which takes you back to the ground.")
+				.howTo("Sell the pyramid top to Simon Templeton at the base of the pyramid for 10,000 coins "
+					+ "straight away (it's heavy), then go again.")
+				.howTo("Drink from a waterskin when the heat starts hurting you.")
 				.build(),
 			course("agility_barbarian", "Barbarian Outpost Agility Course", 35, 153.2, 14_000, 2552, 3556,
 				"Rope swing", "Log balance", "Obstacle net", "Balancing ledge", "Ladder", "Crumbling wall")
@@ -119,6 +145,8 @@ final class AgilityGuide
 				.tool(ItemReq.tool("Mith grapple", ItemID.XBOWS_GRAPPLE_TIP_BOLT_MITHRIL_ROPE))
 				.notes("Wield the crossbow and keep the mith grapple in your inventory for the grapple obstacles. "
 					+ "Good if you can't use Ape Atoll and want to stay out of the Wilderness. " + MARKS)
+				.getThere("Wield any crossbow and carry a mith grapple: the course has grapple obstacles you "
+					+ "can't cross without them.")
 				.build(),
 			course("agility_ape_atoll", "Ape Atoll Agility Course", 48, 580, 35_000, 2755, 2742,
 				"Stepping stone", "Tropical tree", "Monkeybars", "Skull slope", "Rope")
@@ -126,6 +154,8 @@ final class AgilityGuide
 				.requirementText("Wear a small or medium ninja monkey greegree, or the Kruk greegree (Monkey Madness I)")
 				.notes("You fail every obstacle without the right greegree on. Fairy ring C-L-R lands on the course. "
 					+ "Nothing fails from 75 Agility. " + MARKS)
+				.getThere("Wear a small or medium ninja monkey greegree (or the Kruk greegree) the whole time: "
+					+ "without it every obstacle fails. Fairy ring C-L-R lands right on the course.")
 				.build(),
 			course("agility_falador", "Falador Rooftop", 50, 586, 27_000, 3035, 3342,
 				"Rough wall", "Tightrope", "Hand holds", "Gap", "Ledge", "Edge")
@@ -144,6 +174,10 @@ final class AgilityGuide
 					+ "Paying it 150,000 coins also gives loot, but you lose that fee if you die or leave. "
 					+ "Ice Plateau Teleport tablets land just north of the course. "
 					+ "Summer pies boost you in from 47.")
+				.getThere("This course is deep in the Wilderness: other players can attack you there. Only bring "
+					+ "food and stamina potions you can afford to lose.")
+				.howTo("After each lap, click the Agility dispenser near the start for a ticket and a run energy "
+					+ "refill.")
 				.build(),
 			Method.builder()
 				.id("agility_sepulchre")
@@ -172,12 +206,28 @@ final class AgilityGuide
 					+ "Loot coffins for hallowed marks; the Grand Hallowed Coffin on floor 5 needs 66 Thieving. "
 					+ "200 marks buy a private instance with the same trap pattern every time.")
 				.wikiPage("Hallowed_Sepulchre")
+				.getThere("The Hallowed Sepulchre is in the city of Darkmeyer (you need Sins of the Father). "
+					+ "Drakan's medallion teleports you to Darkmeyer; then follow the arrow to the Sepulchre "
+					+ "entrance.")
+				.getThere("Wear a Saradomin item if you have one: the obelisks at the end of each floor then "
+					+ "refill your run energy. Bring stamina potions and some food.")
+				.howTo("Go in and take the stairs down to floor 1.")
+				.howTo("Each floor is a path with traps: statues that shoot arrows, swinging swords and flame "
+					+ "jets. Stop before a trap, watch it once, and run past when it's clear. If you get hit, "
+					+ "eat.")
+				.howTo("At the end of the floor, click the highlighted stairs down to the next floor. That's when "
+					+ "the floor's xp comes in. Floor 2 opens at 62 Agility, 3 at 72, 4 at 77 and 5 at 87.")
+				.howTo("On the last floor you can do, click a highlighted magical obelisk to leave (you still get "
+					+ "that floor's xp), then start again from floor 1.")
+				.howTo("Optional: click the coffins on the way for hallowed marks to spend in the shop.")
 				.build(),
 			course("agility_seers", "Seers' Village Rooftop", 60, 570, 45_000, 2728, 3488,
 				"Gap", "Tightrope", "Edge")
 				.target(Target.object("Climb-up", "Wall"))
 				.notes("Teleport back to the start with Camelot Teleport (Kandarin hard diary sends you to Seers' bank). "
 					+ MARKS)
+				.howTo("The course starts at the wall on the bank building in Seers' Village (\"Climb-up\"). "
+					+ "After the last edge, use Camelot Teleport to get back to the start quickly.")
 				.build(),
 			course("agility_werewolf", "Werewolf Agility Course", 60, 730, 55_000, 3540, 9880,
 				"Stepping stone", "Hurdle", "Pipe", "Skull slope", "Zip line")
@@ -188,11 +238,17 @@ final class AgilityGuide
 				.notes("Pick up the stick after the pipes and hand it to the Agility Trainer at the end for 380 bonus "
 					+ "xp. Keep a free inventory slot for it. "
 					+ "Only the zip line can fail, and it stops failing at 80 Agility and Strength. " + MARKS)
+				.getThere("Wear a Ring of Charos and climb down the trapdoor in Canifis to "
+					+ "reach the course.")
+				.howTo("After the pipes, pick up the stick that appears and hand it to the Agility Trainer at the "
+					+ "end of the lap for bonus xp. Keep one inventory slot free for it.")
 				.build(),
 			course("agility_wyrm_advanced", "Colossal Wyrm Agility Course (advanced)", 62, 1053.6, 42_000, 1648, 2929,
 				"Ladder", "Tightrope", "Edge", "Rope", "Zipline")
 				.notes("Climb the second ladder after the first tightrope for the advanced route. Only about six clicks "
 					+ "a lap and obstacles never fail. Amylase packs sell to Grace for 8 marks of grace each. " + MARKS)
+				.howTo("After the first tightrope, climb the second ladder (the one up the higher scaffolding) to "
+					+ "take the advanced route.")
 				.build(),
 			course("agility_pollnivneach", "Pollnivneach Rooftop", 70, 890, 52_000, 3350, 2963,
 				"Basket", "Market stall", "Banner", "Gap", "Tree", "Rough wall", "Monkeybars", "Drying line")
@@ -232,6 +288,17 @@ final class AgilityGuide
 			.supply(Supplies.food(5))
 			.instruction("Run laps of the course, clicking each highlighted obstacle in turn")
 			.notes(MARKS)
+			.howTo("Turn on run (click the boot icon next to the minimap) and keep some food with you: falling off "
+				+ "an obstacle costs a few hitpoints.")
+			.howTo("Start at the highlighted " + obstacles[0] + " where the arrow points and click it. Your "
+				+ "character crosses it by themselves.")
+			.howTo("Then click the next highlighted obstacle ahead of you. The obstacles go: "
+				+ String.join(" → ", obstacles) + ". Some names repeat (like \"Gap\"), so always take the one in "
+				+ "front of you.")
+			.howTo("The last obstacle puts you back on the ground near the start: that's one lap. Go straight back to "
+				+ "the " + obstacles[0] + " and repeat.")
+			.howTo("If you fail an obstacle you drop to the ground and lose a little health. Walk back to the "
+				+ obstacles[0] + " and start the lap again; eat if your hitpoints get low.")
 			.wikiPage(WIKI);
 	}
 

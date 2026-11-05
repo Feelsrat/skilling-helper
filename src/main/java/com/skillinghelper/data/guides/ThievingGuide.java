@@ -40,6 +40,9 @@ final class ThievingGuide
 				.instruction("Pickpocket the men and women")
 				.notes("You get stunned now and then; just wait it out. " + POUCHES)
 				.wikiPage(WIKI)
+				.howTo("The men and women walk around Lumbridge Castle's courtyard and the town around it: follow "
+					+ "the arrow.")
+				.howTo(pickpocket("man or woman"))
 				.build(),
 			Method.builder()
 				.id("thieve_tea_stall")
@@ -57,6 +60,10 @@ final class ThievingGuide
 				.target(Target.object("Steal-from", "Tea stall"))
 				.instruction("Steal from the tea stall and drop the tea")
 				.wikiPage(WIKI)
+				.howTo("The tea stall is in east Varrock, a short walk east of Varrock east bank: follow the arrow.")
+				.howTo(stall("tea stall"))
+				.howTo("When your inventory fills with cups of tea, drop them all (hold Shift and click) and "
+					+ "carry on.")
 				.build(),
 			Method.builder()
 				.id("thieve_cake_stall")
@@ -76,6 +83,11 @@ final class ThievingGuide
 				.instruction("Steal from the baker's stall from the north-east corner so the guard can't see you")
 				.notes("Keep the cakes if you want free food for later.")
 				.wikiPage(WIKI)
+				.howTo("The baker's stall is in the middle of East Ardougne market: follow the arrow.")
+				.howTo("Stand on the tile at the north-east corner of the stall: the guard can't see you there.")
+				.howTo(stall("baker's stall"))
+				.howTo("When your inventory is full, drop the bread and chocolate slices and keep the cakes if "
+					+ "you want free food.")
 				.build(),
 			Method.builder()
 				.id("thieve_pyramid_plunder")
@@ -107,6 +119,16 @@ final class ThievingGuide
 				// says it's much lower; halved after in-game play came in at about half the old estimate
 				.rateAt(41, 30_000).rateAt(51, 45_000).rateAt(61, 70_000).rateAt(71, 110_000).rateAt(81, 170_000)
 				.rateAt(91, 250_000)
+				.getThere("Pyramid Plunder is in Sophanem, in the south of the desert (you need Icthlarin's "
+					+ "Little Helper). The pharaoh's sceptre or the magic carpet to Sophanem gets you there. "
+					+ "Bring a lockpick, some food and stamina potions.")
+				.howTo("Walk into the pyramid in the middle of Sophanem and click the highlighted Guardian mummy "
+					+ "(\"Start-minigame\").")
+				.howTo("From then on the guide outlines one thing at a time for you: the speartrap, the urns, the "
+					+ "golden chest and the next door. Click what's outlined.")
+				.howTo("Each round lasts 5 minutes. When time runs out you're put outside: start a new round with "
+					+ "the mummy.")
+				.howTo("Bank the artefacts at Nardah or sell them to Simon Templeton at the Agility Pyramid.")
 				.build(),
 			Method.builder()
 				.id("thieve_rogues_den")
@@ -126,6 +148,20 @@ final class ThievingGuide
 				.notes("Each run gives a Rogue outfit piece; the full set doubles pickpocket loot for good. "
 					+ "Needs 50 Agility too.")
 				.wikiPage("Rogues%27_Den")
+				.getThere("The Rogues' Den is under the Toad and Chicken inn in Burthorpe: go into the inn and "
+					+ "climb down the trapdoor. You need 50 Agility and 50 Thieving.")
+				.getThere("You can't take any items into the maze, so bank everything except stamina potions "
+					+ "first (there's a banker in the den).")
+				.howTo("The first time, talk to Brian O'Richard to start. After that, just go through the "
+					+ "doorway.")
+				.howTo("The maze is a path full of traps: spinning blades, tiles that look different, hidden "
+					+ "traps to search for, doors to pick, and flash powder to throw at the guard. Every mistake "
+					+ "drains a little Agility or Thieving; if either reaches zero you get thrown out (it's safe, "
+					+ "you don't die).")
+				.howTo("Follow a route guide for the maze (the wiki's Rogues' Den page has the full "
+					+ "click-by-click path and a tile marker file for RuneLite's Ground Markers).")
+				.howTo("At the end, click the wall safe to crack it: you get a Rogue outfit piece or crate and go "
+					+ "back to the lobby. Repeat until you have all five pieces.")
 				.build(),
 			Method.builder()
 				.id("thieve_master_farmer")
@@ -144,6 +180,11 @@ final class ThievingGuide
 				.instruction("Pickpocket the master farmer and bank the seeds")
 				.notes("Ranarr and snapdragon seeds make this decent money for Farming later.")
 				.wikiPage(WIKI)
+				.howTo("The master farmers walk around the Draynor Village market, next to the bank: follow the "
+					+ "arrow.")
+				.howTo(pickpocket("master farmer"))
+				.howTo("The seeds stack. When your inventory is full of other stuff, bank the seeds at Draynor "
+					+ "bank right next door.")
 				.build(),
 			Method.builder()
 				.id("thieve_ardougne_knights")
@@ -164,6 +205,10 @@ final class ThievingGuide
 				.notes("Bring food. The Ardougne diary and a dodgy necklace raise success a lot. " + POUCHES)
 				.wikiPage(WIKI)
 				.rateAt(70, 90_000).rateAt(85, 130_000).rateAt(99, 150_000)
+				.howTo("The knights of Ardougne walk around the East Ardougne market square, next to the south "
+					+ "bank: follow the arrow. Pick one that's away from the others.")
+				.howTo(pickpocket("knight of Ardougne"))
+				.howTo("Bank for more food at the south bank when you run out.")
 				.build(),
 			Method.builder()
 				.id("thieve_fruit_stall")
@@ -183,6 +228,11 @@ final class ThievingGuide
 					+ "fruit to restore run energy.")
 				.wikiPage(WIKI)
 				.rateAt(40, 45_000).rateAt(50, 50_000)
+				.howTo("The fruit stalls are in Hosidius (Great Kourend). Use the easternmost house by the beach: "
+					+ "it has two stalls close together and no guard dogs.")
+				.howTo(stall("fruit stall"))
+				.howTo("Drop the fruit as you go (hold Shift and click). Eat strange fruit if you find any to "
+					+ "refill your run energy.")
 				.build(),
 			Method.builder()
 				.id("thieve_blackjacking")
@@ -218,6 +268,18 @@ final class ThievingGuide
 				.wikiPage("Blackjack")
 				.rateAt(50, 90_000).rateAt(55, 121_000).rateAt(60, 126_000).rateAt(65, 209_000)
 				.rateAt(75, 226_000).rateAt(85, 241_000).rateAt(99, 261_000)
+				.getThere("You need part of The Feud done and a blackjack (from Ali the Discount Seller in "
+					+ "Pollnivneach). Get to Pollnivneach by the magic carpet from the Shantay Pass. Fill your "
+					+ "inventory with food or jugs of wine.")
+				.howTo("Find a bandit (the highlighted ones) and lure it into an empty house: right-click it, "
+					+ "pick \"Lure\", walk into the house and close the curtain behind you.")
+				.howTo("Click \"Knock-Out\". If it works the bandit sits down dazed.")
+				.howTo("Straight away click \"Pickpocket\", then click \"Pickpocket\" again the moment the first "
+					+ "xp shows up. That's two pickpockets per knock-out.")
+				.howTo("Then knock it out again and repeat. If a knock-out fails, click Knock-Out again at once "
+					+ "before it fights back.")
+				.howTo("If it does start attacking you, take off the blackjack and click Knock-Out to stop it. "
+					+ "Eat when you're low.")
 				.build(),
 			Method.builder()
 				.id("thieve_artefacts")
@@ -240,6 +302,15 @@ final class ThievingGuide
 					+ "patrol to pass.")
 				.wikiPage("Stealing_artefacts")
 				.rateAt(65, 90_000).rateAt(80, 140_000).rateAt(99, 230_000)
+				.getThere("Stealing artefacts is in Port Piscarilius (Great Kourend). Bring a lockpick and "
+					+ "stamina potions.")
+				.howTo("Talk to the highlighted Captain Khaled in the foodhall on the east side of Port "
+					+ "Piscarilius. He tells you which house to rob (they're in the south-west of the port).")
+				.howTo("Walk to that house, watching the patrolmen and patrolwomen walking the streets. Wait "
+					+ "until they've walked past before you go in.")
+				.howTo("Click the highlighted drawers inside to pick the lock and take the artefact.")
+				.howTo("Sneak back out the same way, avoiding the patrols, and hand the artefact to Captain "
+					+ "Khaled. Ask him for a new house and repeat.")
 				.build(),
 			Method.builder()
 				.id("thieve_varlamore_valuables")
@@ -261,6 +332,14 @@ final class ThievingGuide
 					+ "valuables to Oriana for coins.")
 				.wikiPage("Stealing_valuables")
 				.rateAt(70, 80_000).rateAt(90, 95_000)
+				.getThere("This is in Civitas illa Fortis in Varlamore (you need Children of the Sun). Bring some "
+					+ "food.")
+				.howTo("Pickpocket the highlighted wealthy citizens around the city until you get a house key.")
+				.howTo("Go to the house the key belongs to, go in, and search the chests, jewellery cases and "
+					+ "wardrobes. When an item flashes with an arrow over it, click it quickly for a bigger "
+					+ "bonus.")
+				.howTo("When the owner comes home, leave. Then sell the valuables to the highlighted Oriana for "
+					+ "coins and repeat.")
 				.build(),
 			Method.builder()
 				.id("thieve_vyres")
@@ -282,6 +361,9 @@ final class ThievingGuide
 					+ POUCHES)
 				.wikiPage(WIKI)
 				.rateAt(99, 180_000)
+				.getThere("You need Sins of the Father done and must wear vyre noble clothing (top, legs, shoes), "
+					+ "or the vyres attack you. Drakan's medallion teleports you to Darkmeyer.")
+				.howTo(pickpocket("vyre"))
 				.build(),
 			Method.builder()
 				.id("thieve_elves")
@@ -302,8 +384,39 @@ final class ThievingGuide
 					+ "rogue equipment. " + POUCHES)
 				.wikiPage(WIKI)
 				.rateAt(99, 150_000)
+				.getThere("You need Mourning's End Part I done to enter Lletya, in the forest of Tirannwn. "
+					+ "Teleport crystals or the Lletya teleport are the quickest ways there.")
+				.howTo(pickpocket("elf"))
 				.build()
 		);
+	}
+
+	/**
+	 * The beginner steps every pickpocketing method shares.
+	 */
+	private static List<String> pickpocket(String who)
+	{
+		return List.of(
+			"Left-click a highlighted " + who + " with \"Pickpocket\". If the left-click says something else, "
+				+ "right-click them and pick \"Pickpocket\".",
+			"If it works you get loot (coins arrive as coin pouches). If it fails, you get stunned for a few seconds "
+				+ "(stars over your head) and take a small hit: just wait and click again.",
+			"Eat food when your hitpoints drop below about half.",
+			"Click a coin pouch in your inventory to open them all before you reach 28, or you can't pickpocket any "
+				+ "more until you do.");
+	}
+
+	/**
+	 * The beginner steps every stall shares.
+	 */
+	private static List<String> stall(String which)
+	{
+		return List.of(
+			"Stand right next to the highlighted " + which + " and left-click it with \"Steal-from\".",
+			"After each steal the stall is empty for a few seconds. Stay where you are and click it again as soon as "
+				+ "the goods are back.",
+			"If the stall owner or a guard sees you stealing, they shout and attack. Step away for a moment, then "
+				+ "come back.");
 	}
 
 	private ThievingGuide()

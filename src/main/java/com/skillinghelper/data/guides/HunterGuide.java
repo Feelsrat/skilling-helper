@@ -30,13 +30,19 @@ final class HunterGuide
 		return List.of(
 			birds("hunter_crimson_swift", "Crimson swifts (Feldip Hills)", 1, 34, 7_000,
 				Location.of("Feldip hunter area", 2557, 2912, 25), "Crimson swift", ItemID.HUNTING_JUNGLE_FEATHER)
+				.getThere("The Feldip Hills hunter area is south of Gu'Tanoth, in the far south of Kandarin. "
+					+ "Fairy ring A-K-S or a Feldip Hills teleport lands close by.")
 				.build(),
 			birds("hunter_copper_longtail", "Copper longtails (Piscatoris)", 9, 61, 10_000,
 				Location.of("Piscatoris hunter area", 2335, 3584, 25), "Copper longtail",
 				ItemID.HUNTING_WOODLAND_FEATHER)
+				.getThere("The Piscatoris hunter area is in north-west Kandarin. Fairy ring A-K-Q lands right in "
+					+ "it.")
 				.build(),
 			birds("hunter_tropical_wagtail", "Tropical wagtails (Feldip Hills)", 19, 95, 18_000,
 				Location.of("Feldip hunter area", 2557, 2912, 25), "Tropical wagtail", ItemID.HUNTING_STRIPY_BIRD_FEATHER)
+				.getThere("The Feldip Hills hunter area is south of Gu'Tanoth, in the far south of Kandarin. "
+					+ "Fairy ring A-K-S or a Feldip Hills teleport lands close by.")
 				.build(),
 			Method.builder()
 				.id("hunter_swamp_lizards")
@@ -57,6 +63,10 @@ final class HunterGuide
 					+ "lizard is caught")
 				.notes("One rope and net per trap; a spare of each covers traps that collapse. " + TRAPS)
 				.wikiPage(WIKI)
+				.getThere("The swamp lizards live in the swamp next to Canifis in Morytania (you need Priest in "
+					+ "Peril done to get into Morytania). Follow the arrow.")
+				.howTo(netTraps("swamp lizard"))
+				.howTo("Release the lizards or drop them as you catch them.")
 				.build(),
 			Method.builder()
 				.id("hunter_birdhouses")
@@ -103,6 +113,18 @@ final class HunterGuide
 					+ "to Mushroom Meadow. They fill up in 50 minutes, so do other skills in between. "
 					+ "Clockworks are made at a POH clockmaker's bench or bought. Gives bird nests too.")
 				.wikiPage("Birdhouse_run")
+				.getThere("Bird houses are on Fossil Island (you need Bone Voyage done). A digsite pendant "
+					+ "teleports you there.")
+				.getThere("Make the bird houses first: with a hammer and chisel in your inventory, use a "
+					+ "clockwork on the logs. Bring 10 hop or grain seeds per house.")
+				.howTo("At each highlighted bird house spot: if a bird house is already there, click it "
+					+ "(\"Empty\") to collect the loot.")
+				.howTo("Click the empty space (\"Build\") with a bird house in your inventory.")
+				.howTo("Use 10 seeds on the new bird house (click the seeds, then the bird house).")
+				.howTo("The guide then sends you to the next spot. The magic mushtree next to the first two spots "
+					+ "takes you to Mushroom Meadow for the other two.")
+				.howTo("After all four, the guide waits about 50 minutes for them to fill. Do something else "
+					+ "meanwhile and come back when the timer says they're ready.")
 				.build(),
 			Method.builder()
 				.id("hunter_feldip_weasels")
@@ -122,6 +144,9 @@ final class HunterGuide
 				.instruction("Inspect a burrow, follow the tracks to the end and attack the bush to catch the weasel")
 				.notes("A Feldip Hills teleport scroll lands close by. A ring of pursuit reveals the whole trail at once.")
 				.wikiPage(WIKI)
+				.getThere("The Feldip Hills hunter area is south of Gu'Tanoth, in the far south of Kandarin. "
+					+ "Fairy ring A-K-S or a Feldip Hills teleport lands close by.")
+				.howTo(tracking("weasel"))
 				.build(),
 			Method.builder()
 				.id("hunter_ruby_harvest")
@@ -142,6 +167,14 @@ final class HunterGuide
 				.instruction("Keep bird snares set for copper longtails and net ruby harvests in between")
 				.notes("Release the butterflies to re-use the jars. " + TRAPS)
 				.wikiPage(WIKI)
+				.getThere("The Piscatoris hunter area is in north-west Kandarin. Fairy ring A-K-Q lands right in "
+					+ "it.")
+				.howTo("Lay your bird snares near the copper longtails first (see snaring: click a snare to lay "
+					+ "it, click it to check when a bird lands).")
+				.howTo("Between checks, wield the butterfly net and click a ruby harvest butterfly (\"Catch\") "
+					+ "with an empty butterfly jar in your inventory.")
+				.howTo("Release the butterflies from the jars (click the jar, \"Release\") to use the jars again. "
+					+ "Drop the bird bones and meat.")
 				.build(),
 			Method.builder()
 				.id("hunter_jerboas")
@@ -163,6 +196,9 @@ final class HunterGuide
 					+ TRAPS)
 				.wikiPage(WIKI)
 				.rateAt(43, 50_000)
+				.getThere("The embertailed jerboas live at the Locus Oasis in Varlamore. Fairy ring A-J-P is "
+					+ "right next to it. You need part of Eagles' Peak done to use box traps.")
+				.howTo(boxTraps("jerboa"))
 				.build(),
 			Method.builder()
 				.id("hunter_falconry")
@@ -184,6 +220,15 @@ final class HunterGuide
 				.notes("Your weapon, shield and gloves slots must be empty. Dark kebbits from 57. Fairy ring A-K-Q.")
 				.wikiPage("Falconry")
 				.rateAt(57, 65_000)
+				.getThere("The Piscatoris hunter area is in north-west Kandarin. Fairy ring A-K-Q lands right in "
+					+ "it. You need 43 Hunter.")
+				.howTo("Take off your weapon, shield and gloves: falconry needs both hands free.")
+				.howTo("Talk to the highlighted Matthias and pay 500 coins to rent a gyr falcon (you get a "
+					+ "falconer's glove).")
+				.howTo("Click a highlighted spotted kebbit to send the falcon after it (dark kebbits from 57).")
+				.howTo("If it catches the kebbit, walk over to the falcon and click it (\"Retrieve\") to get the "
+					+ "falcon back with the loot. If it misses, the falcon flies back to you.")
+				.howTo("Drop the bones; keep the furs to sell. Repeat.")
 				.build(),
 			Method.builder()
 				.id("hunter_orange_salamanders")
@@ -205,6 +250,10 @@ final class HunterGuide
 				.instruction("Set net traps on the young trees and drop the salamanders as you catch them")
 				.notes("Less clicking than falconry. Desert clothing makes waterskins last longer. " + TRAPS)
 				.wikiPage(WIKI)
+				.getThere("The orange salamanders are by Uzer in the desert, east of the Shantay Pass. Bring "
+					+ "waterskins for the heat.")
+				.howTo(netTraps("orange salamander"))
+				.howTo("Release the salamanders (or drop them) as you catch them.")
 				.build(),
 			Method.builder()
 				.id("hunter_razor_kebbits")
@@ -227,6 +276,9 @@ final class HunterGuide
 					+ "fairy ring A-K-Q then run east.")
 				.wikiPage(WIKI)
 				.rateAt(60, 110_000).rateAt(73, 130_000)
+				.getThere("The Piscatoris hunter area is in north-west Kandarin. Fairy ring A-K-Q lands right in "
+					+ "it.")
+				.howTo(tracking("razor-backed kebbit"))
 				.build(),
 			Method.builder()
 				.id("hunter_red_salamanders")
@@ -249,6 +301,9 @@ final class HunterGuide
 					+ TRAPS)
 				.wikiPage(WIKI)
 				.rateAt(67, 100_000)
+				.getThere("The red salamanders are south of the Ourania Cave, west of Ardougne. Follow the arrow.")
+				.howTo(netTraps("red salamander"))
+				.howTo("Release the salamanders (or drop them) as you catch them.")
 				.build(),
 			Method.builder()
 				.id("hunter_red_chinchompas")
@@ -269,6 +324,10 @@ final class HunterGuide
 				.notes("Chinchompas sell well on the GE. " + TRAPS)
 				.wikiPage(WIKI)
 				.rateAt(80, 105_000).rateAt(90, 130_000)
+				.getThere("The Feldip Hills hunter area is south of Gu'Tanoth, in the far south of Kandarin. "
+					+ "Fairy ring A-K-S or a Feldip Hills teleport lands close by.")
+				.howTo(boxTraps("red chinchompa"))
+				.howTo("Chinchompas stack in one inventory slot, so you never need to bank. Sell them on the GE.")
 				.build(),
 			Method.builder()
 				.id("hunter_black_salamanders")
@@ -290,6 +349,12 @@ final class HunterGuide
 					+ "Wilderness. Burning amulet to the Chaos Temple, then run north-east.")
 				.wikiPage(WIKI)
 				.rateAt(73, 110_000)
+				.getThere("The black salamanders are in the Bone Yard, level 20 Wilderness: other players can "
+					+ "attack you there. Bring only what you can lose. A burning amulet to the Chaos Temple, then "
+					+ "run north-east, is the quick way.")
+				.howTo(netTraps("black salamander"))
+				.howTo("Release the salamanders (or drop them) as you catch them. You get one extra trap in the "
+					+ "Wilderness.")
 				.build(),
 			Method.builder()
 				.id("hunter_black_chinchompas")
@@ -311,6 +376,11 @@ final class HunterGuide
 					+ "Black chinchompas sell for a lot. You get one extra trap in the Wilderness.")
 				.wikiPage(WIKI)
 				.rateAt(85, 150_000).rateAt(99, 180_000)
+				.getThere("The black chinchompas are in level 32 Wilderness, north of the Chaos Temple. Player "
+					+ "killers go there a lot: bring only box traps and what you can afford to lose.")
+				.howTo(boxTraps("black chinchompa"))
+				.howTo("Chinchompas stack in one slot. If another player turns up and attacks, run south out of "
+					+ "the Wilderness or teleport.")
 				.build(),
 			Method.builder()
 				.id("hunter_herbiboar")
@@ -333,8 +403,77 @@ final class HunterGuide
 				.notes("Low effort and the herbs make decent money. An open herb sack saves space.")
 				.wikiPage("Herbiboar")
 				.rateAt(90, 70_000).rateAt(99, 80_000)
+				.getThere("The Mushroom Forest is on Fossil Island (you need Bone Voyage done). A digsite pendant "
+					+ "teleports you to Fossil Island; the magic mushtree takes you to the Mushroom Meadow. You "
+					+ "need 31 Herblore to harvest herbs.")
+				.howTo("Click a highlighted starting point (a rock, mushroom or driftwood) to start a trail.")
+				.howTo("Footprints show the way to the next hidden object: click it to search it. Keep going "
+					+ "until the trail ends at a tunnel.")
+				.howTo("Click the tunnel (\"Attack\") to stun the herbiboar.")
+				.howTo("Click the herbiboar (\"Harvest\") to collect the herbs, then find a new starting point "
+					+ "and repeat.")
 				.build()
 		);
+	}
+
+	/**
+	 * Beginner steps for bird snares.
+	 */
+	private static List<String> snaring(String bird)
+	{
+		return List.of(
+			"You can set 1 snare at level 1, 2 at 20, 3 at 40 and so on. The guide takes out the right number.",
+			"Stand on an empty tile near where the " + bird + "s fly, click a bird snare in your inventory "
+				+ "(\"Lay\") and wait while it's set up. Lay the next one a couple of tiles away.",
+			"Wait for a bird to land in a snare. A snare with a bird in it looks different: click it (\"Check\") to "
+				+ "collect the bird and your snare.",
+			"If a snare falls over without a bird, click it to pick it up (\"Dismantle\").",
+			"Lay the snare again on the same spot straight away. Drop the bones and raw bird meat as you go.");
+	}
+
+	/**
+	 * Beginner steps for net traps on young trees.
+	 */
+	private static List<String> netTraps(String creature)
+	{
+		return List.of(
+			"Each trap needs one rope and one small fishing net. You can set 1 trap at first, 2 at 20 Hunter, 3 at 40 "
+				+ "and so on.",
+			"Click a highlighted young tree (\"Set-trap\") with a rope and net in your inventory. Set one on every "
+				+ "young tree you're allowed.",
+			"When a " + creature + " is caught it hangs from the tree in the net: click it (\"Check\") to collect "
+				+ "it, then set the trap again.",
+			"If a trap collapses, the rope and net fall on the ground next to the tree. Pick them up (click them) and "
+				+ "set the trap again.");
+	}
+
+	/**
+	 * Beginner steps for box traps.
+	 */
+	private static List<String> boxTraps(String creature)
+	{
+		return List.of(
+			"You can set 1 box trap at first, 2 at 20 Hunter, 3 at 40, 4 at 60 and 5 at 80.",
+			"Stand near where the " + creature + "s run around, click a box trap in your inventory (\"Lay\") and "
+				+ "wait while it's set up. Lay the others a couple of tiles apart, in a square or a line.",
+			"A box that caught something shakes: click it (\"Check\") to take your catch and the box back, then lay "
+				+ "it again on the same tile.",
+			"If a box trap falls over empty, click it to pick it up and lay it again.");
+	}
+
+	/**
+	 * Beginner steps for tracking a kebbit or weasel back to its bush.
+	 */
+	private static List<String> tracking(String creature)
+	{
+		return List.of(
+			"Wield or carry your noose wand.",
+			"Click a highlighted burrow to start a trail. Footprints appear on the ground leading to the next spot.",
+			"Follow the footprints and click the next thing they lead to (a rock, log or bush) to search it. Keep "
+				+ "going; each search shows the next set of footprints.",
+			"When the trail ends at a bush, click it (\"Attack\") to catch the " + creature + " with your noose "
+				+ "wand.",
+			"Keep the furs, drop the bones, and start a new trail at another burrow.");
 	}
 
 	private static Method.MethodBuilder birds(String id, String name, int level, double xp, int xpHr,
@@ -358,6 +497,7 @@ final class HunterGuide
 			.target(Target.npc(null, bird))
 			.instruction("Lay bird snares near the " + bird.toLowerCase() + "s and check them when a bird is caught")
 			.notes("Drop the bones and meat; keep the feathers to sell. " + TRAPS)
+			.howTo(snaring(bird.toLowerCase()))
 			.wikiPage(WIKI);
 	}
 
