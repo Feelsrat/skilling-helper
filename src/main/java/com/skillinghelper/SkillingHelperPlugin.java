@@ -29,6 +29,7 @@ import com.skillinghelper.shops.Shops;
 import com.skillinghelper.plunder.PlunderOverlay;
 import com.skillinghelper.plunder.PlunderTracker;
 import com.skillinghelper.plunder.PyramidPlunder;
+import com.skillinghelper.thieving.ArtefactHeist;
 import com.skillinghelper.thieving.BlackjackSwapper;
 import com.skillinghelper.tog.TearsOfGuthix;
 import com.skillinghelper.tog.TearsOverlay;
@@ -1052,6 +1053,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		if (PyramidPlunder.METHOD_ID.equals(method.getId()) || (skill == Skill.THIEVING && plunder.isInRound()))
 		{
 			step = plunderStep(step, state);
+		}
+		if (ArtefactHeist.METHOD_ID.equals(method.getId()) && step.getType() == StepType.TRAIN)
+		{
+			step = ArtefactHeist.step(step, state, client.getVarbitValue(ArtefactHeist.TASK_VARBIT));
 		}
 		if (BlackjackSwapper.METHOD_ID.equals(method.getId()) && blackjack.getAttacker() != null
 			&& step.getType() != StepType.DONE)

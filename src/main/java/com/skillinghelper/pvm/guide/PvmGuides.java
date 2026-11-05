@@ -47,6 +47,7 @@ public final class PvmGuides
 	private static final Location VER_SINHAZA = Location.of("Ver Sinhaza", 3650, 3219, 15);
 	private static final Location GOD_WARS_HOLE = Location.of("the God Wars Dungeon entrance", 2917, 3745, 6);
 	private static final Location WARRIORS_GUILD = Location.of("the Warriors' Guild", 2877, 3546, 6);
+	private static final Location NEYPOTZLI = Location.of("the Neypotzli entrance", 1440, 9602, 6);
 	private static final Location BARBARIAN_OUTPOST = Location.of("the Barbarian Outpost", 2531, 3577, 12);
 	private static final int[] MOONLIGHT_POTIONS = {
 		ItemID._4DOSEMOONLIGHTPOTION, ItemID._3DOSEMOONLIGHTPOTION, ItemID._2DOSEMOONLIGHTPOTION,
@@ -401,7 +402,10 @@ public final class PvmGuides
 			.stage(Stage.builder()
 				.title("Go to Neypotzli")
 				.when(PvmGuides::surface)
-				.line("Take the quetzal to Cam Torum, then go down into Neypotzli, the moons' temple.")
+				.place(NEYPOTZLI)
+				.line("Crush a calcified moth, or take the quetzal to Cam Torum, then run all the way north through "
+					+ "the dwarf city to the Neypotzli entrance (follow the arrow).")
+				.line("Go in. The supply camps are in the caverns off the first room; each moon has its own door.")
 				.build())
 			.stage(Stage.builder()
 				.title("Make supplies at the camp")
@@ -410,6 +414,11 @@ public final class PvmGuides
 				.line("In the supply area: catch bream with a big fishing net and cook it on the fire.")
 				.line("Grind moonlight grubs into paste with a pestle and mortar and add it to vials of water for "
 					+ "moonlight potions. Aim for about 4 potions and 10 bream.")
+				.line("The supply crates (outlined) give you a big fishing net, a pestle and mortar and vials of water "
+					+ "for free. Cook on the outlined stove.")
+				.highlight(Target.object(null, "Supply crates"))
+				.highlight(Target.object(null, "Cooking stove"))
+				.highlight(Target.npc(null, "Fishing spot"))
 				.live(PvmGuides::moonSupplies)
 				.build())
 			.stage(Stage.builder()
@@ -883,6 +892,9 @@ public final class PvmGuides
 				.when(PvmGuides::surface)
 				.line("Go to the TzHaar city (fairy ring B-L-P) and into the inner city, Mor Ul Rek. You need a "
 					+ "fire cape on you to be let in.")
+				.line("Show your fire cape to the TzHaar-Ket guarding the inner city's entrance (outlined), then "
+					+ "walk in.")
+				.highlight(Target.npc(null, "TzHaar-Ket"))
 				.build())
 			.stage(Stage.builder()
 				.title("Enter the Inferno")

@@ -291,10 +291,11 @@ final class ThievingGuide
 				.xpPerHour(60_000)
 				.members(true)
 				.tag(MethodTag.FAST).tag(MethodTag.PROFIT)
-				.location(Location.of("Port Piscarilius", 1800, 3750, 40))
+				.location(Location.of("Port Piscarilius", 1800, 3745, 60))
 				.tool(ItemReq.tool("Lockpick", ItemID.LOCKPICK))
 				.supply(Supplies.STAMINA)
 				.target(Target.npc(null, "Captain Khaled"))
+				.target(Target.npc(null, "Patrolman", "Patrolwoman"))
 				.target(Target.object(null, "Drawers"))
 				.instruction("Get an assignment from Captain Khaled, sneak into the marked house past the patrols and "
 					+ "steal the artefact from the drawers, then hand it in")

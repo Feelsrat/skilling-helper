@@ -415,6 +415,14 @@ public final class MoneyGuide
 			b.line("Click " + m.getNpc() + " (outlined) and choose Trade, then buy from the shop window.");
 			b.npcs(Set.of(m.getNpc()));
 		}
+		Set<String> named = npcsFromName(m.getName());
+		if (m.getNpc() == null && !named.isEmpty())
+		{
+			boolean kill = m.getName().startsWith("Killing ");
+			b.line("Click the outlined " + named.iterator().next() + " to " + (kill ? "attack it. Eat when your "
+				+ "hitpoints drop below half." : "pickpocket them."));
+			b.npcs(named);
+		}
 		if (main != null && p.getCarried().getOrDefault(itemId(main), 0) > 0)
 		{
 			b.line("Use the " + main.getName() + " in your inventory (outlined).");
@@ -445,6 +453,64 @@ public final class MoneyGuide
 				+ " in your inventory, set a price (-5% sells fast) and Confirm.");
 		}
 		return b.build();
+	}
+
+	/**
+	 * The NPC a "Killing blue dragons" or "Pickpocketing master farmers" method is about, as the game spells its
+	 * name: both as written and in sentence case, since the wiki's capitals don't always match. Empty for others.
+	 */
+	static Set<String> npcsFromName(String name)
+	{
+		String rest;
+		if (name.startsWith("Killing "))
+		{
+			rest = name.substring("Killing ".length());
+		}
+		else if (name.startsWith("Pickpocketing "))
+		{
+			rest = name.substring("Pickpocketing ".length());
+		}
+		else
+		{
+			return Collections.emptySet();
+		}
+		for (String cut : new String[]{" (", " in ", " and ", " using ", " for ", " off-task", " on-task", ".",
+			" boss"})
+		{
+			int i = rest.indexOf(cut);
+			if (i > 0)
+			{
+				rest = rest.substring(0, i);
+			}
+		}
+		if (rest.startsWith("the "))
+		{
+			rest = rest.substring(4);
+		}
+		int of = rest.indexOf(" of ");
+		rest = of > 0 ? singular(rest.substring(0, of)) + rest.substring(of) : singular(rest);
+		rest = rest.trim();
+		if (rest.isEmpty())
+		{
+			return Collections.emptySet();
+		}
+		Set<String> names = new java.util.LinkedHashSet<>();
+		names.add(Character.toUpperCase(rest.charAt(0)) + rest.substring(1));
+		names.add(Character.toUpperCase(rest.charAt(0)) + rest.substring(1).toLowerCase(java.util.Locale.ROOT));
+		return names;
+	}
+
+	private static String singular(String words)
+	{
+		if (words.endsWith("ves"))
+		{
+			return words.substring(0, words.length() - 3) + "f";
+		}
+		if (words.endsWith("s") && !words.endsWith("ss") && !words.endsWith("us") && !words.endsWith("is"))
+		{
+			return words.substring(0, words.length() - 1);
+		}
+		return words;
 	}
 
 	private static boolean carriesProducts(MoneyMethod m, Map<Integer, Integer> carried)
