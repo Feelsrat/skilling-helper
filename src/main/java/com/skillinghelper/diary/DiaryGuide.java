@@ -60,6 +60,10 @@ public final class DiaryGuide
 		{
 			out.add("A members world");
 		}
+		if (t.isFreeWorld() && p.isMembers())
+		{
+			out.add("A free-to-play world (hop worlds)");
+		}
 		for (Map.Entry<Skill, Integer> e : t.getSkills().entrySet())
 		{
 			Skill s = e.getKey();

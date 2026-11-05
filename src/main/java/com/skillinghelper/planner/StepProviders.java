@@ -1,6 +1,7 @@
 package com.skillinghelper.planner;
 
 import com.skillinghelper.SkillingStepProvider;
+import com.skillinghelper.ca.CaStepProvider;
 import com.skillinghelper.clue.ClueStepProvider;
 import com.skillinghelper.diary.DiaryStepProvider;
 import com.skillinghelper.minigame.MinigameStepProvider;
@@ -24,6 +25,7 @@ public final class StepProviders
 		new MinigameStepProvider(),
 		new ClueStepProvider(),
 		new PvmStepProvider(),
+		new CaStepProvider(),
 		new SkillingStepProvider());
 
 	private StepProviders()

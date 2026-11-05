@@ -26,6 +26,10 @@ public class DiaryTask
 	 * Can be done on a free-to-play world (diary tasks never can).
 	 */
 	boolean freeToPlay;
+	/**
+	 * Has to be done on a free-to-play world (e.g. some Combat Achievements).
+	 */
+	boolean freeWorld;
 	DiaryRegion region;
 	DiaryTier tier;
 	/**
