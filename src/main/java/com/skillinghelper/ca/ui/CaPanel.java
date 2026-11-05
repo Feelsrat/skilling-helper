@@ -9,24 +9,16 @@ import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.BorderFactory;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
@@ -72,6 +64,10 @@ public class CaPanel extends PluginPanel
 	private final JButton[] tierButtons = new JButton[CaTier.values().length];
 	private final JCheckBox wilderness = new JCheckBox(Wilderness.TOGGLE_LABEL);
 	private final JPanel body = new JPanel();
+	/**
+	 * Reward sections the player unfolded.
+	 */
+	private final Set<String> openSections = new HashSet<>();
 
 	private CaView view;
 	private boolean updating;
@@ -81,24 +77,12 @@ public class CaPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Combat Achievements");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("The easiest tasks for you first, step by step, and what each tier's reward gives.",
-			GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
+		JPanel header = GuideUi.header("Combat Achievements", "Easiest tasks for you first, step by step.");
 
 		JPanel tiers = new JPanel(new GridLayout(2, 4, 3, 3));
 		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		style(allButton);
+		allButton.setFocusPainted(false);
 		allButton.addActionListener(e -> listener.onScope(null));
 		tiers.add(allButton);
 		for (CaTier t : CaTier.values())
@@ -112,32 +96,16 @@ public class CaPanel extends PluginPanel
 			tiers.add(b);
 		}
 		header.add(GuideUi.full(tiers));
-		wilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setFont(FontManager.getRunescapeSmallFont());
-		wilderness.setToolTipText("Off: Wilderness bosses are skipped. Shared with the other guides in this plugin "
-			+ "pack.");
-		wilderness.addActionListener(e ->
+		header.add(Box.createVerticalStrut(2));
+		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness bosses are skipped.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		header.add(GuideUi.left(wilderness));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your Combat Achievements.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see the easiest Combat Achievements for you."));
 	}
 
 	private static String shortLabel(CaTier t)
@@ -165,14 +133,14 @@ public class CaPanel extends PluginPanel
 		updating = true;
 		wilderness.setSelected(v.isWildernessAllowed());
 		updating = false;
-		allButton.setForeground(v.getScope() == null && v.getFocus() == null ? GuideUi.OPTION : GuideUi.TEXT);
+		GuideUi.select(allButton, v.getScope() == null && v.getFocus() == null, GuideUi.TEXT);
 		for (CaTier t : CaTier.values())
 		{
 			JButton b = tierButtons[t.ordinal()];
 			CaView.TierRow row = v.getTiers().isEmpty() ? null : v.getTiers().get(t.ordinal());
 			boolean claimed = row != null && Boolean.TRUE.equals(row.getClaimed());
 			b.setText((claimed ? "✔ " : "") + shortLabel(t));
-			b.setForeground(t == v.getScope() ? GuideUi.OPTION : claimed ? GuideUi.GOOD
+			GuideUi.select(b, t == v.getScope(), claimed ? GuideUi.GOOD
 				: row != null && row.isReached() ? GuideUi.GOLD : GuideUi.TEXT);
 		}
 		rebuild();
@@ -184,49 +152,38 @@ public class CaPanel extends PluginPanel
 		CaView v = view;
 		if (v == null || !v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your Combat Achievements.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see the easiest Combat Achievements for you."));
 			finish();
 			return;
 		}
 		points(v);
-		body.add(Box.createVerticalStrut(6));
-		if (v.isRunning())
+		body.add(Box.createVerticalStrut(8));
+
+		DiaryStep step = v.getStep();
+		if (v.isRunning() && step != null)
+		{
+			String id = v.getPvmId();
+			JButton boss = id == null ? null : GuideUi.small("Boss guide", () -> listener.onBossGuide(id));
+			if (boss != null)
+			{
+				boss.setToolTipText("Opens this boss in PvM Progression: exact gear and supplies from your bank, "
+					+ "step by step (turn that plugin on in the plugin list)");
+			}
+			String page = v.getWikiPage();
+			String key = step.getTaskKey();
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide, boss,
+				page == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(page)),
+				key != null && step.getKind() != DiaryStep.Kind.CLAIM
+					? GuideUi.small("Skip task", () -> listener.onSkipTask(key)) : null));
+		}
+		else if (v.isRunning())
 		{
 			body.add(GuideUi.button("Stop guide", listener::onStopGuide));
 		}
 		else if (v.getLeft() > 0)
 		{
-			body.add(GuideUi.button("Start guide (easiest first)", listener::onStartGuide));
-		}
-
-		DiaryStep step = v.getStep();
-		if (v.isRunning() && step != null)
-		{
-			body.add(Box.createVerticalStrut(8));
-			JPanel card = GuideUi.card(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT);
-			GuideUi.fillStep(card, "Now", GuideUi.HINT, step.getTitle(), step.getLines());
-			if (v.getPvmId() != null)
-			{
-				String id = v.getPvmId();
-				card.add(Box.createVerticalStrut(6));
-				JButton boss = GuideUi.button("Full boss guide", () -> listener.onBossGuide(id));
-				boss.setToolTipText("Opens this boss in PvM Progression: exact gear and supplies from your bank, "
-					+ "step by step (turn that plugin on in the plugin list)");
-				card.add(boss);
-			}
-			if (v.getWikiPage() != null)
-			{
-				String page = v.getWikiPage();
-				card.add(Box.createVerticalStrut(3));
-				card.add(GuideUi.button("Open task on the wiki", () -> listener.onOpenWiki(page)));
-			}
-			if (step.getTaskKey() != null && step.getKind() != DiaryStep.Kind.CLAIM)
-			{
-				String key = step.getTaskKey();
-				card.add(Box.createVerticalStrut(3));
-				card.add(GuideUi.button("Skip this task for now", () -> listener.onSkipTask(key)));
-			}
-			body.add(GuideUi.full(card));
+			body.add(GuideUi.primary("▶ Start guide (easiest first)", listener::onStartGuide));
 		}
 
 		reward(v);
@@ -256,12 +213,12 @@ public class CaPanel extends PluginPanel
 		{
 			body.add(GuideUi.line("✔ Every task here is done.", GuideUi.GOOD, WIDTH));
 		}
+		GuideUi.foldSections(body, t -> t.endsWith(" reward"), openSections);
 		finish();
 	}
 
 	private void points(CaView v)
 	{
-		body.add(GuideUi.headline(v.getPoints() + " points", Color.WHITE, WIDTH));
 		CaView.TierRow next = null;
 		for (CaView.TierRow row : v.getTiers())
 		{
@@ -271,8 +228,13 @@ public class CaPanel extends PluginPanel
 				break;
 			}
 		}
-		if (next != null)
+		if (next == null)
 		{
+			body.add(GuideUi.headline(v.getPoints() + " points", Color.WHITE, WIDTH));
+		}
+		else
+		{
+			body.add(GuideUi.progress("Points", v.getPoints(), next.getThreshold()));
 			body.add(GuideUi.line((next.getThreshold() - v.getPoints()) + " more for the " + next.getTier().getLabel()
 				+ " reward (" + next.getThreshold() + ")", GuideUi.GOLD, GuideUi.TEXT, WIDTH));
 		}
@@ -333,10 +295,7 @@ public class CaPanel extends PluginPanel
 
 	private JComponent taskRow(CaView.TaskRow t, boolean showTier)
 	{
-		JPanel row = column();
-		row.setOpaque(true);
-		row.setBackground(t.isCurrent() ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		row.setBorder(BorderFactory.createEmptyBorder(4, 5, 4, 5));
+		JPanel row = GuideUi.row(t.isCurrent());
 		String marker;
 		Color color;
 		if (t.isCurrent())
@@ -383,16 +342,7 @@ public class CaPanel extends PluginPanel
 		{
 			row.add(GuideUi.text("Skipped for now.", GuideUi.MUTED, CARD));
 		}
-		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		row.setToolTipText("Guide me through this task");
-		row.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				listener.onPickTask(t.getKey());
-			}
-		});
+		GuideUi.clickable(row, "Guide me through this task", () -> listener.onPickTask(t.getKey()));
 		return GuideUi.full(row);
 	}
 
@@ -400,14 +350,5 @@ public class CaPanel extends PluginPanel
 	{
 		body.revalidate();
 		body.repaint();
-	}
-
-	private static JPanel column()
-	{
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		p.setAlignmentX(LEFT_ALIGNMENT);
-		return p;
 	}
 }

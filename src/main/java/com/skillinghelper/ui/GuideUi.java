@@ -1,24 +1,37 @@
 package com.skillinghelper.ui;
 
+import com.skillinghelper.data.Wilderness;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
+import net.runelite.client.ui.PluginPanel;
 
 /**
  * The look every plugin in this jar uses for its side panel text, so they all read the same way: short lines with a
@@ -45,10 +58,20 @@ public final class GuideUi
 	 * Buttons and menu options, close to the game's own orange.
 	 */
 	public static final Color OPTION = new Color(255, 150, 60);
+	/**
+	 * Fill of the one main button on a panel ("Start guide").
+	 */
+	public static final Color PRIMARY = new Color(173, 90, 18);
+	public static final Color PRIMARY_HOVER = new Color(198, 106, 26);
+	/**
+	 * Background of a list row under the mouse.
+	 */
+	public static final Color ROW_HOVER = ColorScheme.DARKER_GRAY_HOVER_COLOR;
 
 	private static final GuideText.Palette PALETTE = new GuideText.Palette(hex(BRIGHT), hex(GOLD), hex(OPTION));
 	private static final Font MARKER_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
 	private static final int GUTTER = 11;
+	private static final String SECTION = "skillinghelper.section";
 	private static final int NUMBER_GUTTER = 14;
 
 	private GuideUi()
@@ -215,11 +238,73 @@ public final class GuideUi
 	public static JComponent section(String title)
 	{
 		JLabel l = new JLabel(title);
+		l.putClientProperty(SECTION, title);
 		l.setFont(FontManager.getRunescapeBoldFont());
 		l.setForeground(ColorScheme.BRAND_ORANGE);
 		l.setBorder(new CompoundBorder(new EmptyBorder(10, 0, 4, 0),
 			new CompoundBorder(new MatteBorder(0, 0, 1, 0, ColorScheme.MEDIUM_GRAY_COLOR), new EmptyBorder(0, 0, 2, 0))));
 		return full(l);
+	}
+
+	/**
+	 * Lets the player fold away reference sections (rewards, drop tables) of a panel that was just filled, so the
+	 * guide part stays near the top. A section is every {@link #section} heading in {@code body} and what follows
+	 * it up to the next one. Call after filling {@code body}.
+	 *
+	 * @param foldable which section titles can fold
+	 * @param open     titles the player opened; kept up to date, so pass the same set on every rebuild
+	 */
+	public static void foldSections(JPanel body, java.util.function.Predicate<String> foldable,
+		java.util.Set<String> open)
+	{
+		Component[] kids = body.getComponents();
+		for (int i = 0; i < kids.length; i++)
+		{
+			if (!(kids[i] instanceof JLabel))
+			{
+				continue;
+			}
+			JLabel heading = (JLabel) kids[i];
+			Object title = heading.getClientProperty(SECTION);
+			if (!(title instanceof String) || !foldable.test((String) title))
+			{
+				continue;
+			}
+			List<Component> inside = new java.util.ArrayList<>();
+			for (int j = i + 1; j < kids.length; j++)
+			{
+				if (kids[j] instanceof JLabel && ((JLabel) kids[j]).getClientProperty(SECTION) != null)
+				{
+					break;
+				}
+				inside.add(kids[j]);
+			}
+			String t = (String) title;
+			Runnable show = () ->
+			{
+				boolean isOpen = open.contains(t);
+				heading.setText("<html><font face='Dialog' size='-1'>" + (isOpen ? "▾" : "▸") + "</font>&nbsp;"
+					+ GuideText.escape(t) + "</html>");
+				heading.setToolTipText(isOpen ? "Click to fold away" : "Click to show");
+				inside.forEach(c -> c.setVisible(isOpen));
+				body.revalidate();
+				body.repaint();
+			};
+			heading.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			heading.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					if (!open.remove(t))
+					{
+						open.add(t);
+					}
+					show.run();
+				}
+			});
+			show.run();
+		}
 	}
 
 	/**
@@ -264,6 +349,389 @@ public final class GuideUi
 		JLabel l = text(s, color, width);
 		l.setFont(FontManager.getRunescapeBoldFont());
 		return l;
+	}
+
+	// ---- Panel frame ----
+
+	/**
+	 * Lays out a side panel the same way in every plugin: a fixed header on top and the body under it in a
+	 * scroll pane, with the usual padding and background.
+	 */
+	public static JScrollPane frame(PluginPanel panel, JComponent header, JPanel body)
+	{
+		panel.setLayout(new BorderLayout());
+		panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		panel.add(header, BorderLayout.NORTH);
+		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		JPanel wrapper = new WidthTracking();
+		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		wrapper.add(body, BorderLayout.NORTH);
+		JScrollPane scroll = new JScrollPane(wrapper);
+		scroll.setBorder(null);
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		panel.add(scroll, BorderLayout.CENTER);
+		return scroll;
+	}
+
+	/**
+	 * A scroll pane view that is always as wide as the panel, so a long line (a dropdown with a long entry, a
+	 * wide row) wraps or gets cut short instead of pushing everything past the right edge.
+	 */
+	private static final class WidthTracking extends JPanel implements Scrollable
+	{
+		WidthTracking()
+		{
+			super(new BorderLayout());
+		}
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize()
+		{
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visible, int orientation, int direction)
+		{
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visible, int orientation, int direction)
+		{
+			return Math.max(16, visible.height - 32);
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight()
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * The top of a side panel: the plugin's name and one short line on what it does. Add the panel's own
+	 * controls (pickers, filters) to the returned column.
+	 */
+	public static JPanel header(String title, String tagline)
+	{
+		JPanel header = column();
+		header.setBorder(new EmptyBorder(0, 0, 6, 0));
+		JLabel t = new JLabel(title);
+		t.setFont(FontManager.getRunescapeBoldFont());
+		t.setForeground(BRIGHT);
+		header.add(left(t));
+		if (tagline != null)
+		{
+			header.add(Box.createVerticalStrut(1));
+			header.add(text(tagline, MUTED, WIDTH));
+		}
+		header.add(Box.createVerticalStrut(6));
+		return header;
+	}
+
+	/**
+	 * Styles a shared on/off setting ticked in the header, e.g. the Wilderness toggle: small text, quiet while off
+	 * and in {@code onColor} while on, so a switched-on risk stands out instead of a switched-off one.
+	 */
+	public static JCheckBox toggle(JCheckBox box, Color onColor, String tooltip, Runnable onChange)
+	{
+		box.setOpaque(false);
+		box.setFont(FontManager.getRunescapeSmallFont());
+		box.setFocusable(false);
+		box.setToolTipText(tooltip);
+		Runnable recolor = () -> box.setForeground(box.isSelected() ? onColor : MUTED);
+		recolor.run();
+		box.addItemListener(e -> recolor.run());
+		if (onChange != null)
+		{
+			box.addActionListener(e -> onChange.run());
+		}
+		return left(box);
+	}
+
+	/**
+	 * The shared "Include Wilderness methods (all guides)" tick box, styled like every other panel's.
+	 *
+	 * @param offTooltip what being off leaves out in this panel, e.g. "Off: Wilderness bosses are skipped."
+	 */
+	public static JCheckBox wilderness(JCheckBox box, String offTooltip, Runnable onChange)
+	{
+		return toggle(box, Wilderness.COLOR, offTooltip + " Shared with the other guides in this plugin pack.",
+			onChange);
+	}
+
+	/**
+	 * What a panel shows when there is nothing to show yet (logged out, bank not seen): a quiet box with a
+	 * short title and what to do about it.
+	 */
+	public static JComponent empty(String title, String hint)
+	{
+		JPanel box = column();
+		box.setOpaque(true);
+		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		box.setBorder(new EmptyBorder(10, 8, 10, 8));
+		JLabel t = new JLabel(title);
+		t.setFont(FontManager.getRunescapeBoldFont());
+		t.setForeground(TEXT);
+		box.add(left(t));
+		if (hint != null)
+		{
+			box.add(Box.createVerticalStrut(3));
+			box.add(text(hint, MUTED, CARD_WIDTH));
+		}
+		return full(box);
+	}
+
+	/**
+	 * "Unlocked ........ 9 / 32" in bold with a thin bar under it.
+	 */
+	public static JComponent progress(String title, int done, int total)
+	{
+		boolean complete = total > 0 && done >= total;
+		JPanel top = new JPanel(new BorderLayout(6, 0));
+		top.setOpaque(false);
+		JLabel t = new JLabel(title);
+		t.setFont(FontManager.getRunescapeBoldFont());
+		t.setForeground(BRIGHT);
+		JLabel n = new JLabel(String.format("%,d / %,d", done, total));
+		n.setFont(FontManager.getRunescapeBoldFont());
+		n.setForeground(complete ? GOOD : GOLD);
+		n.setHorizontalAlignment(SwingConstants.RIGHT);
+		top.add(t, BorderLayout.WEST);
+		top.add(n, BorderLayout.EAST);
+		JPanel box = column();
+		box.add(full(top));
+		box.add(Box.createVerticalStrut(3));
+		box.add(bar(done, total, complete ? GOOD : ColorScheme.BRAND_ORANGE));
+		return full(box);
+	}
+
+	/**
+	 * A thin progress bar the width of the panel.
+	 */
+	public static JComponent bar(int done, int total, Color fill)
+	{
+		JPanel bar = new JPanel()
+		{
+			@Override
+			protected void paintComponent(Graphics g)
+			{
+				g.setColor(ColorScheme.MEDIUM_GRAY_COLOR);
+				g.fillRect(0, 0, getWidth(), getHeight());
+				if (total > 0)
+				{
+					g.setColor(fill);
+					g.fillRect(0, 0, (int) Math.round(getWidth() * Math.min(1.0, done / (double) total)),
+						getHeight());
+				}
+			}
+		};
+		bar.setOpaque(false);
+		bar.setPreferredSize(new Dimension(WIDTH, 4));
+		bar.setMinimumSize(new Dimension(0, 4));
+		bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 4));
+		bar.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return bar;
+	}
+
+	// ---- Buttons ----
+
+	/**
+	 * The one main action of a panel, e.g. "Start guide": filled in orange so it is the first thing seen.
+	 */
+	public static JButton primary(String label, Runnable action)
+	{
+		JButton b = button(label, action);
+		b.setBackground(PRIMARY);
+		b.setForeground(BRIGHT);
+		b.setFont(FontManager.getRunescapeBoldFont());
+		b.setFocusPainted(false);
+		b.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				b.setBackground(PRIMARY_HOVER);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				b.setBackground(PRIMARY);
+			}
+		});
+		return b;
+	}
+
+	/**
+	 * A button in a row of filters (tiers, tabs). See {@link #select}.
+	 */
+	public static JButton tab(String label, Runnable action)
+	{
+		JButton b = small(label, action);
+		b.setMargin(new Insets(2, 1, 2, 1));
+		return b;
+	}
+
+	/**
+	 * Marks a {@link #tab} as the chosen one (filled) or not, with {@code color} for its text when not chosen.
+	 */
+	public static void select(JButton tab, boolean selected, Color color)
+	{
+		tab.setBackground(selected ? PRIMARY : null);
+		tab.setForeground(selected ? BRIGHT : color);
+	}
+
+	/**
+	 * A small button for a row of actions.
+	 */
+	public static JButton small(String label, Runnable action)
+	{
+		JButton b = new JButton(label);
+		b.setFont(FontManager.getRunescapeSmallFont());
+		b.setMargin(new Insets(2, 2, 2, 2));
+		b.setFocusPainted(false);
+		b.addActionListener(e -> action.run());
+		return b;
+	}
+
+	/**
+	 * Small buttons side by side, up to three a row, instead of a tall stack of full-width ones. Null entries
+	 * are left out.
+	 */
+	public static JComponent actions(JButton... buttons)
+	{
+		List<JButton> list = new java.util.ArrayList<>();
+		for (JButton b : buttons)
+		{
+			if (b != null)
+			{
+				list.add(b);
+			}
+		}
+		int cols = list.size() == 4 ? 2 : Math.min(3, Math.max(1, list.size()));
+		JPanel row = new JPanel(new GridLayout(0, cols, 3, 3));
+		row.setOpaque(false);
+		for (JButton b : list)
+		{
+			row.add(b);
+		}
+		return full(row);
+	}
+
+	/**
+	 * The running guide's current step: a {@link #card} with "NOW" and a small Stop button on top, the step,
+	 * then any extra actions in a row under it.
+	 *
+	 * @param onStop  null for no Stop button
+	 * @param actions buttons for the row under the step (see {@link #small}); nulls are skipped
+	 */
+	public static JPanel stepCard(Color accent, String kicker, String title, List<String> lines, Runnable onStop,
+		JButton... actions)
+	{
+		JPanel card = card(accent);
+		fillStep(card, kicker, accent, title, lines);
+		if (onStop != null && kicker != null)
+		{
+			addStop(card, kicker, accent, onStop);
+		}
+		boolean any = false;
+		for (JButton b : actions)
+		{
+			any |= b != null;
+		}
+		if (any)
+		{
+			card.add(Box.createVerticalStrut(6));
+			card.add(actions(actions));
+		}
+		return full(card);
+	}
+
+	/**
+	 * Swaps the kicker ("NOW") of a card filled by {@link #fillStep} for one with a small Stop button on the right.
+	 */
+	public static void addStop(JPanel card, String kicker, Color color, Runnable onStop)
+	{
+		card.remove(0);
+		JPanel top = new JPanel(new BorderLayout(4, 0));
+		top.setOpaque(false);
+		JLabel k = new JLabel(kicker.toUpperCase(Locale.ROOT));
+		k.setFont(FontManager.getRunescapeSmallFont());
+		k.setForeground(color);
+		top.add(k, BorderLayout.WEST);
+		JButton stop = small("■ Stop", onStop);
+		stop.setFont(MARKER_FONT);
+		stop.setToolTipText("Stop the guide");
+		top.add(stop, BorderLayout.EAST);
+		card.add(full(top), 0);
+	}
+
+	// ---- Lists ----
+
+	/**
+	 * A list entry in its own dark box, see {@link #clickable} to make it open something.
+	 */
+	public static JPanel row(boolean current)
+	{
+		JPanel row = column();
+		row.setOpaque(true);
+		row.setBackground(current ? ROW_HOVER : ColorScheme.DARKER_GRAY_COLOR);
+		row.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, current ? OPTION
+			: ColorScheme.DARKER_GRAY_COLOR), new EmptyBorder(4, 5, 4, 5)));
+		return row;
+	}
+
+	/**
+	 * Makes a list row open something on click, with a hand cursor and a lighter background under the mouse so
+	 * it reads as clickable.
+	 */
+	public static <T extends JComponent> T clickable(T row, String tooltip, Runnable action)
+	{
+		Color normal = row.getBackground();
+		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		row.setToolTipText(tooltip);
+		row.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				action.run();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				row.setBackground(ROW_HOVER);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				row.setBackground(normal);
+			}
+		});
+		return row;
+	}
+
+	/**
+	 * A small grey hint line under a section heading, e.g. "Click one to be guided to it next."
+	 */
+	public static JComponent hint(String s)
+	{
+		JLabel l = text(s, MUTED, WIDTH);
+		l.setBorder(new EmptyBorder(0, 0, 4, 0));
+		return full(l);
 	}
 
 	// ---- Plain building blocks ----
@@ -313,7 +781,7 @@ public final class GuideUi
 		return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
 	}
 
-	private static JPanel column()
+	public static JPanel column()
 	{
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));

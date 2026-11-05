@@ -178,7 +178,7 @@ class BankProfitList
 		{
 			if (guideOn)
 			{
-				box.add(GuideUi.full(GuideUi.button("Start guide", () -> onStart.accept(p.getId()))));
+				box.add(GuideUi.primary("▶ Start guide", () -> onStart.accept(p.getId())));
 			}
 			else
 			{
@@ -190,7 +190,7 @@ class BankProfitList
 		if (wiki != null)
 		{
 			box.add(Box.createVerticalStrut(3));
-			box.add(GuideUi.full(GuideUi.button("Wiki", () -> onWiki.accept(wiki))));
+			box.add(GuideUi.actions(GuideUi.small("Wiki", () -> onWiki.accept(wiki))));
 		}
 	}
 

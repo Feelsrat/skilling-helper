@@ -6,23 +6,12 @@ import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import com.skillinghelper.unlocks.UnlockStep;
 import com.skillinghelper.unlocks.UnlockView;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
-import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -68,44 +57,16 @@ public class UnlocksPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Account Unlocks");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("The unlocks that make the game smoother, in a good order: what each gives, which "
-			+ "you have, and a step-by-step guide to the next.", GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(4));
-		hideDone.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		hideDone.setForeground(GuideUi.TEXT);
-		hideDone.setFont(FontManager.getRunescapeSmallFont());
-		hideDone.addActionListener(e ->
+		JPanel header = GuideUi.header("Account Unlocks", "Key unlocks in a good order, guided one by one.");
+		header.add(GuideUi.toggle(hideDone, GuideUi.TEXT, "Leave out the unlocks you already have", () ->
 		{
 			if (!updating)
 			{
 				listener.onHideDone(hideDone.isSelected());
 			}
-		});
-		header.add(GuideUi.left(hideDone));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your unlocks.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(loggedOut());
 	}
 
 	/**
@@ -124,32 +85,28 @@ public class UnlocksPanel extends PluginPanel
 		body.removeAll();
 		if (!v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your unlocks.", GuideUi.MUTED, WIDTH));
+			body.add(loggedOut());
 			finish();
 			return;
 		}
-		body.add(GuideUi.headline(v.getDone() + " of " + v.getTotal() + " unlocked",
-			v.getDone() == v.getTotal() ? GuideUi.GOOD : Color.WHITE, WIDTH));
-		body.add(Box.createVerticalStrut(6));
-		if (v.isRunning())
+		body.add(GuideUi.progress("Unlocked", v.getDone(), v.getTotal()));
+		body.add(Box.createVerticalStrut(8));
+		UnlockStep step = v.getStep();
+		if (v.isRunning() && step != null)
+		{
+			body.add(stepCard(step, v.getStepWiki()));
+		}
+		else if (v.isRunning())
 		{
 			body.add(GuideUi.button("Stop guide", listener::onStopGuide));
 		}
 		else if (v.getDone() < v.getTotal())
 		{
-			body.add(GuideUi.button("Start guide", listener::onStartGuide));
-		}
-
-		UnlockStep step = v.getStep();
-		if (v.isRunning() && step != null)
-		{
-			body.add(Box.createVerticalStrut(8));
-			body.add(stepCard(step, v.getStepWiki()));
+			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
 		}
 
 		body.add(GuideUi.section("Unlocks"));
-		body.add(GuideUi.text("In the suggested order. Click one to be guided to it next.", GuideUi.MUTED, WIDTH));
-		body.add(Box.createVerticalStrut(4));
+		body.add(GuideUi.hint("In the suggested order. Click one to be guided to it next."));
 		for (UnlockView.Row r : v.getRows())
 		{
 			body.add(row(r));
@@ -161,39 +118,29 @@ public class UnlocksPanel extends PluginPanel
 	private JComponent stepCard(UnlockStep step, String wiki)
 	{
 		DiaryStep s = step.getStep();
-		JPanel card = GuideUi.card(s.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT);
-		GuideUi.fillStep(card, "Now", GuideUi.HINT, s.getTitle(), s.getLines());
 		String id = step.getUnlockId();
+		JButton open = null;
 		if (step.getAction() == UnlockStep.Action.DIARY)
 		{
-			card.add(Box.createVerticalStrut(6));
-			card.add(GuideUi.button("Open diary guide", () -> listener.onAction(id)));
+			open = GuideUi.small("Diary guide", () -> listener.onAction(id));
+			open.setToolTipText("Open this in Achievement Diary Guides");
 		}
 		else if (step.getAction() == UnlockStep.Action.TRAIN)
 		{
-			card.add(Box.createVerticalStrut(6));
-			card.add(GuideUi.button("Open Skilling Helper guide", () -> listener.onAction(id)));
+			open = GuideUi.small("Train it", () -> listener.onAction(id));
+			open.setToolTipText("Open the Skilling Helper guide for this");
 		}
-		if (wiki != null)
-		{
-			card.add(Box.createVerticalStrut(3));
-			card.add(GuideUi.button("Open wiki page", () -> listener.onOpenWiki(wiki)));
-		}
-		if (id != null && s.getKind() != DiaryStep.Kind.DONE)
-		{
-			card.add(Box.createVerticalStrut(3));
-			card.add(GuideUi.button("Skip this for now", () -> listener.onSkip(id)));
-		}
-		return GuideUi.full(card);
+		return GuideUi.stepCard(s.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+			s.getTitle(), s.getLines(), listener::onStopGuide, open,
+			wiki == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(wiki)),
+			id == null || s.getKind() == DiaryStep.Kind.DONE ? null
+				: GuideUi.small("Skip", () -> listener.onSkip(id)));
 	}
 
 	private JComponent row(UnlockView.Row r)
 	{
-		JPanel row = column();
-		row.setOpaque(true);
 		boolean current = r.getState() == UnlockView.RowState.CURRENT;
-		row.setBackground(current ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		row.setBorder(BorderFactory.createEmptyBorder(4, 5, 4, 5));
+		JPanel row = GuideUi.row(current);
 		String marker;
 		Color color;
 		switch (r.getState())
@@ -251,32 +198,19 @@ public class UnlocksPanel extends PluginPanel
 			{
 				row.add(GuideUi.text("Skipped for now.", GuideUi.MUTED, CARD));
 			}
-			row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			row.setToolTipText("Guide me to this unlock");
-			row.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					listener.onPick(r.getId());
-				}
-			});
+			GuideUi.clickable(row, "Guide me to this unlock", () -> listener.onPick(r.getId()));
 		}
 		return GuideUi.full(row);
+	}
+
+	private static JComponent loggedOut()
+	{
+		return GuideUi.empty("Not logged in", "Log in to see which unlocks you have and get guided to the next one.");
 	}
 
 	private void finish()
 	{
 		body.revalidate();
 		body.repaint();
-	}
-
-	private static JPanel column()
-	{
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		p.setAlignmentX(LEFT_ALIGNMENT);
-		return p;
 	}
 }

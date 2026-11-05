@@ -10,10 +10,8 @@ import com.skillinghelper.engine.GuideStep;
 import com.skillinghelper.engine.Requirement;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,13 +24,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -93,20 +88,8 @@ public class BankedXpPanel extends PluginPanel
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		this.itemManager = itemManager;
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Banked XP Guide");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(text("The xp in your bank, and a guide that uses it up: what to take out, where to go and what "
-			+ "to click.", MUTED));
-		add(header, BorderLayout.NORTH);
+		JPanel header = GuideUi.header("Banked XP Guide", "Turn what's in your bank into xp, step by step.");
+		header.setBorder(new EmptyBorder(0, 0, 0, 0));
 
 		JPanel content = column();
 		focusBox.add(GuideUi.subheading("Train"));
@@ -139,14 +122,7 @@ public class BankedXpPanel extends PluginPanel
 		content.add(totalsBox);
 		content.add(Box.createVerticalStrut(8));
 		content.add(list);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(content, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
+		GuideUi.frame(this, header, content);
 
 		update(BankedView.LOGGED_OUT);
 	}
@@ -211,12 +187,12 @@ public class BankedXpPanel extends PluginPanel
 		guideBox.removeAll();
 		if (!view.isLoggedIn())
 		{
-			guideBox.add(text("Log in to see the xp in your bank.", MUTED));
+			guideBox.add(GuideUi.empty("Not logged in", "Log in to see the xp in your bank."));
 			return;
 		}
 		if (!view.isBankKnown())
 		{
-			guideBox.add(text("Open your bank once so I can see what's in it.", WARN));
+			guideBox.add(GuideUi.empty("Open your bank", "Open your bank once so the guide can see what's in it."));
 			return;
 		}
 		if (!view.isRunning() || view.getCurrent() == null)
@@ -233,7 +209,7 @@ public class BankedXpPanel extends PluginPanel
 			guideBox.add(text(String.format("%d item%s to use up for %,d xp (about %s).", queue.size(),
 				queue.size() == 1 ? "" : "s", xp, Format.hours(hours(queue))), Color.WHITE));
 			guideBox.add(Box.createVerticalStrut(6));
-			guideBox.add(button("Start guide", listener::onStart));
+			guideBox.add(GuideUi.primary("▶ Start guide", listener::onStart));
 			return;
 		}
 
@@ -244,14 +220,16 @@ public class BankedXpPanel extends PluginPanel
 			showProfitRun(view, current, a);
 			return;
 		}
-		JPanel card = GuideUi.card(GOOD);
 		GuideStep step = view.getStep();
 		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
 		if (step != null && step.getRoute() != null && step.getRoute().entersWilderness())
 		{
 			lines.add(Wilderness.TAG + ": " + Wilderness.WARNING);
 		}
-		GuideUi.fillStep(card, "Now: " + a.getName(), GOOD, step == null ? a.getName() : step.getTitle(), lines);
+		JButton skip = GuideUi.small("Skip item", () -> listener.onChoice(a.getGroup(), BankedPlanner.SKIP));
+		skip.setToolTipText("Don't use this item: the guide moves on to the next one");
+		JPanel card = GuideUi.stepCard(GOOD, "Now: " + a.getName(), step == null ? a.getName() : step.getTitle(),
+			lines, listener::onStop);
 		card.add(Box.createVerticalStrut(5));
 		card.add(GuideUi.stat("Left", String.format("%,d", current.getActions()), GuideUi.BRIGHT));
 		if (current.getLimitedBy() != null)
@@ -262,42 +240,10 @@ public class BankedXpPanel extends PluginPanel
 		card.add(GuideUi.stat("Xp", String.format("%,d", current.getXp()), GOOD));
 		card.add(GuideUi.stat("Time", "about " + Format.hours(hours(List.of(current))), GuideUi.TEXT));
 		addRequirements(card, view.getRequirements());
+		card.add(Box.createVerticalStrut(6));
+		card.add(GuideUi.actions(skip, bankFilter(), GuideUi.small("Wiki",
+			() -> listener.onOpenWiki(a.getMethod().getWikiPage()))));
 		guideBox.add(card);
-		guideBox.add(Box.createVerticalStrut(6));
-
-		JPanel buttons = new JPanel(new GridLayout(1, 2, 4, 0));
-		buttons.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		buttons.add(new JButton("Stop")
-		{
-			{
-				addActionListener(e -> listener.onStop());
-			}
-		});
-		buttons.add(new JButton("Skip item")
-		{
-			{
-				setToolTipText("Don't use this item: the guide moves on to the next one");
-				addActionListener(e -> listener.onChoice(a.getGroup(), BankedPlanner.SKIP));
-			}
-		});
-		guideBox.add(full(buttons));
-		guideBox.add(Box.createVerticalStrut(4));
-		JPanel more = new JPanel(new GridLayout(1, 2, 4, 0));
-		more.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		more.add(new JButton("Bank filter")
-		{
-			{
-				setToolTipText("Show only this guide's items in the bank (or click the Banked XP button there)");
-				addActionListener(e -> listener.onToggleBankFilter());
-			}
-		});
-		more.add(new JButton("Wiki")
-		{
-			{
-				addActionListener(e -> listener.onOpenWiki(a.getMethod().getWikiPage()));
-			}
-		});
-		guideBox.add(full(more));
 		if (view.getQueue().size() > 1)
 		{
 			guideBox.add(Box.createVerticalStrut(4));
@@ -312,7 +258,6 @@ public class BankedXpPanel extends PluginPanel
 	 */
 	private void showProfitRun(BankedView view, BankedPlanner.Option current, BankedActivity a)
 	{
-		JPanel card = GuideUi.card(GOOD);
 		GuideStep step = view.getStep();
 		List<String> lines = step == null ? new ArrayList<>() : new ArrayList<>(step.getDetails());
 		if (step != null && step.getRoute() != null && step.getRoute().entersWilderness())
@@ -322,7 +267,8 @@ public class BankedXpPanel extends PluginPanel
 		boolean selling = current.getActions() <= 0;
 		String heading = selling ? "Now: sell your " + view.getProfitRun().toLowerCase()
 			: "Profit run: " + a.getName();
-		GuideUi.fillStep(card, heading, GOOD, step == null ? a.getName() : step.getTitle(), lines);
+		JPanel card = GuideUi.stepCard(GOOD, heading, step == null ? a.getName() : step.getTitle(), lines,
+			listener::onStop);
 		card.add(Box.createVerticalStrut(5));
 		if (!selling)
 		{
@@ -333,24 +279,9 @@ public class BankedXpPanel extends PluginPanel
 				+ Format.gp(view.getProfitEach()) + " each after tax)", MUTED, GuideUi.CARD_WIDTH));
 			addRequirements(card, view.getRequirements());
 		}
+		card.add(Box.createVerticalStrut(6));
+		card.add(GuideUi.actions(bankFilter()));
 		guideBox.add(card);
-		guideBox.add(Box.createVerticalStrut(6));
-		JPanel buttons = new JPanel(new GridLayout(1, 2, 4, 0));
-		buttons.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		buttons.add(new JButton("Stop")
-		{
-			{
-				addActionListener(e -> listener.onStop());
-			}
-		});
-		buttons.add(new JButton("Bank filter")
-		{
-			{
-				setToolTipText("Show only this guide's items in the bank (or click the Banked XP button there)");
-				addActionListener(e -> listener.onToggleBankFilter());
-			}
-		});
-		guideBox.add(full(buttons));
 	}
 
 	private static void addRequirements(JPanel card, List<Requirement> reqs)
@@ -430,7 +361,10 @@ public class BankedXpPanel extends PluginPanel
 	{
 		JPanel row = GuideUi.card(ColorScheme.BRAND_ORANGE);
 		JLabel name = text(String.format("%s × %,d", g.getItemName(), g.getCount()), Color.WHITE);
-		itemManager.getImage(g.getIconId()).addTo(name);
+		if (itemManager != null)
+		{
+			itemManager.getImage(g.getIconId()).addTo(name);
+		}
 		row.add(name);
 
 		JComboBox<Object> combo = new JComboBox<>();
@@ -538,6 +472,13 @@ public class BankedXpPanel extends PluginPanel
 			}
 		}
 		return hours;
+	}
+
+	private JButton bankFilter()
+	{
+		JButton b = GuideUi.small("Bank filter", listener::onToggleBankFilter);
+		b.setToolTipText("Show only this guide's items in the bank (or click the Banked XP button there)");
+		return b;
 	}
 
 	private static JPanel column()

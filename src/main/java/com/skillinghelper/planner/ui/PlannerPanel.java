@@ -25,10 +25,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
@@ -91,46 +88,17 @@ public class PlannerPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Account Planner");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("Your path to max: what to do next, in order. Each step opens its own guide.",
-			GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
-		wilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setFont(FontManager.getRunescapeSmallFont());
-		wilderness.setToolTipText("Off: steps in the Wilderness are left out. Shared with the other guides in this "
-			+ "plugin pack.");
-		wilderness.addActionListener(e ->
+		JPanel header = GuideUi.header("Account Planner", "Your path to max, one step at a time.");
+		header.add(Box.createVerticalStrut(2));
+		header.add(GuideUi.wilderness(wilderness, "Off: steps in the Wilderness are left out.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		header.add(GuideUi.left(wilderness));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your path to max.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see your path to max."));
 	}
 
 	/**
@@ -160,7 +128,7 @@ public class PlannerPanel extends PluginPanel
 		PlannerView v = view;
 		if (v == null || !v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your path to max.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see your path to max."));
 			refreshLayout();
 			return;
 		}
@@ -204,13 +172,7 @@ public class PlannerPanel extends PluginPanel
 		}
 
 		body.add(GuideUi.section("Progress"));
-		for (Map.Entry<StepKind, int[]> e : v.getProgress().entrySet())
-		{
-			int[] p = e.getValue();
-			body.add(GuideUi.stat(plural(e.getKey()), p[0] + " / " + p[1], p[0] >= p[1] ? GuideUi.GOOD : GuideUi.TEXT));
-		}
-
-		body.add(GuideUi.section("Plan these"));
+		body.add(GuideUi.hint("Untick a kind to leave it out of the plan."));
 		List<StepKind> kinds = new ArrayList<>(v.getProgress().keySet());
 		for (StepKind k : new StepKind[]{StepKind.QUEST, StepKind.MONEY})
 		{
@@ -221,14 +183,7 @@ public class PlannerPanel extends PluginPanel
 		}
 		for (StepKind k : kinds)
 		{
-			JCheckBox box = new JCheckBox(plural(k), !v.getHiddenKinds().contains(k));
-			box.setBackground(ColorScheme.DARK_GRAY_COLOR);
-			box.setForeground(KIND_COLORS.getOrDefault(k, GuideUi.TEXT));
-			box.setFont(FontManager.getRunescapeSmallFont());
-			box.setToolTipText(k == StepKind.SKILL ? "Off: only the levels other steps need are planned"
-				: "Off: left out, and counted as done for whatever needs them");
-			box.addActionListener(e -> listener.onShowKind(k, box.isSelected()));
-			body.add(GuideUi.left(box));
+			body.add(kindRow(k, v.getProgress().get(k), !v.getHiddenKinds().contains(k)));
 		}
 		if (v.getSkipped() > 0)
 		{
@@ -252,6 +207,41 @@ public class PlannerPanel extends PluginPanel
 			+ "Skilling Helper's xp rates at your pace setting, plus a guess per diary task and boss.",
 			GuideUi.MUTED, WIDTH));
 		refreshLayout();
+	}
+
+	/**
+	 * "[x] Quests ........ 3 / 20" with a thin bar: the tick box plans that kind, the numbers are how far along.
+	 */
+	private JComponent kindRow(StepKind k, int[] progress, boolean shown)
+	{
+		JCheckBox box = new JCheckBox(plural(k), shown);
+		box.setOpaque(false);
+		box.setForeground(shown ? KIND_COLORS.getOrDefault(k, GuideUi.TEXT) : GuideUi.MUTED);
+		box.setFont(FontManager.getRunescapeSmallFont());
+		box.setFocusable(false);
+		box.setToolTipText(k == StepKind.SKILL ? "Off: only the levels other steps need are planned"
+			: "Off: left out, and counted as done for whatever needs them");
+		box.addActionListener(e -> listener.onShowKind(k, box.isSelected()));
+		JPanel top = new JPanel(new BorderLayout(4, 0));
+		top.setOpaque(false);
+		top.add(box, BorderLayout.WEST);
+		JPanel row = new JPanel();
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setOpaque(false);
+		row.setBorder(new EmptyBorder(0, 0, 3, 0));
+		if (progress != null)
+		{
+			JLabel n = new JLabel(progress[0] + " / " + progress[1]);
+			n.setFont(FontManager.getRunescapeSmallFont());
+			n.setForeground(progress[0] >= progress[1] ? GuideUi.GOOD : GuideUi.TEXT);
+			top.add(n, BorderLayout.EAST);
+		}
+		row.add(GuideUi.full(top));
+		if (progress != null && shown)
+		{
+			row.add(GuideUi.bar(progress[0], progress[1], KIND_COLORS.getOrDefault(k, GuideUi.TEXT).darker()));
+		}
+		return GuideUi.full(row);
 	}
 
 	private void refreshLayout()
@@ -410,13 +400,5 @@ public class PlannerPanel extends PluginPanel
 	private static String escape(String s)
 	{
 		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-	}
-
-	private static JPanel column()
-	{
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setOpaque(false);
-		return p;
 	}
 }

@@ -17,8 +17,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -37,9 +37,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -84,6 +82,19 @@ public class SkillingHelperPanel extends PluginPanel
 		private final String label;
 		private final String description;
 	}
+
+	/**
+	 * Skills in the order of the game's skills tab, three to a row.
+	 */
+	public static final List<Skill> GRID_ORDER = List.of(
+		Skill.ATTACK, Skill.HITPOINTS, Skill.MINING,
+		Skill.STRENGTH, Skill.AGILITY, Skill.SMITHING,
+		Skill.DEFENCE, Skill.HERBLORE, Skill.FISHING,
+		Skill.RANGED, Skill.THIEVING, Skill.COOKING,
+		Skill.PRAYER, Skill.CRAFTING, Skill.FIREMAKING,
+		Skill.MAGIC, Skill.FLETCHING, Skill.WOODCUTTING,
+		Skill.RUNECRAFT, Skill.SLAYER, Skill.FARMING,
+		Skill.CONSTRUCTION, Skill.HUNTER, Skill.SAILING);
 
 	public interface Listener
 	{
@@ -140,6 +151,7 @@ public class SkillingHelperPanel extends PluginPanel
 	private final JSpinner targetSpinner = new JSpinner(targetModel);
 	private final JComboBox<TrainingPreference> prefBox = new JComboBox<>(TrainingPreference.values());
 	private final JLabel levelLabel = new JLabel();
+	private final JPanel goalRow = new JPanel();
 	private final JPanel content = new JPanel();
 	private boolean updating;
 	private String lastSignature;
@@ -155,12 +167,8 @@ public class SkillingHelperPanel extends PluginPanel
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
 		this.skillIcons = skillIcons;
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-		add(header(), BorderLayout.NORTH);
-		add(scrollingContent(), BorderLayout.CENTER);
-		showIntro();
+		GuideUi.frame(this, header(), content);
+		showIntro(ActiveGuide.NONE);
 	}
 
 	// ---- Layout ----
@@ -175,10 +183,14 @@ public class SkillingHelperPanel extends PluginPanel
 		title.setFont(FontManager.getRunescapeBoldFont());
 		title.setForeground(Color.WHITE);
 		header.add(left(title));
+		header.add(Box.createVerticalStrut(1));
+		header.add(GuideUi.text("Pick a skill: what to click, step by step.", MUTED, TEXT_WIDTH));
 		header.add(Box.createVerticalStrut(6));
 		header.add(full(skillRow()));
 		header.add(Box.createVerticalStrut(6));
-		header.add(full(goalRow()));
+		buildGoalRow();
+		goalRow.setVisible(false);
+		header.add(full(goalRow));
 		header.add(Box.createVerticalStrut(6));
 		header.add(full(styleRow()));
 		header.add(Box.createVerticalStrut(8));
@@ -262,9 +274,10 @@ public class SkillingHelperPanel extends PluginPanel
 		return skillBox;
 	}
 
-	private JPanel goalRow()
+	private void buildGoalRow()
 	{
-		JPanel row = new JPanel(new BorderLayout(4, 0));
+		JPanel row = goalRow;
+		row.setLayout(new BorderLayout(4, 0));
 		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		levelLabel.setForeground(Color.WHITE);
 		row.add(levelLabel, BorderLayout.WEST);
@@ -281,7 +294,6 @@ public class SkillingHelperPanel extends PluginPanel
 		reset.setToolTipText("Reset the goal to your level plus the default offset");
 		reset.addActionListener(e -> listener.onTargetReset());
 		row.add(reset, BorderLayout.EAST);
-		return row;
 	}
 
 	private JPanel styleRow()
@@ -300,20 +312,6 @@ public class SkillingHelperPanel extends PluginPanel
 		});
 		row.add(prefBox, BorderLayout.CENTER);
 		return row;
-	}
-
-	private JScrollPane scrollingContent()
-	{
-		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-		content.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrap = new JPanel(new BorderLayout());
-		wrap.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrap.add(content, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrap);
-		scroll.setBorder(null);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		return scroll;
 	}
 
 	// ---- Updating ----
@@ -352,7 +350,7 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		else if (!guide.isActive())
 		{
-			showIntro();
+			showIntro(guide);
 			addWeekly(guide);
 		}
 		else if (!guide.isHasGuide())
@@ -397,6 +395,8 @@ public class SkillingHelperPanel extends PluginPanel
 			{
 				levelLabel.setText("Goal");
 			}
+			// The goal only means something once a skill is picked
+			goalRow.setVisible(guide.getSkill() != null);
 		}
 		finally
 		{
@@ -404,15 +404,58 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 	}
 
-	private void showIntro()
+	/**
+	 * No guide open: one click on a skill (or a quick pick) starts its guide.
+	 */
+	private void showIntro(ActiveGuide guide)
 	{
 		content.removeAll();
-		content.add(GuideUi.line("Pick a skill to get a step-by-step guide.", TEXT_WIDTH));
-		content.add(Box.createVerticalStrut(3));
+		content.add(GuideUi.subheading("Train a skill"));
+		JPanel grid = new JPanel(new GridLayout(0, 3, 3, 3));
+		grid.setOpaque(false);
+		for (Skill s : GRID_ORDER)
+		{
+			grid.add(skillCell(s, guide.getLevels().get(s)));
+		}
+		content.add(full(grid));
+		content.add(Box.createVerticalStrut(4));
+		content.add(GuideUi.subheading("Or let it choose"));
+		JButton[] picks = new JButton[4];
+		QuickPick[] quick = {QuickPick.BEST_GOLD, QuickPick.FASTEST_LEVELS, QuickPick.MOST_AFK, QuickPick.LOWEST_SKILL};
+		for (int i = 0; i < quick.length; i++)
+		{
+			QuickPick pick = quick[i];
+			picks[i] = GuideUi.small(pick.getLabel(), () ->
+			{
+				lastSignature = null;
+				listener.onQuickPick(pick);
+			});
+			picks[i].setToolTipText(pick.getDescription());
+		}
+		content.add(GuideUi.actions(picks));
+		content.add(Box.createVerticalStrut(8));
 		content.add(GuideUi.line("It adapts to your level, items, bank and gold, and highlights what to click.",
 			MUTED, TEXT_WIDTH));
-		content.add(Box.createVerticalStrut(6));
+		content.add(Box.createVerticalStrut(3));
 		content.add(GuideUi.line("➜ Open your bank once so the guide knows what you own.", HINT, TEXT, TEXT_WIDTH));
+	}
+
+	/**
+	 * A skill's icon and level, like the game's skills tab; clicking it opens the skill's guide.
+	 */
+	private JComponent skillCell(Skill s, Integer level)
+	{
+		JPanel cell = new JPanel(new BorderLayout(4, 0));
+		cell.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		cell.setBorder(new EmptyBorder(3, 4, 3, 4));
+		JLabel icon = new JLabel(new ImageIcon(skillIcons.getSkillImage(s, true)));
+		cell.add(icon, BorderLayout.WEST);
+		JLabel lvl = new JLabel(level == null || level == 0 ? "" : String.valueOf(level));
+		lvl.setFont(FontManager.getRunescapeSmallFont());
+		lvl.setForeground(level != null && level >= Experience.MAX_REAL_LEVEL ? GOLD : Color.WHITE);
+		lvl.setHorizontalAlignment(SwingConstants.RIGHT);
+		cell.add(lvl, BorderLayout.CENTER);
+		return GuideUi.clickable(cell, "Train " + s.getName(), () -> listener.onSkillSelected(s));
 	}
 
 	/**
@@ -500,8 +543,9 @@ public class SkillingHelperPanel extends PluginPanel
 		content.add(Box.createVerticalStrut(2));
 		content.add(GuideUi.line(guide.getWeeklyStatus(), MUTED, TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(6));
-		content.add(button("Open Tears of Guthix guide", () -> listener.onQuickPick(QuickPick.TEARS_OF_GUTHIX)));
-		addCalendarButton(guide);
+		String url = guide.getWeeklyCalendarUrl();
+		content.add(GuideUi.actions(GuideUi.small("Open guide", () -> listener.onQuickPick(QuickPick.TEARS_OF_GUTHIX)),
+			url == null ? null : GuideUi.small("Remind me", () -> listener.onOpenLink(url))));
 	}
 
 	/**
@@ -515,7 +559,8 @@ public class SkillingHelperPanel extends PluginPanel
 			return;
 		}
 		content.add(Box.createVerticalStrut(4));
-		content.add(button("Remind me (Google Calendar)", () -> listener.onOpenLink(url)));
+		JButton remind = GuideUi.small("Remind me (Google Calendar)", () -> listener.onOpenLink(url));
+		content.add(GuideUi.actions(remind));
 	}
 
 	private static Color weeklyColor(ActiveGuide guide)
@@ -547,7 +592,8 @@ public class SkillingHelperPanel extends PluginPanel
 		if (guide.getWikiPage() != null)
 		{
 			content.add(Box.createVerticalStrut(6));
-			content.add(button("Open wiki guide", () -> listener.onOpenWiki(guide.getWikiPage())));
+			content.add(GuideUi.actions(GuideUi.small("Open wiki guide",
+				() -> listener.onOpenWiki(guide.getWikiPage()))));
 		}
 	}
 
@@ -559,7 +605,8 @@ public class SkillingHelperPanel extends PluginPanel
 		content.add(Box.createVerticalStrut(3));
 		content.add(GuideUi.line("The wiki training guide covers every method.", MUTED, TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(6));
-		content.add(button("Open wiki training guide", () -> listener.onOpenWiki(guide.getWikiPage())));
+		content.add(GuideUi.actions(GuideUi.small("Open wiki training guide",
+			() -> listener.onOpenWiki(guide.getWikiPage()))));
 	}
 
 	private void showGuide(ActiveGuide guide, boolean bankFilterOn)
@@ -576,7 +623,8 @@ public class SkillingHelperPanel extends PluginPanel
 		if (method != null && method.getWikiPage() != null)
 		{
 			content.add(Box.createVerticalStrut(6));
-			content.add(button("Open wiki guide", () -> listener.onOpenWiki(method.getWikiPage())));
+			content.add(GuideUi.actions(GuideUi.small("Open wiki guide",
+				() -> listener.onOpenWiki(method.getWikiPage()))));
 		}
 	}
 
@@ -788,8 +836,8 @@ public class SkillingHelperPanel extends PluginPanel
 				: outleveled + (outleveled == 1 ? " method is" : " methods are") + " past your level range.",
 				MUTED, TEXT_WIDTH));
 			content.add(Box.createVerticalStrut(3));
-			content.add(button(hidden ? "Show outleveled methods" : "Hide outleveled methods",
-				() -> listener.onHideOutleveled(!hidden)));
+			content.add(GuideUi.actions(GuideUi.small(hidden ? "Show outleveled methods" : "Hide outleveled methods",
+				() -> listener.onHideOutleveled(!hidden))));
 			content.add(Box.createVerticalStrut(4));
 		}
 	}
@@ -824,8 +872,9 @@ public class SkillingHelperPanel extends PluginPanel
 			: "☠ Wilderness methods can be picked (the setting is on for all guides).", Wilderness.COLOR,
 			TEXT_WIDTH));
 		content.add(Box.createVerticalStrut(3));
-		content.add(button(skipped ? "Include Wilderness methods" : "Leave out Wilderness methods",
-			() -> listener.onAllowWilderness(skipped)));
+		content.add(GuideUi.actions(GuideUi.small(skipped ? "Include Wilderness methods"
+			: "Leave out Wilderness methods",
+			() -> listener.onAllowWilderness(skipped))));
 		content.add(Box.createVerticalStrut(4));
 	}
 
@@ -858,6 +907,15 @@ public class SkillingHelperPanel extends PluginPanel
 		}
 		row.add(Box.createVerticalStrut(2));
 		row.add(GuideUi.stat("XP/hr", String.format("~%,d", Math.round(o.getXpPerHour())), TEXT));
+		if (!o.isAvailable())
+		{
+			// Locked: just what it gives and what's missing, so the ones you can use stand out
+			for (String blocker : o.getBlockers())
+			{
+				row.add(GuideUi.check(false, blocker, w));
+			}
+			return full(row);
+		}
 		row.add(GuideUi.stat("Clicks/hr", String.format("~%,d", m.getClicksPerHour()), TEXT));
 		if (xpRemaining > 0)
 		{
@@ -882,17 +940,10 @@ public class SkillingHelperPanel extends PluginPanel
 		{
 			row.add(GuideUi.line("⚠ Can't afford the materials for your goal yet", WARN, w));
 		}
-		if (!o.isAvailable())
+		if (!current)
 		{
-			row.add(Box.createVerticalStrut(2));
-			for (String blocker : o.getBlockers())
-			{
-				row.add(GuideUi.check(false, blocker, w));
-			}
-		}
-		else if (!current)
-		{
-			row.add(left(useButton(m, row.getBackground())));
+			row.add(Box.createVerticalStrut(4));
+			row.add(GuideUi.actions(GuideUi.small("Use this method", () -> listener.onMethodChosen(m.getId()))));
 		}
 		return full(row);
 	}
@@ -906,17 +957,6 @@ public class SkillingHelperPanel extends PluginPanel
 		String tags = m.getTags().stream().map(MethodTag::getLabel).collect(Collectors.joining(", "));
 		return String.format("%s%s%s", m.levelRange(), m.isMembers() ? " · Members" : " · F2P",
 			tags.isEmpty() ? "" : " · " + tags);
-	}
-
-	private JPanel useButton(Method m, Color background)
-	{
-		JButton use = new JButton("Use this method");
-		use.setAlignmentX(Component.LEFT_ALIGNMENT);
-		use.addActionListener(e -> listener.onMethodChosen(m.getId()));
-		JPanel wrap = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 2));
-		wrap.setBackground(background);
-		wrap.add(use);
-		return wrap;
 	}
 
 	/**
@@ -1013,7 +1053,8 @@ public class SkillingHelperPanel extends PluginPanel
 			.append(g.isHideOutleveled()).append('|').append(g.isForced()).append('|')
 			.append(g.getMethod() == null ? "" : g.getMethod().getId()).append('|')
 			.append(g.getPriceSource()).append('|').append(g.getSessionXpPerHour()).append('|')
-			.append(g.getActivity()).append(g.getActivityInfo()).append(g.getWeeklyState()).append(g.getWeeklyStatus());
+			.append(g.getActivity()).append(g.getActivityInfo()).append(g.getWeeklyState()).append(g.getWeeklyStatus())
+			.append(g.getLevels());
 		if (g.getPicks() != null)
 		{
 			sb.append('|').append(g.getPicks());

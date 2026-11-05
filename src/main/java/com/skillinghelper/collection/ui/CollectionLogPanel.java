@@ -7,7 +7,6 @@ import com.skillinghelper.collection.data.ClogTab;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
@@ -17,16 +16,12 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -78,20 +73,7 @@ public class CollectionLogPanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Collection Log");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("The slots and pets that come quickest, the pages you're closest to finishing, and "
-			+ "how to get them.", GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
+		JPanel header = GuideUi.header("Collection Log", "The quickest new slots for you, and how.");
 		modes.addActionListener(e ->
 		{
 			if (!updating && modes.getSelectedItem() != null)
@@ -109,44 +91,24 @@ public class CollectionLogPanel extends PluginPanel
 		});
 		header.add(Box.createVerticalStrut(3));
 		header.add(GuideUi.full(tabs));
-		for (JCheckBox box : new JCheckBox[]{wilderness, locked})
-		{
-			box.setBackground(ColorScheme.DARK_GRAY_COLOR);
-			box.setFont(FontManager.getRunescapeSmallFont());
-			header.add(GuideUi.left(box));
-		}
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setToolTipText("Off: Wilderness bosses and pets are left out. Shared with the other guides in this "
-			+ "plugin pack.");
-		wilderness.addActionListener(e ->
+		header.add(Box.createVerticalStrut(2));
+		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness bosses and pets are left out.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		locked.setForeground(GuideUi.TEXT);
-		locked.setToolTipText("Also list what you don't have the quests or levels for yet");
-		locked.addActionListener(e ->
-		{
-			if (!updating)
+		}));
+		header.add(GuideUi.toggle(locked, GuideUi.TEXT, "Also list what you don't have the quests or levels for yet",
+			() ->
 			{
-				listener.onShowLocked(locked.isSelected());
-			}
-		});
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your collection log.", GuideUi.MUTED, WIDTH));
+				if (!updating)
+				{
+					listener.onShowLocked(locked.isSelected());
+				}
+			}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see your collection log."));
 	}
 
 	/**
@@ -170,7 +132,7 @@ public class CollectionLogPanel extends PluginPanel
 		body.removeAll();
 		if (!v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your collection log.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see your collection log."));
 			finish();
 			return;
 		}
@@ -201,10 +163,9 @@ public class CollectionLogPanel extends PluginPanel
 
 	private void summary(ClogView v)
 	{
-		String count = v.getGameTotal() > 0
-			? v.getGameCount() + " / " + v.getGameTotal() + " slots filled"
-			: v.getHave() + " / " + v.getTotal() + " slots filled";
-		body.add(GuideUi.headline(count, GuideUi.GOLD, WIDTH));
+		boolean game = v.getGameTotal() > 0;
+		body.add(GuideUi.progress("Slots filled", game ? v.getGameCount() : v.getHave(),
+			game ? v.getGameTotal() : v.getTotal()));
 		if (v.getSeen() < v.getTotal() / 2 && v.getDetail() == null)
 		{
 			body.add(Box.createVerticalStrut(3));
@@ -284,7 +245,7 @@ public class CollectionLogPanel extends PluginPanel
 
 	private void detail(ClogView.EntryDetail d)
 	{
-		body.add(GuideUi.button("← Back to the list", listener::onBack));
+		body.add(GuideUi.actions(GuideUi.small("‹ Back to the list", listener::onBack)));
 		body.add(Box.createVerticalStrut(6));
 		body.add(GuideUi.headline(d.getName(), Color.WHITE, WIDTH));
 		Color c = d.getHave() == d.getTotal() ? GuideUi.GOOD : GuideUi.TEXT;
@@ -309,33 +270,31 @@ public class CollectionLogPanel extends PluginPanel
 		}
 
 		body.add(Box.createVerticalStrut(6));
-		JPanel card = GuideUi.card(GuideUi.HINT);
 		List<String> steps = new ArrayList<>();
 		for (int i = 0; i < d.getSteps().size(); i++)
 		{
 			steps.add((i + 1) + ". " + d.getSteps().get(i));
 		}
-		GuideUi.fillStep(card, "How to", GuideUi.HINT, "Getting these slots", steps);
-		body.add(GuideUi.full(card));
-		body.add(Box.createVerticalStrut(6));
+		JButton go = null;
 		if (d.getGuide() != null)
 		{
-			body.add(GuideUi.button("Open full guide", () -> listener.onOpenGuide(d.getName(), -1)));
-			body.add(Box.createVerticalStrut(3));
+			go = GuideUi.primary("▶ Open full guide", () -> listener.onOpenGuide(d.getName(), -1));
 		}
 		else if (d.isHasPlace())
 		{
-			body.add(GuideUi.button(d.isShowingWay() ? "Stop showing the way" : "Show the way",
-				() -> listener.onShowWay(!d.isShowingWay())));
-			body.add(Box.createVerticalStrut(3));
+			go = d.isShowingWay() ? GuideUi.button("Stop showing the way", () -> listener.onShowWay(false))
+				: GuideUi.primary("▶ Show the way", () -> listener.onShowWay(true));
 		}
-		if (d.getCombatAchievements() != null)
+		String ca = d.getCombatAchievements();
+		JPanel card = GuideUi.stepCard(GuideUi.HINT, "How to", "Getting these slots", steps, null,
+			ca == null ? null : GuideUi.small("Combat tasks", () -> listener.onOpenCombatAchievements(ca)),
+			GuideUi.small("Wiki", () -> listener.onOpenWiki(d.getName())));
+		if (go != null)
 		{
-			body.add(GuideUi.button("Combat achievements here", () -> listener.onOpenCombatAchievements(
-				d.getCombatAchievements())));
-			body.add(Box.createVerticalStrut(3));
+			card.add(Box.createVerticalStrut(4));
+			card.add(go);
 		}
-		body.add(GuideUi.button("Open wiki page", () -> listener.onOpenWiki(d.getName())));
+		body.add(card);
 
 		body.add(GuideUi.section("Slots"));
 		boolean pets = d.getName().endsWith("Pets");

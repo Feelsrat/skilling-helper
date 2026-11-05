@@ -5,11 +5,7 @@ import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.minigame.MinigameView;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,14 +16,9 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -67,20 +58,7 @@ public class MinigamePanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Minigames");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("What each minigame needs, which rewards are worth it, and a step-by-step guide.",
-			GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
+		JPanel header = GuideUi.header("Minigames", "What each needs, rewards worth it, and how.");
 
 		picker.setRenderer(new DefaultListCellRenderer()
 		{
@@ -105,31 +83,16 @@ public class MinigamePanel extends PluginPanel
 			}
 		});
 		header.add(GuideUi.full(picker));
-		wilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setFont(FontManager.getRunescapeSmallFont());
-		wilderness.setToolTipText("Shared with the other guides in this plugin pack.");
-		wilderness.addActionListener(e ->
+		header.add(Box.createVerticalStrut(2));
+		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness minigames are left out.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		header.add(GuideUi.left(wilderness));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see the minigames.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see the minigames."));
 	}
 
 	/**
@@ -178,7 +141,7 @@ public class MinigamePanel extends PluginPanel
 		MinigameView v = view;
 		if (v == null || !v.isLoggedIn() || v.getId() == null)
 		{
-			body.add(GuideUi.text("Log in to see the minigames.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see the minigames."));
 			finish();
 			return;
 		}
@@ -203,16 +166,17 @@ public class MinigamePanel extends PluginPanel
 			body.add(GuideUi.line(Wilderness.TAG, Wilderness.COLOR, WIDTH));
 		}
 
-		body.add(Box.createVerticalStrut(6));
-		startButtons(v);
-
+		body.add(Box.createVerticalStrut(8));
 		DiaryStep step = v.getStep();
 		if (v.isRunning() && step != null)
 		{
-			body.add(Box.createVerticalStrut(8));
-			JPanel card = GuideUi.card(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT);
-			GuideUi.fillStep(card, "Now", GuideUi.HINT, step.getTitle(), step.getLines());
-			body.add(GuideUi.full(card));
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide,
+				GuideUi.small("Wiki", listener::onOpenWiki)));
+		}
+		else
+		{
+			startButtons(v);
 		}
 
 		body.add(GuideUi.section("Requirements"));
@@ -257,7 +221,7 @@ public class MinigamePanel extends PluginPanel
 				String plugin = v.getHandoff() == MinigameView.Handoff.SKILLING_HELPER ? "Skilling Helper" : "PvM Progression";
 				if (v.isHandoffActive())
 				{
-					body.add(GuideUi.button("Start guide (in " + plugin + ")", listener::onStartGuide));
+					body.add(GuideUi.primary("▶ Start guide (in " + plugin + ")", listener::onStartGuide));
 					body.add(GuideUi.text("The full click-by-click guide for this one is in " + plugin + ".",
 						GuideUi.MUTED, WIDTH));
 				}
@@ -274,11 +238,11 @@ public class MinigamePanel extends PluginPanel
 				}
 				else if (v.isGuidedHere())
 				{
-					body.add(GuideUi.button("Start guide", listener::onStartGuide));
+					body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
 				}
 		}
 		body.add(Box.createVerticalStrut(3));
-		body.add(GuideUi.button("Open wiki page", listener::onOpenWiki));
+		body.add(GuideUi.actions(GuideUi.small("Wiki", listener::onOpenWiki)));
 	}
 
 	private void rewards(MinigameView v)
@@ -379,16 +343,7 @@ public class MinigamePanel extends PluginPanel
 		{
 			JComponent line = GuideUi.line("• " + r.getName() + " (" + r.getCategory() + "), " + r.getOwned() + " of "
 				+ r.getCheckable() + " owned", GuideUi.OPTION, GuideUi.TEXT, WIDTH);
-			line.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			line.setToolTipText("Show " + r.getName());
-			line.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					listener.onSelect(r.getId());
-				}
-			});
+			GuideUi.clickable(line, "Show " + r.getName(), () -> listener.onSelect(r.getId()));
 			body.add(line);
 		}
 	}

@@ -12,26 +12,20 @@ import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
@@ -70,6 +64,10 @@ public class CluePanel extends PluginPanel
 	private final JButton[] tierButtons = new JButton[ClueTier.values().length];
 	private final JCheckBox wilderness = new JCheckBox(Wilderness.TOGGLE_LABEL);
 	private final JPanel body = new JPanel();
+	/**
+	 * Reference sections the player unfolded.
+	 */
+	private final Set<String> openSections = new HashSet<>();
 
 	private ClueView view;
 	private boolean updating;
@@ -79,20 +77,7 @@ public class CluePanel extends PluginPanel
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Clue Scrolls");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("How to get each tier, the clues you already have, what to bring and what the "
-			+ "caskets can give.", GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
+		JPanel header = GuideUi.header("Clue Scrolls", "Get, carry and finish clues of every tier.");
 		JPanel tiers = new JPanel(new GridLayout(2, 3, 3, 3));
 		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		for (ClueTier t : ClueTier.values())
@@ -105,32 +90,16 @@ public class CluePanel extends PluginPanel
 			tiers.add(b);
 		}
 		header.add(GuideUi.full(tiers));
-		wilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setFont(FontManager.getRunescapeSmallFont());
-		wilderness.setToolTipText("Off: Wilderness ways and STASH units are skipped. Shared with the other guides in "
-			+ "this plugin pack.");
-		wilderness.addActionListener(e ->
+		header.add(Box.createVerticalStrut(2));
+		header.add(GuideUi.wilderness(wilderness, "Off: Wilderness ways and STASH units are skipped.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		header.add(GuideUi.left(wilderness));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your clues.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see your clues."));
 	}
 
 	/**
@@ -152,7 +121,7 @@ public class CluePanel extends PluginPanel
 			JButton b = tierButtons[t.ordinal()];
 			int have = have(v.getHoldings(), t);
 			b.setText(t.getLabel() + (have > 0 ? " (" + have + ")" : ""));
-			b.setForeground(t == v.getTier() ? GuideUi.OPTION : have > 0 ? GuideUi.GOLD : GuideUi.TEXT);
+			GuideUi.select(b, t == v.getTier(), have > 0 ? GuideUi.GOLD : GuideUi.TEXT);
 		}
 		rebuild();
 	}
@@ -173,7 +142,7 @@ public class CluePanel extends PluginPanel
 		ClueView v = view;
 		if (v == null || !v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your clues.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see your clues."));
 			finish();
 			return;
 		}
@@ -202,25 +171,23 @@ public class CluePanel extends PluginPanel
 		{
 			body.add(GuideUi.line("✘ You're on a free world: these clues need a members world.", GuideUi.BAD, WIDTH));
 		}
-		body.add(Box.createVerticalStrut(6));
-		if (v.isRunning())
+		body.add(Box.createVerticalStrut(8));
+		DiaryStep step = v.getStep();
+		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
+		if (v.isRunning() && step != null)
 		{
-			body.add(GuideUi.button("Stop guide", listener::onStopGuide));
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide, wiki));
+		}
+		else if (v.isRunning())
+		{
+			body.add(GuideUi.actions(GuideUi.small("Stop guide", listener::onStopGuide), wiki));
 		}
 		else
 		{
-			body.add(GuideUi.button("Start guide", listener::onStartGuide));
-		}
-		body.add(Box.createVerticalStrut(3));
-		body.add(GuideUi.button("Open wiki page", listener::onOpenWiki));
-
-		DiaryStep step = v.getStep();
-		if (v.isRunning() && step != null)
-		{
-			body.add(Box.createVerticalStrut(8));
-			JPanel card = GuideUi.card(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT);
-			GuideUi.fillStep(card, "Now", GuideUi.HINT, step.getTitle(), step.getLines());
-			body.add(GuideUi.full(card));
+			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
+			body.add(Box.createVerticalStrut(3));
+			body.add(GuideUi.actions(wiki));
 		}
 
 		getOne(v);
@@ -228,6 +195,8 @@ public class CluePanel extends PluginPanel
 		rewards(v);
 		stash(v);
 		drops(v);
+		GuideUi.foldSections(body, t -> t.equals("Rewards") || t.equals("STASH units") || t.equals("Best drop rates"),
+			openSections);
 		finish();
 	}
 
@@ -298,9 +267,7 @@ public class CluePanel extends PluginPanel
 		body.add(GuideUi.section("How to get one"));
 		if (!v.getWays().isEmpty())
 		{
-			body.add(GuideUi.text("Click a way to be guided through it. The guide picks the first one you can do.",
-				GuideUi.MUTED, WIDTH));
-			body.add(Box.createVerticalStrut(4));
+			body.add(GuideUi.hint("Click a way to be guided through it. The guide picks the first one you can do."));
 		}
 		for (ClueView.WayRow w : v.getWays())
 		{
@@ -488,16 +455,7 @@ public class CluePanel extends PluginPanel
 
 	private static void clickable(JComponent row, String tip, Runnable action)
 	{
-		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		row.setToolTipText(tip);
-		row.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				action.run();
-			}
-		});
+		GuideUi.clickable(row, tip, () -> action.run());
 	}
 
 	private void finish()
