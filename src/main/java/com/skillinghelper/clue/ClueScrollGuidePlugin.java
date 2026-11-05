@@ -154,7 +154,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 		navButton = NavigationButton.builder()
 			.tooltip("Clue Scroll Guide")
 			.icon(icon)
-			.priority(12)
+			.priority(14)
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
