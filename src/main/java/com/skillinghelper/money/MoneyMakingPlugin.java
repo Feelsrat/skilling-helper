@@ -2,6 +2,7 @@ package com.skillinghelper.money;
 
 import com.google.inject.Provides;
 import com.skillinghelper.OpenMethodRequest;
+import com.skillinghelper.OpenMoneyMakingRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartPvmGuideRequest;
@@ -10,6 +11,7 @@ import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
@@ -31,6 +33,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Item;
@@ -288,6 +291,20 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	}
 
 	// ---- Game events ----
+
+	/**
+	 * Another plugin in this jar (Account Planner) needs the player to make some gold: open the list.
+	 */
+	@Subscribe
+	public void onOpenMoneyMakingRequest(OpenMoneyMakingRequest e)
+	{
+		if (e.getGoal() > 0)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Money Making: pick a money maker to make about "
+				+ Format.gp(e.getGoal()) + " for your next planned step.", null);
+		}
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
+	}
 
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)

@@ -1,6 +1,7 @@
 package com.skillinghelper.diary;
 
 import com.google.inject.Provides;
+import com.skillinghelper.OpenDiaryRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartDiaryGuideRequest;
 import com.skillinghelper.bank.BankItems;
@@ -554,6 +555,38 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 			hintArrowSet = false;
 		}
 		pathTarget = null;
+	}
+
+	/**
+	 * Another plugin in this jar (Account Planner) asked to open one diary tier: pick it, start its guide and open
+	 * the panel.
+	 */
+	@Subscribe
+	public void onOpenDiaryRequest(OpenDiaryRequest e)
+	{
+		DiaryRegion r;
+		DiaryTier t;
+		try
+		{
+			r = DiaryRegion.valueOf(e.getRegion());
+			t = DiaryTier.valueOf(e.getTier());
+		}
+		catch (IllegalArgumentException ex)
+		{
+			return;
+		}
+		configManager.setConfiguration(AchievementDiaryConfig.GROUP, "region", r.name());
+		configManager.setConfiguration(AchievementDiaryConfig.GROUP, "tier", t.name());
+		if (r != region || t != tier)
+		{
+			picked = null;
+		}
+		region = r;
+		tier = t;
+		running = true;
+		checkShortestPath = true;
+		refresh();
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
 
 	// ---- Saved picks ----
