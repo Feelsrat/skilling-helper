@@ -10,6 +10,7 @@ import com.skillinghelper.diary.data.DiaryReward;
 import com.skillinghelper.diary.data.DiaryStage;
 import com.skillinghelper.diary.data.DiaryTask;
 import com.skillinghelper.diary.data.DiaryTier;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.shops.ShopPlan;
 import com.skillinghelper.shops.ShopPlanner;
 import com.skillinghelper.travel.TravelPick;
@@ -24,6 +25,7 @@ import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.gameval.ItemID;
 
 /**
  * Turns a diary tier into the next thing to do, Quest Helper style, for someone who has never done the tasks:
@@ -410,7 +412,17 @@ public final class DiaryGuide
 				b.destination(ge).line("Walk to the Grand Exchange in north-west Varrock (follow the arrow).");
 			}
 			b.line("Buy:");
-			toBuy.forEach((n, amount) -> b.line("- " + amount(n.getItem(), n.getId(), amount)));
+			long total = 0;
+			for (Map.Entry<Need, Integer> e : toBuy.entrySet())
+			{
+				Need n = e.getKey();
+				b.line("- " + amount(n.getItem(), n.getId(), e.getValue()) + price(n, e.getValue(), p));
+				total += (long) e.getValue() * Math.max(0, p.getBuyPrice().applyAsInt(n.getId()));
+			}
+			if (total > 0)
+			{
+				b.line("That's about " + Format.gp(total) + " at Grand Exchange prices.");
+			}
 			b.line("1. Have coins in your inventory (take them out of a bank first).");
 			b.line("2. Click a Grand Exchange Clerk (outlined) and choose Exchange.");
 			b.line("3. Click the Buy arrow on an empty slot and type the item's name.");
@@ -496,6 +508,45 @@ public final class DiaryGuide
 			}
 		}
 		return out;
+	}
+
+	/**
+	 * What the task costs in gold: coin fees, plus the Grand Exchange price of each item the player doesn't own
+	 * enough of yet. Things that can't be bought aren't counted.
+	 */
+	public static long cost(DiaryTask t, DiaryPlayer p)
+	{
+		long gp = 0;
+		for (DiaryItem item : t.getItems())
+		{
+			if (!required(item, p))
+			{
+				continue;
+			}
+			if (isCoins(item))
+			{
+				gp += item.getAmount();
+				continue;
+			}
+			int buy = buyId(item, p);
+			int missing = item.getAmount() - ownedCount(item, p);
+			if (buy > 0 && missing > 0)
+			{
+				gp += (long) missing * Math.max(0, p.getBuyPrice().applyAsInt(buy));
+			}
+		}
+		return gp;
+	}
+
+	private static boolean isCoins(DiaryItem item)
+	{
+		return item.getIds().length > 0 && item.getIds()[0] == ItemID.COINS;
+	}
+
+	private static String price(Need n, int amount, DiaryPlayer p)
+	{
+		long each = Math.max(0, p.getBuyPrice().applyAsInt(n.getId()));
+		return each > 0 ? " (~" + Format.gp(each * amount) + ")" : "";
 	}
 
 	private static boolean required(DiaryItem item, DiaryPlayer p)

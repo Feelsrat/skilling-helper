@@ -202,4 +202,25 @@ public class DiaryGuideTest
 			assertTrue(t.key() + " " + step.getKind(), step.getKind() != DiaryStep.Kind.LOCKED);
 		}
 	}
+
+	@Test
+	public void costCountsFeesAndWhatStillHasToBeBought()
+	{
+		DiaryTask planks = null;
+		for (DiaryTask t : Diaries.tasks(DiaryRegion.VARROCK, DiaryTier.MEDIUM))
+		{
+			if (t.getNumber() == 10)
+			{
+				planks = t;
+			}
+		}
+		assertNotNull(planks);
+		DiaryPlayer.DiaryPlayerBuilder b = player(99).buyPrice(id -> id == ItemID.MAHOGANY_LOGS ? 1000 : 0);
+		assertEquals(30_000 + 20 * 1000, DiaryGuide.cost(planks, b.build()));
+
+		Map<Integer, Integer> bank = new HashMap<>();
+		bank.put(ItemID.MAHOGANY_LOGS, 15);
+		bank.put(ItemID.COINS, 1_000_000);
+		assertEquals(30_000 + 5 * 1000, DiaryGuide.cost(planks, b.bank(bank).build()));
+	}
 }

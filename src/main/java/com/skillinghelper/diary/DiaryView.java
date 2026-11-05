@@ -57,6 +57,10 @@ public class DiaryView
 		List<String> notes;
 		List<String> items;
 		boolean wilderness;
+		/**
+		 * Gold the task still costs (coin fees and items to buy), 0 when free.
+		 */
+		long cost;
 	}
 
 	DiaryRegion region;
@@ -76,6 +80,10 @@ public class DiaryView
 	 * Everything still missing across the tier's unfinished tasks, without repeats.
 	 */
 	List<String> stillNeeded;
+	/**
+	 * Gold the tier's unfinished tasks still cost, added up.
+	 */
+	long tierCost;
 	boolean running;
 	DiaryStep step;
 	boolean wildernessAllowed;

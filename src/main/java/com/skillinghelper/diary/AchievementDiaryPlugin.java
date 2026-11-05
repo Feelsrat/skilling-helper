@@ -407,6 +407,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 		List<DiaryView.TierRow> tierRows = new ArrayList<>();
 		List<DiaryView.TaskRow> taskRows = new ArrayList<>();
 		Set<String> stillNeeded = new LinkedHashSet<>();
+		long tierCost = 0;
 		if (p != null)
 		{
 			for (DiaryRegion r : DiaryRegion.values())
@@ -459,8 +460,10 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 					items.add((item.getAmount() > 1 ? String.format("%,d", item.getAmount()) + " x " : "")
 						+ item.getName());
 				}
+				long cost = state == DiaryView.TaskState.DONE ? 0 : DiaryGuide.cost(t, p);
+				tierCost += cost;
 				taskRows.add(new DiaryView.TaskRow(t.key(), t.getNumber(), t.label(), t.getText(), state, missing,
-					t.getNotes(), items, t.isWilderness()));
+					t.getNotes(), items, t.isWilderness(), cost));
 			}
 		}
 		taskRows.sort((a, b) -> Integer.compare(a.getNumber(), b.getNumber()));
@@ -473,6 +476,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 			.tiers(tierRows)
 			.tasks(taskRows)
 			.stillNeeded(new ArrayList<>(stillNeeded))
+			.tierCost(tierCost)
 			.running(running)
 			.step(current)
 			.wildernessAllowed(Wilderness.allowed(configManager))

@@ -7,6 +7,7 @@ import com.skillinghelper.diary.data.Diaries;
 import com.skillinghelper.diary.data.DiaryRegion;
 import com.skillinghelper.diary.data.DiaryReward;
 import com.skillinghelper.diary.data.DiaryTier;
+import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
 import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.BorderLayout;
@@ -212,6 +213,12 @@ public class DiaryPanel extends PluginPanel
 				: row.getDone() == row.getTotal() ? "★ All tasks done: claim your reward"
 				: row.getDone() + " of " + row.getTotal() + " tasks done";
 			body.add(GuideUi.line(status, c, WIDTH));
+			if (!row.isClaimed() && row.getDone() < row.getTotal())
+			{
+				body.add(GuideUi.line(v.getTierCost() > 0
+					? "Costs about " + Format.gp(v.getTierCost()) + " more to finish (Grand Exchange prices, what you own counts)"
+					: "Costs nothing more to finish", GuideUi.GOLD, GuideUi.TEXT, WIDTH));
+			}
 		}
 		else
 		{
@@ -333,6 +340,10 @@ public class DiaryPanel extends PluginPanel
 			if (!t.getItems().isEmpty())
 			{
 				row.add(GuideUi.text("Bring: " + String.join(", ", t.getItems()), GuideUi.TEXT, CARD - 12));
+			}
+			if (t.getCost() > 0)
+			{
+				row.add(GuideUi.text("Costs ~" + Format.gp(t.getCost()), GuideUi.GOLD, CARD - 12));
 			}
 			if (t.isWilderness())
 			{
