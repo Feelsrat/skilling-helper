@@ -199,7 +199,7 @@ final class HunterGuide
 				.tool(ItemReq.tools("Ropes", 3, ItemID.ROPE))
 				.tool(ItemReq.tools("Small fishing nets", 3, ItemID.NET))
 				.supply(ItemReq.supply("Waterskins (desert heat)", 10, ItemID.WATER_SKIN4, ItemID.WATER_SKIN3,
-					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1))
+					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1).bestFirst(Supplies.WATERSKIN_NAMES))
 				.target(Target.object(null, "Young tree", "Net trap"))
 				.target(Target.npc(null, "Orange salamander"))
 				.instruction("Set net traps on the young trees and drop the salamanders as you catch them")

@@ -203,13 +203,15 @@ public class LoadoutPlan
 
 		List<SupplyLine> lines = new ArrayList<>();
 		long trip = 0;
-		for (Supply sup : wanted)
+		for (Supply listed : wanted)
 		{
-			int amount = sup.getAmount() == Supply.FILL ? fill : sup.getAmount();
+			int amount = listed.getAmount() == Supply.FILL ? fill : listed.getAmount();
 			if (amount <= 0)
 			{
 				continue;
 			}
+			// Only the best version the player owns is suggested (and highlighted); more of it is bought if short
+			Supply sup = listed == ammo ? listed : bestOwnedOnly(listed, s, 0);
 			int restock = sup.getAmount() == Supply.FILL ? Math.max(1, amount / 3) : sup.getRestockBelow();
 			int carried = s.carried(sup.allIds());
 			int need = Math.max(0, amount - carried);
@@ -289,7 +291,7 @@ public class LoadoutPlan
 
 	/**
 	 * Narrows a tiered supply (ammo, best first) to the best option the player owns, so lower tiers they also have
-	 * aren't suggested; more of that one is bought if they're short. Unchanged when they own none.
+	 * aren't suggested; more of that one is bought if they're short. The first option when they own none.
 	 */
 	static Supply bestOwnedOnly(Supply sup, GuideState s)
 	{
@@ -297,14 +299,34 @@ public class LoadoutPlan
 		{
 			return null;
 		}
-		for (Supply.Option o : sup.getOptions())
+		Supply best = bestOwnedOnly(sup, s, 0);
+		return best != sup ? best : sup.withOptions(List.of(sup.getOptions().get(0)));
+	}
+
+	/**
+	 * The best option the player owns (food goes by how much it heals, everything else by the order listed), so a
+	 * worse one they also have isn't suggested; more of it is bought if they're short. Unchanged when there's one
+	 * option or they own none. Bank placeholders don't count: the bank is read without them.
+	 */
+	static Supply bestOwnedOnly(Supply sup, GuideState s, int amount)
+	{
+		if (sup.getOptions().size() <= 1)
 		{
-			if (s.carried(o.getIds()) > 0 || s.banked(o.getIds()) > 0)
+			return sup;
+		}
+		List<Supply.Option> order = new java.util.ArrayList<>(sup.getOptions());
+		if (order.stream().allMatch(Supplies.FOOD_BEST_FIRST::contains))
+		{
+			order.sort(java.util.Comparator.comparingInt(Supplies.FOOD_BEST_FIRST::indexOf));
+		}
+		for (Supply.Option o : order)
+		{
+			if (s.carried(o.getIds()) + s.banked(o.getIds()) > 0)
 			{
 				return sup.withOptions(List.of(o));
 			}
 		}
-		return sup.withOptions(List.of(sup.getOptions().get(0)));
+		return sup;
 	}
 
 	private static int ownedId(Gear g, GuideState s)

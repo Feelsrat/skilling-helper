@@ -84,7 +84,7 @@ final class AgilityGuide
 				.target(Target.object(null, "Stairs", "Low wall", "Ledge", "Plank", "Gap", "Climbing rocks", "Doorway"))
 				.target(Target.npc(null, "Simon Templeton"))
 				.supply(ItemReq.supply("Waterskins (desert heat)", 4, ItemID.WATER_SKIN4, ItemID.WATER_SKIN3,
-					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1))
+					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1).bestFirst(Supplies.WATERSKIN_NAMES))
 				.supply(Supplies.food(5))
 				.supply(Supplies.STAMINA)
 				.instruction("Climb the pyramid floor by floor, clicking each highlighted obstacle. At the top, climb the "
@@ -112,7 +112,10 @@ final class AgilityGuide
 				"Ladder", "Monkeybars", "Tightrope", "Beam", "Edge", "Zipline")
 				.tool(ItemReq.tool("Any crossbow", ItemID.CROSSBOW, ItemID.XBOWS_CROSSBOW_BRONZE,
 					ItemID.XBOWS_CROSSBOW_IRON, ItemID.XBOWS_CROSSBOW_STEEL, ItemID.XBOWS_CROSSBOW_MITHRIL,
-					ItemID.XBOWS_CROSSBOW_ADAMANTITE, ItemID.XBOWS_CROSSBOW_RUNITE, ItemID.XBOWS_CROSSBOW_DRAGON))
+					ItemID.XBOWS_CROSSBOW_ADAMANTITE, ItemID.XBOWS_CROSSBOW_RUNITE, ItemID.XBOWS_CROSSBOW_DRAGON)
+					// Any one will do, so the lowest one owned (which needs the least Ranged to wield) is named
+					.bestFirst("Phoenix crossbow", "Bronze crossbow", "Iron crossbow", "Steel crossbow",
+						"Mithril crossbow", "Adamant crossbow", "Rune crossbow", "Dragon crossbow"))
 				.tool(ItemReq.tool("Mith grapple", ItemID.XBOWS_GRAPPLE_TIP_BOLT_MITHRIL_ROPE))
 				.notes("Wield the crossbow and keep the mith grapple in your inventory for the grapple obstacles. "
 					+ "Good if you can't use Ape Atoll and want to stay out of the Wilderness. " + MARKS)

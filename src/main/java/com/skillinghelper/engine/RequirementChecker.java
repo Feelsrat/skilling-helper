@@ -51,7 +51,7 @@ final class RequirementChecker
 		addCombatGear(m, s, reqs);
 		for (ItemReq supply : m.getSupplies())
 		{
-			reqs.add(supplyRequirement(ToolAdvisor.bestOf(supply, s), s));
+			reqs.add(supplyRequirement(BestOwned.of(supply, s), s));
 		}
 		for (Quest q : m.getQuests())
 		{
@@ -119,12 +119,22 @@ final class RequirementChecker
 
 	private void addTools(Method m, PlayerState s, List<Requirement> reqs, Set<String> substitutesListed)
 	{
-		for (ItemReq tool : m.getTools())
+		for (ItemReq listed : m.getTools())
 		{
-			if (!addSubstitute(tool, s, reqs, substitutesListed))
+			if (addSubstitute(listed, s, reqs, substitutesListed))
 			{
-				reqs.add(itemRequirement(tool, s, 1, 1));
+				continue;
 			}
+			ItemReq tool = BestOwned.of(listed, s);
+			if (tool != listed && tool.getQuantity() <= 1 && s.carried(tool.getIds()) == 0
+				&& s.carried(listed.getIds()) > 0)
+			{
+				// A worse one is carried: only the best is suggested, to swap in next time you bank
+				reqs.add(new Requirement(tool.getName() + " (in bank, swap it in next time you bank)",
+					Requirement.Status.OPTIONAL, tool.getIds(), 1, 0));
+				continue;
+			}
+			reqs.add(itemRequirement(tool, s, 1, 1));
 		}
 	}
 

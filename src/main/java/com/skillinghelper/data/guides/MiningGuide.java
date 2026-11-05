@@ -63,7 +63,7 @@ final class MiningGuide
 				ItemID.ENAKH_GRANITE_TINY, ItemID.ENAKH_GRANITE_SMALL, ItemID.ENAKH_GRANITE_MEDIUM)
 				.members(true).tag(MethodTag.POWER).tag(MethodTag.FAST).dropByDefault(true)
 				.supply(ItemReq.supply("Waterskins (desert heat)", 4, ItemID.WATER_SKIN4, ItemID.WATER_SKIN3,
-					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1))
+					ItemID.WATER_SKIN2, ItemID.WATER_SKIN1).bestFirst(Supplies.WATERSKIN_NAMES))
 				.notes("The fastest Mining xp from 45, but only with 3-tick mining (swamp tar on a clean herb, then "
 					+ "mine). Without it the rates are much lower. Drop the granite as you go.")
 				.wikiPage(P2P_WIKI)

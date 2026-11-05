@@ -69,11 +69,17 @@ public final class Supplies
 		return food(buy).amount(amount);
 	}
 
+	/**
+	 * Every food, most healing first.
+	 */
+	static final java.util.List<Option> FOOD_BEST_FIRST = java.util.List.of(ANGLERFISH, MANTA_RAYS, SHARKS, KARAMBWANS,
+		MONKFISH, SWORDFISH, LOBSTERS, TUNA);
+
 	private static java.util.List<Option> foodOptions(Option buy)
 	{
 		java.util.List<Option> all = new java.util.ArrayList<>();
 		all.add(buy);
-		for (Option o : new Option[]{ANGLERFISH, MANTA_RAYS, SHARKS, KARAMBWANS, MONKFISH, SWORDFISH, LOBSTERS, TUNA})
+		for (Option o : FOOD_BEST_FIRST)
 		{
 			if (o != buy)
 			{

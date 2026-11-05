@@ -83,6 +83,18 @@ public class PvmGuidesTest
 	}
 
 	@Test
+	public void onlyTheBestFoodYouOwnIsSuggested()
+	{
+		GuideState s = player(50).bank(Map.of(ItemID.LOBSTER, 100, ItemID.SHARK, 5)).build();
+		LoadoutPlan plan = LoadoutPlan.of(PvmGuides.forContent("bryophyta"), s, PRICES);
+		LoadoutPlan.SupplyLine food = plan.getSupplies().stream()
+			.filter(l -> l.getSupply().getName().equals("Food")).findFirst().orElseThrow();
+		assertEquals(1, food.getSupply().getOptions().size());
+		assertEquals("Sharks", food.getSupply().getOptions().get(0).getName());
+		assertFalse(plan.bankItems().contains(ItemID.LOBSTER));
+	}
+
+	@Test
 	public void foodFillsTheRestOfTheInventory()
 	{
 		GuideState s = player(50).bank(Map.of()).build();

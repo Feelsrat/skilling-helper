@@ -58,11 +58,16 @@ public class ItemReq
 	 */
 	Location sourceAt;
 	Target sourceTarget;
+	/**
+	 * Set when {@link #ids} are alternatives listed best first (food, compost, watering cans...): the name of each,
+	 * so the guide can suggest only the best one the player owns. Null otherwise.
+	 */
+	List<String> tierNames;
 
 	private static ItemReq base(String name, int[] ids, int quantity, int perAction)
 	{
 		return new ItemReq(name, ids, quantity, perAction, null, null, null, Collections.emptyList(), false, null, null,
-			null, null, null);
+			null, null, null, null);
 	}
 
 	public static ItemReq tool(String name, int... ids)
@@ -97,6 +102,19 @@ public class ItemReq
 	public static ItemReq stack(String name, int perAction, int... ids)
 	{
 		return base(name, ids, 0, perAction);
+	}
+
+	/**
+	 * Copy of this requirement whose ids are alternatives listed best first, named {@code names} in the same order.
+	 * Only the best one the player owns is suggested.
+	 */
+	public ItemReq bestFirst(String... names)
+	{
+		if (names.length != ids.length)
+		{
+			throw new IllegalArgumentException(name + ": " + names.length + " names for " + ids.length + " ids");
+		}
+		return withTierNames(List.of(names));
 	}
 
 	/**

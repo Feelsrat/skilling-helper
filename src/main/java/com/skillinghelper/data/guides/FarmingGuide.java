@@ -24,7 +24,8 @@ final class FarmingGuide
 	private static final ItemReq RAKE = ItemReq.tool("Rake", ItemID.RAKE);
 	private static final ItemReq DIBBER = ItemReq.tool("Seed dibber", ItemID.DIBBER);
 	private static final ItemReq COMPOST = ItemReq.supply("Compost (ultracompost is best)", 5,
-		ItemID.BUCKET_ULTRACOMPOST, ItemID.BUCKET_SUPERCOMPOST, ItemID.BUCKET_COMPOST);
+		ItemID.BUCKET_ULTRACOMPOST, ItemID.BUCKET_SUPERCOMPOST, ItemID.BUCKET_COMPOST)
+		.bestFirst("Ultracompost", "Supercompost", "Compost");
 
 	// Each farming area keeps its herb patch in the same varbit; the varbit only means this patch when nearby
 	private static final List<Stop> HERB_PATCHES = List.of(
@@ -94,7 +95,9 @@ final class FarmingGuide
 				.tool(SPADE).tool(DIBBER)
 				.tool(ItemReq.tool("Watering cans", ItemID.WATERING_CAN_8, ItemID.WATERING_CAN_7, ItemID.WATERING_CAN_6,
 					ItemID.WATERING_CAN_5, ItemID.WATERING_CAN_4, ItemID.WATERING_CAN_3, ItemID.WATERING_CAN_2,
-					ItemID.WATERING_CAN_1))
+					ItemID.WATERING_CAN_1)
+					.bestFirst("Watering can (8)", "Watering can (7)", "Watering can (6)", "Watering can (5)",
+						"Watering can (4)", "Watering can (3)", "Watering can (2)", "Watering can (1)"))
 				.target(Target.object(null, "Seed table", "Tithe patch", "Sack", "Water barrel"))
 				.instruction("Take seeds from the table, plant and water a full row of patches, water them twice more "
 					+ "as they grow, then harvest and deposit the fruit in the sack")
