@@ -1,6 +1,7 @@
 package com.skillinghelper.data;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -155,6 +156,32 @@ public class Method
 	@NonNull
 	String instruction;
 	String notes;
+	/**
+	 * Numbered how-to for someone who has never done this before, shown while training. "{name}" is replaced with
+	 * the picks from the {@link QuestGroup} of that name, e.g. "{Rumble bosses}".
+	 */
+	@Singular("howTo")
+	List<String> howTo;
+	/**
+	 * For {@link #instanced} activities: numbered steps to get into the instance, shown at the spot while not in it
+	 * yet (pay, talk to the host, pick options...).
+	 */
+	@Singular("setupStep")
+	List<String> setupSteps;
+	/**
+	 * Title of the setup step, e.g. "Set up your Nightmare Zone dream".
+	 */
+	String setupTitle;
+	/**
+	 * Things to click while in the instance, used instead of {@link #targets} there.
+	 */
+	@Singular("insideTarget")
+	List<Target> insideTargets;
+	/**
+	 * Inventory items to outline while in the instance (potions to drink...).
+	 */
+	@Singular("insideItem")
+	List<Integer> insideItems;
 	@Singular
 	List<Quest> quests;
 	/**
@@ -163,6 +190,11 @@ public class Method
 	 */
 	@Singular("questStarted")
 	List<Quest> questsStarted;
+	/**
+	 * "Any N of these quests" requirements, e.g. 5 Nightmare Zone quests.
+	 */
+	@Singular
+	List<QuestGroup> questGroups;
 	/**
 	 * Levels needed in other skills, e.g. 75 Slayer to hurt gargoyles.
 	 */
@@ -291,6 +323,20 @@ public class Method
 			s += " · Combat " + Math.max(3, combatLevel) + " → " + (maxCombatLevel > 0 ? maxCombatLevel : 126);
 		}
 		return s;
+	}
+
+	/**
+	 * Every quest whose state the guide checks: required, started and the ones in quest groups.
+	 */
+	public Set<Quest> questsToCheck()
+	{
+		Set<Quest> all = new HashSet<>(quests);
+		all.addAll(questsStarted);
+		for (QuestGroup g : questGroups)
+		{
+			all.addAll(g.getQuests().keySet());
+		}
+		return all;
 	}
 
 	public boolean hasTag(MethodTag tag)

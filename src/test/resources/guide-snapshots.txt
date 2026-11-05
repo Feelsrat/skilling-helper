@@ -658,21 +658,21 @@ attack_al_kharid_warriors weak owns-all-in-bank	6158d79d0470b4ec
 attack_al_kharid_warriors weak parts-carried	40b10404ac2279d2
 attack_al_kharid_warriors weak parts-carried-away	6158d79d0470b4ec
 attack_al_kharid_warriors weak parts-in-bank	6158d79d0470b4ec
-attack_ammonite_crabs strong bank-empty	78e899109c5a0069
-attack_ammonite_crabs strong bank-empty-rich	78e899109c5a0069
-attack_ammonite_crabs strong bank-unknown	b0b21697555a9abd
-attack_ammonite_crabs strong full-of-products	b05762057a09acc1
+attack_ammonite_crabs strong bank-empty	359419f16e5542b8
+attack_ammonite_crabs strong bank-empty-rich	359419f16e5542b8
+attack_ammonite_crabs strong bank-unknown	4f4d762184bcd2e9
+attack_ammonite_crabs strong full-of-products	04d0693440534549
 attack_ammonite_crabs strong gear-carried	fa01d4a72f3a224f
 attack_ammonite_crabs strong goal-reached	3e8686b0ab5d0dc4
-attack_ammonite_crabs strong in-instance	b05762057a09acc1
-attack_ammonite_crabs strong kit-at-spot	b05762057a09acc1
-attack_ammonite_crabs strong kit-away	5f85a551814a1f37
-attack_ammonite_crabs strong kit-worn-at-spot	b05762057a09acc1
-attack_ammonite_crabs strong owns-all-at-bank	5f85a551814a1f37
-attack_ammonite_crabs strong owns-all-in-bank	5f85a551814a1f37
-attack_ammonite_crabs strong parts-carried	b05762057a09acc1
-attack_ammonite_crabs strong parts-carried-away	5f85a551814a1f37
-attack_ammonite_crabs strong parts-in-bank	5f85a551814a1f37
+attack_ammonite_crabs strong in-instance	04d0693440534549
+attack_ammonite_crabs strong kit-at-spot	04d0693440534549
+attack_ammonite_crabs strong kit-away	104e65d6952651ff
+attack_ammonite_crabs strong kit-worn-at-spot	04d0693440534549
+attack_ammonite_crabs strong owns-all-at-bank	104e65d6952651ff
+attack_ammonite_crabs strong owns-all-in-bank	104e65d6952651ff
+attack_ammonite_crabs strong parts-carried	04d0693440534549
+attack_ammonite_crabs strong parts-carried-away	104e65d6952651ff
+attack_ammonite_crabs strong parts-in-bank	104e65d6952651ff
 attack_ammonite_crabs weak bank-empty	0df51561ef04e7c8
 attack_ammonite_crabs weak bank-empty-rich	0df51561ef04e7c8
 attack_ammonite_crabs weak bank-unknown	1a2ae67192537c07
@@ -838,21 +838,21 @@ attack_hill_giants weak owns-all-in-bank	63d6a045ff159442
 attack_hill_giants weak parts-carried	22c545c861ca31e4
 attack_hill_giants weak parts-carried-away	63d6a045ff159442
 attack_hill_giants weak parts-in-bank	63d6a045ff159442
-attack_maniacal_monkeys strong bank-empty	7add97cb553daa89
-attack_maniacal_monkeys strong bank-empty-rich	7add97cb553daa89
-attack_maniacal_monkeys strong bank-unknown	95a2731e0a98d0ec
-attack_maniacal_monkeys strong full-of-products	987c97833e2c4bf9
+attack_maniacal_monkeys strong bank-empty	f661aa7564583a93
+attack_maniacal_monkeys strong bank-empty-rich	f661aa7564583a93
+attack_maniacal_monkeys strong bank-unknown	0245931f98b87265
+attack_maniacal_monkeys strong full-of-products	53ff2d68e801d543
 attack_maniacal_monkeys strong gear-carried	5dead32992bf4a91
 attack_maniacal_monkeys strong goal-reached	10f288bf660733ae
-attack_maniacal_monkeys strong in-instance	987c97833e2c4bf9
-attack_maniacal_monkeys strong kit-at-spot	987c97833e2c4bf9
-attack_maniacal_monkeys strong kit-away	e24e5865b08a9256
-attack_maniacal_monkeys strong kit-worn-at-spot	987c97833e2c4bf9
-attack_maniacal_monkeys strong owns-all-at-bank	e24e5865b08a9256
-attack_maniacal_monkeys strong owns-all-in-bank	e24e5865b08a9256
-attack_maniacal_monkeys strong parts-carried	987c97833e2c4bf9
-attack_maniacal_monkeys strong parts-carried-away	e24e5865b08a9256
-attack_maniacal_monkeys strong parts-in-bank	e24e5865b08a9256
+attack_maniacal_monkeys strong in-instance	53ff2d68e801d543
+attack_maniacal_monkeys strong kit-at-spot	53ff2d68e801d543
+attack_maniacal_monkeys strong kit-away	5dc1a6f4acc9e708
+attack_maniacal_monkeys strong kit-worn-at-spot	53ff2d68e801d543
+attack_maniacal_monkeys strong owns-all-at-bank	5dc1a6f4acc9e708
+attack_maniacal_monkeys strong owns-all-in-bank	5dc1a6f4acc9e708
+attack_maniacal_monkeys strong parts-carried	53ff2d68e801d543
+attack_maniacal_monkeys strong parts-carried-away	5dc1a6f4acc9e708
+attack_maniacal_monkeys strong parts-in-bank	5dc1a6f4acc9e708
 attack_maniacal_monkeys weak bank-empty	33f118c3e845f23d
 attack_maniacal_monkeys weak bank-empty-rich	33f118c3e845f23d
 attack_maniacal_monkeys weak bank-unknown	795956ad45ef3447
@@ -868,66 +868,66 @@ attack_maniacal_monkeys weak owns-all-in-bank	eea776f0ec6d91b3
 attack_maniacal_monkeys weak parts-carried	eea776f0ec6d91b3
 attack_maniacal_monkeys weak parts-carried-away	eea776f0ec6d91b3
 attack_maniacal_monkeys weak parts-in-bank	eea776f0ec6d91b3
-attack_nmz strong bank-empty	156b833abd700417
-attack_nmz strong bank-empty-rich	156b833abd700417
-attack_nmz strong bank-unknown	af8c9fc42ce60789
-attack_nmz strong full-of-products	3918367c06e5c125
-attack_nmz strong gear-carried	639696ed9080cbe1
-attack_nmz strong goal-reached	7d7d0016c9140746
-attack_nmz strong in-instance	3918367c06e5c125
-attack_nmz strong kit-at-spot	3918367c06e5c125
-attack_nmz strong kit-away	b0e5c45ca2ab49fd
-attack_nmz strong kit-worn-at-spot	3918367c06e5c125
-attack_nmz strong owns-all-at-bank	b0e5c45ca2ab49fd
-attack_nmz strong owns-all-in-bank	b0e5c45ca2ab49fd
-attack_nmz strong parts-carried	3918367c06e5c125
-attack_nmz strong parts-carried-away	b0e5c45ca2ab49fd
-attack_nmz strong parts-in-bank	b0e5c45ca2ab49fd
-attack_nmz weak bank-empty	7a2cddb345c0dcc3
-attack_nmz weak bank-empty-rich	7a2cddb345c0dcc3
-attack_nmz weak bank-unknown	af8c9fc42ce60789
-attack_nmz weak full-of-products	bd678250208bb950
-attack_nmz weak gear-carried	a0a5603381cdef56
-attack_nmz weak goal-reached	79e8f9c2ebccbe2f
-attack_nmz weak in-instance	bd678250208bb950
-attack_nmz weak kit-at-spot	bd678250208bb950
-attack_nmz weak kit-away	6821971a84f04023
-attack_nmz weak kit-worn-at-spot	bd678250208bb950
-attack_nmz weak owns-all-at-bank	6821971a84f04023
-attack_nmz weak owns-all-in-bank	6821971a84f04023
-attack_nmz weak parts-carried	bd678250208bb950
-attack_nmz weak parts-carried-away	6821971a84f04023
-attack_nmz weak parts-in-bank	6821971a84f04023
-attack_rock_crabs strong bank-empty	9f8a6baf998a737a
-attack_rock_crabs strong bank-empty-rich	9f8a6baf998a737a
-attack_rock_crabs strong bank-unknown	d88e5ce0545ed1a4
-attack_rock_crabs strong full-of-products	d27c5b2a1aadb9ef
+attack_nmz strong bank-empty	890177a0554e79ee
+attack_nmz strong bank-empty-rich	6101c087e073d5bb
+attack_nmz strong bank-unknown	288aa1b7700a6f46
+attack_nmz strong full-of-products	21d1cdf13a4a8852
+attack_nmz strong gear-carried	c9953daeeab0479f
+attack_nmz strong goal-reached	68acb5de658a5a6e
+attack_nmz strong in-instance	95d3f21b62090ce4
+attack_nmz strong kit-at-spot	21d1cdf13a4a8852
+attack_nmz strong kit-away	892b95d4b5bbc135
+attack_nmz strong kit-worn-at-spot	21d1cdf13a4a8852
+attack_nmz strong owns-all-at-bank	892b95d4b5bbc135
+attack_nmz strong owns-all-in-bank	892b95d4b5bbc135
+attack_nmz strong parts-carried	21d1cdf13a4a8852
+attack_nmz strong parts-carried-away	892b95d4b5bbc135
+attack_nmz strong parts-in-bank	892b95d4b5bbc135
+attack_nmz weak bank-empty	c28e8b7095432b2c
+attack_nmz weak bank-empty-rich	60b9162aede59e6b
+attack_nmz weak bank-unknown	abb189c83efa6800
+attack_nmz weak full-of-products	2f8e0875f49c93f9
+attack_nmz weak gear-carried	1ac55a9550821110
+attack_nmz weak goal-reached	5027ffdb01207155
+attack_nmz weak in-instance	2f8e0875f49c93f9
+attack_nmz weak kit-at-spot	2f8e0875f49c93f9
+attack_nmz weak kit-away	2f8e0875f49c93f9
+attack_nmz weak kit-worn-at-spot	2f8e0875f49c93f9
+attack_nmz weak owns-all-at-bank	2f8e0875f49c93f9
+attack_nmz weak owns-all-in-bank	2f8e0875f49c93f9
+attack_nmz weak parts-carried	2f8e0875f49c93f9
+attack_nmz weak parts-carried-away	2f8e0875f49c93f9
+attack_nmz weak parts-in-bank	2f8e0875f49c93f9
+attack_rock_crabs strong bank-empty	47ef18d9130d851a
+attack_rock_crabs strong bank-empty-rich	47ef18d9130d851a
+attack_rock_crabs strong bank-unknown	aaf6c38b99e46726
+attack_rock_crabs strong full-of-products	08c2ae7e514641f4
 attack_rock_crabs strong gear-carried	60a17dd1534cf73f
 attack_rock_crabs strong goal-reached	f5eb6a90cda3bd93
-attack_rock_crabs strong in-instance	d27c5b2a1aadb9ef
-attack_rock_crabs strong kit-at-spot	d27c5b2a1aadb9ef
-attack_rock_crabs strong kit-away	b71acccdb1d44cc9
-attack_rock_crabs strong kit-worn-at-spot	d27c5b2a1aadb9ef
-attack_rock_crabs strong owns-all-at-bank	b71acccdb1d44cc9
-attack_rock_crabs strong owns-all-in-bank	b71acccdb1d44cc9
-attack_rock_crabs strong parts-carried	d27c5b2a1aadb9ef
-attack_rock_crabs strong parts-carried-away	b71acccdb1d44cc9
-attack_rock_crabs strong parts-in-bank	b71acccdb1d44cc9
-attack_rock_crabs weak bank-empty	12a1ecc562b0af6c
-attack_rock_crabs weak bank-empty-rich	12a1ecc562b0af6c
-attack_rock_crabs weak bank-unknown	d88e5ce0545ed1a4
-attack_rock_crabs weak full-of-products	f189e972f12d4a82
+attack_rock_crabs strong in-instance	08c2ae7e514641f4
+attack_rock_crabs strong kit-at-spot	08c2ae7e514641f4
+attack_rock_crabs strong kit-away	e02a82b3b5397af5
+attack_rock_crabs strong kit-worn-at-spot	08c2ae7e514641f4
+attack_rock_crabs strong owns-all-at-bank	e02a82b3b5397af5
+attack_rock_crabs strong owns-all-in-bank	e02a82b3b5397af5
+attack_rock_crabs strong parts-carried	08c2ae7e514641f4
+attack_rock_crabs strong parts-carried-away	e02a82b3b5397af5
+attack_rock_crabs strong parts-in-bank	e02a82b3b5397af5
+attack_rock_crabs weak bank-empty	07e0fb9407fa63f7
+attack_rock_crabs weak bank-empty-rich	07e0fb9407fa63f7
+attack_rock_crabs weak bank-unknown	aaf6c38b99e46726
+attack_rock_crabs weak full-of-products	3a582dba54e900df
 attack_rock_crabs weak gear-carried	7e58b1dd1ccf6b09
 attack_rock_crabs weak goal-reached	b9ef986c911fb272
-attack_rock_crabs weak in-instance	f189e972f12d4a82
-attack_rock_crabs weak kit-at-spot	f189e972f12d4a82
-attack_rock_crabs weak kit-away	51cc8dacf83d95a2
-attack_rock_crabs weak kit-worn-at-spot	f189e972f12d4a82
-attack_rock_crabs weak owns-all-at-bank	51cc8dacf83d95a2
-attack_rock_crabs weak owns-all-in-bank	51cc8dacf83d95a2
-attack_rock_crabs weak parts-carried	f189e972f12d4a82
-attack_rock_crabs weak parts-carried-away	51cc8dacf83d95a2
-attack_rock_crabs weak parts-in-bank	51cc8dacf83d95a2
+attack_rock_crabs weak in-instance	3a582dba54e900df
+attack_rock_crabs weak kit-at-spot	3a582dba54e900df
+attack_rock_crabs weak kit-away	c520fb990db4c448
+attack_rock_crabs weak kit-worn-at-spot	3a582dba54e900df
+attack_rock_crabs weak owns-all-at-bank	c520fb990db4c448
+attack_rock_crabs weak owns-all-in-bank	c520fb990db4c448
+attack_rock_crabs weak parts-carried	3a582dba54e900df
+attack_rock_crabs weak parts-carried-away	c520fb990db4c448
+attack_rock_crabs weak parts-in-bank	c520fb990db4c448
 attack_sand_crabs strong bank-empty	9614ddfda4fb0a9d
 attack_sand_crabs strong bank-empty-rich	9614ddfda4fb0a9d
 attack_sand_crabs strong bank-unknown	1449feb46c6900ec
@@ -958,21 +958,21 @@ attack_sand_crabs weak owns-all-in-bank	4d5c8e1ea250d5f3
 attack_sand_crabs weak parts-carried	5c941de5fee75caa
 attack_sand_crabs weak parts-carried-away	4d5c8e1ea250d5f3
 attack_sand_crabs weak parts-in-bank	4d5c8e1ea250d5f3
-attack_sulphur_naguas strong bank-empty	3294d4d5b79d52d0
-attack_sulphur_naguas strong bank-empty-rich	3294d4d5b79d52d0
-attack_sulphur_naguas strong bank-unknown	214acc0b8ed518af
-attack_sulphur_naguas strong full-of-products	0b25d7a9d2e8794c
+attack_sulphur_naguas strong bank-empty	88e769e10a75a54f
+attack_sulphur_naguas strong bank-empty-rich	88e769e10a75a54f
+attack_sulphur_naguas strong bank-unknown	ff585385a3dd2edc
+attack_sulphur_naguas strong full-of-products	7fd235cb5add06dc
 attack_sulphur_naguas strong gear-carried	4f862ef05bfc921d
 attack_sulphur_naguas strong goal-reached	d6c9fc29dcb85d96
-attack_sulphur_naguas strong in-instance	0b25d7a9d2e8794c
-attack_sulphur_naguas strong kit-at-spot	0b25d7a9d2e8794c
-attack_sulphur_naguas strong kit-away	6e9bf23c433232ca
-attack_sulphur_naguas strong kit-worn-at-spot	0b25d7a9d2e8794c
-attack_sulphur_naguas strong owns-all-at-bank	6e9bf23c433232ca
-attack_sulphur_naguas strong owns-all-in-bank	6e9bf23c433232ca
-attack_sulphur_naguas strong parts-carried	0b25d7a9d2e8794c
-attack_sulphur_naguas strong parts-carried-away	6e9bf23c433232ca
-attack_sulphur_naguas strong parts-in-bank	6e9bf23c433232ca
+attack_sulphur_naguas strong in-instance	7fd235cb5add06dc
+attack_sulphur_naguas strong kit-at-spot	7fd235cb5add06dc
+attack_sulphur_naguas strong kit-away	71ef297cab18a5e0
+attack_sulphur_naguas strong kit-worn-at-spot	7fd235cb5add06dc
+attack_sulphur_naguas strong owns-all-at-bank	71ef297cab18a5e0
+attack_sulphur_naguas strong owns-all-in-bank	71ef297cab18a5e0
+attack_sulphur_naguas strong parts-carried	7fd235cb5add06dc
+attack_sulphur_naguas strong parts-carried-away	71ef297cab18a5e0
+attack_sulphur_naguas strong parts-in-bank	71ef297cab18a5e0
 attack_sulphur_naguas weak bank-empty	4ceed4e7b4fbefb4
 attack_sulphur_naguas weak bank-empty-rich	4ceed4e7b4fbefb4
 attack_sulphur_naguas weak bank-unknown	b34affeafaf8908d
@@ -2698,21 +2698,21 @@ defence_al_kharid_warriors weak owns-all-in-bank	c81d2cb218910a49
 defence_al_kharid_warriors weak parts-carried	0295777a9549d9b0
 defence_al_kharid_warriors weak parts-carried-away	c81d2cb218910a49
 defence_al_kharid_warriors weak parts-in-bank	c81d2cb218910a49
-defence_ammonite_crabs strong bank-empty	6318574c203f5c2d
-defence_ammonite_crabs strong bank-empty-rich	6318574c203f5c2d
-defence_ammonite_crabs strong bank-unknown	144030021857c683
-defence_ammonite_crabs strong full-of-products	b4a9a161975ca6de
+defence_ammonite_crabs strong bank-empty	4323936ee67f69b9
+defence_ammonite_crabs strong bank-empty-rich	4323936ee67f69b9
+defence_ammonite_crabs strong bank-unknown	bf63768e9910d410
+defence_ammonite_crabs strong full-of-products	df23e4771b7f5108
 defence_ammonite_crabs strong gear-carried	d07baf807430c978
 defence_ammonite_crabs strong goal-reached	e2581e72b0de14e2
-defence_ammonite_crabs strong in-instance	b4a9a161975ca6de
-defence_ammonite_crabs strong kit-at-spot	b4a9a161975ca6de
-defence_ammonite_crabs strong kit-away	b755ae15cf2c47df
-defence_ammonite_crabs strong kit-worn-at-spot	b4a9a161975ca6de
-defence_ammonite_crabs strong owns-all-at-bank	b755ae15cf2c47df
-defence_ammonite_crabs strong owns-all-in-bank	b755ae15cf2c47df
-defence_ammonite_crabs strong parts-carried	b4a9a161975ca6de
-defence_ammonite_crabs strong parts-carried-away	b755ae15cf2c47df
-defence_ammonite_crabs strong parts-in-bank	b755ae15cf2c47df
+defence_ammonite_crabs strong in-instance	df23e4771b7f5108
+defence_ammonite_crabs strong kit-at-spot	df23e4771b7f5108
+defence_ammonite_crabs strong kit-away	8b942781067b02e3
+defence_ammonite_crabs strong kit-worn-at-spot	df23e4771b7f5108
+defence_ammonite_crabs strong owns-all-at-bank	8b942781067b02e3
+defence_ammonite_crabs strong owns-all-in-bank	8b942781067b02e3
+defence_ammonite_crabs strong parts-carried	df23e4771b7f5108
+defence_ammonite_crabs strong parts-carried-away	8b942781067b02e3
+defence_ammonite_crabs strong parts-in-bank	8b942781067b02e3
 defence_ammonite_crabs weak bank-empty	b17f0600b066eba1
 defence_ammonite_crabs weak bank-empty-rich	b17f0600b066eba1
 defence_ammonite_crabs weak bank-unknown	1a2ae67192537c07
@@ -2878,21 +2878,21 @@ defence_hill_giants weak owns-all-in-bank	6521d7d373d78e52
 defence_hill_giants weak parts-carried	e4d6d244b2dcbad6
 defence_hill_giants weak parts-carried-away	6521d7d373d78e52
 defence_hill_giants weak parts-in-bank	6521d7d373d78e52
-defence_maniacal_monkeys strong bank-empty	a9b611866b6baf72
-defence_maniacal_monkeys strong bank-empty-rich	a9b611866b6baf72
-defence_maniacal_monkeys strong bank-unknown	a32ada58a64da1d7
-defence_maniacal_monkeys strong full-of-products	aad061a68b815630
+defence_maniacal_monkeys strong bank-empty	089b4f17ac1093aa
+defence_maniacal_monkeys strong bank-empty-rich	089b4f17ac1093aa
+defence_maniacal_monkeys strong bank-unknown	06af6bf4c83ba5ac
+defence_maniacal_monkeys strong full-of-products	0f66e17a1921dd3e
 defence_maniacal_monkeys strong gear-carried	a6a4aed522f04471
 defence_maniacal_monkeys strong goal-reached	4b4f3e2cf1cd0046
-defence_maniacal_monkeys strong in-instance	aad061a68b815630
-defence_maniacal_monkeys strong kit-at-spot	aad061a68b815630
-defence_maniacal_monkeys strong kit-away	b6c71cbcb92a4db9
-defence_maniacal_monkeys strong kit-worn-at-spot	aad061a68b815630
-defence_maniacal_monkeys strong owns-all-at-bank	b6c71cbcb92a4db9
-defence_maniacal_monkeys strong owns-all-in-bank	b6c71cbcb92a4db9
-defence_maniacal_monkeys strong parts-carried	aad061a68b815630
-defence_maniacal_monkeys strong parts-carried-away	b6c71cbcb92a4db9
-defence_maniacal_monkeys strong parts-in-bank	b6c71cbcb92a4db9
+defence_maniacal_monkeys strong in-instance	0f66e17a1921dd3e
+defence_maniacal_monkeys strong kit-at-spot	0f66e17a1921dd3e
+defence_maniacal_monkeys strong kit-away	6a921ed8a0d39e1d
+defence_maniacal_monkeys strong kit-worn-at-spot	0f66e17a1921dd3e
+defence_maniacal_monkeys strong owns-all-at-bank	6a921ed8a0d39e1d
+defence_maniacal_monkeys strong owns-all-in-bank	6a921ed8a0d39e1d
+defence_maniacal_monkeys strong parts-carried	0f66e17a1921dd3e
+defence_maniacal_monkeys strong parts-carried-away	6a921ed8a0d39e1d
+defence_maniacal_monkeys strong parts-in-bank	6a921ed8a0d39e1d
 defence_maniacal_monkeys weak bank-empty	470e8e846346d179
 defence_maniacal_monkeys weak bank-empty-rich	470e8e846346d179
 defence_maniacal_monkeys weak bank-unknown	795956ad45ef3447
@@ -2908,66 +2908,66 @@ defence_maniacal_monkeys weak owns-all-in-bank	a4ea349163f17c27
 defence_maniacal_monkeys weak parts-carried	a4ea349163f17c27
 defence_maniacal_monkeys weak parts-carried-away	a4ea349163f17c27
 defence_maniacal_monkeys weak parts-in-bank	a4ea349163f17c27
-defence_nmz strong bank-empty	d00876cc03df5f92
-defence_nmz strong bank-empty-rich	d00876cc03df5f92
-defence_nmz strong bank-unknown	fc74cae308547908
-defence_nmz strong full-of-products	80d866ae0a5357c7
-defence_nmz strong gear-carried	f91c262ce6cf406e
-defence_nmz strong goal-reached	7d9c05a6387c2751
-defence_nmz strong in-instance	80d866ae0a5357c7
-defence_nmz strong kit-at-spot	80d866ae0a5357c7
-defence_nmz strong kit-away	7ee8748c6c20c6ef
-defence_nmz strong kit-worn-at-spot	80d866ae0a5357c7
-defence_nmz strong owns-all-at-bank	7ee8748c6c20c6ef
-defence_nmz strong owns-all-in-bank	7ee8748c6c20c6ef
-defence_nmz strong parts-carried	80d866ae0a5357c7
-defence_nmz strong parts-carried-away	7ee8748c6c20c6ef
-defence_nmz strong parts-in-bank	7ee8748c6c20c6ef
-defence_nmz weak bank-empty	6c0c8c1f997597e1
-defence_nmz weak bank-empty-rich	6c0c8c1f997597e1
-defence_nmz weak bank-unknown	fc74cae308547908
-defence_nmz weak full-of-products	0b1158d7c8a375e8
-defence_nmz weak gear-carried	77eda3df27048747
-defence_nmz weak goal-reached	1bf0236fcf80fbb0
-defence_nmz weak in-instance	0b1158d7c8a375e8
-defence_nmz weak kit-at-spot	0b1158d7c8a375e8
-defence_nmz weak kit-away	2ca73f3df7d72601
-defence_nmz weak kit-worn-at-spot	0b1158d7c8a375e8
-defence_nmz weak owns-all-at-bank	2ca73f3df7d72601
-defence_nmz weak owns-all-in-bank	2ca73f3df7d72601
-defence_nmz weak parts-carried	0b1158d7c8a375e8
-defence_nmz weak parts-carried-away	2ca73f3df7d72601
-defence_nmz weak parts-in-bank	2ca73f3df7d72601
-defence_rock_crabs strong bank-empty	524498c0964d0b8e
-defence_rock_crabs strong bank-empty-rich	524498c0964d0b8e
-defence_rock_crabs strong bank-unknown	37eb15ecb6d009c2
-defence_rock_crabs strong full-of-products	6e31bdba08d444e1
+defence_nmz strong bank-empty	2ac73f73564acbc7
+defence_nmz strong bank-empty-rich	a2679443c2a50037
+defence_nmz strong bank-unknown	a57b416e1ec98d5e
+defence_nmz strong full-of-products	a73bd3cd1562b57f
+defence_nmz strong gear-carried	9cca355d5c0c8ea6
+defence_nmz strong goal-reached	5d5fb170212270be
+defence_nmz strong in-instance	c7058e1421995ccc
+defence_nmz strong kit-at-spot	a73bd3cd1562b57f
+defence_nmz strong kit-away	cbdcdda96dbea1e0
+defence_nmz strong kit-worn-at-spot	a73bd3cd1562b57f
+defence_nmz strong owns-all-at-bank	cbdcdda96dbea1e0
+defence_nmz strong owns-all-in-bank	cbdcdda96dbea1e0
+defence_nmz strong parts-carried	a73bd3cd1562b57f
+defence_nmz strong parts-carried-away	cbdcdda96dbea1e0
+defence_nmz strong parts-in-bank	cbdcdda96dbea1e0
+defence_nmz weak bank-empty	bc6f616c803934e3
+defence_nmz weak bank-empty-rich	b55d8c3b7118014c
+defence_nmz weak bank-unknown	abb189c83efa6800
+defence_nmz weak full-of-products	34f9c1cdb24d1fb0
+defence_nmz weak gear-carried	13568ab8d7bfbe94
+defence_nmz weak goal-reached	74e34472cff7c28e
+defence_nmz weak in-instance	34f9c1cdb24d1fb0
+defence_nmz weak kit-at-spot	34f9c1cdb24d1fb0
+defence_nmz weak kit-away	34f9c1cdb24d1fb0
+defence_nmz weak kit-worn-at-spot	34f9c1cdb24d1fb0
+defence_nmz weak owns-all-at-bank	34f9c1cdb24d1fb0
+defence_nmz weak owns-all-in-bank	34f9c1cdb24d1fb0
+defence_nmz weak parts-carried	34f9c1cdb24d1fb0
+defence_nmz weak parts-carried-away	34f9c1cdb24d1fb0
+defence_nmz weak parts-in-bank	34f9c1cdb24d1fb0
+defence_rock_crabs strong bank-empty	282983e21a2d2a85
+defence_rock_crabs strong bank-empty-rich	282983e21a2d2a85
+defence_rock_crabs strong bank-unknown	ab1a30ca8c6b5953
+defence_rock_crabs strong full-of-products	5f64ba51ed0eb65c
 defence_rock_crabs strong gear-carried	e3a36bd423d206e0
 defence_rock_crabs strong goal-reached	fa76165da5d21ab0
-defence_rock_crabs strong in-instance	6e31bdba08d444e1
-defence_rock_crabs strong kit-at-spot	6e31bdba08d444e1
-defence_rock_crabs strong kit-away	1e18f281fcf5aa44
-defence_rock_crabs strong kit-worn-at-spot	6e31bdba08d444e1
-defence_rock_crabs strong owns-all-at-bank	1e18f281fcf5aa44
-defence_rock_crabs strong owns-all-in-bank	1e18f281fcf5aa44
-defence_rock_crabs strong parts-carried	6e31bdba08d444e1
-defence_rock_crabs strong parts-carried-away	1e18f281fcf5aa44
-defence_rock_crabs strong parts-in-bank	1e18f281fcf5aa44
-defence_rock_crabs weak bank-empty	5f0377a4d3afa9d8
-defence_rock_crabs weak bank-empty-rich	5f0377a4d3afa9d8
-defence_rock_crabs weak bank-unknown	37eb15ecb6d009c2
-defence_rock_crabs weak full-of-products	55b276bc5e296666
+defence_rock_crabs strong in-instance	5f64ba51ed0eb65c
+defence_rock_crabs strong kit-at-spot	5f64ba51ed0eb65c
+defence_rock_crabs strong kit-away	83e2645860c9d3f8
+defence_rock_crabs strong kit-worn-at-spot	5f64ba51ed0eb65c
+defence_rock_crabs strong owns-all-at-bank	83e2645860c9d3f8
+defence_rock_crabs strong owns-all-in-bank	83e2645860c9d3f8
+defence_rock_crabs strong parts-carried	5f64ba51ed0eb65c
+defence_rock_crabs strong parts-carried-away	83e2645860c9d3f8
+defence_rock_crabs strong parts-in-bank	83e2645860c9d3f8
+defence_rock_crabs weak bank-empty	27932c2e328bfc0f
+defence_rock_crabs weak bank-empty-rich	27932c2e328bfc0f
+defence_rock_crabs weak bank-unknown	ab1a30ca8c6b5953
+defence_rock_crabs weak full-of-products	88007cfacb9ee78c
 defence_rock_crabs weak gear-carried	32d69cc5a90f3cf4
 defence_rock_crabs weak goal-reached	0fe7abc52cc1ec1d
-defence_rock_crabs weak in-instance	55b276bc5e296666
-defence_rock_crabs weak kit-at-spot	55b276bc5e296666
-defence_rock_crabs weak kit-away	f9e6125916554abd
-defence_rock_crabs weak kit-worn-at-spot	55b276bc5e296666
-defence_rock_crabs weak owns-all-at-bank	f9e6125916554abd
-defence_rock_crabs weak owns-all-in-bank	f9e6125916554abd
-defence_rock_crabs weak parts-carried	55b276bc5e296666
-defence_rock_crabs weak parts-carried-away	f9e6125916554abd
-defence_rock_crabs weak parts-in-bank	f9e6125916554abd
+defence_rock_crabs weak in-instance	88007cfacb9ee78c
+defence_rock_crabs weak kit-at-spot	88007cfacb9ee78c
+defence_rock_crabs weak kit-away	ec1c3deb46005db3
+defence_rock_crabs weak kit-worn-at-spot	88007cfacb9ee78c
+defence_rock_crabs weak owns-all-at-bank	ec1c3deb46005db3
+defence_rock_crabs weak owns-all-in-bank	ec1c3deb46005db3
+defence_rock_crabs weak parts-carried	88007cfacb9ee78c
+defence_rock_crabs weak parts-carried-away	ec1c3deb46005db3
+defence_rock_crabs weak parts-in-bank	ec1c3deb46005db3
 defence_sand_crabs strong bank-empty	7aca5f9098de74ef
 defence_sand_crabs strong bank-empty-rich	7aca5f9098de74ef
 defence_sand_crabs strong bank-unknown	cd562c67b4f06713
@@ -2998,21 +2998,21 @@ defence_sand_crabs weak owns-all-in-bank	0897821c6dc28960
 defence_sand_crabs weak parts-carried	9420f0afd53010a6
 defence_sand_crabs weak parts-carried-away	0897821c6dc28960
 defence_sand_crabs weak parts-in-bank	0897821c6dc28960
-defence_sulphur_naguas strong bank-empty	46cf5964f54ffda0
-defence_sulphur_naguas strong bank-empty-rich	46cf5964f54ffda0
-defence_sulphur_naguas strong bank-unknown	30a6cec15929910f
-defence_sulphur_naguas strong full-of-products	0d8f536a245d78da
+defence_sulphur_naguas strong bank-empty	9ca6ad68d5bedb2c
+defence_sulphur_naguas strong bank-empty-rich	9ca6ad68d5bedb2c
+defence_sulphur_naguas strong bank-unknown	23e891f400cfa9d2
+defence_sulphur_naguas strong full-of-products	1f5f7d861d7568cb
 defence_sulphur_naguas strong gear-carried	92e70d6f05307db6
 defence_sulphur_naguas strong goal-reached	c778ccdc847385d6
-defence_sulphur_naguas strong in-instance	0d8f536a245d78da
-defence_sulphur_naguas strong kit-at-spot	0d8f536a245d78da
-defence_sulphur_naguas strong kit-away	6fb3bf3f95da2499
-defence_sulphur_naguas strong kit-worn-at-spot	0d8f536a245d78da
-defence_sulphur_naguas strong owns-all-at-bank	6fb3bf3f95da2499
-defence_sulphur_naguas strong owns-all-in-bank	6fb3bf3f95da2499
-defence_sulphur_naguas strong parts-carried	0d8f536a245d78da
-defence_sulphur_naguas strong parts-carried-away	6fb3bf3f95da2499
-defence_sulphur_naguas strong parts-in-bank	6fb3bf3f95da2499
+defence_sulphur_naguas strong in-instance	1f5f7d861d7568cb
+defence_sulphur_naguas strong kit-at-spot	1f5f7d861d7568cb
+defence_sulphur_naguas strong kit-away	9d9a9658239b2e54
+defence_sulphur_naguas strong kit-worn-at-spot	1f5f7d861d7568cb
+defence_sulphur_naguas strong owns-all-at-bank	9d9a9658239b2e54
+defence_sulphur_naguas strong owns-all-in-bank	9d9a9658239b2e54
+defence_sulphur_naguas strong parts-carried	1f5f7d861d7568cb
+defence_sulphur_naguas strong parts-carried-away	9d9a9658239b2e54
+defence_sulphur_naguas strong parts-in-bank	9d9a9658239b2e54
 defence_sulphur_naguas weak bank-empty	8e03e60e5b6b4d6c
 defence_sulphur_naguas weak bank-empty-rich	8e03e60e5b6b4d6c
 defence_sulphur_naguas weak bank-unknown	b34affeafaf8908d
@@ -5546,21 +5546,21 @@ hitpoints_al_kharid_warriors weak owns-all-in-bank	77f65fdf623615d5
 hitpoints_al_kharid_warriors weak parts-carried	c12886275559a3a9
 hitpoints_al_kharid_warriors weak parts-carried-away	77f65fdf623615d5
 hitpoints_al_kharid_warriors weak parts-in-bank	77f65fdf623615d5
-hitpoints_ammonite_crabs strong bank-empty	9149ec1ea976a8c6
-hitpoints_ammonite_crabs strong bank-empty-rich	9149ec1ea976a8c6
-hitpoints_ammonite_crabs strong bank-unknown	24b29a51bb3eb1da
-hitpoints_ammonite_crabs strong full-of-products	66e6fb4742f529df
+hitpoints_ammonite_crabs strong bank-empty	13e963c9b71ebc9d
+hitpoints_ammonite_crabs strong bank-empty-rich	13e963c9b71ebc9d
+hitpoints_ammonite_crabs strong bank-unknown	d27868d43e8ad37d
+hitpoints_ammonite_crabs strong full-of-products	e312cd8e6d77cf6c
 hitpoints_ammonite_crabs strong gear-carried	5908c47ba9ebe3c2
 hitpoints_ammonite_crabs strong goal-reached	cfbd101e107442d0
-hitpoints_ammonite_crabs strong in-instance	66e6fb4742f529df
-hitpoints_ammonite_crabs strong kit-at-spot	66e6fb4742f529df
-hitpoints_ammonite_crabs strong kit-away	02ed2e87d48867d6
-hitpoints_ammonite_crabs strong kit-worn-at-spot	66e6fb4742f529df
-hitpoints_ammonite_crabs strong owns-all-at-bank	02ed2e87d48867d6
-hitpoints_ammonite_crabs strong owns-all-in-bank	02ed2e87d48867d6
-hitpoints_ammonite_crabs strong parts-carried	66e6fb4742f529df
-hitpoints_ammonite_crabs strong parts-carried-away	02ed2e87d48867d6
-hitpoints_ammonite_crabs strong parts-in-bank	02ed2e87d48867d6
+hitpoints_ammonite_crabs strong in-instance	e312cd8e6d77cf6c
+hitpoints_ammonite_crabs strong kit-at-spot	e312cd8e6d77cf6c
+hitpoints_ammonite_crabs strong kit-away	f6633acd93ab8c83
+hitpoints_ammonite_crabs strong kit-worn-at-spot	e312cd8e6d77cf6c
+hitpoints_ammonite_crabs strong owns-all-at-bank	f6633acd93ab8c83
+hitpoints_ammonite_crabs strong owns-all-in-bank	f6633acd93ab8c83
+hitpoints_ammonite_crabs strong parts-carried	e312cd8e6d77cf6c
+hitpoints_ammonite_crabs strong parts-carried-away	f6633acd93ab8c83
+hitpoints_ammonite_crabs strong parts-in-bank	f6633acd93ab8c83
 hitpoints_ammonite_crabs weak bank-empty	a3e084ea8f6af085
 hitpoints_ammonite_crabs weak bank-empty-rich	a3e084ea8f6af085
 hitpoints_ammonite_crabs weak bank-unknown	1a2ae67192537c07
@@ -5726,21 +5726,21 @@ hitpoints_hill_giants weak owns-all-in-bank	32658aa344911500
 hitpoints_hill_giants weak parts-carried	d808a8de90b34619
 hitpoints_hill_giants weak parts-carried-away	32658aa344911500
 hitpoints_hill_giants weak parts-in-bank	32658aa344911500
-hitpoints_maniacal_monkeys strong bank-empty	f45c76f1a8077833
-hitpoints_maniacal_monkeys strong bank-empty-rich	f45c76f1a8077833
-hitpoints_maniacal_monkeys strong bank-unknown	4c751b90591d0a0e
-hitpoints_maniacal_monkeys strong full-of-products	8146b0a1a585dcde
+hitpoints_maniacal_monkeys strong bank-empty	78b94f5127d465a3
+hitpoints_maniacal_monkeys strong bank-empty-rich	78b94f5127d465a3
+hitpoints_maniacal_monkeys strong bank-unknown	4b4bb25b1f1c056a
+hitpoints_maniacal_monkeys strong full-of-products	2e5dab0eea1288e1
 hitpoints_maniacal_monkeys strong gear-carried	2a69981f4b3ab9ff
 hitpoints_maniacal_monkeys strong goal-reached	ee754536da363d1d
-hitpoints_maniacal_monkeys strong in-instance	8146b0a1a585dcde
-hitpoints_maniacal_monkeys strong kit-at-spot	8146b0a1a585dcde
-hitpoints_maniacal_monkeys strong kit-away	74a75207cf2f4dbe
-hitpoints_maniacal_monkeys strong kit-worn-at-spot	8146b0a1a585dcde
-hitpoints_maniacal_monkeys strong owns-all-at-bank	74a75207cf2f4dbe
-hitpoints_maniacal_monkeys strong owns-all-in-bank	74a75207cf2f4dbe
-hitpoints_maniacal_monkeys strong parts-carried	8146b0a1a585dcde
-hitpoints_maniacal_monkeys strong parts-carried-away	74a75207cf2f4dbe
-hitpoints_maniacal_monkeys strong parts-in-bank	74a75207cf2f4dbe
+hitpoints_maniacal_monkeys strong in-instance	2e5dab0eea1288e1
+hitpoints_maniacal_monkeys strong kit-at-spot	2e5dab0eea1288e1
+hitpoints_maniacal_monkeys strong kit-away	d20868f4dab7c2ad
+hitpoints_maniacal_monkeys strong kit-worn-at-spot	2e5dab0eea1288e1
+hitpoints_maniacal_monkeys strong owns-all-at-bank	d20868f4dab7c2ad
+hitpoints_maniacal_monkeys strong owns-all-in-bank	d20868f4dab7c2ad
+hitpoints_maniacal_monkeys strong parts-carried	2e5dab0eea1288e1
+hitpoints_maniacal_monkeys strong parts-carried-away	d20868f4dab7c2ad
+hitpoints_maniacal_monkeys strong parts-in-bank	d20868f4dab7c2ad
 hitpoints_maniacal_monkeys weak bank-empty	8003a2521e661ce5
 hitpoints_maniacal_monkeys weak bank-empty-rich	8003a2521e661ce5
 hitpoints_maniacal_monkeys weak bank-unknown	795956ad45ef3447
@@ -5756,66 +5756,66 @@ hitpoints_maniacal_monkeys weak owns-all-in-bank	f6eef8d5ed2f9ef9
 hitpoints_maniacal_monkeys weak parts-carried	f6eef8d5ed2f9ef9
 hitpoints_maniacal_monkeys weak parts-carried-away	f6eef8d5ed2f9ef9
 hitpoints_maniacal_monkeys weak parts-in-bank	f6eef8d5ed2f9ef9
-hitpoints_nmz strong bank-empty	4b9ec754a2fe54ab
-hitpoints_nmz strong bank-empty-rich	4b9ec754a2fe54ab
-hitpoints_nmz strong bank-unknown	64c6a748743b51bc
-hitpoints_nmz strong full-of-products	145c30640984d3b4
-hitpoints_nmz strong gear-carried	2ad3162f479ab115
-hitpoints_nmz strong goal-reached	0fb9d8c3d6c15111
-hitpoints_nmz strong in-instance	145c30640984d3b4
-hitpoints_nmz strong kit-at-spot	145c30640984d3b4
-hitpoints_nmz strong kit-away	725ee767ee003c37
-hitpoints_nmz strong kit-worn-at-spot	145c30640984d3b4
-hitpoints_nmz strong owns-all-at-bank	725ee767ee003c37
-hitpoints_nmz strong owns-all-in-bank	725ee767ee003c37
-hitpoints_nmz strong parts-carried	145c30640984d3b4
-hitpoints_nmz strong parts-carried-away	725ee767ee003c37
-hitpoints_nmz strong parts-in-bank	725ee767ee003c37
-hitpoints_nmz weak bank-empty	fa61196d59232b27
-hitpoints_nmz weak bank-empty-rich	fa61196d59232b27
-hitpoints_nmz weak bank-unknown	64c6a748743b51bc
-hitpoints_nmz weak full-of-products	cdae00156c1f2d9c
-hitpoints_nmz weak gear-carried	ed31ccf7f04bace5
-hitpoints_nmz weak goal-reached	842b3a69d0737d19
-hitpoints_nmz weak in-instance	cdae00156c1f2d9c
-hitpoints_nmz weak kit-at-spot	cdae00156c1f2d9c
-hitpoints_nmz weak kit-away	9d12afb5045736c4
-hitpoints_nmz weak kit-worn-at-spot	cdae00156c1f2d9c
-hitpoints_nmz weak owns-all-at-bank	9d12afb5045736c4
-hitpoints_nmz weak owns-all-in-bank	9d12afb5045736c4
-hitpoints_nmz weak parts-carried	cdae00156c1f2d9c
-hitpoints_nmz weak parts-carried-away	9d12afb5045736c4
-hitpoints_nmz weak parts-in-bank	9d12afb5045736c4
-hitpoints_rock_crabs strong bank-empty	9f13beb8a1ef750f
-hitpoints_rock_crabs strong bank-empty-rich	9f13beb8a1ef750f
-hitpoints_rock_crabs strong bank-unknown	30d4da0d83341267
-hitpoints_rock_crabs strong full-of-products	22993a2ecea179a0
+hitpoints_nmz strong bank-empty	36cab6c92c6a0f5b
+hitpoints_nmz strong bank-empty-rich	a49ca115e1fc6752
+hitpoints_nmz strong bank-unknown	a22ca6d8bde64cf0
+hitpoints_nmz strong full-of-products	ba855d5b5ec8f16b
+hitpoints_nmz strong gear-carried	cd3a31fbb59a8830
+hitpoints_nmz strong goal-reached	9676d982cd6dc62b
+hitpoints_nmz strong in-instance	69efe4cd15efa38d
+hitpoints_nmz strong kit-at-spot	ba855d5b5ec8f16b
+hitpoints_nmz strong kit-away	c0188f5882d39c1b
+hitpoints_nmz strong kit-worn-at-spot	ba855d5b5ec8f16b
+hitpoints_nmz strong owns-all-at-bank	c0188f5882d39c1b
+hitpoints_nmz strong owns-all-in-bank	c0188f5882d39c1b
+hitpoints_nmz strong parts-carried	ba855d5b5ec8f16b
+hitpoints_nmz strong parts-carried-away	c0188f5882d39c1b
+hitpoints_nmz strong parts-in-bank	c0188f5882d39c1b
+hitpoints_nmz weak bank-empty	86e22f73dbd9737c
+hitpoints_nmz weak bank-empty-rich	0a99c1dca4d3188c
+hitpoints_nmz weak bank-unknown	abb189c83efa6800
+hitpoints_nmz weak full-of-products	66eff7037c502e33
+hitpoints_nmz weak gear-carried	6b5f45e68784e262
+hitpoints_nmz weak goal-reached	0b4250c1389e801c
+hitpoints_nmz weak in-instance	66eff7037c502e33
+hitpoints_nmz weak kit-at-spot	66eff7037c502e33
+hitpoints_nmz weak kit-away	66eff7037c502e33
+hitpoints_nmz weak kit-worn-at-spot	66eff7037c502e33
+hitpoints_nmz weak owns-all-at-bank	66eff7037c502e33
+hitpoints_nmz weak owns-all-in-bank	66eff7037c502e33
+hitpoints_nmz weak parts-carried	66eff7037c502e33
+hitpoints_nmz weak parts-carried-away	66eff7037c502e33
+hitpoints_nmz weak parts-in-bank	66eff7037c502e33
+hitpoints_rock_crabs strong bank-empty	3d94bb9cb1e05add
+hitpoints_rock_crabs strong bank-empty-rich	3d94bb9cb1e05add
+hitpoints_rock_crabs strong bank-unknown	0a40388fd7d5593c
+hitpoints_rock_crabs strong full-of-products	899c88be6e727b4b
 hitpoints_rock_crabs strong gear-carried	ca5637431ec581d1
 hitpoints_rock_crabs strong goal-reached	539c310fd39bb7aa
-hitpoints_rock_crabs strong in-instance	22993a2ecea179a0
-hitpoints_rock_crabs strong kit-at-spot	22993a2ecea179a0
-hitpoints_rock_crabs strong kit-away	bfb4da15565c5c9a
-hitpoints_rock_crabs strong kit-worn-at-spot	22993a2ecea179a0
-hitpoints_rock_crabs strong owns-all-at-bank	bfb4da15565c5c9a
-hitpoints_rock_crabs strong owns-all-in-bank	bfb4da15565c5c9a
-hitpoints_rock_crabs strong parts-carried	22993a2ecea179a0
-hitpoints_rock_crabs strong parts-carried-away	bfb4da15565c5c9a
-hitpoints_rock_crabs strong parts-in-bank	bfb4da15565c5c9a
-hitpoints_rock_crabs weak bank-empty	c57af8c2d753fa5f
-hitpoints_rock_crabs weak bank-empty-rich	c57af8c2d753fa5f
-hitpoints_rock_crabs weak bank-unknown	30d4da0d83341267
-hitpoints_rock_crabs weak full-of-products	ca749e6b773bec0a
+hitpoints_rock_crabs strong in-instance	899c88be6e727b4b
+hitpoints_rock_crabs strong kit-at-spot	899c88be6e727b4b
+hitpoints_rock_crabs strong kit-away	4d0b9a39cae569c9
+hitpoints_rock_crabs strong kit-worn-at-spot	899c88be6e727b4b
+hitpoints_rock_crabs strong owns-all-at-bank	4d0b9a39cae569c9
+hitpoints_rock_crabs strong owns-all-in-bank	4d0b9a39cae569c9
+hitpoints_rock_crabs strong parts-carried	899c88be6e727b4b
+hitpoints_rock_crabs strong parts-carried-away	4d0b9a39cae569c9
+hitpoints_rock_crabs strong parts-in-bank	4d0b9a39cae569c9
+hitpoints_rock_crabs weak bank-empty	54c1503bfc9f5898
+hitpoints_rock_crabs weak bank-empty-rich	54c1503bfc9f5898
+hitpoints_rock_crabs weak bank-unknown	0a40388fd7d5593c
+hitpoints_rock_crabs weak full-of-products	9689da3cadd2b2b3
 hitpoints_rock_crabs weak gear-carried	d772bb5546303d90
 hitpoints_rock_crabs weak goal-reached	8c79723bd1030892
-hitpoints_rock_crabs weak in-instance	ca749e6b773bec0a
-hitpoints_rock_crabs weak kit-at-spot	ca749e6b773bec0a
-hitpoints_rock_crabs weak kit-away	b0a24f0b86361a74
-hitpoints_rock_crabs weak kit-worn-at-spot	ca749e6b773bec0a
-hitpoints_rock_crabs weak owns-all-at-bank	b0a24f0b86361a74
-hitpoints_rock_crabs weak owns-all-in-bank	b0a24f0b86361a74
-hitpoints_rock_crabs weak parts-carried	ca749e6b773bec0a
-hitpoints_rock_crabs weak parts-carried-away	b0a24f0b86361a74
-hitpoints_rock_crabs weak parts-in-bank	b0a24f0b86361a74
+hitpoints_rock_crabs weak in-instance	9689da3cadd2b2b3
+hitpoints_rock_crabs weak kit-at-spot	9689da3cadd2b2b3
+hitpoints_rock_crabs weak kit-away	cb34aa05c1cb784d
+hitpoints_rock_crabs weak kit-worn-at-spot	9689da3cadd2b2b3
+hitpoints_rock_crabs weak owns-all-at-bank	cb34aa05c1cb784d
+hitpoints_rock_crabs weak owns-all-in-bank	cb34aa05c1cb784d
+hitpoints_rock_crabs weak parts-carried	9689da3cadd2b2b3
+hitpoints_rock_crabs weak parts-carried-away	cb34aa05c1cb784d
+hitpoints_rock_crabs weak parts-in-bank	cb34aa05c1cb784d
 hitpoints_sand_crabs strong bank-empty	d9b7709f5000a3c6
 hitpoints_sand_crabs strong bank-empty-rich	d9b7709f5000a3c6
 hitpoints_sand_crabs strong bank-unknown	4b43b8aa93c2ceff
@@ -5846,21 +5846,21 @@ hitpoints_sand_crabs weak owns-all-in-bank	348504eb2c444086
 hitpoints_sand_crabs weak parts-carried	cfb89807c22419e2
 hitpoints_sand_crabs weak parts-carried-away	348504eb2c444086
 hitpoints_sand_crabs weak parts-in-bank	348504eb2c444086
-hitpoints_sulphur_naguas strong bank-empty	27519abd7a25e347
-hitpoints_sulphur_naguas strong bank-empty-rich	27519abd7a25e347
-hitpoints_sulphur_naguas strong bank-unknown	5f4d1799aa8e0496
-hitpoints_sulphur_naguas strong full-of-products	ea7a9c955dca16d2
+hitpoints_sulphur_naguas strong bank-empty	d2794df47be4f95a
+hitpoints_sulphur_naguas strong bank-empty-rich	d2794df47be4f95a
+hitpoints_sulphur_naguas strong bank-unknown	b4dd7e65cd04c7e9
+hitpoints_sulphur_naguas strong full-of-products	689a9140fa52e1d0
 hitpoints_sulphur_naguas strong gear-carried	5a1efa3446d52a57
 hitpoints_sulphur_naguas strong goal-reached	1416ee80380192f7
-hitpoints_sulphur_naguas strong in-instance	ea7a9c955dca16d2
-hitpoints_sulphur_naguas strong kit-at-spot	ea7a9c955dca16d2
-hitpoints_sulphur_naguas strong kit-away	174c28e5cf0cc55a
-hitpoints_sulphur_naguas strong kit-worn-at-spot	ea7a9c955dca16d2
-hitpoints_sulphur_naguas strong owns-all-at-bank	174c28e5cf0cc55a
-hitpoints_sulphur_naguas strong owns-all-in-bank	174c28e5cf0cc55a
-hitpoints_sulphur_naguas strong parts-carried	ea7a9c955dca16d2
-hitpoints_sulphur_naguas strong parts-carried-away	174c28e5cf0cc55a
-hitpoints_sulphur_naguas strong parts-in-bank	174c28e5cf0cc55a
+hitpoints_sulphur_naguas strong in-instance	689a9140fa52e1d0
+hitpoints_sulphur_naguas strong kit-at-spot	689a9140fa52e1d0
+hitpoints_sulphur_naguas strong kit-away	29e978ce72da5250
+hitpoints_sulphur_naguas strong kit-worn-at-spot	689a9140fa52e1d0
+hitpoints_sulphur_naguas strong owns-all-at-bank	29e978ce72da5250
+hitpoints_sulphur_naguas strong owns-all-in-bank	29e978ce72da5250
+hitpoints_sulphur_naguas strong parts-carried	689a9140fa52e1d0
+hitpoints_sulphur_naguas strong parts-carried-away	29e978ce72da5250
+hitpoints_sulphur_naguas strong parts-in-bank	29e978ce72da5250
 hitpoints_sulphur_naguas weak bank-empty	17f8f7d7ca2a21c0
 hitpoints_sulphur_naguas weak bank-empty-rich	17f8f7d7ca2a21c0
 hitpoints_sulphur_naguas weak bank-unknown	b34affeafaf8908d
@@ -7120,46 +7120,46 @@ plan AGILITY 90 rich Cheapest	33d7ad72b8c192f0
 plan AGILITY 90 rich Fastest	33d7ad72b8c192f0
 plan AGILITY 90 rich Profit	890c4ffa05d7f265
 plan AGILITY 90 rich Recommended	33d7ad72b8c192f0
-plan ATTACK 1 poor AFK	047655c0a2337e71
-plan ATTACK 1 poor Cheapest	cd17dc237d599082
-plan ATTACK 1 poor Fastest	cd17dc237d599082
-plan ATTACK 1 poor Profit	1d776237624daa08
-plan ATTACK 1 poor Recommended	fd18bbc6d612fd3a
-plan ATTACK 1 rich AFK	b1469ccde5246e40
-plan ATTACK 1 rich Cheapest	c24d46838dad83f5
-plan ATTACK 1 rich Fastest	c24d46838dad83f5
-plan ATTACK 1 rich Profit	55fb4e9146f294fa
-plan ATTACK 1 rich Recommended	0c7f70f5c1166a35
-plan ATTACK 30 poor AFK	870870189d02bd02
-plan ATTACK 30 poor Cheapest	5f9e821f25ca4ee6
-plan ATTACK 30 poor Fastest	5f9e821f25ca4ee6
-plan ATTACK 30 poor Profit	63c17ab193721637
-plan ATTACK 30 poor Recommended	bd4af9a76e10badb
-plan ATTACK 30 rich AFK	69957ea6ffcab3a9
-plan ATTACK 30 rich Cheapest	f112e3d95a2abb35
-plan ATTACK 30 rich Fastest	f112e3d95a2abb35
-plan ATTACK 30 rich Profit	9cea66ebe761cf31
-plan ATTACK 30 rich Recommended	36b7d00df4bc0645
-plan ATTACK 60 poor AFK	bd7be95e979011ba
-plan ATTACK 60 poor Cheapest	ca2b849870881624
-plan ATTACK 60 poor Fastest	ca2b849870881624
-plan ATTACK 60 poor Profit	d233e220e0ba9ae2
-plan ATTACK 60 poor Recommended	bfecc7c9aaef6e0c
-plan ATTACK 60 rich AFK	9ab0de0ccddd8e89
-plan ATTACK 60 rich Cheapest	26c4fc563b0fdc63
-plan ATTACK 60 rich Fastest	26c4fc563b0fdc63
-plan ATTACK 60 rich Profit	ddf518c8c4f5e09f
-plan ATTACK 60 rich Recommended	9e2ba18ad47be835
-plan ATTACK 90 poor AFK	c9d6d236fe8ae2c1
-plan ATTACK 90 poor Cheapest	d1fe1d4ae44865ff
-plan ATTACK 90 poor Fastest	d1fe1d4ae44865ff
-plan ATTACK 90 poor Profit	89e5741b6b0f5d7c
-plan ATTACK 90 poor Recommended	e5e64b2646cd1c33
-plan ATTACK 90 rich AFK	79e0621d8b965636
-plan ATTACK 90 rich Cheapest	7cb9ea2b5b2ce9c8
-plan ATTACK 90 rich Fastest	7cb9ea2b5b2ce9c8
-plan ATTACK 90 rich Profit	4301b14ab25edc3d
-plan ATTACK 90 rich Recommended	de2f2a9bff96cd64
+plan ATTACK 1 poor AFK	a81acfbb87ae911e
+plan ATTACK 1 poor Cheapest	b6344d96617bef7e
+plan ATTACK 1 poor Fastest	b6344d96617bef7e
+plan ATTACK 1 poor Profit	6cb00b09b988ef46
+plan ATTACK 1 poor Recommended	9e2939da87ee0727
+plan ATTACK 1 rich AFK	1539852df43a6116
+plan ATTACK 1 rich Cheapest	9de3eaa27a69519f
+plan ATTACK 1 rich Fastest	9de3eaa27a69519f
+plan ATTACK 1 rich Profit	0a38cf1a29be2141
+plan ATTACK 1 rich Recommended	42f8078f57e296aa
+plan ATTACK 30 poor AFK	ca8d5f44d695fe0f
+plan ATTACK 30 poor Cheapest	5937152ffc022629
+plan ATTACK 30 poor Fastest	5937152ffc022629
+plan ATTACK 30 poor Profit	47f532a80bfff43a
+plan ATTACK 30 poor Recommended	d04a346df796e136
+plan ATTACK 30 rich AFK	27d456e94ec39dbe
+plan ATTACK 30 rich Cheapest	1fec9adfd52107f2
+plan ATTACK 30 rich Fastest	1fec9adfd52107f2
+plan ATTACK 30 rich Profit	cc4c83167a3a17a1
+plan ATTACK 30 rich Recommended	7d062e464667ccea
+plan ATTACK 60 poor AFK	3d14f5159242d045
+plan ATTACK 60 poor Cheapest	fe71b6ac8c1bed4e
+plan ATTACK 60 poor Fastest	fe71b6ac8c1bed4e
+plan ATTACK 60 poor Profit	ed37a5a0ce670a29
+plan ATTACK 60 poor Recommended	5fd7a06ed4c28bd0
+plan ATTACK 60 rich AFK	344a33fcd96ec375
+plan ATTACK 60 rich Cheapest	321522f907b2cf6a
+plan ATTACK 60 rich Fastest	321522f907b2cf6a
+plan ATTACK 60 rich Profit	7c6acf9cf90321a2
+plan ATTACK 60 rich Recommended	0b268b4ea3bb86e9
+plan ATTACK 90 poor AFK	2cbb39613b9e9434
+plan ATTACK 90 poor Cheapest	313305bf160eacc6
+plan ATTACK 90 poor Fastest	313305bf160eacc6
+plan ATTACK 90 poor Profit	27401dc7bddd2d69
+plan ATTACK 90 poor Recommended	2a0438f7d6801587
+plan ATTACK 90 rich AFK	0bbb28b9ab372019
+plan ATTACK 90 rich Cheapest	5509b7b69cfc12a3
+plan ATTACK 90 rich Fastest	5509b7b69cfc12a3
+plan ATTACK 90 rich Profit	656b52ca95fbdb9b
+plan ATTACK 90 rich Recommended	86dc9a47d69363f6
 plan CONSTRUCTION 1 poor AFK	5ed3f526be2bead5
 plan CONSTRUCTION 1 poor Cheapest	f4fda901b84c7a06
 plan CONSTRUCTION 1 poor Fastest	b38eb0455572a184
@@ -7280,46 +7280,46 @@ plan CRAFTING 90 rich Cheapest	a3d005a005c9ebc4
 plan CRAFTING 90 rich Fastest	b335cc2469819f64
 plan CRAFTING 90 rich Profit	a12ea649a7ec954e
 plan CRAFTING 90 rich Recommended	b1b7e30530d44cda
-plan DEFENCE 1 poor AFK	8565ee4876b873b2
-plan DEFENCE 1 poor Cheapest	9dbd99b2abee8d54
-plan DEFENCE 1 poor Fastest	9dbd99b2abee8d54
-plan DEFENCE 1 poor Profit	19ea55e041cb7eaa
-plan DEFENCE 1 poor Recommended	d18e6448d7dc674a
-plan DEFENCE 1 rich AFK	f25ec6cb53cbb71b
-plan DEFENCE 1 rich Cheapest	031c0976b8678db0
-plan DEFENCE 1 rich Fastest	031c0976b8678db0
-plan DEFENCE 1 rich Profit	2ae6353f01115319
-plan DEFENCE 1 rich Recommended	4d9f4a2ef88e4d8b
-plan DEFENCE 30 poor AFK	82f2cf2e915984ba
-plan DEFENCE 30 poor Cheapest	57a4addd30970a5b
-plan DEFENCE 30 poor Fastest	57a4addd30970a5b
-plan DEFENCE 30 poor Profit	c136d87c7e5913a1
-plan DEFENCE 30 poor Recommended	0e704c42075c415f
-plan DEFENCE 30 rich AFK	fbcef999d03c3b08
-plan DEFENCE 30 rich Cheapest	280d73f025c4b2e6
-plan DEFENCE 30 rich Fastest	280d73f025c4b2e6
-plan DEFENCE 30 rich Profit	d40282a3b066504e
-plan DEFENCE 30 rich Recommended	ba77372c08de2c6f
-plan DEFENCE 60 poor AFK	8c1fc616e8607e02
-plan DEFENCE 60 poor Cheapest	71ac43250d9de4b1
-plan DEFENCE 60 poor Fastest	71ac43250d9de4b1
-plan DEFENCE 60 poor Profit	95f22a18c52202a2
-plan DEFENCE 60 poor Recommended	c994b245b8b4c716
-plan DEFENCE 60 rich AFK	984cd0849b5f8010
-plan DEFENCE 60 rich Cheapest	7aa20337650d7150
-plan DEFENCE 60 rich Fastest	7aa20337650d7150
-plan DEFENCE 60 rich Profit	f452de1efe9d683e
-plan DEFENCE 60 rich Recommended	467c6b00e2e9f1c3
-plan DEFENCE 90 poor AFK	b27f80ddb0ecb305
-plan DEFENCE 90 poor Cheapest	eeda0813b0b3df6c
-plan DEFENCE 90 poor Fastest	eeda0813b0b3df6c
-plan DEFENCE 90 poor Profit	cabbae736fe139ef
-plan DEFENCE 90 poor Recommended	31f33562ef08097e
-plan DEFENCE 90 rich AFK	e41f997432eefe75
-plan DEFENCE 90 rich Cheapest	a9094f3eb31b8680
-plan DEFENCE 90 rich Fastest	a9094f3eb31b8680
-plan DEFENCE 90 rich Profit	e66c28630cca9fc6
-plan DEFENCE 90 rich Recommended	f3c3a7345732e744
+plan DEFENCE 1 poor AFK	cf4fdb1da5ac2e0c
+plan DEFENCE 1 poor Cheapest	93c835578517dab2
+plan DEFENCE 1 poor Fastest	93c835578517dab2
+plan DEFENCE 1 poor Profit	82d896683149a241
+plan DEFENCE 1 poor Recommended	9eb1e4226d2b3eb4
+plan DEFENCE 1 rich AFK	ea397ea390a65e31
+plan DEFENCE 1 rich Cheapest	66689cb5866f5a3b
+plan DEFENCE 1 rich Fastest	66689cb5866f5a3b
+plan DEFENCE 1 rich Profit	e3786bed229b2ffe
+plan DEFENCE 1 rich Recommended	43889871e24ea0c0
+plan DEFENCE 30 poor AFK	d973d478cce03d5d
+plan DEFENCE 30 poor Cheapest	1d3ea0c9df50abd5
+plan DEFENCE 30 poor Fastest	1d3ea0c9df50abd5
+plan DEFENCE 30 poor Profit	c545b7b9589f8020
+plan DEFENCE 30 poor Recommended	7c831fa786f4fc8f
+plan DEFENCE 30 rich AFK	f125f13c6f638092
+plan DEFENCE 30 rich Cheapest	9bd285cc3e149158
+plan DEFENCE 30 rich Fastest	9bd285cc3e149158
+plan DEFENCE 30 rich Profit	e064da14cd7068fd
+plan DEFENCE 30 rich Recommended	65fb8c91c1a8522e
+plan DEFENCE 60 poor AFK	d2ae18c0fd3d3aaa
+plan DEFENCE 60 poor Cheapest	80e48235a00211c1
+plan DEFENCE 60 poor Fastest	80e48235a00211c1
+plan DEFENCE 60 poor Profit	472e103dac20bb70
+plan DEFENCE 60 poor Recommended	129c206ef6522661
+plan DEFENCE 60 rich AFK	87a71dc302889852
+plan DEFENCE 60 rich Cheapest	d504fd51ee21f833
+plan DEFENCE 60 rich Fastest	d504fd51ee21f833
+plan DEFENCE 60 rich Profit	bbf2b6f75ea50fe3
+plan DEFENCE 60 rich Recommended	cb6a7f873199ab72
+plan DEFENCE 90 poor AFK	c39a258288c8d475
+plan DEFENCE 90 poor Cheapest	2e22689acc46bd2c
+plan DEFENCE 90 poor Fastest	2e22689acc46bd2c
+plan DEFENCE 90 poor Profit	3bb9d478644dfd2e
+plan DEFENCE 90 poor Recommended	7381fbf57aa1a6fe
+plan DEFENCE 90 rich AFK	00e3356aa8b49ca2
+plan DEFENCE 90 rich Cheapest	e7458e7d13873faf
+plan DEFENCE 90 rich Fastest	e7458e7d13873faf
+plan DEFENCE 90 rich Profit	bf5d84c4679b4988
+plan DEFENCE 90 rich Recommended	7ee2de40f696c5a3
 plan FARMING 1 poor AFK	a7864d15380e8880
 plan FARMING 1 poor Cheapest	eb479b1726d57e2b
 plan FARMING 1 poor Fastest	e9f5a1ad343bc2de
@@ -7520,46 +7520,46 @@ plan HERBLORE 90 rich Cheapest	340bea18720a36bf
 plan HERBLORE 90 rich Fastest	a80c1b680a14f4e0
 plan HERBLORE 90 rich Profit	f662c7414472a0eb
 plan HERBLORE 90 rich Recommended	1e2ee6dafa84d622
-plan HITPOINTS 1 poor AFK	4eb638aacf264bbe
-plan HITPOINTS 1 poor Cheapest	88cd647d9bd65138
-plan HITPOINTS 1 poor Fastest	88cd647d9bd65138
-plan HITPOINTS 1 poor Profit	24b6648052ac7f20
-plan HITPOINTS 1 poor Recommended	e1a0f08cd9313ef7
-plan HITPOINTS 1 rich AFK	9ff7380e722ed401
-plan HITPOINTS 1 rich Cheapest	67eafba50c7a984b
-plan HITPOINTS 1 rich Fastest	67eafba50c7a984b
-plan HITPOINTS 1 rich Profit	7df8774a50f44fb9
-plan HITPOINTS 1 rich Recommended	52e12c5e3549a266
-plan HITPOINTS 30 poor AFK	ac41f85cbda97e27
-plan HITPOINTS 30 poor Cheapest	625d8a7baf09d874
-plan HITPOINTS 30 poor Fastest	625d8a7baf09d874
-plan HITPOINTS 30 poor Profit	0002ca38254f6fb1
-plan HITPOINTS 30 poor Recommended	d63e2a046c1a9ac8
-plan HITPOINTS 30 rich AFK	545bb732e7e68b62
-plan HITPOINTS 30 rich Cheapest	aa34da723572366d
-plan HITPOINTS 30 rich Fastest	aa34da723572366d
-plan HITPOINTS 30 rich Profit	bd716e969a9c4aea
-plan HITPOINTS 30 rich Recommended	457f2e7eee46b09c
-plan HITPOINTS 60 poor AFK	2dffdbd1ce3d0d37
-plan HITPOINTS 60 poor Cheapest	9abd3feb837f1b13
-plan HITPOINTS 60 poor Fastest	9abd3feb837f1b13
-plan HITPOINTS 60 poor Profit	169fd4b1537b5be1
-plan HITPOINTS 60 poor Recommended	70b33ec9b155f80f
-plan HITPOINTS 60 rich AFK	bdba1ea2d23b24ff
-plan HITPOINTS 60 rich Cheapest	532a86d02a26fa0a
-plan HITPOINTS 60 rich Fastest	532a86d02a26fa0a
-plan HITPOINTS 60 rich Profit	48490ce517e54b78
-plan HITPOINTS 60 rich Recommended	14ccd3cf7046e58d
-plan HITPOINTS 90 poor AFK	bdea2e8777b0d718
-plan HITPOINTS 90 poor Cheapest	82ea955d1793edc9
-plan HITPOINTS 90 poor Fastest	82ea955d1793edc9
-plan HITPOINTS 90 poor Profit	059da4a3c62e0a56
-plan HITPOINTS 90 poor Recommended	69f477d627efe1ca
-plan HITPOINTS 90 rich AFK	621ce6d3a2ce6421
-plan HITPOINTS 90 rich Cheapest	53ea29ce17cb5d81
-plan HITPOINTS 90 rich Fastest	53ea29ce17cb5d81
-plan HITPOINTS 90 rich Profit	cd43bc69fcd58004
-plan HITPOINTS 90 rich Recommended	539c16804b1dcf99
+plan HITPOINTS 1 poor AFK	374bf740646e7163
+plan HITPOINTS 1 poor Cheapest	a4bdef7be5d74c5a
+plan HITPOINTS 1 poor Fastest	a4bdef7be5d74c5a
+plan HITPOINTS 1 poor Profit	3dfae534328a637a
+plan HITPOINTS 1 poor Recommended	97a4a541329e25c3
+plan HITPOINTS 1 rich AFK	3004c2b32b2b129b
+plan HITPOINTS 1 rich Cheapest	0aaa5f56609fd170
+plan HITPOINTS 1 rich Fastest	0aaa5f56609fd170
+plan HITPOINTS 1 rich Profit	280bed81ebe6fa81
+plan HITPOINTS 1 rich Recommended	2b009029bd5111a8
+plan HITPOINTS 30 poor AFK	fae6d1ebf5031068
+plan HITPOINTS 30 poor Cheapest	50c231cafae38d5e
+plan HITPOINTS 30 poor Fastest	50c231cafae38d5e
+plan HITPOINTS 30 poor Profit	ca4e20e37a04c6f6
+plan HITPOINTS 30 poor Recommended	be7116f99b40a23a
+plan HITPOINTS 30 rich AFK	ef97dd06afe19f70
+plan HITPOINTS 30 rich Cheapest	afb8d4da8f62eda4
+plan HITPOINTS 30 rich Fastest	afb8d4da8f62eda4
+plan HITPOINTS 30 rich Profit	1b4e0700b5dd1efd
+plan HITPOINTS 30 rich Recommended	05cc6e0192c0fcd2
+plan HITPOINTS 60 poor AFK	10b563a6e5857bee
+plan HITPOINTS 60 poor Cheapest	7c5a83b2f54214ab
+plan HITPOINTS 60 poor Fastest	7c5a83b2f54214ab
+plan HITPOINTS 60 poor Profit	5bccb4d3a95bbe9d
+plan HITPOINTS 60 poor Recommended	e21e3d03e9916600
+plan HITPOINTS 60 rich AFK	6bf1df7521571c0f
+plan HITPOINTS 60 rich Cheapest	89a0dc3656677f5a
+plan HITPOINTS 60 rich Fastest	89a0dc3656677f5a
+plan HITPOINTS 60 rich Profit	fb96178d1d770cb8
+plan HITPOINTS 60 rich Recommended	0204405d5add8b82
+plan HITPOINTS 90 poor AFK	259edf512e693966
+plan HITPOINTS 90 poor Cheapest	a80ff8365a13a00f
+plan HITPOINTS 90 poor Fastest	a80ff8365a13a00f
+plan HITPOINTS 90 poor Profit	115562241f92622f
+plan HITPOINTS 90 poor Recommended	35a3690d9e3fdb6c
+plan HITPOINTS 90 rich AFK	eedbb383124bff64
+plan HITPOINTS 90 rich Cheapest	ed18e64b3bf1bed3
+plan HITPOINTS 90 rich Fastest	ed18e64b3bf1bed3
+plan HITPOINTS 90 rich Profit	b62012134b94451b
+plan HITPOINTS 90 rich Recommended	59325b421492d88d
 plan HUNTER 1 poor AFK	d8f68ced1143e9b6
 plan HUNTER 1 poor Cheapest	a2b98eb6a2fc09a6
 plan HUNTER 1 poor Fastest	07ddacb99df81afd
@@ -7720,46 +7720,46 @@ plan PRAYER 90 rich Cheapest	bf283b7c20fbce01
 plan PRAYER 90 rich Fastest	7f2a2764e8d737a2
 plan PRAYER 90 rich Profit	f8ca10252ed4f643
 plan PRAYER 90 rich Recommended	8d09a5714ff69ae8
-plan RANGED 1 poor AFK	6bf045d5e29becf5
-plan RANGED 1 poor Cheapest	ca8bc2fc4b0c309e
-plan RANGED 1 poor Fastest	b8dcce9e0c4837d5
-plan RANGED 1 poor Profit	406f1904bb221bf8
-plan RANGED 1 poor Recommended	38e96c76a05c9823
-plan RANGED 1 rich AFK	c5b307493fc655b2
-plan RANGED 1 rich Cheapest	dd07b4d56ff61308
-plan RANGED 1 rich Fastest	db0812d466b51a09
-plan RANGED 1 rich Profit	621435ae0ac87f2f
-plan RANGED 1 rich Recommended	3269e1b1b63eb914
-plan RANGED 30 poor AFK	950de66f84212450
-plan RANGED 30 poor Cheapest	62584cf9fadb9d58
-plan RANGED 30 poor Fastest	309104acd4db199d
-plan RANGED 30 poor Profit	96b31fda477ecaeb
-plan RANGED 30 poor Recommended	65322e9d67314fcf
-plan RANGED 30 rich AFK	5caf095faa9b070d
-plan RANGED 30 rich Cheapest	4a7ad05e7554f3a0
-plan RANGED 30 rich Fastest	4d9ad7415b910933
-plan RANGED 30 rich Profit	34f66b2e95127510
-plan RANGED 30 rich Recommended	280846817f0b04da
-plan RANGED 60 poor AFK	c0754a77da65d338
-plan RANGED 60 poor Cheapest	d529b1a29f2e1660
-plan RANGED 60 poor Fastest	e6f746b5402b283c
-plan RANGED 60 poor Profit	dc0a1a769da49dc1
-plan RANGED 60 poor Recommended	e32d667eb884e409
-plan RANGED 60 rich AFK	ad630693e32e9b4c
-plan RANGED 60 rich Cheapest	145feacb74863844
-plan RANGED 60 rich Fastest	479ff661dcf867a1
-plan RANGED 60 rich Profit	d16024769e6acea5
-plan RANGED 60 rich Recommended	3e67608129dcd021
-plan RANGED 90 poor AFK	6004e9f092190030
-plan RANGED 90 poor Cheapest	2d5d7ec3c3df8542
-plan RANGED 90 poor Fastest	07afda5121de8388
-plan RANGED 90 poor Profit	08573c32636483c1
-plan RANGED 90 poor Recommended	e22ac07f1534dfc7
-plan RANGED 90 rich AFK	857fecfd85bb336e
-plan RANGED 90 rich Cheapest	977dfcf0925ea3e7
-plan RANGED 90 rich Fastest	4e3d83b9792991e0
-plan RANGED 90 rich Profit	64d99ce92ad4faea
-plan RANGED 90 rich Recommended	a19fe49d17b8b0d9
+plan RANGED 1 poor AFK	36f4ef5649b9ee1b
+plan RANGED 1 poor Cheapest	0be5d66f5cd80248
+plan RANGED 1 poor Fastest	ba0c2b25956096ef
+plan RANGED 1 poor Profit	9f3f353ed12def09
+plan RANGED 1 poor Recommended	a1c63dc4d7ffb5b9
+plan RANGED 1 rich AFK	3c5e415d3c7ef4ea
+plan RANGED 1 rich Cheapest	e71de1d048275599
+plan RANGED 1 rich Fastest	afb403ae17e9d04d
+plan RANGED 1 rich Profit	a5f2cfece47451c5
+plan RANGED 1 rich Recommended	1ef6998bdb337471
+plan RANGED 30 poor AFK	b8b7dd8426f525b8
+plan RANGED 30 poor Cheapest	581f6769c9c14b3e
+plan RANGED 30 poor Fastest	0cb7406ca7bc6784
+plan RANGED 30 poor Profit	78a99a865f9e6687
+plan RANGED 30 poor Recommended	b9774ce9ad60817f
+plan RANGED 30 rich AFK	4ece383bf95ebee0
+plan RANGED 30 rich Cheapest	66893c7872b1d981
+plan RANGED 30 rich Fastest	81078a030fe08be3
+plan RANGED 30 rich Profit	3eeaa3359475a35f
+plan RANGED 30 rich Recommended	753ca1f6c79a3a77
+plan RANGED 60 poor AFK	a5115a298462f200
+plan RANGED 60 poor Cheapest	fa67b94025703ed0
+plan RANGED 60 poor Fastest	a57599288a33d7bd
+plan RANGED 60 poor Profit	e8be1ad34be5373b
+plan RANGED 60 poor Recommended	d1b2987d638af349
+plan RANGED 60 rich AFK	80b96f83bf129c84
+plan RANGED 60 rich Cheapest	e08734f5f31737d3
+plan RANGED 60 rich Fastest	db077ea34a66cc94
+plan RANGED 60 rich Profit	fa4ff30716c9de7d
+plan RANGED 60 rich Recommended	6a8043cbd7f564ee
+plan RANGED 90 poor AFK	359375cd47f9e5a7
+plan RANGED 90 poor Cheapest	2fb331072798e14e
+plan RANGED 90 poor Fastest	1033b13616a0e132
+plan RANGED 90 poor Profit	918f6b5f5eae9cd3
+plan RANGED 90 poor Recommended	1f6ca6005a51886f
+plan RANGED 90 rich AFK	27642d103a27d5d3
+plan RANGED 90 rich Cheapest	d5e60be39440340e
+plan RANGED 90 rich Fastest	ab71d9b3679a118b
+plan RANGED 90 rich Profit	4c2dd3c8c87e3042
+plan RANGED 90 rich Recommended	d7e3861795bd76f3
 plan RUNECRAFT 1 poor AFK	ca1ab7d47966110a
 plan RUNECRAFT 1 poor Cheapest	f9393233a0e69e66
 plan RUNECRAFT 1 poor Fastest	0c7f1829a282088c
@@ -7920,46 +7920,46 @@ plan SMITHING 90 rich Cheapest	0a24fe1e43cc18a3
 plan SMITHING 90 rich Fastest	d85ae9f64c7b8ba1
 plan SMITHING 90 rich Profit	38a9b61e0e253221
 plan SMITHING 90 rich Recommended	d129fa99e092a18b
-plan STRENGTH 1 poor AFK	76f2646e5a09d9b6
-plan STRENGTH 1 poor Cheapest	c25321cde212b08f
-plan STRENGTH 1 poor Fastest	c25321cde212b08f
-plan STRENGTH 1 poor Profit	0dcbb72a016c6c89
-plan STRENGTH 1 poor Recommended	a6cd4145ec0e2db0
-plan STRENGTH 1 rich AFK	7f2ace7c8901115b
-plan STRENGTH 1 rich Cheapest	6e7e7312a9040766
-plan STRENGTH 1 rich Fastest	6e7e7312a9040766
-plan STRENGTH 1 rich Profit	b3889ac7e49d5ccd
-plan STRENGTH 1 rich Recommended	7aaf4336eaa31417
-plan STRENGTH 30 poor AFK	7cbbf6fe435f7809
-plan STRENGTH 30 poor Cheapest	33db1f2995004bd1
-plan STRENGTH 30 poor Fastest	33db1f2995004bd1
-plan STRENGTH 30 poor Profit	b924fb9419168d54
-plan STRENGTH 30 poor Recommended	a511a682eb432f1c
-plan STRENGTH 30 rich AFK	dfb277b41d361579
-plan STRENGTH 30 rich Cheapest	46b3186bd429fdbf
-plan STRENGTH 30 rich Fastest	46b3186bd429fdbf
-plan STRENGTH 30 rich Profit	f68f1b471d1147ae
-plan STRENGTH 30 rich Recommended	f10c12fc63d10850
-plan STRENGTH 60 poor AFK	3d26cc565fee4e85
-plan STRENGTH 60 poor Cheapest	8dc57dd307ab76b8
-plan STRENGTH 60 poor Fastest	8dc57dd307ab76b8
-plan STRENGTH 60 poor Profit	3651af8f95443ba6
-plan STRENGTH 60 poor Recommended	25ceacff4d75d7b3
-plan STRENGTH 60 rich AFK	6f11d76707bda47d
-plan STRENGTH 60 rich Cheapest	17381dd0fc02b1e6
-plan STRENGTH 60 rich Fastest	17381dd0fc02b1e6
-plan STRENGTH 60 rich Profit	73892ff865839b85
-plan STRENGTH 60 rich Recommended	77f49c9710087705
-plan STRENGTH 90 poor AFK	1681ce03cbd0761b
-plan STRENGTH 90 poor Cheapest	0f5a84244547d27f
-plan STRENGTH 90 poor Fastest	0f5a84244547d27f
-plan STRENGTH 90 poor Profit	c623c3cbee58bb02
-plan STRENGTH 90 poor Recommended	9a5893bb90907704
-plan STRENGTH 90 rich AFK	7530a71d6380d507
-plan STRENGTH 90 rich Cheapest	48635f8a840e8a07
-plan STRENGTH 90 rich Fastest	48635f8a840e8a07
-plan STRENGTH 90 rich Profit	cb944bbec7bbd2e4
-plan STRENGTH 90 rich Recommended	72080c58b2099364
+plan STRENGTH 1 poor AFK	a3f2218e7ffb078f
+plan STRENGTH 1 poor Cheapest	5bfae9b21c1ddb4f
+plan STRENGTH 1 poor Fastest	5bfae9b21c1ddb4f
+plan STRENGTH 1 poor Profit	1b513d9f04829196
+plan STRENGTH 1 poor Recommended	5f7686a71ad9eb5a
+plan STRENGTH 1 rich AFK	2accfb4c691397e8
+plan STRENGTH 1 rich Cheapest	a9a3119ba156bccc
+plan STRENGTH 1 rich Fastest	a9a3119ba156bccc
+plan STRENGTH 1 rich Profit	8d51d01a5cee0d2a
+plan STRENGTH 1 rich Recommended	3d1d0fda43265ce3
+plan STRENGTH 30 poor AFK	e9704414e381594f
+plan STRENGTH 30 poor Cheapest	4ea8e6184952dd6c
+plan STRENGTH 30 poor Fastest	4ea8e6184952dd6c
+plan STRENGTH 30 poor Profit	e0c9721a8982804b
+plan STRENGTH 30 poor Recommended	6635196bfad44515
+plan STRENGTH 30 rich AFK	84e07ae8cab2bdda
+plan STRENGTH 30 rich Cheapest	bd9ebb68802d7c29
+plan STRENGTH 30 rich Fastest	bd9ebb68802d7c29
+plan STRENGTH 30 rich Profit	6ea5ae5afa52a9fc
+plan STRENGTH 30 rich Recommended	ea7af8b0d46d2dec
+plan STRENGTH 60 poor AFK	e0a3571cb1d8a150
+plan STRENGTH 60 poor Cheapest	3a48ce0633b24d60
+plan STRENGTH 60 poor Fastest	3a48ce0633b24d60
+plan STRENGTH 60 poor Profit	c3b4f246aa8a20b3
+plan STRENGTH 60 poor Recommended	d167c406b6b940bc
+plan STRENGTH 60 rich AFK	0dc423df55d88e4a
+plan STRENGTH 60 rich Cheapest	3718a7835ba682b0
+plan STRENGTH 60 rich Fastest	3718a7835ba682b0
+plan STRENGTH 60 rich Profit	12df71134fd1a002
+plan STRENGTH 60 rich Recommended	c76415bf66a9b809
+plan STRENGTH 90 poor AFK	1286ce429b854c40
+plan STRENGTH 90 poor Cheapest	55c271823050ec03
+plan STRENGTH 90 poor Fastest	55c271823050ec03
+plan STRENGTH 90 poor Profit	8d727dfabd25bf52
+plan STRENGTH 90 poor Recommended	d333236b4f8221bb
+plan STRENGTH 90 rich AFK	3fa531440d25f19f
+plan STRENGTH 90 rich Cheapest	1d0edf504f558651
+plan STRENGTH 90 rich Fastest	1d0edf504f558651
+plan STRENGTH 90 rich Profit	22986c522392c6bc
+plan STRENGTH 90 rich Recommended	44cbdcb5a2945015
 plan THIEVING 1 poor AFK	5613aaf9626cb1a5
 plan THIEVING 1 poor Cheapest	e93d0cdbd66f31b1
 plan THIEVING 1 poor Fastest	e93d0cdbd66f31b1
@@ -8403,17 +8403,17 @@ ranged_hill_giants weak parts-in-bank	dbd2a0b3d989093a
 ranged_maniacal_monkeys strong bank-empty	f31dbee052287bf1
 ranged_maniacal_monkeys strong bank-empty-rich	ea442e6992c9149d
 ranged_maniacal_monkeys strong bank-unknown	9fcc9c4cec6e1453
-ranged_maniacal_monkeys strong full-of-products	bcb997034acea839
+ranged_maniacal_monkeys strong full-of-products	1dff058e98227c20
 ranged_maniacal_monkeys strong gear-carried	a3a573d57f26613a
 ranged_maniacal_monkeys strong goal-reached	4d58400b93ae205b
-ranged_maniacal_monkeys strong in-instance	bcb997034acea839
-ranged_maniacal_monkeys strong kit-at-spot	bcb997034acea839
-ranged_maniacal_monkeys strong kit-away	07d488951aeee684
-ranged_maniacal_monkeys strong kit-worn-at-spot	043db830e584b440
+ranged_maniacal_monkeys strong in-instance	1dff058e98227c20
+ranged_maniacal_monkeys strong kit-at-spot	1dff058e98227c20
+ranged_maniacal_monkeys strong kit-away	c1c4e79cf9560d5b
+ranged_maniacal_monkeys strong kit-worn-at-spot	03226ea70e06742f
 ranged_maniacal_monkeys strong owns-all-at-bank	40e722d1fbd732ae
 ranged_maniacal_monkeys strong owns-all-in-bank	40e722d1fbd732ae
-ranged_maniacal_monkeys strong parts-carried	bcb997034acea839
-ranged_maniacal_monkeys strong parts-carried-away	07d488951aeee684
+ranged_maniacal_monkeys strong parts-carried	1dff058e98227c20
+ranged_maniacal_monkeys strong parts-carried-away	c1c4e79cf9560d5b
 ranged_maniacal_monkeys strong parts-in-bank	40e722d1fbd732ae
 ranged_maniacal_monkeys weak bank-empty	551ee39ee1bb5039
 ranged_maniacal_monkeys weak bank-empty-rich	551ee39ee1bb5039
@@ -8430,36 +8430,36 @@ ranged_maniacal_monkeys weak owns-all-in-bank	f36c20f8688b052c
 ranged_maniacal_monkeys weak parts-carried	3ea49a905e2019d4
 ranged_maniacal_monkeys weak parts-carried-away	3ea49a905e2019d4
 ranged_maniacal_monkeys weak parts-in-bank	f36c20f8688b052c
-ranged_nmz strong bank-empty	d347cbc0b980f888
-ranged_nmz strong bank-empty-rich	d30405329f5259ba
-ranged_nmz strong bank-unknown	0e0152ec96ccdef2
-ranged_nmz strong full-of-products	3dc5176cff16919c
-ranged_nmz strong gear-carried	be571153a6046f4f
-ranged_nmz strong goal-reached	eb2a0e8406207691
-ranged_nmz strong in-instance	93f8f949f84f3921
-ranged_nmz strong kit-at-spot	3dc5176cff16919c
-ranged_nmz strong kit-away	3fce68e2ae0d4286
-ranged_nmz strong kit-worn-at-spot	3dc5176cff16919c
-ranged_nmz strong owns-all-at-bank	3fce68e2ae0d4286
-ranged_nmz strong owns-all-in-bank	3fce68e2ae0d4286
-ranged_nmz strong parts-carried	3dc5176cff16919c
-ranged_nmz strong parts-carried-away	3fce68e2ae0d4286
-ranged_nmz strong parts-in-bank	3fce68e2ae0d4286
-ranged_nmz weak bank-empty	a36e65445ec1bc3d
-ranged_nmz weak bank-empty-rich	467085cf398c3e79
-ranged_nmz weak bank-unknown	08a4177fbecc95fb
-ranged_nmz weak full-of-products	ace74bc4975b34d5
-ranged_nmz weak gear-carried	acd6e867354062ce
-ranged_nmz weak goal-reached	21ece1cd3d80b4b3
-ranged_nmz weak in-instance	b5b0fd6145e315ba
-ranged_nmz weak kit-at-spot	ace74bc4975b34d5
-ranged_nmz weak kit-away	45b2de7fe91de48f
-ranged_nmz weak kit-worn-at-spot	ace74bc4975b34d5
-ranged_nmz weak owns-all-at-bank	45b2de7fe91de48f
-ranged_nmz weak owns-all-in-bank	45b2de7fe91de48f
-ranged_nmz weak parts-carried	ace74bc4975b34d5
-ranged_nmz weak parts-carried-away	45b2de7fe91de48f
-ranged_nmz weak parts-in-bank	45b2de7fe91de48f
+ranged_nmz strong bank-empty	11df0b98cc031fd2
+ranged_nmz strong bank-empty-rich	d2163d5c86b2c756
+ranged_nmz strong bank-unknown	76f5df8b55865a23
+ranged_nmz strong full-of-products	b9e40c3fd4e8b03b
+ranged_nmz strong gear-carried	6b58190aeccc3968
+ranged_nmz strong goal-reached	d04fd4473d892ee5
+ranged_nmz strong in-instance	bcb680eeb1916691
+ranged_nmz strong kit-at-spot	b9e40c3fd4e8b03b
+ranged_nmz strong kit-away	b7156b3f7adcbc2c
+ranged_nmz strong kit-worn-at-spot	b9e40c3fd4e8b03b
+ranged_nmz strong owns-all-at-bank	b7156b3f7adcbc2c
+ranged_nmz strong owns-all-in-bank	b7156b3f7adcbc2c
+ranged_nmz strong parts-carried	b9e40c3fd4e8b03b
+ranged_nmz strong parts-carried-away	b7156b3f7adcbc2c
+ranged_nmz strong parts-in-bank	b7156b3f7adcbc2c
+ranged_nmz weak bank-empty	792ad9203ce27ba2
+ranged_nmz weak bank-empty-rich	7c465f20f328c924
+ranged_nmz weak bank-unknown	87e3bdd5a3742c19
+ranged_nmz weak full-of-products	8b2cda6bb4c7139d
+ranged_nmz weak gear-carried	ae98a256298efd3b
+ranged_nmz weak goal-reached	49c9c1a163d93c84
+ranged_nmz weak in-instance	8b2cda6bb4c7139d
+ranged_nmz weak kit-at-spot	8b2cda6bb4c7139d
+ranged_nmz weak kit-away	8b2cda6bb4c7139d
+ranged_nmz weak kit-worn-at-spot	8b2cda6bb4c7139d
+ranged_nmz weak owns-all-at-bank	8b2cda6bb4c7139d
+ranged_nmz weak owns-all-in-bank	8b2cda6bb4c7139d
+ranged_nmz weak parts-carried	8b2cda6bb4c7139d
+ranged_nmz weak parts-carried-away	8b2cda6bb4c7139d
+ranged_nmz weak parts-in-bank	8b2cda6bb4c7139d
 ranged_ogres_cannon strong bank-empty	5ccdc7e2db010384
 ranged_ogres_cannon strong bank-empty-rich	f739bb5c3cdabf9c
 ranged_ogres_cannon strong bank-unknown	10a3e2ccae303ad2
@@ -8553,17 +8553,17 @@ ranged_sand_crabs weak parts-in-bank	7df1db84dd5d209d
 ranged_skeletal_monkeys strong bank-empty	e1b2cae4bcbb5f11
 ranged_skeletal_monkeys strong bank-empty-rich	e5a9eb0324466a7c
 ranged_skeletal_monkeys strong bank-unknown	f48fe6856bb9ebbe
-ranged_skeletal_monkeys strong full-of-products	b6cbf68fbadd96a4
+ranged_skeletal_monkeys strong full-of-products	a454a723034b61c9
 ranged_skeletal_monkeys strong gear-carried	148be9e499a645fa
 ranged_skeletal_monkeys strong goal-reached	7af77828ce563006
-ranged_skeletal_monkeys strong in-instance	b6cbf68fbadd96a4
-ranged_skeletal_monkeys strong kit-at-spot	b6cbf68fbadd96a4
-ranged_skeletal_monkeys strong kit-away	4101d10d724a847a
-ranged_skeletal_monkeys strong kit-worn-at-spot	096c5c8d021cd649
+ranged_skeletal_monkeys strong in-instance	a454a723034b61c9
+ranged_skeletal_monkeys strong kit-at-spot	a454a723034b61c9
+ranged_skeletal_monkeys strong kit-away	d215951d0a881b1a
+ranged_skeletal_monkeys strong kit-worn-at-spot	3a36f7d7ef80abf6
 ranged_skeletal_monkeys strong owns-all-at-bank	126d18f0c7752957
 ranged_skeletal_monkeys strong owns-all-in-bank	126d18f0c7752957
-ranged_skeletal_monkeys strong parts-carried	b6cbf68fbadd96a4
-ranged_skeletal_monkeys strong parts-carried-away	4101d10d724a847a
+ranged_skeletal_monkeys strong parts-carried	a454a723034b61c9
+ranged_skeletal_monkeys strong parts-carried-away	d215951d0a881b1a
 ranged_skeletal_monkeys strong parts-in-bank	126d18f0c7752957
 ranged_skeletal_monkeys weak bank-empty	55c7837fc0846124
 ranged_skeletal_monkeys weak bank-empty-rich	55c7837fc0846124
@@ -9900,21 +9900,21 @@ strength_al_kharid_warriors weak owns-all-in-bank	7596afc1cacf6b44
 strength_al_kharid_warriors weak parts-carried	dd2482cf46fd7c21
 strength_al_kharid_warriors weak parts-carried-away	7596afc1cacf6b44
 strength_al_kharid_warriors weak parts-in-bank	7596afc1cacf6b44
-strength_ammonite_crabs strong bank-empty	9eb32c04bf006b09
-strength_ammonite_crabs strong bank-empty-rich	9eb32c04bf006b09
-strength_ammonite_crabs strong bank-unknown	4be3a02989cc9896
-strength_ammonite_crabs strong full-of-products	e8c9bcb74618da3b
+strength_ammonite_crabs strong bank-empty	3f2e6dde0ee28d1d
+strength_ammonite_crabs strong bank-empty-rich	3f2e6dde0ee28d1d
+strength_ammonite_crabs strong bank-unknown	4839668148ba153c
+strength_ammonite_crabs strong full-of-products	29bc31353886982b
 strength_ammonite_crabs strong gear-carried	5908c47ba9ebe3c2
 strength_ammonite_crabs strong goal-reached	820461587d24dccb
-strength_ammonite_crabs strong in-instance	e8c9bcb74618da3b
-strength_ammonite_crabs strong kit-at-spot	e8c9bcb74618da3b
-strength_ammonite_crabs strong kit-away	5c8e46c1fb4584d1
-strength_ammonite_crabs strong kit-worn-at-spot	e8c9bcb74618da3b
-strength_ammonite_crabs strong owns-all-at-bank	5c8e46c1fb4584d1
-strength_ammonite_crabs strong owns-all-in-bank	5c8e46c1fb4584d1
-strength_ammonite_crabs strong parts-carried	e8c9bcb74618da3b
-strength_ammonite_crabs strong parts-carried-away	5c8e46c1fb4584d1
-strength_ammonite_crabs strong parts-in-bank	5c8e46c1fb4584d1
+strength_ammonite_crabs strong in-instance	29bc31353886982b
+strength_ammonite_crabs strong kit-at-spot	29bc31353886982b
+strength_ammonite_crabs strong kit-away	4cb4259a2dbb5dce
+strength_ammonite_crabs strong kit-worn-at-spot	29bc31353886982b
+strength_ammonite_crabs strong owns-all-at-bank	4cb4259a2dbb5dce
+strength_ammonite_crabs strong owns-all-in-bank	4cb4259a2dbb5dce
+strength_ammonite_crabs strong parts-carried	29bc31353886982b
+strength_ammonite_crabs strong parts-carried-away	4cb4259a2dbb5dce
+strength_ammonite_crabs strong parts-in-bank	4cb4259a2dbb5dce
 strength_ammonite_crabs weak bank-empty	a3e084ea8f6af085
 strength_ammonite_crabs weak bank-empty-rich	a3e084ea8f6af085
 strength_ammonite_crabs weak bank-unknown	1a2ae67192537c07
@@ -10080,21 +10080,21 @@ strength_hill_giants weak owns-all-in-bank	c925097166531eb9
 strength_hill_giants weak parts-carried	1b20137c25ac4f7b
 strength_hill_giants weak parts-carried-away	c925097166531eb9
 strength_hill_giants weak parts-in-bank	c925097166531eb9
-strength_maniacal_monkeys strong bank-empty	732d54a06b83b531
-strength_maniacal_monkeys strong bank-empty-rich	732d54a06b83b531
-strength_maniacal_monkeys strong bank-unknown	cbfbbddacd998987
-strength_maniacal_monkeys strong full-of-products	6fee4afcc14cdd83
+strength_maniacal_monkeys strong bank-empty	11caa9c01af06111
+strength_maniacal_monkeys strong bank-empty-rich	11caa9c01af06111
+strength_maniacal_monkeys strong bank-unknown	ca9540dcd42f588d
+strength_maniacal_monkeys strong full-of-products	41088564718d0351
 strength_maniacal_monkeys strong gear-carried	2a69981f4b3ab9ff
 strength_maniacal_monkeys strong goal-reached	67c53b31fc24db2a
-strength_maniacal_monkeys strong in-instance	6fee4afcc14cdd83
-strength_maniacal_monkeys strong kit-at-spot	6fee4afcc14cdd83
-strength_maniacal_monkeys strong kit-away	348ba84886e00263
-strength_maniacal_monkeys strong kit-worn-at-spot	6fee4afcc14cdd83
-strength_maniacal_monkeys strong owns-all-at-bank	348ba84886e00263
-strength_maniacal_monkeys strong owns-all-in-bank	348ba84886e00263
-strength_maniacal_monkeys strong parts-carried	6fee4afcc14cdd83
-strength_maniacal_monkeys strong parts-carried-away	348ba84886e00263
-strength_maniacal_monkeys strong parts-in-bank	348ba84886e00263
+strength_maniacal_monkeys strong in-instance	41088564718d0351
+strength_maniacal_monkeys strong kit-at-spot	41088564718d0351
+strength_maniacal_monkeys strong kit-away	b3bf423237502049
+strength_maniacal_monkeys strong kit-worn-at-spot	41088564718d0351
+strength_maniacal_monkeys strong owns-all-at-bank	b3bf423237502049
+strength_maniacal_monkeys strong owns-all-in-bank	b3bf423237502049
+strength_maniacal_monkeys strong parts-carried	41088564718d0351
+strength_maniacal_monkeys strong parts-carried-away	b3bf423237502049
+strength_maniacal_monkeys strong parts-in-bank	b3bf423237502049
 strength_maniacal_monkeys weak bank-empty	8003a2521e661ce5
 strength_maniacal_monkeys weak bank-empty-rich	8003a2521e661ce5
 strength_maniacal_monkeys weak bank-unknown	795956ad45ef3447
@@ -10110,66 +10110,66 @@ strength_maniacal_monkeys weak owns-all-in-bank	f6eef8d5ed2f9ef9
 strength_maniacal_monkeys weak parts-carried	f6eef8d5ed2f9ef9
 strength_maniacal_monkeys weak parts-carried-away	f6eef8d5ed2f9ef9
 strength_maniacal_monkeys weak parts-in-bank	f6eef8d5ed2f9ef9
-strength_nmz strong bank-empty	42321af6a43d7300
-strength_nmz strong bank-empty-rich	42321af6a43d7300
-strength_nmz strong bank-unknown	8be9015b46d8cf14
-strength_nmz strong full-of-products	c41662eba7b7e24e
-strength_nmz strong gear-carried	2ad3162f479ab115
-strength_nmz strong goal-reached	51e782ef8af2727f
-strength_nmz strong in-instance	c41662eba7b7e24e
-strength_nmz strong kit-at-spot	c41662eba7b7e24e
-strength_nmz strong kit-away	72b50e269140225e
-strength_nmz strong kit-worn-at-spot	c41662eba7b7e24e
-strength_nmz strong owns-all-at-bank	72b50e269140225e
-strength_nmz strong owns-all-in-bank	72b50e269140225e
-strength_nmz strong parts-carried	c41662eba7b7e24e
-strength_nmz strong parts-carried-away	72b50e269140225e
-strength_nmz strong parts-in-bank	72b50e269140225e
-strength_nmz weak bank-empty	62f333c2ebad08ce
-strength_nmz weak bank-empty-rich	62f333c2ebad08ce
-strength_nmz weak bank-unknown	8be9015b46d8cf14
-strength_nmz weak full-of-products	68880e67d5dd1dd3
-strength_nmz weak gear-carried	ed31ccf7f04bace5
-strength_nmz weak goal-reached	a6f27e32e1782efa
-strength_nmz weak in-instance	68880e67d5dd1dd3
-strength_nmz weak kit-at-spot	68880e67d5dd1dd3
-strength_nmz weak kit-away	047c98f76bffc8fa
-strength_nmz weak kit-worn-at-spot	68880e67d5dd1dd3
-strength_nmz weak owns-all-at-bank	047c98f76bffc8fa
-strength_nmz weak owns-all-in-bank	047c98f76bffc8fa
-strength_nmz weak parts-carried	68880e67d5dd1dd3
-strength_nmz weak parts-carried-away	047c98f76bffc8fa
-strength_nmz weak parts-in-bank	047c98f76bffc8fa
-strength_rock_crabs strong bank-empty	59e156362868a539
-strength_rock_crabs strong bank-empty-rich	59e156362868a539
-strength_rock_crabs strong bank-unknown	11f22e2019940ddc
-strength_rock_crabs strong full-of-products	538aa425137a489e
+strength_nmz strong bank-empty	4d2e9f103048a2c1
+strength_nmz strong bank-empty-rich	8eeee59f227398bf
+strength_nmz strong bank-unknown	e66af47e138848e5
+strength_nmz strong full-of-products	ba855d5b5ec8f16b
+strength_nmz strong gear-carried	cd3a31fbb59a8830
+strength_nmz strong goal-reached	54a1e303f06d511b
+strength_nmz strong in-instance	56d786a1ae8a6391
+strength_nmz strong kit-at-spot	ba855d5b5ec8f16b
+strength_nmz strong kit-away	ec677239a863f78b
+strength_nmz strong kit-worn-at-spot	ba855d5b5ec8f16b
+strength_nmz strong owns-all-at-bank	ec677239a863f78b
+strength_nmz strong owns-all-in-bank	ec677239a863f78b
+strength_nmz strong parts-carried	ba855d5b5ec8f16b
+strength_nmz strong parts-carried-away	ec677239a863f78b
+strength_nmz strong parts-in-bank	ec677239a863f78b
+strength_nmz weak bank-empty	86e22f73dbd9737c
+strength_nmz weak bank-empty-rich	0a99c1dca4d3188c
+strength_nmz weak bank-unknown	abb189c83efa6800
+strength_nmz weak full-of-products	66eff7037c502e33
+strength_nmz weak gear-carried	6b5f45e68784e262
+strength_nmz weak goal-reached	0ff43a13633e8f8d
+strength_nmz weak in-instance	66eff7037c502e33
+strength_nmz weak kit-at-spot	66eff7037c502e33
+strength_nmz weak kit-away	66eff7037c502e33
+strength_nmz weak kit-worn-at-spot	66eff7037c502e33
+strength_nmz weak owns-all-at-bank	66eff7037c502e33
+strength_nmz weak owns-all-in-bank	66eff7037c502e33
+strength_nmz weak parts-carried	66eff7037c502e33
+strength_nmz weak parts-carried-away	66eff7037c502e33
+strength_nmz weak parts-in-bank	66eff7037c502e33
+strength_rock_crabs strong bank-empty	1776a1776e11c4e4
+strength_rock_crabs strong bank-empty-rich	1776a1776e11c4e4
+strength_rock_crabs strong bank-unknown	9981d37edcfc0aa6
+strength_rock_crabs strong full-of-products	1c7fd523ecc70baa
 strength_rock_crabs strong gear-carried	ca5637431ec581d1
 strength_rock_crabs strong goal-reached	4582481d0267760e
-strength_rock_crabs strong in-instance	538aa425137a489e
-strength_rock_crabs strong kit-at-spot	538aa425137a489e
-strength_rock_crabs strong kit-away	9c064d55aee02a8b
-strength_rock_crabs strong kit-worn-at-spot	538aa425137a489e
-strength_rock_crabs strong owns-all-at-bank	9c064d55aee02a8b
-strength_rock_crabs strong owns-all-in-bank	9c064d55aee02a8b
-strength_rock_crabs strong parts-carried	538aa425137a489e
-strength_rock_crabs strong parts-carried-away	9c064d55aee02a8b
-strength_rock_crabs strong parts-in-bank	9c064d55aee02a8b
-strength_rock_crabs weak bank-empty	231fc5c07ee82cfa
-strength_rock_crabs weak bank-empty-rich	231fc5c07ee82cfa
-strength_rock_crabs weak bank-unknown	11f22e2019940ddc
-strength_rock_crabs weak full-of-products	4746f6493070f2ca
+strength_rock_crabs strong in-instance	1c7fd523ecc70baa
+strength_rock_crabs strong kit-at-spot	1c7fd523ecc70baa
+strength_rock_crabs strong kit-away	328bb55e184de234
+strength_rock_crabs strong kit-worn-at-spot	1c7fd523ecc70baa
+strength_rock_crabs strong owns-all-at-bank	328bb55e184de234
+strength_rock_crabs strong owns-all-in-bank	328bb55e184de234
+strength_rock_crabs strong parts-carried	1c7fd523ecc70baa
+strength_rock_crabs strong parts-carried-away	328bb55e184de234
+strength_rock_crabs strong parts-in-bank	328bb55e184de234
+strength_rock_crabs weak bank-empty	f2e67f212df73b32
+strength_rock_crabs weak bank-empty-rich	f2e67f212df73b32
+strength_rock_crabs weak bank-unknown	9981d37edcfc0aa6
+strength_rock_crabs weak full-of-products	18d6e8f18afcbbe2
 strength_rock_crabs weak gear-carried	d772bb5546303d90
 strength_rock_crabs weak goal-reached	ca0d1d57bf1e487c
-strength_rock_crabs weak in-instance	4746f6493070f2ca
-strength_rock_crabs weak kit-at-spot	4746f6493070f2ca
-strength_rock_crabs weak kit-away	091f188001bac886
-strength_rock_crabs weak kit-worn-at-spot	4746f6493070f2ca
-strength_rock_crabs weak owns-all-at-bank	091f188001bac886
-strength_rock_crabs weak owns-all-in-bank	091f188001bac886
-strength_rock_crabs weak parts-carried	4746f6493070f2ca
-strength_rock_crabs weak parts-carried-away	091f188001bac886
-strength_rock_crabs weak parts-in-bank	091f188001bac886
+strength_rock_crabs weak in-instance	18d6e8f18afcbbe2
+strength_rock_crabs weak kit-at-spot	18d6e8f18afcbbe2
+strength_rock_crabs weak kit-away	33d467bf705c903e
+strength_rock_crabs weak kit-worn-at-spot	18d6e8f18afcbbe2
+strength_rock_crabs weak owns-all-at-bank	33d467bf705c903e
+strength_rock_crabs weak owns-all-in-bank	33d467bf705c903e
+strength_rock_crabs weak parts-carried	18d6e8f18afcbbe2
+strength_rock_crabs weak parts-carried-away	33d467bf705c903e
+strength_rock_crabs weak parts-in-bank	33d467bf705c903e
 strength_sand_crabs strong bank-empty	e5bf549ced279227
 strength_sand_crabs strong bank-empty-rich	e5bf549ced279227
 strength_sand_crabs strong bank-unknown	324601b17aff2142
@@ -10200,21 +10200,21 @@ strength_sand_crabs weak owns-all-in-bank	30e6d564433118ef
 strength_sand_crabs weak parts-carried	c89c555186d6012c
 strength_sand_crabs weak parts-carried-away	30e6d564433118ef
 strength_sand_crabs weak parts-in-bank	30e6d564433118ef
-strength_sulphur_naguas strong bank-empty	e53c037bcd708bfb
-strength_sulphur_naguas strong bank-empty-rich	e53c037bcd708bfb
-strength_sulphur_naguas strong bank-unknown	b7eb62972eccc1d2
-strength_sulphur_naguas strong full-of-products	a33363739756f17c
+strength_sulphur_naguas strong bank-empty	93d583b122ad5e7a
+strength_sulphur_naguas strong bank-empty-rich	93d583b122ad5e7a
+strength_sulphur_naguas strong bank-unknown	7a329e6f8f7fe31f
+strength_sulphur_naguas strong full-of-products	52cc28e0a08d5fa2
 strength_sulphur_naguas strong gear-carried	5a1efa3446d52a57
 strength_sulphur_naguas strong goal-reached	0f89d406f39b7719
-strength_sulphur_naguas strong in-instance	a33363739756f17c
-strength_sulphur_naguas strong kit-at-spot	a33363739756f17c
-strength_sulphur_naguas strong kit-away	49c691f696821e32
-strength_sulphur_naguas strong kit-worn-at-spot	a33363739756f17c
-strength_sulphur_naguas strong owns-all-at-bank	49c691f696821e32
-strength_sulphur_naguas strong owns-all-in-bank	49c691f696821e32
-strength_sulphur_naguas strong parts-carried	a33363739756f17c
-strength_sulphur_naguas strong parts-carried-away	49c691f696821e32
-strength_sulphur_naguas strong parts-in-bank	49c691f696821e32
+strength_sulphur_naguas strong in-instance	52cc28e0a08d5fa2
+strength_sulphur_naguas strong kit-at-spot	52cc28e0a08d5fa2
+strength_sulphur_naguas strong kit-away	a24dcf12d0f8aed8
+strength_sulphur_naguas strong kit-worn-at-spot	52cc28e0a08d5fa2
+strength_sulphur_naguas strong owns-all-at-bank	a24dcf12d0f8aed8
+strength_sulphur_naguas strong owns-all-in-bank	a24dcf12d0f8aed8
+strength_sulphur_naguas strong parts-carried	52cc28e0a08d5fa2
+strength_sulphur_naguas strong parts-carried-away	a24dcf12d0f8aed8
+strength_sulphur_naguas strong parts-in-bank	a24dcf12d0f8aed8
 strength_sulphur_naguas weak bank-empty	17f8f7d7ca2a21c0
 strength_sulphur_naguas weak bank-empty-rich	17f8f7d7ca2a21c0
 strength_sulphur_naguas weak bank-unknown	b34affeafaf8908d

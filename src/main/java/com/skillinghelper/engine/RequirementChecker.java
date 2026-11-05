@@ -4,6 +4,7 @@ import com.skillinghelper.data.BoostItem;
 import com.skillinghelper.data.CombatGear;
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Method;
+import com.skillinghelper.data.QuestGroup;
 import com.skillinghelper.data.SkillOutfit;
 import com.skillinghelper.data.ToolType;
 import java.util.ArrayList;
@@ -63,6 +64,11 @@ final class RequirementChecker
 			boolean has = s.level(e.getKey()) >= e.getValue();
 			reqs.add(info(e.getValue() + " " + e.getKey().getName(),
 				has ? Requirement.Status.READY : Requirement.Status.MISSING));
+		}
+		for (QuestGroup g : m.getQuestGroups())
+		{
+			reqs.add(info(g.summary(s.getCompletedQuests()),
+				g.isMet(s.getCompletedQuests()) ? Requirement.Status.READY : Requirement.Status.MISSING));
 		}
 		for (Quest q : m.getQuestsStarted())
 		{

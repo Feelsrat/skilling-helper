@@ -2,6 +2,7 @@ package com.skillinghelper.engine;
 
 import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Method;
+import com.skillinghelper.data.QuestGroup;
 import com.skillinghelper.data.MethodTag;
 import com.skillinghelper.data.MethodType;
 import com.skillinghelper.data.RatePace;
@@ -445,6 +446,14 @@ public final class MethodPlanner
 			if (!state.getStartedQuests().contains(q) && !state.getCompletedQuests().contains(q))
 			{
 				blockers.add("Needs " + q.getName() + " started");
+			}
+		}
+		for (QuestGroup g : m.getQuestGroups())
+		{
+			int done = g.done(state.getCompletedQuests()).size();
+			if (done < g.getNeeded())
+			{
+				blockers.add("Needs " + g.getNeeded() + " quests for " + g.getName() + " (has " + done + ")");
 			}
 		}
 		return blockers;

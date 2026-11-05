@@ -218,7 +218,9 @@ public class GuideSnapshotTest
 			.xp(xp)
 			.freeInventorySlots(28)
 			.membersWorld(strong)
-			.completedQuests(strong && !m.getQuests().isEmpty() ? EnumSet.copyOf(m.getQuests())
+			// Quest groups (Nightmare Zone) need more than the method's own quests
+			.completedQuests(strong && !m.getQuests().isEmpty() || strong && !m.getQuestGroups().isEmpty()
+				? EnumSet.copyOf(m.getQuestGroups().isEmpty() ? m.getQuests() : m.questsToCheck())
 				: EnumSet.noneOf(Quest.class))
 			.startedQuests(strong && !m.getQuestsStarted().isEmpty() ? EnumSet.copyOf(m.getQuestsStarted())
 				: EnumSet.noneOf(Quest.class))

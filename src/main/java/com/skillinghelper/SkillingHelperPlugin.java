@@ -592,8 +592,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		Set<Quest> allQuests = EnumSet.noneOf(Quest.class);
 		for (Method m : guides.all())
 		{
-			allQuests.addAll(m.getQuests());
-			allQuests.addAll(m.getQuestsStarted());
+			allQuests.addAll(m.questsToCheck());
 		}
 		Set<Quest> done = EnumSet.noneOf(Quest.class);
 		Set<Quest> started = EnumSet.noneOf(Quest.class);
@@ -752,8 +751,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		Set<Quest> quests = EnumSet.noneOf(Quest.class);
 		for (Method m : guides.methods(skill))
 		{
-			quests.addAll(m.getQuests());
-			quests.addAll(m.getQuestsStarted());
+			quests.addAll(m.questsToCheck());
 		}
 		if (skill == Skill.SLAYER)
 		{

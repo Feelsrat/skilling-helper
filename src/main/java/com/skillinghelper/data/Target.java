@@ -49,6 +49,14 @@ public class Target
 		return new Target(Kind.NPC, lower(words), action, true);
 	}
 
+	/**
+	 * Objects whose name contains one of these words.
+	 */
+	public static Target objectContaining(String action, String... words)
+	{
+		return new Target(Kind.OBJECT, lower(words), action, true);
+	}
+
 	private static Set<String> lower(String... names)
 	{
 		return Stream.of(names).map(n -> n.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());

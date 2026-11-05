@@ -5,6 +5,7 @@ import com.skillinghelper.data.ItemReq;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.MethodType;
+import com.skillinghelper.data.QuestGroup;
 import com.skillinghelper.data.Stop;
 import com.skillinghelper.shops.ShopPlan;
 import com.skillinghelper.shops.ShopPlanner;
@@ -433,11 +434,23 @@ public final class StepResolver
 	 */
 	private static GuideStep trainStep(Method m, PlayerState s, Stop stop)
 	{
-		GuideStep.GuideStepBuilder b = GuideStep.builder()
-			.highlights(m.getTargets());
-		for (int id : m.getUseItems())
+		GuideStep.GuideStepBuilder b = GuideStep.builder();
+		boolean inside = m.isInstanced() && s.isInInstance();
+		if (inside && (!m.getInsideTargets().isEmpty() || !m.getInsideItems().isEmpty()))
 		{
-			b.itemHighlight(id, ItemHighlight.USE);
+			b.highlights(m.getInsideTargets());
+			for (int id : m.getInsideItems())
+			{
+				b.itemHighlight(id, ItemHighlight.USE);
+			}
+		}
+		else
+		{
+			b.highlights(m.getTargets());
+			for (int id : m.getUseItems())
+			{
+				b.itemHighlight(id, ItemHighlight.USE);
+			}
 		}
 		toolWieldTip(m, s, b);
 
@@ -456,9 +469,19 @@ public final class StepResolver
 			{
 				b.line(stop.getHint() + ".");
 			}
-			return b.travel(route)
-				.line("Then: " + m.getInstruction() + ".")
-				.build();
+			b.travel(route).line("Then: " + m.getInstruction() + ".");
+			if (!m.getSetupSteps().isEmpty() || !m.getHowTo().isEmpty())
+			{
+				b.line("When you get there, the guide takes you through it step by step.");
+			}
+			return b.build();
+		}
+
+		if (m.isInstanced() && !s.isInInstance() && !m.getSetupSteps().isEmpty())
+		{
+			b.type(StepType.TRAIN).title(m.getSetupTitle() != null ? m.getSetupTitle() : m.getInstruction());
+			numbered(b, m, s, m.getSetupSteps());
+			return b.build();
 		}
 
 		b.type(StepType.TRAIN).title(m.getInstruction());
@@ -470,7 +493,25 @@ public final class StepResolver
 		{
 			b.line(m.getNotes());
 		}
+		numbered(b, m, s, m.getHowTo());
 		return b.build();
+	}
+
+	/**
+	 * Adds "1. ...", "2. ..." lines, with quest-group placeholders like "{Rumble bosses}" filled in from the
+	 * player's finished quests.
+	 */
+	private static void numbered(GuideStep.GuideStepBuilder b, Method m, PlayerState s, List<String> lines)
+	{
+		int n = 1;
+		for (String line : lines)
+		{
+			for (QuestGroup g : m.getQuestGroups())
+			{
+				line = line.replace("{" + g.getName() + "}", g.picks(s.getCompletedQuests()));
+			}
+			b.line(n++ + ". " + line);
+		}
 	}
 
 	private static List<Location> trainingSpots(Method m, Stop stop)
