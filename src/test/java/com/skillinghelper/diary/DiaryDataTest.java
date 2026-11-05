@@ -29,7 +29,8 @@ public class DiaryDataTest
 	 */
 	private static final Map<DiaryRegion, int[]> COUNTS = Map.of(
 		DiaryRegion.LUMBRIDGE, new int[]{12, 12, 11, 6},
-		DiaryRegion.VARROCK, new int[]{14, 13, 10, 5});
+		DiaryRegion.VARROCK, new int[]{14, 13, 10, 5},
+		DiaryRegion.FALADOR, new int[]{11, 14, 11, 6});
 
 	@Test
 	public void everyTaskOfAGuidedDiaryIsThere()
@@ -92,6 +93,17 @@ public class DiaryDataTest
 		assertFlag(DiaryRegion.VARROCK, DiaryTier.HARD, 3, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY, 31);
 		assertFlag(DiaryRegion.VARROCK, DiaryTier.HARD, 4, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY2, 0);
 		assertFlag(DiaryRegion.VARROCK, DiaryTier.ELITE, 5, VarPlayerID.VARROCK_ACHIEVEMENT_DIARY2, 11);
+	}
+
+	@Test
+	public void faladorDoneBitsSkipTheUnusedOne()
+	{
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.EASY, 1, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY, 0);
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.MEDIUM, 8, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY, 18);
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.MEDIUM, 9, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY, 20);
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.HARD, 6, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY, 31);
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.HARD, 7, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY2, 0);
+		assertFlag(DiaryRegion.FALADOR, DiaryTier.ELITE, 6, VarPlayerID.FALADOR_ACHIEVEMENT_DIARY2, 10);
 	}
 
 	private static void assertFlag(DiaryTier tier, int number, int varp, int bit)

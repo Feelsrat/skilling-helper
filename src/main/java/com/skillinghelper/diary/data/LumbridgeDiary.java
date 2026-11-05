@@ -33,24 +33,16 @@ final class LumbridgeDiary
 
 	// ---- Shared item groups, best first ----
 
-	private static final int[] ESSENCE = {ItemID.BLANKRUNE_DAEYALT, ItemID.BLANKRUNE_HIGH, ItemID.BLANKRUNE};
-	private static final int[] PURE_ESSENCE = {ItemID.BLANKRUNE_DAEYALT, ItemID.BLANKRUNE_HIGH};
+	private static final int[] ESSENCE = DiaryStages.ESSENCE;
+	private static final int[] PURE_ESSENCE = DiaryStages.PURE_ESSENCE;
 	private static final int[] FAIRY_STAFF = {ItemID.LUNAR_MOONCLAN_LIMINAL_STAFF, ItemID.DRAMEN_STAFF};
-	private static final int[] LIGHT = {ItemID.BULLSEYE_LANTERN_LIT, ItemID.OIL_LANTERN_LIT, ItemID.OIL_LAMP_LIT,
-		ItemID.CANDLE_LANTERN_LIT, ItemID.CAVE_GOBLIN_MINING_HELMET_LIT, ItemID.TORCH_LIT, ItemID.LIT_CANDLE,
-		ItemID.UNLIT_CANDLE};
-	private static final int[] CROSSBOW = {ItemID.ACB, ItemID.XBOWS_CROSSBOW_RUNITE, ItemID.XBOWS_CROSSBOW_ADAMANTITE,
-		ItemID.XBOWS_CROSSBOW_MITHRIL, ItemID.XBOWS_CROSSBOW_STEEL, ItemID.XBOWS_CROSSBOW_IRON,
-		ItemID.XBOWS_CROSSBOW_BRONZE, ItemID.CROSSBOW};
 
 	private static final DiaryItem FAIRY_STAFF_ITEM = DiaryItem.owned("Dramen or Lunar staff",
 		"Make a Dramen staff during Lost City: cut a branch from the Dramen tree on Entrana and use a knife on it.",
 		FAIRY_STAFF);
-	private static final DiaryItem MITH_GRAPPLE = DiaryItem.of("Mith grapple", ItemID.XBOWS_GRAPPLE_TIP_BOLT_MITHRIL_ROPE);
-	private static final DiaryItem ANY_CROSSBOW = DiaryItem.anyOf("Any crossbow", 1, ItemID.XBOWS_CROSSBOW_BRONZE,
-		CROSSBOW);
-	private static final DiaryItem LIGHT_SOURCE = DiaryItem.anyOf("Light source (a candle is fine)", 1, ItemID.UNLIT_CANDLE,
-		LIGHT);
+	private static final DiaryItem MITH_GRAPPLE = DiaryStages.MITH_GRAPPLE;
+	private static final DiaryItem ANY_CROSSBOW = DiaryStages.ANY_CROSSBOW;
+	private static final DiaryItem LIGHT_SOURCE = DiaryStages.LIGHT_SOURCE;
 
 	private LumbridgeDiary()
 	{
