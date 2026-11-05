@@ -10,7 +10,8 @@
 #   skilling-helper-update.sh --phone-kit     put skilling-helper-phone.zip on the Desktop: your Jagex login and the
 #                                             Android installer, to copy to the phone (Download folder)
 #   skilling-helper-update.sh --auto %command% <the shortcut's usual launch options>
-#                                             for Steam launch options: update quietly, then start the game
+#                                             for Steam launch options: update (with a small window saying
+#                                             what happened), then start the game
 #
 # Run by hand, it also offers (once) to put "--auto %command%" into the shortcut's launch options for you, so the
 # game updates itself on every start; --enable-auto does that without asking.
@@ -817,13 +818,72 @@ if [ "$SELF" = "$INSTALL_PATH" ] && [ ! -f "$HOME/.local/share/applications/skil
 	echo "Added a \"Skilling Helper phone kit\" icon to the Desktop."
 fi
 
+# --- Feedback for --auto: a small window while it checks, then what happened -------------------
+# Shown with zenity (part of SteamOS; in Game Mode it appears over the game like any window the game opens),
+# else a desktop notification. SKILLING_HELPER_QUIET=1 in the launch options turns it off.
+
+feedback_ui() {
+	[ "${SKILLING_HELPER_QUIET:-0}" = "1" ] && return 1
+	[ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] || return 1
+	return 0
+}
+
+# Steam's overlay library is preloaded into the game's processes; keep it out of the dialogs
+ui() { env -u LD_PRELOAD "$@" >/dev/null 2>&1; }
+
+auto_progress() {
+	if feedback_ui && command -v zenity >/dev/null 2>&1; then
+		env -u LD_PRELOAD zenity --progress --pulsate --auto-close --no-cancel --width=360 \
+			--title="Skilling Helper" --text="Checking for Skilling Helper updates..." >/dev/null 2>&1
+		cat >/dev/null # if zenity couldn't open, still let the update finish
+	else
+		cat >/dev/null
+	fi
+}
+
+auto_result() {
+	local rc="$1" out="$2" tag msg kind="info" secs=4
+	tag="$(sed -n 's/^.*Latest release: //p' "$out" | tail -1)"
+	if [ "$rc" = "124" ]; then
+		kind="warning"; secs=8
+		msg="Update check timed out (GitHub slow or offline). Starting the version you have."
+	elif [ "$rc" != "0" ]; then
+		kind="warning"; secs=8
+		msg="Update failed: $(grep -v '^[[:space:]]*$' "$out" | tail -1 | sed 's/^[0-9-]* [0-9:]* *//')
+Starting the version you have."
+	elif grep -q " Updated .* to v" "$out"; then
+		msg="Updated Skilling Helper to ${tag:-the newest version}."
+	elif grep -q "No Skilling Helper jar in" "$out"; then
+		kind="warning"; secs=8
+		msg="Couldn't find a Skilling Helper jar in this shortcut, so nothing was updated."
+	else
+		msg="Skilling Helper is up to date${tag:+ ($tag)}."
+	fi
+	feedback_ui || return 0
+	if command -v zenity >/dev/null 2>&1; then
+		# runs until closed or the timeout (zenity exits 5 then); the game starts right after
+		ui zenity "--$kind" --no-wrap --timeout="$secs" --title="Skilling Helper" --text="$msg"
+		return 0
+	fi
+	command -v notify-send >/dev/null 2>&1 && ui notify-send -a "Skilling Helper" "Skilling Helper" "$msg"
+	return 0
+}
+
 if [ "${1:-}" = "--auto" ]; then
 	shift
 	[ $# -gt 0 ] || { echo "--auto needs the game command after it (use --auto %command% in Steam)." >&2; exit 1; }
 	# Never stop the game from starting: a failed or slow update just launches what's there.
 	mkdir -p "$HOME/.cache"
-	SKILLING_HELPER_SELF="$SELF" SKILLING_HELPER_INSTALLED="$INSTALL_PATH" \
-		timeout 60 python3 -c "$UPDATER" --auto "$@" </dev/null >>"$HOME/.cache/skilling-helper-update.log" 2>&1 || true
+	out="$(mktemp)"
+	{
+		SKILLING_HELPER_SELF="$SELF" SKILLING_HELPER_INSTALLED="$INSTALL_PATH" \
+			timeout 60 python3 -c "$UPDATER" --auto "$@" </dev/null >"$out" 2>&1
+		echo $? >"$out.rc"
+		echo 100
+	} | auto_progress
+	cat "$out" >>"$HOME/.cache/skilling-helper-update.log"
+	auto_result "$(cat "$out.rc" 2>/dev/null || echo 1)" "$out"
+	rm -f "$out" "$out.rc"
 	exec "$@"
 fi
 
