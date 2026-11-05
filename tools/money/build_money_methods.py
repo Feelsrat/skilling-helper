@@ -82,8 +82,45 @@ def field(text, name):
     return m.group(1).strip() if m else ""
 
 
+def details(text):
+    """The Details parameter, which holds the step-by-step how-to. Unlike field(), this keeps going past lines that
+    start with "|" when they belong to a template nested inside it (maps, inventories, equipment boxes)."""
+    m = re.search(r"^\|\s*Details\s*=", text, re.M)
+    if not m:
+        return ""
+    depth, i = 0, m.end()
+    while i < len(text):
+        if text.startswith("{{", i):
+            depth, i = depth + 1, i + 2
+            continue
+        if text.startswith("}}", i):
+            if depth == 0:
+                break
+            depth, i = depth - 1, i + 2
+            continue
+        if depth == 0 and text[i] == "|" and text[i - 1] == "\n":
+            break
+        i += 1
+    return text[m.end():i].strip()
+
+
 def links(s):
     return [l.strip() for l in re.findall(r"\[\[([^\]|#]+)", s)]
+
+
+def strip_templates(s):
+    """Removes every {{...}} left over, however deeply nested (parser functions, unclosed variables)."""
+    out, depth, i = [], 0, 0
+    while i < len(s):
+        if s.startswith("{{", i):
+            depth, i = depth + 1, i + 2
+        elif s.startswith("}}", i) and depth > 0:
+            depth, i = depth - 1, i + 2
+        else:
+            if depth == 0:
+                out.append(s[i])
+            i += 1
+    return "".join(out)
 
 
 def plain(s):
@@ -95,6 +132,7 @@ def plain(s):
         s = re.sub(r"\{\{\s*SCP\s*\|([^|{}]*)\|([^|{}]*)[^{}]*\}\}", r"\2 \1", s, flags=re.I)
         s = re.sub(r"\{\{\s*Coins\s*\|([0-9,]+)[^{}]*\}\}", lambda m: "{:,} coins".format(int(m.group(1).replace(",", ""))), s, flags=re.I)
         s = re.sub(r"\{\{[^{}]*\}\}", "", s)
+    s = strip_templates(s)
     s = re.sub(r"\[\[(?:File|Image):[^\]]*\]\]", "", s, flags=re.I)
     s = re.sub(r"\[\[[^\]|]*\|([^\]]*)\]\]", r"\1", s)
     s = re.sub(r"\[\[([^\]]*)\]\]", r"\1", s)
@@ -247,7 +285,7 @@ def main(cache, out_path):
             clean(npc),
             items(j.get("inputs", []), ids, limits, kph, per_kill),
             items(j.get("outputs", []), ids, limits, kph, per_kill),
-            clean(plain(field(t, "Details"))[:1200]),
+            clean(plain(details(t))[:4000]),
         ]))
     with open(out_path, "w") as f:
         f.write("\n".join(lines) + "\n")

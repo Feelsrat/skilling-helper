@@ -36,7 +36,6 @@ public final class MoneyGuide
 	/**
 	 * At most this many sentences of the wiki's instructions on the step; the panel shows them all.
 	 */
-	static final int MAX_SENTENCES = 5;
 	static final int INVENTORY_SLOTS = 28;
 	static final Set<String> BANK_NPCS = Set.of("Banker", "Gnome banker", "Ghost banker", "Emerald Benedict");
 	static final Set<String> BANK_OBJECTS = Set.of("Bank booth", "Bank chest", "Grand Exchange booth");
@@ -386,14 +385,15 @@ public final class MoneyGuide
 			b.line("Use the " + main.getName() + " in your inventory (outlined).");
 			b.use(Set.of(itemId(main)));
 		}
+		// The wiki's own how-to, every sentence, numbered: written for someone who has never done this before
 		List<String> sentences = sentences(m.getDetails());
-		for (int i = 0; i < Math.min(MAX_SENTENCES, sentences.size()); i++)
+		for (int i = 0; i < sentences.size(); i++)
 		{
-			b.line(sentences.get(i));
+			b.line((i + 1) + ". " + sentences.get(i));
 		}
-		if (sentences.size() > MAX_SENTENCES)
+		if (sentences.size() < 3)
 		{
-			b.line("More tips in the panel and on the wiki page.");
+			b.line("The wiki page (button in the panel) has the full strategy, with pictures.");
 		}
 		if (main != null)
 		{
