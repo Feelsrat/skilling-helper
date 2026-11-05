@@ -34,7 +34,7 @@ public class DiaryStepProvider implements PlanStepProvider
 	 * Rough minutes per task, by tier: later tiers send you further and need more supplies.
 	 */
 	private static final int[] TASK_MINUTES = {4, 7, 12, 20};
-	private static final int[] VALUE = {3, 4, 5, 5};
+	private static final int[] VALUE = {4, 5, 6, 6};
 
 	@Override
 	public String name()

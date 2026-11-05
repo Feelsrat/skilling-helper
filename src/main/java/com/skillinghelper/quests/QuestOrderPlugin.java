@@ -1,6 +1,7 @@
 package com.skillinghelper.quests;
 
 import com.google.inject.Provides;
+import com.skillinghelper.OpenQuestRequest;
 import com.skillinghelper.QuestHelperLink;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.bank.BankItems;
@@ -527,6 +528,22 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 		{
 			configManager.setRSProfileConfiguration(QuestOrderConfig.GROUP, TICKED_KEY, String.join(";", t));
 		}
+	}
+
+	/**
+	 * Another plugin in this jar (Account Planner) asked to open one quest: pick it, start the guide and open the
+	 * panel.
+	 */
+	@Subscribe
+	public void onOpenQuestRequest(OpenQuestRequest e)
+	{
+		String key = OrderRow.Kind.QUEST + ":" + e.getQuest();
+		picked = key;
+		skipped.remove(key);
+		running = true;
+		checkPlugins = true;
+		refresh();
+		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
 
 	// ---- Panel callbacks (Swing thread) ----

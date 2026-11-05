@@ -17,7 +17,7 @@ import net.runelite.api.Skill;
 public class SkillingStepProvider implements PlanStepProvider
 {
 	static final int CHUNK = 10;
-	static final int MILESTONE_VALUE = 5;
+	static final int MILESTONE_VALUE = 6;
 	static final int MAX_CHUNK_VALUE = 1;
 
 	private static final class Milestone

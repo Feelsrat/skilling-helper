@@ -37,11 +37,11 @@ public final class PathPlanner
 	/**
 	 * How many dependants count towards a step's bonus.
 	 */
-	static final int MAX_FANOUT = 5;
+	static final int MAX_FANOUT = 4;
 	/**
 	 * Value bonus per step that waits on this one.
 	 */
-	static final int FANOUT_BONUS = 2;
+	static final int FANOUT_BONUS = 1;
 	/**
 	 * How deep the cost of reaching a step looks through what it needs.
 	 */
@@ -112,6 +112,7 @@ public final class PathPlanner
 	 * Quest steps the planner made up because no provider has them.
 	 */
 	private final Set<String> standIns = new HashSet<>();
+	private Set<String> excluded = new HashSet<>();
 	private long coins;
 	private int moneySteps;
 
@@ -178,6 +179,7 @@ public final class PathPlanner
 				remaining.add(s.getId());
 			}
 		}
+		this.excluded = excluded;
 		List<String> unreachable = dropUnreachable(excluded);
 		addQuestStandIns();
 		countFanout();
@@ -239,7 +241,8 @@ public final class PathPlanner
 	}
 
 	/**
-	 * Drops every remaining step that waits on a left-out one (e.g. a later tier of a Wilderness diary).
+	 * Drops every remaining step that waits on a left-out one (e.g. a later tier of a Wilderness diary, or a quest
+	 * that needs a Wilderness quest).
 	 */
 	private List<String> dropUnreachable(Set<String> excluded)
 	{
@@ -249,7 +252,11 @@ public final class PathPlanner
 			changed = false;
 			for (String id : new ArrayList<>(remaining))
 			{
-				for (String dep : byId.get(id).getAfter())
+				PlanStep s = byId.get(id);
+				List<String> deps = new ArrayList<>(s.getAfter());
+				s.getQuests().forEach(q -> deps.add(PlanStep.questId(q)));
+				s.getQuestsStarted().forEach(q -> deps.add(PlanStep.questId(q)));
+				for (String dep : deps)
 				{
 					if (excluded.contains(dep))
 					{
@@ -306,7 +313,7 @@ public final class PathPlanner
 		}
 		if (finished.contains(q) || byId.containsKey(id))
 		{
-			if (byId.containsKey(id) && !doneIds.contains(id) && !finished.contains(q))
+			if (byId.containsKey(id) && !doneIds.contains(id) && !finished.contains(q) && !excluded.contains(id))
 			{
 				remaining.add(id);
 			}

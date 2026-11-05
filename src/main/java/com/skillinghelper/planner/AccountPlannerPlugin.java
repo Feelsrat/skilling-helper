@@ -364,26 +364,16 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 		}
 		loadProfile();
 		AccountState account = readAccount();
-		List<PlanStep> steps = new ArrayList<>();
-		List<String> names = new ArrayList<>();
-		for (PlanStepProvider p : StepProviders.ALL)
-		{
-			try
-			{
-				steps.addAll(p.steps(account));
-				names.add(p.name());
-			}
-			catch (RuntimeException ex)
-			{
-				log.debug("Plan step provider {} failed", p.name(), ex);
-			}
-		}
+		List<PlanStep> steps = collect(account);
 		if (askForQuests(steps))
 		{
-			// New quests to read: read them now so the first plan doesn't treat them all as not started
+			// New quests to read: read them now and ask again, so the first plan doesn't treat them as not started
 			readQuests();
 			account = account.toBuilder().quests(new HashMap<>(quests)).build();
+			steps = collect(account);
 		}
+		List<String> names = new ArrayList<>();
+		StepProviders.ALL.forEach(p -> names.add(p.name()));
 
 		Set<StepKind> hidden = hiddenKinds();
 		RatePace currentPace = configManager.getConfiguration(SkillingHelperConfig.GROUP, "ratePace", RatePace.class);
@@ -414,11 +404,12 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 		int length = config.planLength();
 		int skippedCount = skipped.size();
 		int gen = ++generation;
+		List<PlanStep> planSteps = steps;
 		executor.execute(() ->
 		{
 			try
 			{
-				PathPlanner.Plan plan = PathPlanner.plan(steps, snapshot, hours, settings);
+				PathPlanner.Plan plan = PathPlanner.plan(planSteps, snapshot, hours, settings);
 				Map<String, PlanStep> byId = new HashMap<>();
 				List<PlannerView.Row> rows = new ArrayList<>();
 				for (PathPlanner.Planned p : plan.getSteps())
@@ -458,6 +449,23 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 				log.debug("Account plan failed", ex);
 			}
 		});
+	}
+
+	private static List<PlanStep> collect(AccountState account)
+	{
+		List<PlanStep> steps = new ArrayList<>();
+		for (PlanStepProvider p : StepProviders.ALL)
+		{
+			try
+			{
+				steps.addAll(p.steps(account));
+			}
+			catch (RuntimeException ex)
+			{
+				log.debug("Plan step provider {} failed", p.name(), ex);
+			}
+		}
+		return steps;
 	}
 
 	/**
