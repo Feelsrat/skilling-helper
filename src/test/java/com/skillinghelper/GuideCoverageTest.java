@@ -56,6 +56,27 @@ public class GuideCoverageTest
 		}
 	}
 
+	/**
+	 * Every guide is written for someone who has never done the activity: it must say step by step where to stand,
+	 * what to click and what to do next.
+	 */
+	@Test
+	public void everyMethodHasBeginnerSteps()
+	{
+		StringBuilder missing = new StringBuilder();
+		for (Skill skill : Skill.values())
+		{
+			for (Method m : guides.methods(skill))
+			{
+				if (m.getHowTo().size() + m.getSetupSteps().size() < 3)
+				{
+					missing.append(' ').append(m.getId());
+				}
+			}
+		}
+		assertEquals("Methods without beginner how-to steps:", "", missing.toString());
+	}
+
 	@Test
 	public void everySkillProducesAPlanAndAStep()
 	{

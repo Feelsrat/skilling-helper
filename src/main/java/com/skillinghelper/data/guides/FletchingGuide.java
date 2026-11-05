@@ -100,6 +100,9 @@ final class FletchingGuide
 				+ " to make " + perSet + " " + name.toLowerCase() + " at a time")
 			.notes("Everything stacks, so you never bank and can do this anywhere, even while running. "
 				+ "Very fast xp, but the cost depends on today's prices.")
+			.howTo("Take the " + partName.toLowerCase() + " and " + otherName.toLowerCase() + " out of the bank (the "
+				+ "guide highlights them).")
+			.howTo(HowTo.stackable(partName.toLowerCase(), otherName.toLowerCase(), name.toLowerCase()))
 			.wikiPage(WIKI);
 	}
 
@@ -123,6 +126,9 @@ final class FletchingGuide
 			.product(product)
 			.useItem(ItemID.KNIFE).useItem(log)
 			.instruction("Use the knife on the " + logName.toLowerCase() + " and choose " + productName.toLowerCase())
+			.howTo(HowTo.bankStanding("your knife and 27 " + logName.toLowerCase(),
+				"the knife, then a log (in the menu pick " + productName.toLowerCase() + ")",
+				productName.toLowerCase()))
 			.wikiPage(WIKI);
 	}
 
@@ -145,6 +151,8 @@ final class FletchingGuide
 			.product(strung)
 			.useItem(ItemID.BOW_STRING).useItem(unstrung)
 			.instruction("Use the bow strings on the unstrung bows")
+			.howTo(HowTo.bankStanding("14 bow strings and 14 unstrung " + bowName.toLowerCase(),
+				"a bow string, then an unstrung bow", bowName.toLowerCase()))
 			.notes("Fast xp; usually close to break-even if you buy the materials.")
 			.wikiPage(WIKI);
 	}

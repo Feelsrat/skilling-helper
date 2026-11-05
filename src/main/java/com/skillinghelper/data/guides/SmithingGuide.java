@@ -91,6 +91,14 @@ final class SmithingGuide
 				.instruction("Use the steel bars on the furnace to make cannonballs")
 				.notes("Slow xp but very AFK: one inventory takes about 2.5 minutes. Each bar makes 4 cannonballs.")
 				.wikiPage(P2P_WIKI)
+				.getThere("You need Dwarf Cannon done; the quest gives you the ammo mould (Nulodion at the dwarf "
+					+ "camp gives a new one if you lose it).")
+				.howTo("The furnace is in the building a few steps east of Edgeville bank: follow the arrow.")
+				.howTo("At the bank, take out the ammo mould and 27 steel bars.")
+				.howTo("Click a steel bar, then the highlighted furnace. Press Space to make cannonballs from "
+					+ "every bar.")
+				.howTo("This takes about 2.5 minutes per inventory and keeps going on its own. Then bank the "
+					+ "cannonballs and repeat.")
 				.build(),
 			Method.builder()
 				.id("smith_blast_furnace_gold")
@@ -117,6 +125,18 @@ final class SmithingGuide
 				.supply(Supplies.COINS)
 				.supply(Supplies.STAMINA)
 				.wikiPage("Blast_Furnace")
+				.getThere("You need The Giant Dwarf (to enter Keldagrim) and Family Crest (goldsmith gauntlets). "
+					+ "Take the Keldagrim minecart or the Minigame Teleport to the Blast Furnace. Get ice gloves "
+					+ "from Bree on top of Ice Mountain (kill her for them).")
+				.getThere("Bring coins: below 60 Smithing you pay the Blast Furnace foreman 2,500 gp for every 10 "
+					+ "minutes, and the coffer needs coins (put about 72,000 in for an hour) to pay the stokers. "
+					+ "Bring stamina potions.")
+				.howTo("Wear the goldsmith gauntlets. At the bank chest, take out a full inventory of gold ore.")
+				.howTo("Click the highlighted conveyor belt (\"Put-ore-on\") to load all the ore.")
+				.howTo("Swap to your ice gloves, walk to the bar dispenser and click it (\"Take\") when the bars "
+					+ "are ready. Without ice gloves, cool the bars with a bucket of water first.")
+				.howTo("Swap back to the goldsmith gauntlets (they only give the bonus xp if you wear them when "
+					+ "the ore goes in), bank the bars, take more ore and repeat.")
 				.build(),
 			Method.builder()
 				.id("smith_giants_foundry")
@@ -140,6 +160,22 @@ final class SmithingGuide
 				.notes("Uses bars you already have. Earns the Smiths' uniform, which makes smithing faster.")
 				.wikiPage("Giants%27_Foundry")
 				.rateAt(50, 60_000).rateAt(70, 80_000).rateAt(90, 100_000)
+				.getThere("You need Sleeping Giants done. The Giants' Foundry is in the desert east of Al Kharid; "
+					+ "an amulet of glory to Al Kharid gets you close.")
+				.getThere("Bring bars for the crucible (28 bars' worth, e.g. 14 mithril and 14 adamantite bars) "
+					+ "and a bucket of water, or wear ice gloves.")
+				.howTo("Talk to the highlighted Kovac and ask for a commission: he names two words, like \"Narrow "
+					+ "Spiked\".")
+				.howTo("Click the mould jig and pick the forte, blade and tip moulds whose bars are green for "
+					+ "your two words. Then click \"Set mould\".")
+				.howTo("Put your bars into the crucible (use them on it) until it holds 28 bars' worth, then "
+					+ "click the crucible to pour it into the mould jig. Pick up the finished preform from the "
+					+ "jig.")
+				.howTo("Watch the bars at the top of the screen: each tool (trip hammer, grindstone, polishing "
+					+ "wheel) only works in one heat range. Dip the preform in the lava pool to heat it or in the "
+					+ "waterfall to cool it until the arrow is in the right colour, then click that tool.")
+				.howTo("Keep working it until the progress bar is full, then hand the sword to Kovac for xp and "
+					+ "reputation. Spend reputation at Kovac's shop on the Smiths' uniform.")
 				.build()
 		);
 	}
@@ -160,6 +196,13 @@ final class SmithingGuide
 			.product(bar)
 			.target(Target.object("Smelt", "Furnace"))
 			.instruction("Click the furnace and choose " + name.toLowerCase() + ", then press Space to smelt them all")
+			.howTo(HowTo.atObject(furnace == EDGEVILLE_FURNACE
+					? "The furnace is in the building a few steps east of Edgeville bank"
+					: "The furnace is in the building just north of Al Kharid bank",
+				"the ore", "the highlighted furnace (\"Smelt\")",
+				"click the " + name.toLowerCase().replace("bars", "bar")
+					+ " (or press its number key) to smelt them all",
+				name.toLowerCase()))
 			.wikiPage(F2P_WIKI);
 	}
 
@@ -185,6 +228,10 @@ final class SmithingGuide
 			.target(Target.object("Smith", "Anvil"))
 			.useItem(bar)
 			.instruction("Use the bars on the anvil and make " + name.toLowerCase())
+			.howTo(HowTo.atObject("The anvils are in the house just south of Varrock West bank",
+				"your hammer and the " + barName.toLowerCase(), "a bar, then the highlighted anvil",
+				"click the " + name.toLowerCase() + " picture (make sure \"All\" is picked at the top) to make as many "
+					+ "as your bars allow", name.toLowerCase()))
 			.wikiPage(barsEach == 1 || level < 50 ? F2P_WIKI : P2P_WIKI);
 	}
 

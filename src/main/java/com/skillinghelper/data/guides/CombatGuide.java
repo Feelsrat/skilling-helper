@@ -231,28 +231,90 @@ final class CombatGuide
 	private static final List<Monster> MONSTERS = List.of(
 		new Monster("chickens", "Chickens (Lumbridge)", new String[]{"Chicken"}, 3, 1, 2_500, false,
 			Location.of("Lumbridge chicken pen", 3231, 3297, 8),
-			"Chickens can't really hurt you. Pick up feathers for Fishing if you like.", null, false, 10, 5_000),
+			"Chickens can't really hurt you. Pick up feathers for Fishing if you like.", null, false, 10, 5_000)
+			.howTo("The chickens are in a fenced pen just north of Lumbridge: follow the arrow, then click the "
+					+ "gate to go in.",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Left-click a highlighted chicken (\"Attack\"). Your character keeps fighting it until it dies.",
+				"When it dies, click the next chicken. Chickens barely hurt you, so you don't need food.",
+				"Optional: pick up the feathers they drop (click them on the ground) to use for fishing later."),
 		new Monster("cows", "Cows (Lumbridge)", new String[]{"Cow", "Cow calf"}, 8, 10, 6_000, false,
 			Location.of("Lumbridge cow field", 3257, 3270, 12),
-			"Bank the cowhides for Crafting, or sell them.", null, false, 20, 10_000),
+			"Bank the cowhides for Crafting, or sell them.", null, false, 20, 10_000)
+			.howTo("The cows are in the big fenced field east of Lumbridge, across the river: follow the arrow, "
+					+ "then click the gate to go in.",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Left-click a highlighted cow (\"Attack\"). Your character keeps fighting it until it dies, then "
+					+ "click the next one.",
+				"Cows hit very weakly. If your hitpoints drop below half, eat something or wait a bit.",
+				"Optional: pick up the cowhides (click them on the ground) and bank them to sell or tan for "
+					+ "Crafting."),
 		new Monster("al_kharid_warriors", "Al Kharid warriors", new String[]{"Al Kharid warrior"}, 19, 20, 12_000,
 			false, Location.of("Al Kharid palace", 3293, 3173, 10),
-			"They hit back, so bring some food.", null, false, 30, 18_000, 40, 22_000),
+			"They hit back, so bring some food.", null, false, 30, 18_000, 40, 22_000)
+			.howTo("The Al Kharid warriors are inside the Al Kharid palace, in the middle of Al Kharid: follow the "
+					+ "arrow. Bring some food (the guide takes it out at the bank).",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Left-click a highlighted Al Kharid warrior (\"Attack\"). Your character fights until it dies; "
+					+ "then click the next one.",
+				"They hit back, so eat a piece of food whenever your hitpoints drop below half.",
+				"When the food runs out, walk to Al Kharid bank (just south-west of the palace) for more."),
 		new Monster("hill_giants", "Hill giants (Edgeville Dungeon)", new String[]{"Hill Giant"}, 35, 30, 18_000, false,
 			Location.of("Edgeville Dungeon hill giants", 3117, 9845, 12),
 			"Bring food. Big bones are worth burying or selling.",
-			"A brass key opens the hill giant room door", false, 50, 30_000, 70, 40_000),
+			"A brass key opens the hill giant room door", false, 50, 30_000, 70, 40_000)
+			.howTo("The hill giants are in Edgeville Dungeon: climb down the trapdoor just south of Edgeville bank "
+					+ "and follow the arrow through the dungeon. Next time you can use the brass key that lies just "
+					+ "north of their room: it opens a shed west of the Cooks' Guild that leads straight down to them.",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Left-click a highlighted hill giant (\"Attack\"). Your character fights until it dies; then click "
+					+ "the next one.",
+				"They hit hard for low levels: eat whenever your hitpoints drop below half.",
+				"Pick up the big bones they drop if you want to bury them for Prayer or sell them. When your "
+					+ "food runs out, go back to Edgeville bank."),
 		new Monster("sand_crabs", "Sand crabs (Hosidius)", new String[]{"Sand Crab"}, 60, 20, 15_000, true,
 			Location.of("Hosidius sand crab beach", 1740, 3468, 30),
 			"Very AFK: stand next to a few crabs and they wake up. Run away and back every 10 minutes when they "
-				+ "stop attacking you.", null, true, 40, 30_000, 60, 45_000, 80, 60_000, 99, 70_000),
+				+ "stop attacking you.", null, true, 40, 30_000, 60, 45_000, 80, 60_000, 99, 70_000)
+			.howTo("The sand crabs are on the beach north of Hosidius in Great Kourend: follow the arrow (sail with "
+					+ "Veos from Port Sarim the first time, then use the Kourend Castle teleport or a skills "
+					+ "necklace).",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Stand on an open tile with 2-4 crabs around you (they look like rocks until they wake up). They "
+					+ "wake up and attack you on their own.",
+				"Turn on auto-retaliate (in the combat tab) and leave it running. Eat when your hitpoints get "
+					+ "low.",
+				"After about 10 minutes they stop waking up because they got used to you. Walk away until "
+					+ "they're off your screen (about 30 tiles), wait a few seconds, then walk back to the same spot.",
+				"If someone is already standing where you want to be, pick another group of crabs or hop worlds."),
 		// The crab can't die and takes any damage, so a "kill" here is ~100 damage at the reduced 3.5 xp per damage
 		new Monster(GEMSTONE_CRAB, "Gemstone Crab (Varlamore)", new String[]{"Gemstone Crab"}, 88, 1, 5_000, true,
 			GEMSTONE_CRAB_SPOTS[0],
 			"Very AFK and it never hits back. Every 10 minutes it burrows and moves to one of the other two spots: "
 				+ "crawl through the cave next to the old spot to come out at the new one. The top 16 damage dealers "
 				+ "can mine the shell afterwards for gems (bring any pickaxe).", null, true,
-			20, 18_000, 40, 35_000, 60, 52_000, 80, 70_000, 99, 85_000),
+			20, 18_000, 40, 35_000, 60, 52_000, 80, 70_000, 99, 85_000)
+			.howTo("The Gemstone Crab is in Varlamore, outside Civitas illa Fortis: take a quetzal or follow the "
+					+ "arrow. It sits at one of three spots and moves every 10 minutes; the guide points to the spots.",
+				"Open the combat options tab (the crossed swords icon) and click the attack style named above, "
+					+ "so the xp goes to the right skill. Wear your best weapon and armour (the guide tells you what "
+					+ "to equip).",
+				"Click the highlighted Gemstone Crab (\"Attack\") and leave your character fighting it. It never "
+					+ "hits back, so you don't need food.",
+				"When the crab burrows (after about 10 minutes), click the highlighted cave/tunnel next to where "
+					+ "it was and crawl through: you come out next to its new spot. Attack it again.",
+				"If you were in the top 16 for damage, mine the crab's shell with a pickaxe when it burrows for "
+					+ "gems."),
 		new Monster("nmz", "Nightmare Zone", new String[]{}, 400, 60, 55_000, true,
 			Location.of("Nightmare Zone", 2606, 3115, 8),
 			"You can't die for real in here: if you die, the dream ends and you keep all your items.",

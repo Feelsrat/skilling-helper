@@ -61,6 +61,15 @@ final class MagicGuide
 				.notes("The guide picks the strongest Strike, Bolt or Blast spell you can cast; an air staff saves "
 					+ "the air runes every spell uses. Splashing still gives the spell's base xp.")
 				.wikiPage(F2P_WIKI)
+				.howTo("The cows are in the big fenced field east of Lumbridge, across the river: follow the "
+					+ "arrow, then click the gate to go in.")
+				.howTo("Open the combat options tab (the crossed swords icon), click \"Choose spell\" (autocast) "
+					+ "and pick the spell the guide names next to the runes. Wear the staff the guide suggests.")
+				.howTo("Keep the runes for that spell in your inventory. An air staff counts as unlimited air "
+					+ "runes.")
+				.howTo("Click a highlighted target (\"Attack\"). Your character casts the spell again and again "
+					+ "by themselves.")
+				.howTo("If the runes run out, the casting stops: go to the bank for more.")
 				.build(),
 			teleport("magic_varrock_tele", "Varrock Teleport", 25, 35, false,
 				ItemReq.stack("Law runes", 1, ItemID.LAWRUNE), air(3), fire(1)).build(),
@@ -88,6 +97,12 @@ final class MagicGuide
 				.instruction("Cast Superheat Item on each iron ore")
 				.notes("Also gives 12.5 Smithing xp per bar, and every bar succeeds unlike a furnace.")
 				.wikiPage(P2P_WIKI)
+				.howTo("Stand at any bank (the Grand Exchange is handy). Wear a fire staff, or carry fire runes.")
+				.howTo("Take out the nature runes and 27 iron ore.")
+				.howTo("Open your spellbook (the blue book icon), click Superheat Item, then click an iron ore: "
+					+ "it turns into an iron bar.")
+				.howTo("The spellbook opens again by itself: click Superheat Item and the next ore. Repeat until "
+					+ "all the ore is bars, then bank and take more.")
 				.build(),
 			Method.builder()
 				.id("magic_enchant_opal_bolts")
@@ -108,6 +123,11 @@ final class MagicGuide
 				.notes("Bolts and runes stack, so you can do this while running or questing. Higher gem bolts give "
 					+ "more xp per cast but cost a lot more.")
 				.wikiPage(P2P_WIKI)
+				.howTo("Take out cosmic runes, air runes (or wear an air staff) and your opal bolts. Everything "
+					+ "stacks, so you can do this anywhere.")
+				.howTo("Open your spellbook (the blue book icon) and click Enchant Crossbow Bolt.")
+				.howTo("A menu opens with the bolt types: click opal. Each cast enchants 10 bolts.")
+				.howTo("Keep casting until the bolts or runes run out.")
 				.build(),
 			Method.builder()
 				.id("magic_low_alch")
@@ -129,6 +149,12 @@ final class MagicGuide
 				.notes("Low alching turns items into coins for 31 xp a cast. It loses a little money, but you can do "
 					+ "it while walking or questing.")
 				.wikiPage("Low_Level_Alchemy")
+				.howTo("Wear a fire staff so you don't need fire runes. Take out the nature runes and the yew "
+					+ "longbows (noted is fine: in the bank click \"Note\" at the bottom before you withdraw).")
+				.howTo("Open your spellbook (the blue book icon), click Low Level Alchemy, then click a yew "
+					+ "longbow. You get the coins.")
+				.howTo("The spellbook opens again by itself: click Low Level Alchemy and the bow again. Keep "
+					+ "going until they run out.")
 				.build(),
 			alch("magic_high_alch_yew", "High Alchemy (yew longbows)", "Yew longbows", ItemID.YEW_LONGBOW,
 				ItemID.Cert.YEW_LONGBOW, 768).build(),
@@ -154,6 +180,12 @@ final class MagicGuide
 				.useItem(ItemID.SAPPHIRE_RING)
 				.instruction("Cast Lvl-1 Enchant on each sapphire ring")
 				.wikiPage(P2P_WIKI)
+				.howTo("Stand at any bank. Wear a water staff, or carry water runes, and take out the cosmic "
+					+ "runes and 27 sapphire rings.")
+				.howTo("Open your spellbook (the blue book icon), click Lvl-1 Enchant, then click a sapphire "
+					+ "ring: it becomes a ring of recoil.")
+				.howTo("The spellbook opens again by itself: click Lvl-1 Enchant and the next ring. Repeat, then "
+					+ "bank them and take more.")
 				.build(),
 			enchant("magic_enchant_power", "Lvl-4 Enchant", "Diamond amulets", 57, 67, ItemID.STRUNG_DIAMOND_AMULET,
 				ItemID.AMULET_OF_POWER, earth(10)).build(),
@@ -186,6 +218,13 @@ final class MagicGuide
 				.notes("Lunar spellbook. One cast per inventory, so it's very low effort. Also gives a little "
 					+ "Crafting xp. Each cast uses 2 astral, 10 earth and 5 water runes.")
 				.wikiPage("String_Jewellery")
+				.howTo("You must be on the Lunar spellbook (after Lunar Diplomacy, pray at the altar in the "
+					+ "Astral altar's temple on Lunar Isle to switch).")
+				.howTo("Stand at any bank. Take out the astral, earth and water runes and 25 unstrung gold "
+					+ "amulets.")
+				.howTo("Open your spellbook and click String Jewellery once: your character strings every amulet "
+					+ "in the inventory by themselves.")
+				.howTo("Bank the strung amulets, take out more and cast again.")
 				.build()
 		);
 	}
@@ -207,6 +246,12 @@ final class MagicGuide
 			.location(Banks.GRAND_EXCHANGE)
 			.bank(Banks.GRAND_EXCHANGE)
 			.instruction("Cast " + spell + " over and over")
+			.howTo("Wear a staff of the element the spell uses most (an air staff for most teleports), so you don't "
+				+ "need those runes. Take the law runes and other runes out of the bank.")
+			.howTo("Open your spellbook (the blue book icon in the side panel) and click " + spell + ".")
+			.howTo("You land at the destination after a few seconds. Click " + spell + " again straight away, and "
+				+ "keep going until your law runes run out.")
+			.howTo("Then go to the nearest bank (or buy law runes from a magic shop) and carry on.")
 			.notes("Teleport spells are some of the fastest early Magic xp. Wear a staff to save the elemental runes.")
 			.wikiPage(members ? P2P_WIKI : F2P_WIKI);
 		for (ItemReq r : runes)
@@ -236,6 +281,13 @@ final class MagicGuide
 			.product(product)
 			.useItem(item)
 			.instruction("Cast " + spell + " on each of the " + itemName.toLowerCase())
+			.howTo("Stand at any bank (the Grand Exchange is handy). Wear the matching elemental staff if you have "
+				+ "one, and take out the cosmic runes, the other runes and 27 " + itemName.toLowerCase() + ".")
+			.howTo("Open your spellbook (the blue book icon), click " + spell + ", then click one of the "
+				+ itemName.toLowerCase() + ".")
+			.howTo("The spellbook opens again by itself: click the spell, then the next item. Repeat until all are "
+				+ "enchanted.")
+			.howTo("Bank the enchanted items, take out more and repeat.")
 			.notes("A wiki money maker when the enchanted item sells for more than the amulet and runes.")
 			.wikiPage(P2P_WIKI);
 		for (ItemReq r : runes)
@@ -260,6 +312,15 @@ final class MagicGuide
 			.target(Target.npc("Mine", "Gemstone Crab Shell"))
 			.supply(Supplies.PICKAXE)
 			.instruction("Autocast the spell named next to the runes and attack the Gemstone Crab")
+			.howTo("The Gemstone Crab is in Varlamore, outside Civitas illa Fortis (you need Children of the "
+				+ "Sun). It sits at one of three spots and moves every 10 minutes; the guide points to the spots.")
+			.howTo("Open the combat options tab (the crossed swords icon), click \"Choose spell\" (autocast) and "
+				+ "pick the spell the guide names next to the runes. Wear the staff the guide suggests.")
+			.howTo("Keep the runes for that spell in your inventory. An air staff counts as unlimited air runes.")
+			.howTo("Click a highlighted target (\"Attack\"). Your character casts the spell again and again by "
+				+ "themselves.")
+			.howTo("When the crab burrows, click the highlighted cave next to where it was and crawl through to "
+				+ "its new spot. Attack it again. It never hits back, so no food is needed.")
 			.notes("Very AFK and it never hits back. The guide picks the strongest Strike, Bolt, Blast, Wave or Surge "
 				+ "spell you can cast; an air staff saves the air runes every spell uses. Every 10 minutes the crab "
 				+ "burrows and moves to one of the other two spots: crawl through the cave next to the old spot to "
@@ -346,6 +407,13 @@ final class MagicGuide
 			.product(plank)
 			.useItem(log)
 			.instruction("On the Lunar spellbook, cast Plank Make on each " + wood.toLowerCase() + " log")
+			.howTo("You must be on the Lunar spellbook: after Lunar Diplomacy, pray at the altar in the Astral "
+				+ "altar's temple on Lunar Isle to switch.")
+			.howTo("Stand at any bank. Take out the astral, nature and earth runes (or wear an earth staff), the coins "
+				+ "and the " + wood.toLowerCase() + " logs.")
+			.howTo("Open your spellbook, click Plank Make, then click a log. The spellbook opens again by itself: "
+				+ "click Plank Make and the next log, until every log is a plank.")
+			.howTo("Bank the planks, take out more logs and repeat.")
 			.notes("Needs the Lunar spellbook (Lunar Diplomacy) and Dream Mentor to cast. Each cast costs "
 				+ String.format("%,d", fee) + " coins on top of the runes.")
 			.wikiPage("Plank_Make");
@@ -371,6 +439,13 @@ final class MagicGuide
 			.input(ItemReq.stack(itemName + " (noted is fine)", 1, item, noted))
 			.useItem(item).useItem(noted)
 			.instruction("Cast High Level Alchemy on the " + itemName.toLowerCase())
+			.howTo("Wear a fire staff so you don't need fire runes. Take out the nature runes and the "
+				+ itemName.toLowerCase() + " (noted is fine: in the bank click \"Note\" at the bottom before you "
+				+ "withdraw, so they take one slot).")
+			.howTo("Open your spellbook (the blue book icon), click High Level Alchemy, then click the "
+				+ itemName.toLowerCase() + ". You get the coins.")
+			.howTo("The spellbook opens again by itself: click High Level Alchemy and the item again. Keep going until "
+				+ "the items or nature runes run out.")
 			.notes("Each cast turns the item into " + String.format("%,d", alchValue) + " coins. Buy the items noted; "
 				+ "profit or loss depends on today's GE prices, which the guide shows.")
 			.wikiPage("High_Level_Alchemy");

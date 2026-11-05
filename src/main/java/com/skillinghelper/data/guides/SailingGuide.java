@@ -36,6 +36,14 @@ final class SailingGuide
 					+ "tasks from the port noticeboards")
 				.notes("Port tasks give steady early xp and unlock new ports as you level.")
 				.wikiPage(WIKI)
+				.howTo("Talk to Will or Anne on the dock just east of the Food Store in Port Sarim to start "
+					+ "Pandemonium (follow the arrow).")
+				.howTo("Follow the quest (Quest Helper shows each step): steer their boat, deploy the salvaging "
+					+ "hook, then get your own boat at the Pandemonium.")
+				.howTo("After the quest, read the noticeboard at a port to take courier and bounty tasks: deliver "
+					+ "cargo to another port or catch what's asked, sailing your boat there.")
+				.howTo("Board your boat by its gangplank, click the helm to steer and click the sails to set your "
+					+ "speed. Hand in tasks at the destination port's noticeboard.")
 				.build(),
 			salvage("sail_salvage_small", "Small shipwrecks", 15, 18_000,
 				3110, 2948, 1589, 3323)
@@ -77,6 +85,16 @@ final class SailingGuide
 			.target(Target.object(null, "Shipwreck", "Salvaging hook", "Salvaging station"))
 			.instruction("Sail to the " + name.toLowerCase() + ", deploy your salvaging hook and sort the salvage "
 				+ "at your salvaging station")
+			.getThere("Board your boat at a port where you moored it (click the gangplank), then take the helm and "
+				+ "follow the path out to sea.")
+			.howTo("Steer the boat right up next to the highlighted " + name.toLowerCase().replaceAll("s$", "")
+				+ " (the salvaging spot icon on the map).")
+			.howTo("Click your salvaging hook (\"Deploy\"). Your character drags up salvage by themselves while "
+				+ "you stay next to the wreck.")
+			.howTo("When your inventory fills, click the salvaging station on your boat to sort the salvage into "
+				+ "loot. This also gives xp.")
+			.howTo("When the wreck runs dry, sail to the next one of the same kind and repeat. Crew can work the "
+				+ "hook for you once you have them.")
 			.notes("Fit a salvaging hook to your boat first. The path leads to the nearest wreck site of this type.")
 			.wikiPage("Salvaging");
 	}

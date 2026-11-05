@@ -94,6 +94,18 @@ final class ConstructionGuide
 					+ "(+2.5% Construction xp).")
 				.wikiPage("Mahogany_Homes")
 				.rateAt(20, 40_000).rateAt(50, 60_000).rateAt(70, 85_000)
+				.howTo("Talk to the highlighted Amy in the contracts office in Falador (follow the arrow) and ask "
+					+ "for a contract. Pick the tier that matches your planks: Beginner (planks), Novice (oak), "
+					+ "Adept (teak) or Expert (mahogany).")
+				.howTo("She tells you the client and the town (Varrock, Falador, East Ardougne or Hosidius). Take "
+					+ "a hammer, a saw, about 26 planks and a few steel bars, and go there. The house is marked "
+					+ "on your world map.")
+				.howTo("Inside the house, click each broken or missing piece of furniture and pick \"Repair\" or "
+					+ "\"Build\". Check every room, upstairs too.")
+				.howTo("When everything is done, talk to the client, then go back to Amy for your reward and the "
+					+ "next contract.")
+				.howTo("Spend the carpenter points Amy gives you on the Carpenter's outfit (more Construction "
+					+ "xp).")
 				.build()
 		);
 	}
@@ -156,7 +168,42 @@ final class ConstructionGuide
 			.target(Target.object("Remove", name.substring(0, name.length() - 1)))
 			.instruction("In build mode, build " + name.toLowerCase() + " in the " + space.toLowerCase()
 				+ ", then remove them and build again")
+			.getThere("No house yet? Buy one from any estate agent (Varrock, Falador, Ardougne...) for 1,000 coins. "
+				+ "Its portal is in Rimmington.")
+			.howTo("Take your hammer, saw and the " + plankName.toLowerCase() + " out of the bank (the guide does "
+				+ "this with you).")
+			.howTo("Click the house portal in Rimmington and choose \"Build mode\".")
+			.howTo("Go to your " + room(space) + ". If you don't have one yet, click a door to an empty spot in "
+				+ "build mode, pick \"Build\" and choose the " + room(space) + ".")
+			.howTo("Right-click the highlighted " + space.toLowerCase() + ", pick \"Build\", then click "
+				+ name.toLowerCase().replaceAll("s$", "") + " in the menu.")
+			.howTo("Right-click the new " + name.toLowerCase().replaceAll("s$", "") + ", pick \"Remove\" and "
+				+ "confirm with \"Yes\". Build it again, and repeat until your planks run out.")
+			.howTo("For more planks, leave by the portal and use noted planks on Phials next to it (\"Exchange "
+				+ "All\"), or have a demon butler fetch them from your bank.")
 			.wikiPage(WIKI);
+	}
+
+	/**
+	 * The house room that holds this furniture space.
+	 */
+	private static String room(String space)
+	{
+		switch (space)
+		{
+			case "Larder space":
+				return "kitchen";
+			case "Table space":
+				return "dining room";
+			case "Guild trophy space":
+				return "quest hall";
+			case "Seating space":
+				return "superior garden";
+			case "Door space":
+				return "dungeon room";
+			default:
+				return "parlour";
+		}
 	}
 
 	private ConstructionGuide()

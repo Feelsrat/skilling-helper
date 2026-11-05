@@ -116,6 +116,11 @@ final class CraftingGuide
 			.notes("Slow but very AFK, and bow strings sell well. The spinning wheel is upstairs in the house "
 				+ "next to the bank.")
 			.wikiPage(P2P_WIKI)
+			.howTo("The spinning wheel is upstairs in the house just north of Seers' Village bank: take out 28 "
+				+ "flax, walk over and climb the stairs (follow the arrow).")
+			.howTo("Click the highlighted spinning wheel and pick Bow string in the menu (press Space). Your "
+				+ "character spins the whole inventory.")
+			.howTo("Go downstairs, bank the bow strings, take out 28 more flax and repeat.")
 			.build());
 		m.add(Method.builder()
 			.id("craft_amethyst_arrowtips")
@@ -137,6 +142,8 @@ final class CraftingGuide
 			.notes("Each amethyst makes 15 arrowtips. Bolt tips (83), javelin heads (87) and dart tips (89) are "
 				+ "other options.")
 			.wikiPage(P2P_WIKI)
+			.howTo(HowTo.bankStanding("your chisel and 27 amethyst",
+				"the chisel, then the amethyst (in the menu pick arrowtips)", "amethyst arrowtips"))
 			.build());
 		return m;
 	}
@@ -168,6 +175,8 @@ final class CraftingGuide
 			.product(product)
 			.useItem(ItemID.NEEDLE).useItem(leather)
 			.instruction("Use the needle on the " + leatherName.toLowerCase() + " and make " + name.toLowerCase())
+			.howTo(HowTo.bankStanding("your needle, thread and the " + leatherName.toLowerCase(),
+				"the needle, then the " + leatherName.toLowerCase(), name.toLowerCase()))
 			.notes("Thread runs out every 5 items; keep a stack of it in your inventory.");
 	}
 
@@ -239,6 +248,10 @@ final class CraftingGuide
 			.target(FURNACE)
 			.useItem(ItemID.GOLD_BAR)
 			.instruction("Use a gold bar on the furnace and make " + name.toLowerCase())
+			.howTo(HowTo.atObject("The furnace is in the building a few steps east of Edgeville bank",
+				"your mould and the gold bars" + (gem == 0 ? "" : " and " + gemName.toLowerCase()),
+				"a gold bar, then the highlighted furnace",
+				"click the " + name.toLowerCase() + " picture with \"All\" picked at the top", name.toLowerCase()))
 			.wikiPage(F2P_WIKI);
 		if (gem != 0)
 		{
@@ -261,7 +274,9 @@ final class CraftingGuide
 			.input(ItemReq.consumed("Uncut " + name.toLowerCase(), 27, 1, uncut))
 			.product(cut)
 			.useItem(ItemID.CHISEL).useItem(uncut)
-			.instruction("Use the chisel on the uncut gems and press Space to cut them all");
+			.instruction("Use the chisel on the uncut gems and press Space to cut them all")
+			.howTo(HowTo.bankStanding("your chisel and 27 uncut " + name.toLowerCase(),
+				"the chisel, then an uncut gem", name.toLowerCase()));
 	}
 
 	private static Method.MethodBuilder glass(String id, String name, int level, double xp, int product)
@@ -272,7 +287,9 @@ final class CraftingGuide
 			.input(MOLTEN_GLASS)
 			.product(product)
 			.useItem(ItemID.GLASSBLOWINGPIPE).useItem(ItemID.MOLTEN_GLASS)
-			.instruction("Use the glassblowing pipe on the molten glass and choose " + name.toLowerCase());
+			.instruction("Use the glassblowing pipe on the molten glass and choose " + name.toLowerCase())
+			.howTo(HowTo.bankStanding("your glassblowing pipe and 27 molten glass",
+				"the pipe, then the molten glass (in the menu pick " + name.toLowerCase() + ")", name.toLowerCase()));
 	}
 
 	private static Method.MethodBuilder battlestaff(String id, String name, int level, double xp, int orb, int product)
@@ -284,6 +301,8 @@ final class CraftingGuide
 			.product(product)
 			.useItem(orb).useItem(ItemID.BATTLESTAFF)
 			.instruction("Use the orbs on the battlestaves")
+			.howTo(HowTo.bankStanding("14 battlestaves and 14 orbs", "an orb, then a battlestaff",
+				name.toLowerCase()))
 			.notes("Zaff in Varrock sells battlestaves cheaper than the GE if you've done the Varrock diary.");
 	}
 
@@ -296,7 +315,10 @@ final class CraftingGuide
 			.input(tanned(leatherName, 24, 3, leather))
 			.product(product)
 			.useItem(ItemID.NEEDLE).useItem(leather)
-			.instruction("Use the needle on the " + leatherName.toLowerCase() + " and make bodies (3 leather each)");
+			.instruction("Use the needle on the " + leatherName.toLowerCase() + " and make bodies (3 leather each)")
+			.howTo(HowTo.bankStanding("your needle, thread and the " + leatherName.toLowerCase(),
+				"the needle, then the " + leatherName.toLowerCase() + " (in the menu pick the body)",
+				name.toLowerCase()));
 	}
 
 	private CraftingGuide()

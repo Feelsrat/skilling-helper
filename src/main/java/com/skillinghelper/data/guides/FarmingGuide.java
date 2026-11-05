@@ -80,6 +80,16 @@ final class FarmingGuide
 				.instruction("Harvest the crop (or rake the weeds), then plant 3 seeds")
 				.notes("Pay the gardener Elstan to protect the crops (a sack of potatoes later). Move on to tree runs at 15.")
 				.wikiPage(WIKI)
+				.howTo("The allotments are in the farming patch area just south of Falador: follow the arrow. "
+					+ "Bring a rake, seed dibber, spade and potato seeds (the guide takes them out with you).")
+				.howTo("Click the highlighted allotment (\"Rake\") until the weeds are gone. Drop the weeds or "
+					+ "keep them for compost.")
+				.howTo("Use 3 potato seeds on the allotment (click the seeds, then the patch) to plant them. Do "
+					+ "the same on the other allotment.")
+				.howTo("Optional: use compost on the patch before planting so more crops grow. Right-click the "
+					+ "gardener Elstan and pay him to protect the crop.")
+				.howTo("Come back when the guide says they're grown and click the patch (\"Harvest\") with your "
+					+ "spade. Then plant again.")
 				.build(),
 			Method.builder()
 				.id("farm_tithe")
@@ -103,6 +113,19 @@ final class FarmingGuide
 					+ "as they grow, then harvest and deposit the fruit in the sack")
 				.notes("Costs nothing but watering cans and earns the Farmer's outfit (+2.5% Farming xp) and a seed box.")
 				.wikiPage("Tithe_Farm")
+				.getThere("The Tithe Farm is in Hosidius (Great Kourend); the Minigame Teleport goes straight "
+					+ "there. You need 34 Farming. Bring a seed dibber, a spade and as many watering cans as you "
+					+ "can (8-dose ones, or a gricoller's can).")
+				.howTo("Go in through the door and click the highlighted seed table: take the seed for your level "
+					+ "(golovanova from 34, bologano from 54, logavano from 74).")
+				.howTo("Click an empty tithe patch to plant a seed, then straight away use a watering can on it. "
+					+ "Plant a row of patches the same way.")
+				.howTo("Each plant grows in three stages, about a minute apart. Water every plant once at each "
+					+ "stage (the soil looks dry when it needs water), or it dies.")
+				.howTo("When a plant is fully grown, click it to harvest the fruit. Then plant a new seed in the "
+					+ "same patch.")
+				.howTo("Put the fruit in the highlighted sack for xp and points. Refill empty watering cans at "
+					+ "the water barrel. Spend points with the farmer for the Farmer's outfit and seed box.")
 				.build(),
 			treeRun("farm_tree_oak", "Oak tree runs", 15, 481, "Oak saplings", ItemID.PLANTPOT_OAK_SAPLING, 18_000, 200,
 				basket("Baskets of tomatoes (gardener payment)", ItemID.BASKET_TOMATO_5, "tomatoes", ItemID.TOMATO)),
@@ -141,6 +164,15 @@ final class FarmingGuide
 				.notes("A run takes a few minutes every 80 minutes and is one of the best money makers. Use ultracompost "
 					+ "and magic secateurs if you have them.")
 				.wikiPage("Herb_run")
+				.getThere("Bring a spade, rake, seed dibber, herb seeds and compost (the guide takes them out "
+					+ "with you). Teleports for each patch are listed as you go.")
+				.howTo("At each highlighted herb patch: if herbs are grown, click the patch (\"Pick\") until it's "
+					+ "empty. If it's weeds, click it (\"Rake\") until clear.")
+				.howTo("If the herbs look diseased (brown leaves), use plant cure on them; if they're dead, click "
+					+ "the patch to clear it with your spade.")
+				.howTo("Use a bucket of compost on the empty patch, then use a herb seed on it to plant it.")
+				.howTo("The guide then sends you to the next patch. When all are planted, it counts down about 80 "
+					+ "minutes until they're grown. Do something else meanwhile.")
 				.build()
 		);
 	}
@@ -183,6 +215,18 @@ final class FarmingGuide
 			.target(Target.npc("Pay", "Fayeth", "Treznor", "Heskel", "Alain", "Prissy Scilla"))
 			.instruction("Check the grown tree's health and pay the gardener 200 gp to remove it, then plant a "
 				+ "sapling and pay the gardener to protect it")
+			.getThere("Each patch has a gardener next to it. The first time, just plant; on later runs the old tree is "
+				+ "fully grown and needs clearing first.")
+			.howTo("Take your spade, the saplings, the gardener payments and some coins (the guide takes them out "
+				+ "with you).")
+			.howTo("At each highlighted tree patch: if a fully grown tree is there, click it (\"Check-health\") for "
+				+ "the big xp drop. Then talk to the gardener and pay 200 coins to have it chopped down.")
+			.howTo("If the patch is full of weeds instead (first run only), rake it clear with a rake.")
+			.howTo("Click a sapling, then the empty patch, to plant it.")
+			.howTo("Right-click the gardener and pick \"Pay\" to give the payment items: they protect the tree so it "
+				+ "can't die of disease.")
+			.howTo("The guide then sends you to the next patch. When all five are planted, it counts down until the "
+				+ "trees are grown.")
 			.notes("Trees take a few hours to grow; come back, check health and pay to have the tree removed. Pay "
 				+ "the gardener with the payment items to protect each tree. "
 				+ "The most xp per minute in the game, but saplings cost money.")

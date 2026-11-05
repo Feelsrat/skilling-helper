@@ -42,6 +42,16 @@ final class HerbloreGuide
 			.instruction("Talk to Kaqemeex at the Taverley stone circle to start Druidic Ritual")
 			.notes("The quest unlocks Herblore and takes you straight to level 3. Use Quest Helper for the steps.")
 			.wikiPage("Druidic_Ritual")
+			.howTo("Talk to the highlighted Kaqemeex at the stone circle north of Taverley to start the quest. He "
+				+ "sends you to Sanfew.")
+			.howTo("Go to the herb shop house in the middle of Taverley, climb the stairs and talk to Sanfew. He "
+				+ "asks for four kinds of enchanted meat.")
+			.howTo("Get raw beef, raw rat meat, raw bear meat and raw chicken (kill a cow, rat, bear and chicken, "
+				+ "or buy them on the GE).")
+			.howTo("Go into Taverley Dungeon (ladder south of the stone circle), past the gate with the suits of "
+				+ "armour, and use each raw meat on the Cauldron of Thunder.")
+			.howTo("Bring the four enchanted meats to Sanfew, then talk to Kaqemeex again to finish. Herblore is "
+				+ "now unlocked at level 3.")
 			.build());
 		m.add(potion("herb_attack", "Attack potions", 3, 25, ItemID.GUAMVIAL, "Guam potions (unf)", ItemID.GUAM_LEAF,
 			ItemID.EYE_OF_NEWT, "Eyes of newt", ItemID._3DOSE1ATTACK).tag(MethodTag.CHEAP).build());
@@ -100,6 +110,10 @@ final class HerbloreGuide
 			.instruction("Use the torstol on a super attack potion and press Space to make them all")
 			.notes("Each potion takes a torstol and one 4-dose super attack, strength and defence.")
 			.wikiPage("Money_making_guide/Making_super_combat_potions")
+			.howTo("Stand next to any banker or bank booth (the Grand Exchange has lots in the middle).")
+			.howTo("Take out 7 torstol, 7 super attack (4), 7 super strength (4) and 7 super defence (4) potions.")
+			.howTo("Click a torstol, then a super attack potion. Press Space to make them all.")
+			.howTo("Bank the super combats, take out more and repeat.")
 			.build());
 		m.add(clean("herb_clean_guam", "guam leaves", 3, 2.5, ItemID.UNIDENTIFIED_GUAM, ItemID.GUAM_LEAF).build());
 		m.add(clean("herb_clean_marrentill", "marrentill", 5, 3.8, ItemID.UNIDENTIFIED_MARENTILL, ItemID.MARENTILL)
@@ -172,6 +186,11 @@ final class HerbloreGuide
 			.product(clean)
 			.useItem(grimy)
 			.instruction("Click each grimy " + herbName + " to clean it, then bank and repeat")
+			.howTo("Stand next to any banker or bank booth (the Grand Exchange has lots in the middle).")
+			.howTo("Open the bank and take out 28 grimy " + herbName + " (the guide highlights them).")
+			.howTo("Close the bank and click each grimy herb in your inventory once (\"Clean\"). Click them one "
+				+ "after another as fast as you like.")
+			.howTo("When they're all clean, deposit them, take out 28 more and repeat.")
 			.notes("Slow xp but it pays: clean herbs sell for more than grimy ones. Profit depends on today's prices.")
 			.wikiPage("Money_making_guide/Cleaning_grimy_" + herbName.replace(' ', '_'));
 	}
@@ -201,6 +220,9 @@ final class HerbloreGuide
 			.useItem(secondary).useItem(unf)
 			.instruction("Use the " + secondaryName.toLowerCase() + " on the " + unfName.toLowerCase()
 				+ " and press Space to make all")
+			.howTo(HowTo.bankStanding("14 " + unfName.toLowerCase() + " and 14 " + secondaryName.toLowerCase(),
+				"the " + secondaryName.toLowerCase() + ", then an unfinished potion",
+				name.toLowerCase()))
 			.notes("If you have the herbs and vials, or they're cheaper than unfinished potions, the guide has you make "
 				+ "the unfinished potions first. An amulet of chemistry gives a chance of 4-dose potions.")
 			.wikiPage(WIKI);

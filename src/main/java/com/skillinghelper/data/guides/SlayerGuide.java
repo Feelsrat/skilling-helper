@@ -73,6 +73,16 @@ final class SlayerGuide
 			.location(where)
 			.target(Target.npc("Assignment", name, "Steve"))
 			.instruction("Get a task from " + name + ", then check it with your enchanted gem and go kill the monsters")
+			.howTo("Find " + name + " where the arrow points and buy an enchanted gem from them the first time "
+				+ "(\"Trade\", 1 gp).")
+			.howTo("Right-click " + name + " and pick \"Assignment\". They tell you which monster to kill and how "
+				+ "many.")
+			.howTo("The guide then shows where that monster lives, what to bring and what gear to wear. Some monsters "
+				+ "need a special item (like a rock hammer for gargoyles); the guide lists it.")
+			.howTo("Go there and attack only that monster. Each kill counts down your task; right-click your "
+				+ "enchanted gem and pick \"Check\" to see how many are left.")
+			.howTo("Eat when your hitpoints drop below half. When the task is done, go back to " + name
+				+ " for a new one.")
 			.notes("Use the best master your combat level allows: harder masters give much more xp per task.")
 			.wikiPage(WIKI);
 	}
