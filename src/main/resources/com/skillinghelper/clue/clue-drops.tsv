@@ -1,0 +1,667 @@
+beginner	Goblin (Drop table 1)	1/64	0.01562500	2	combat	0
+beginner	Goblin (Drop table 2)	1/80	0.01250000	2,5,13	combat	0
+beginner	Chicken	1/300	0.00333333	1	combat	0
+beginner	Moss giant (Regular)	1/45	0.02222222	42,48	combat	0
+beginner	Farmer (Free-to-play)	1/90	0.01111111	7	combat	0
+beginner	Farmer (Members)	1/90	0.01111111		combat	0
+beginner	Dark wizard (Low level)	1/50	0.02000000	7,11	combat	0
+beginner	Dark wizard (High level)	1/35	0.02857143	20,22,23	combat	0
+beginner	Minotaur	1/60	0.01666667	12,19,27	combat	0
+beginner	Black Knight Titan	1/50	0.02000000	120	combat	0
+beginner	Cow	1/128	0.00781250	2	combat	0
+beginner	Scorpion	1/100	0.01000000	1,14,37,38,59	combat	0
+beginner	Mugger	1/80	0.01250000	6	combat	0
+beginner	Dungeon rat (Full tail)	1/128	0.00781250	12	combat	0
+beginner	Man	1/90	0.01111111	2	combat	0
+beginner	Barbarian (Low level)	1/75	0.01333333	8,9,10	combat	0
+beginner	Barbarian (High level)	1/55	0.01818182	15,17	combat	0
+beginner	Hobgoblin (Unarmed)	1/70	0.01428571	28	combat	0
+beginner	Skeleton (Unarmed)	1/100	0.01000000	21,22	combat	0
+beginner	Skeleton (Armed)	1/100	0.01000000	25,45	combat	0
+beginner	Black bear	1/90	0.01111111	19	combat	0
+beginner	Grizzly bear	1/90	0.01111111	21,42	combat	0
+beginner	Giant spider	1/128	0.00781250	2,27,50	combat	0
+beginner	Ice giant (Regular)	1/40	0.02500000	53	combat	0
+beginner	Giant rat (Low level)	1/128	0.00781250		combat	0
+beginner	Deadly red spider	1/128	0.00781250	34	combat	0
+beginner	Treus Dayth	1/90	0.01111111	95	combat	0
+beginner	Al Kharid warrior	1/90	0.01111111	9	combat	0
+beginner	Narf	1/90	0.01111111	2	combat	0
+beginner	Woman	1/90	0.01111111	2	combat	0
+beginner	Young impling	1/25	0.04000000	22,32	hunter	0
+beginner	Wolf	Rare	0.00000000	11,14,25,64	combat	0
+beginner	Ghost	1/90	0.01111111	19,76,77	combat	0
+beginner	Dwarf	1/100	0.01000000	7,10,11,20	combat	0
+beginner	Cave goblin (monster)	1/64	0.01562500	3	combat	0
+beginner	King Scorpion	1/100	0.01000000	32	combat	0
+beginner	Gunthor the brave	1/30	0.03333333	29	combat	0
+beginner	Hill Giant	1/50	0.02000000	28	combat	0
+beginner	Thief	1/90	0.01111111	14,16,21	combat	0
+beginner	Ice spider	1/128	0.00781250	61	combat	0
+beginner	Frog	1/90	0.01111111	5	combat	0
+beginner	Black Guard (Level 25)	1/100	0.01000000	25	combat	0
+beginner	Spider	1/128	0.00781250	1,24	combat	0
+beginner	Baby impling	1/50	0.02000000	17,27	hunter	0
+beginner	Big frog (Level 10)	1/70	0.01428571	10	combat	0
+beginner	Death wing	Rare	0.00000000	83	combat	0
+beginner	Afflicted	1/90	0.01111111	30,32,34,37	combat	0
+beginner	Baby impling jar	1/50	0.02000000		reward	0
+beginner	Young impling jar	1/25	0.04000000		reward	0
+beginner	Poison spider	Rare	0.00000000	31,64	combat	0
+beginner	Giant frog (Level 13)	1/64	0.01562500	13	combat	0
+beginner	Skeletal miner	1/100	0.01000000	42	combat	0
+beginner	Cow calf	1/128	0.00781250	2	combat	0
+beginner	Shadow spider	1/128	0.00781250	52	combat	0
+beginner	Giant lobster (Ghosts Ahoy)	Rare	0.00000000	32	combat	0
+beginner	Poison Scorpion	1/100	0.01000000	20	combat	0
+beginner	Penda	1/90	0.01111111	5	combat	0
+beginner	Rooster	1/300	0.00333333	2,3	combat	0
+beginner	Scorpia's offspring (monster)	1/100	0.01000000	15	combat	1
+beginner	Drunken man	1/90	0.01111111	3	combat	0
+beginner	Goblin guard	1/64	0.01562500	42	combat	0
+beginner	Rogue (Level 15)	1/90	0.01111111	15	combat	1
+beginner	Scorpia's guardian	Unknown	0.00000000	47	combat	1
+beginner	Ocga	1/90	0.01111111	5	combat	0
+beginner	Cuffs	1/90	0.01111111	3	combat	0
+beginner	Jeff	1/90	0.01111111	2	combat	0
+beginner	Pit Scorpion	1/100	0.01000000	28	combat	0
+beginner	Ceolburg	1/90	0.01111111	4	combat	0
+beginner	Obor (Members)	1/50	0.02000000	106	combat	0
+beginner	Obor (Free-to-play)	1/50	0.02000000	106	combat	0
+beginner	Hygd	1/90	0.01111111	4	combat	0
+beginner	Grizzly bear cub	1/90	0.01111111	33,36	combat	0
+beginner	Bear Cub	1/90	0.01111111	15	combat	0
+beginner	Grave scorpion	1/100	0.01000000	12	combat	0
+beginner	Breoca	1/90	0.01111111	5	combat	0
+beginner	Anja	1/90	0.01111111	2	combat	0
+beginner	Hengel	1/90	0.01111111	2	combat	0
+beginner	Spider (Ungael)	Rare	0.00000000	35	combat	0
+beginner	Bryophyta (Members)	1/45	0.02222222	128	combat	0
+beginner	Bryophyta (Free-to-play)	1/45	0.02222222	128	combat	0
+beginner	Spider (Ape Atoll)	Rare	0.00000000	1	combat	0
+beginner	Jungle spider (Ape Atoll)	Rare	0.00000000	37	combat	0
+beginner	Body Golem	1/62	0.01612903	50	combat	0
+beginner	Chaos Golem	1/100	0.01000000	70	combat	0
+beginner	Flawed Golem	Rare	0.00000000	13	combat	0
+beginner	Mind Golem	1/50	0.02000000	30	combat	0
+beginner	Goblin (Goblin Village)	1/80	0.01250000	5	combat	0
+beginner	Goblin (Vault of War)	1/80	0.01250000	5,11,13,16,25	combat	0
+beginner	Goblin (God Wars Dungeon)	1/80	0.01250000	12,13,15,17	combat	0
+beginner	Ghost (Grave of Scorpius)	Unknown	0.00000000	24	combat	0
+beginner	Boar	1/128	0.00781250	5,7	combat	0
+beginner	Barbarian (Barbarian Camp) (Low level)	1/75	0.01333333	9,10	combat	0
+beginner	Barbarian (Barbarian Camp) (High level)	1/55	0.01818182	15	combat	0
+beginner	Enraged Boar	1/128	0.00781250	12	combat	0
+beginner	Skeleton (Catacombs of Kourend)	1/100	0.01000000	22	combat	0
+beginner	Cyclops (Ardougne Zoo)	1/50	0.02000000	56	combat	0
+beginner	Rusty	1/90	0.01111111	2	combat	0
+beginner	Buffalo	Unknown	0.00000000	9	combat	0
+beginner	Thief (Varlamore)	1/90	0.01111111	16	combat	0
+beginner	Porcupine	Unknown	0.00000000	4	combat	0
+beginner	Small salvage	1/300	0.00333333	15	sailing	0
+beginner	Chest (Obor's lair)	Always	0.00000000		reward	0
+beginner	Chest (Bryophyta's lair) (Members)	Always	0.00000000		reward	0
+beginner	Chest (Bryophyta's lair) (Free-to-play)	Always	0.00000000		reward	0
+beginner	Brutus	1/15	0.06666667	30	combat	0
+easy	Thug	1/128	0.00781250	10	combat	1
+easy	Banshee	1/128	0.00781250	23	combat	0
+easy	Goblin (Drop table 1)	1/128	0.00781250	2	combat	0
+easy	Goblin (Drop table 2)	1/128	0.00781250	2,5,13	combat	0
+easy	Lev	1/128	0.00781250	24	combat	0
+easy	H.A.M. Member	1/50	0.02000000	15	thieving	0
+easy	Rock Crab	1/128	0.00781250	13	combat	0
+easy	Farmer (Members)	1/128	0.00781250		combat	0
+easy	Minotaur	1/101	0.00990099	12,19,27	combat	0
+easy	Cave bug (Level 96)	1/128	0.00781250	96	combat	0
+easy	Mugger	1/128	0.00781250	6	combat	0
+easy	Icefiend	1/128	0.00781250	13,18	combat	0
+easy	Mystery box (Members)	10/150	0.06666667		reward	0
+easy	Mystery box (Entrana)	10/150	0.06666667		reward	0
+easy	Man	1/128	0.00781250	2	combat	0
+easy	Lanzig	1/128	0.00781250	48	combat	0
+easy	Barbarian (Low level)	1/128	0.00781250	8,9,10	combat	0
+easy	Barbarian (High level)	1/128	0.00781250	15,17	combat	0
+easy	Cave slime	1/128	0.00781250	23	combat	0
+easy	Werewolf	1/128	0.00781250	88,93	combat	0
+easy	Al Kharid warrior	1/128	0.00781250	9	combat	0
+easy	Narf	1/128	0.00781250	2	combat	0
+easy	Woman	1/128	0.00781250	2	combat	0
+easy	Young impling	1/50	0.02000000	22,32	hunter	0
+easy	Cave goblin (monster)	1/128	0.00781250	3	combat	0
+easy	Gourmet impling	1/25	0.04000000	28,38	hunter	0
+easy	H.A.M. Guard	1/55	0.01818182	12,18,22	combat	0
+easy	Molanisk	1/128	0.00781250	51	combat	0
+easy	Managing Miscellania (Fishing)	Common	0.00000000		reward	0
+easy	Managing Miscellania (Fishing (cooked))	Common	0.00000000		reward	0
+easy	Gunthor the brave	1/128	0.00781250	29	combat	0
+easy	Thief	1/128	0.00781250	14,16,21	combat	0
+easy	Baby impling	1/100	0.01000000	17,27	hunter	0
+easy	Gourmet impling jar	1/25	0.04000000		reward	0
+easy	Afflicted	1/128	0.00781250	30,32,34,37	combat	0
+easy	Baby impling jar	1/100	0.01000000		reward	0
+easy	Young impling jar	1/50	0.02000000		reward	0
+easy	Dagannoth spawn	1/128	0.00781250	42	combat	0
+easy	Ork	1/128	0.00781250	107	combat	0
+easy	Freidir	1/128	0.00781250	48	combat	0
+easy	Borrokar	1/128	0.00781250	48	combat	0
+easy	Lensa	1/128	0.00781250	48	combat	0
+easy	Penda	1/128	0.00781250	5	combat	0
+easy	Chest (Dorgesh-Kaan Average) (Zanik's chests)	1/23	0.04347826	52	thieving	0
+easy	Yuri	1/128	0.00781250	24	combat	0
+easy	Ogre Coffin	1/100	0.01000000	20	thieving	0
+easy	Drunken man	1/128	0.00781250	3	combat	0
+easy	Goblin guard	1/128	0.00781250	42	combat	0
+easy	Rogue (Level 15)	1/128	0.00781250	15	combat	1
+easy	Ocga	1/128	0.00781250	5	combat	0
+easy	Cuffs	1/128	0.00781250	3	combat	0
+easy	Sand Crab	1/128	0.00781250	15	combat	0
+easy	Jeff	1/128	0.00781250	2	combat	0
+easy	Joseph	1/128	0.00781250	24	combat	0
+easy	Jennella	1/128	0.00781250	48	combat	0
+easy	Ceolburg	1/128	0.00781250	4	combat	0
+easy	Screaming banshee	10/128	0.07812500	70	combat	0
+easy	Hygd	1/128	0.00781250	4	combat	0
+easy	Alexis	1/128	0.00781250	24	combat	0
+easy	Boris	1/128	0.00781250	24	combat	0
+easy	Eduard	1/128	0.00781250	24	combat	0
+easy	Galina	1/128	0.00781250	24	combat	0
+easy	Imre	1/128	0.00781250	24	combat	0
+easy	Georgy	1/128	0.00781250	24	combat	0
+easy	Irina	1/128	0.00781250	24	combat	0
+easy	Ksenia	1/128	0.00781250	24	combat	0
+easy	Liliya	1/128	0.00781250	24	combat	0
+easy	Milla	1/128	0.00781250	24	combat	0
+easy	Nikita	1/128	0.00781250	24	combat	0
+easy	Nikolai	1/128	0.00781250	24	combat	0
+easy	Sofiya	1/128	0.00781250	24	combat	0
+easy	Svetlana	1/128	0.00781250	24	combat	0
+easy	Vera	1/128	0.00781250	24	combat	0
+easy	Yadviga	1/128	0.00781250	24	combat	0
+easy	Zoja	1/128	0.00781250	24	combat	0
+easy	Breoca	1/128	0.00781250	5	combat	0
+easy	Lobstrosity	1/128	0.00781250	68	combat	0
+easy	Ammonite Crab	1/128	0.00781250	25	combat	0
+easy	Anja	1/128	0.00781250	2	combat	0
+easy	Hengel	1/128	0.00781250	2	combat	0
+easy	Swamp Crab	1/96	0.01041667	55	combat	0
+easy	Guard (H.A.M. Storerooms)	6/500	0.01200000	20	thieving	0
+easy	Skeleton (Tarn's Lair) (Low level)	1/128	0.00781250	42,59	combat	0
+easy	Coffin (Hallowed Sepulchre)	1/50	0.02000000	66	thieving	0
+easy	Sourhog	1/128	0.00781250	37	combat	0
+easy	Casket (Reward pool)	5/100	0.05000000		reward	0
+easy	Vardorvis	1/160	0.00625000	572,784,1136	combat	0
+easy	Goblin (Goblin Village)	1/128	0.00781250	5	combat	0
+easy	Goblin (Vault of War)	1/128	0.00781250	5,11,13,16,25	combat	0
+easy	Goblin (God Wars Dungeon)	1/128	0.00781250	12,13,15,17	combat	0
+easy	Lynx	1/128	0.00781250	21,24	combat	0
+easy	Barbarian (Barbarian Camp) (Low level)	1/128	0.00781250	9,10	combat	0
+easy	Barbarian (Barbarian Camp) (High level)	1/128	0.00781250	15	combat	0
+easy	Bronze Chest (red)	2/98.56	0.02029221		reward	0
+easy	Bronze Chest (brown)	2/98.59	0.02028603		reward	0
+easy	Bronze Chest (crimson)	2/98.62	0.02027986		reward	0
+easy	Bronze Chest (black)	2/98.64	0.02027575		reward	0
+easy	Bronze Chest (purple)	2/98.67	0.02026959		reward	0
+easy	Duke Sucellus	1/160	0.00625000	538,758,1099	combat	0
+easy	The Whisperer	1/160	0.00625000	587,791,1146	combat	0
+easy	The Leviathan	1/160	0.00625000	593,798,1157	combat	0
+easy	Rusty	1/128	0.00781250	2	combat	0
+easy	Wealthy citizen	1/85	0.01176471	50	thieving	0
+easy	Jaguar cub	Rare	0.00000000	31	combat	0
+easy	Buffalo	Unknown	0.00000000	9	combat	0
+easy	Thief (Varlamore)	1/128	0.00781250	16	combat	0
+easy	Frost Crab	1/128	0.00781250	15	combat	0
+easy	Fishy salvage	1/300	0.00333333	26	sailing	0
+easy	Clue turtle (Levels 5-29)	Always	0.00000000	5	sailing	0
+easy	Clue turtle (Levels 30-49)	8/20	0.40000000	30	sailing	0
+easy	Clue turtle (Levels 50-69)	9/20	0.45000000	50	sailing	0
+easy	Clue turtle (Levels 70+)	9/20	0.45000000	70	sailing	0
+easy	Hermit crab	Unknown	0.00000000	19	combat	0
+easy	Dolphin	1/55	0.01818182	22	combat	0
+easy	Tern	1/125	0.00800000	20	combat	0
+easy	Eagle ray	1/75	0.01333333	44	combat	0
+easy	Brutus	1/40	0.02500000	30	combat	0
+medium	Brine rat	1/128	0.00781250	70	combat	0
+medium	Catablepon	1/101	0.00990099	49,64,68	combat	0
+medium	Cockatrice	1/128	0.00781250	37	combat	0
+medium	Feral Vampyre	1/128	0.00781250	61,64,70,72,77,100,130	combat	0
+medium	Ice warrior	1/128	0.00781250	57	combat	0
+medium	Mystery box (Members)	6/150	0.04000000		reward	0
+medium	Mystery box (Entrana)	6/150	0.04000000		reward	0
+medium	Guard	1/128	0.00781250	19,20,21,22	combat	0
+medium	Pyrefiend	1/128	0.00781250	43,48	combat	0
+medium	Harpie Bug Swarm	1/128	0.00781250	46	combat	0
+medium	Werewolf	1/512	0.00195312	88,93	combat	0
+medium	Dagannoth	1/128	0.00781250	74,92	combat	0
+medium	Tribesman	1/138	0.00724638	32	combat	0
+medium	Jungle horror	1/128	0.00781250	70	combat	0
+medium	Jogre	1/129	0.00775194	53,58	combat	0
+medium	Dark warrior (Great Kourend)	1/96	0.01041667	37,51,62	combat	0
+medium	Possessed pickaxe (Catacombs of Kourend)	1/256	0.00390625	50	combat	0
+medium	Mummy (Ancient Pyramid)	1/513	0.00194932	103	combat	0
+medium	Magic axe	1/256	0.00390625	42	combat	0
+medium	Earth impling	1/100	0.01000000	36,46	hunter	0
+medium	Essence impling	1/50	0.02000000	42,52	hunter	0
+medium	Abyssal leech	1/256	0.00390625	41	combat	0
+medium	Guard (Burthorpe)	1/128	0.00781250	37	combat	0
+medium	Donny the lad	1/128	0.00781250	34	combat	1
+medium	Speedy Keith	1/128	0.00781250	34	combat	1
+medium	Black Heather	1/128	0.00781250	34	combat	1
+medium	Skeleton brute	1/128	0.00781250	132	combat	0
+medium	Vampyre Juvinate	2/256	0.00781250		reward	0
+medium	Eclectic impling jar	1/25	0.04000000		reward	0
+medium	Black Guard (Level 48)	1/128	0.00781250	48	combat	0
+medium	Abyssal guardian	1/256	0.00390625	59	combat	0
+medium	Sea Snake Hatchling	1/128	0.00781250	62	combat	0
+medium	Sea Snake Young	1/128	0.00781250	90	combat	0
+medium	Gnome	1/150	0.00666667	75	thieving	0
+medium	Abyssal walker	1/256	0.00390625	81	combat	0
+medium	Giant Rock Crab	1/128	0.00781250	137	combat	0
+medium	Wallasalki	1/128	0.00781250	98	combat	0
+medium	Warrior (Rellekka)	1/128	0.00781250	48	combat	0
+medium	Eclectic impling	1/25	0.04000000	50,60	hunter	0
+medium	Essence impling jar	1/50	0.02000000		reward	0
+medium	Paladin	1/128	0.00781250	62	combat	0
+medium	Black Guard Berserker	1/128	0.00781250	66	combat	0
+medium	Market Guard	1/128	0.00781250	48	combat	0
+medium	Rock lobster	1/128	0.00781250	127	combat	0
+medium	Skeletal miner	1/128	0.00781250	42	combat	0
+medium	Giant Sea Snake	1/128	0.00781250	149	combat	0
+medium	Earth impling jar	1/100	0.01000000		reward	0
+medium	Mammoth	1/128	0.00781250	80	combat	1
+medium	Dagannoth (Waterbirth Island) (Level 88)	1/128	0.00781250	88	combat	0
+medium	Dagannoth (Waterbirth Island) (Level 90)	1/128	0.00781250	90	combat	0
+medium	Sir Carl	1/128	0.00781250	62	combat	0
+medium	Sir Harry	1/128	0.00781250	62	combat	0
+medium	Sir Jerro	1/128	0.00781250	62	combat	0
+medium	Monkey (Monkey Madness I)	Once	0.00000000		reward	0
+medium	Gnome child	1/150	0.00666667	75	thieving	0
+medium	Angry barbarian spirit	1/128	0.00781250	166	combat	0
+medium	Berserk barbarian spirit	1/128	0.00781250	166	combat	0
+medium	Enraged barbarian spirit	1/128	0.00781250	166	combat	0
+medium	Skeleton heavy	1/128	0.00781250	130	combat	0
+medium	Skeleton hero	1/128	0.00781250	146	combat	0
+medium	Skeleton thug	1/128	0.00781250	130	combat	0
+medium	Skeleton warlord	1/128	0.00781250	132	combat	0
+medium	Liam	2/256	0.00781250		reward	0
+medium	Miala	2/256	0.00781250		reward	0
+medium	Verak	2/256	0.00781250		reward	0
+medium	Giant skeleton (Tarn's Lair)	1/128	0.00781250	100	combat	0
+medium	Giant skeleton (Shadow Dungeon)	1/128	0.00781250	80	combat	0
+medium	Guard (Shayzien)	1/128	0.00781250	21	combat	0
+medium	Head Guard	1/128	0.00781250	84	combat	0
+medium	King Sand Crab	1/128	0.00781250	107	combat	0
+medium	Benjamin	2/256	0.00781250		reward	0
+medium	Flaming pyrelord	10/128	0.07812500	97	combat	0
+medium	Cockathrice	10/128	0.07812500	89	combat	0
+medium	Soldier (Shayzien)	1/128	0.00781250	21	combat	0
+medium	Ancient Zygomite	1/128	0.00781250	109	combat	0
+medium	Skeleton (mage)	1/128	0.00781250	94	combat	0
+medium	Gnome woman	1/150	0.00666667	75	thieving	0
+medium	Former Vampyre	2/256	0.00781250		reward	0
+medium	Skeleton (Tarn's Lair) (Medium level)	1/128	0.00781250	40,63,72,77	combat	0
+medium	Skeleton (Tarn's Lair) (Level 81)	1/128	0.00781250	81	combat	0
+medium	Sulphur Lizard	1/128	0.00781250	50	combat	0
+medium	Stone chest	3/300	0.01000000	64	thieving	0
+medium	Sergeant (Shayzien)	1/128	0.00781250	84	combat	0
+medium	Guard (Hosidius)	1/128	0.00781250	19,22	combat	0
+medium	Pyrelord	1/104	0.00961538	60	combat	0
+medium	Infernal pyrelord	10/104	0.09615385	134	combat	0
+medium	Coffin (Hallowed Sepulchre)	1/50	0.02000000	66	thieving	0
+medium	Chest (Isle of Souls Dungeon)	2/200	0.01000000	28	thieving	0
+medium	Casket (Reward pool)	3/100	0.03000000		reward	0
+medium	Vardorvis	1/160	0.00625000	572,784,1136	combat	0
+medium	Necromancer (Great Kourend)	1/128	0.00781250	68	combat	0
+medium	Lynx Tamer	1/128	0.00781250	21	combat	0
+medium	Bandit (Shayzien)	1/128	0.00781250	22	combat	0
+medium	Steel Chest (red)	3/134.35	0.02232974		reward	0
+medium	Steel Chest (brown)	3/134.39	0.02232309		reward	0
+medium	Steel Chest (crimson)	3/134.43	0.02231645		reward	0
+medium	Steel Chest (black)	3/134.46	0.02231147		reward	0
+medium	Steel Chest (purple)	3/134.5	0.02230483		reward	0
+medium	Black Chest (red)	4/140.98	0.02837282		reward	0
+medium	Black Chest (brown)	4/141.02	0.02836477		reward	0
+medium	Black Chest (crimson)	4/141.07	0.02835472		reward	0
+medium	Black Chest (black)	4/141.11	0.02834668		reward	0
+medium	Black Chest (purple)	4/141.15	0.02833865		reward	0
+medium	Tribeswoman	1/138	0.00724638	32	combat	0
+medium	Guard (Port Sarim jail)	1/128	0.00781250	21	combat	0
+medium	Guard (Doric's hut)	1/128	0.00781250	19	combat	0
+medium	Duke Sucellus	1/160	0.00625000	538,758,1099	combat	0
+medium	The Whisperer	1/160	0.00625000	587,791,1146	combat	0
+medium	The Leviathan	1/160	0.00625000	593,798,1157	combat	0
+medium	Scurrius (MVP)	1/25	0.04000000	200,250	combat	0
+medium	Rusty chest	1/200	0.00500000	33	thieving	0
+medium	Grimy Lizard	Rare	0.00000000	50	combat	0
+medium	Moonlight Cockatrice	Rare	0.00000000	49	combat	0
+medium	Jaguar	Rare	0.00000000	67	combat	0
+medium	Bandit (Varlamore)	1/128	0.00781250	23	combat	0
+medium	Black jaguar	Rare	0.00000000	67	combat	0
+medium	Knight of Varlamore	1/128	0.00781250	46	combat	0
+medium	White jaguar	Rare	0.00000000	67	combat	0
+medium	Guard (Varlamore)	1/128	0.00781250	21	combat	0
+medium	Agility dispenser (All Laps)	1/40	0.02500000		combat	1
+medium	Chest (Aldarin Villas)	1/90	0.01111111	36	thieving	0
+medium	Emissary Chosen	1/128	0.00781250	76	combat	0
+medium	Emissary Acolyte	1/128	0.00781250	34	combat	0
+medium	Emissary Ascended	1/128	0.00781250	117	combat	0
+medium	Guard (Aldarin)	1/128	0.00781250	21	combat	0
+medium	Pygmy kraken	Rare	0.00000000	93	combat	0
+medium	Barracuda salvage	1/300	0.00333333	35	sailing	0
+medium	Hammerhead shark	1/100	0.01000000	90	combat	0
+medium	Clue turtle (Levels 30-49)	12/20	0.60000000	30	sailing	0
+medium	Clue turtle (Levels 50-69)	6/20	0.30000000	50	sailing	0
+medium	Clue turtle (Levels 70+)	6/20	0.30000000	70	sailing	0
+medium	Guard (Auburnvale)	1/128	0.00781250	21	combat	0
+medium	Guard (Tlati Rainforest)	1/128	0.00781250	21	combat	0
+medium	Osprey	1/200	0.00500000	63	combat	0
+medium	Pirate (Thieving)	Very rare	0.00000000	60	thieving	0
+medium	Tarnished chest	1/150	0.00666667	54	thieving	0
+medium	Bull shark	1/100	0.01000000	65	combat	0
+medium	Bottle of spinning comp-kvass	Once	0.00000000		reward	0
+medium	Butterfly ray	1/85	0.01176471	68	combat	0
+medium	Guard (Port Roberts)	1/128	0.00781250	21	combat	0
+medium	Mad Angel	1/25	0.04000000	270,588	combat	0
+hard	Green dragon (Regular)	1/128	0.00781250	79	combat	0
+hard	Green dragon (Wilderness Slayer Cave)	1/128	0.00781250	88	combat	1
+hard	Jelly (Regular)	1/128	0.00781250	78	combat	0
+hard	Jelly (Wilderness Slayer Cave)	1/64	0.01562500	78	combat	1
+hard	Cyclops (Warriors' Guild Rooftop)	1/512	0.00195312	56,76	combat	0
+hard	Cyclops (Warriors' Guild Basement)	1/256	0.00390625	106	combat	0
+hard	Mystery box (Members)	4/150	0.02666667		reward	0
+hard	Mystery box (Entrana)	4/150	0.02666667		reward	0
+hard	Abyssal demon (Standard)	1/128	0.00781250	124	combat	0
+hard	Abyssal demon (Wilderness Slayer Cave)	1/128	0.00781250	124	combat	1
+hard	Aberrant spectre	1/128	0.00781250	96	combat	0
+hard	Greater demon (Regular)	1/128	0.00781250	92,100,101,113	combat	0
+hard	Greater demon (Wilderness Slayer Cave)	1/128	0.00781250	104	combat	1
+hard	Hellhound (Regular)	1/64	0.01562500	122	combat	0
+hard	Hellhound (God Wars Dungeon)	1/64	0.01562500	127	combat	0
+hard	Hellhound (Wilderness Slayer Cave)	1/64	0.01562500	136	combat	1
+hard	Ankou (Regular)	1/512	0.00195312	75,82,86,95	combat	0
+hard	Ankou (Wilderness Slayer Cave)	1/256	0.00390625	98	combat	1
+hard	Nechryael	1/128	0.00781250	115	combat	0
+hard	Black demon (Regular)	1/128	0.00781250	172,178,184	combat	0
+hard	Black demon (Wilderness Slayer Cave)	1/128	0.00781250	188	combat	1
+hard	Blue dragon	1/128	0.00781250	111	combat	0
+hard	Bloodveld	1/256	0.00390625	76,81	combat	0
+hard	Dark beast	1/128	0.00781250	182	combat	0
+hard	Kurask	1/128	0.00781250	106	combat	0
+hard	Turoth	1/128	0.00781250	83,85,87,89	combat	0
+hard	Bronze dragon (Standard)	1/128	0.00781250	131,143	combat	0
+hard	Gargoyle	1/128	0.00781250	111	combat	0
+hard	Steel dragon (Standard)	1/64	0.01562500	246,274	combat	0
+hard	Cave horror	1/128	0.00781250	80	combat	0
+hard	Elf Warrior	1/128	0.00781250	108	combat	0
+hard	Dagannoth Rex	1/42	0.02380952	303	combat	0
+hard	Black dragon (Regular)	1/128	0.00781250	227	combat	0
+hard	Black dragon (Wilderness Slayer Cave)	1/128	0.00781250	247	combat	1
+hard	Dark warrior (Level 145)	1/128	0.00781250	145	combat	1
+hard	Red dragon	1/128	0.00781250	152	combat	0
+hard	Waterfiend	1/128	0.00781250	115	combat	0
+hard	Iron dragon (Standard)	1/128	0.00781250	189,215	combat	0
+hard	Terror dog (Level 100)	1/128	0.00781250	100	combat	0
+hard	Terror dog (Level 110)	1/128	0.00781250	110	combat	0
+hard	Suqah	1/129	0.00775194	111	combat	0
+hard	Vyrewatch	1/128	0.00781250	87,105,110,120,125	combat	0
+hard	Dagannoth Supreme	1/42	0.02380952	303	combat	0
+hard	Dagannoth Prime	1/42	0.02380952	303	combat	0
+hard	Magpie impling	1/50	0.02000000	65,75	hunter	0
+hard	Bandit (Level 130)	1/128	0.00781250	130	combat	1
+hard	Brutal green dragon	1/128	0.00781250	227	combat	0
+hard	Ninja impling	1/25	0.04000000	74,84	hunter	0
+hard	Gorak (Gems)	1/128	0.00781250	145,149	combat	0
+hard	Gorak (Full)	1/128	0.00781250	145,149	combat	0
+hard	Aviansie	1/128	0.00781250	69,71,73,79,83,84,89,92,94,97,131,137,148	combat	0
+hard	Balfrug Kreeyath	1/128	0.00781250	151	combat	0
+hard	Starlight	1/128	0.00781250	149	combat	0
+hard	Bree	1/128	0.00781250	146	combat	0
+hard	Growler	1/128	0.00781250	139	combat	0
+hard	Spiritual mage	1/128	0.00781250	120,121,123,182	combat	0
+hard	Spiritual mage (Zaros)	1/96	0.01041667	182	combat	0
+hard	Spiritual ranger	1/128	0.00781250	115,118,122,127,158	combat	0
+hard	Spiritual ranger (Zaros)	1/128	0.00781250	158	combat	0
+hard	Spiritual warrior	1/128	0.00781250	115,123,125,134,158	combat	0
+hard	Spiritual warrior (Zaros)	1/128	0.00781250	158	combat	0
+hard	Sergeant Strongstack	1/128	0.00781250	141	combat	0
+hard	Nature impling	1/100	0.01000000	58,68	hunter	0
+hard	Knight of Saradomin	1/128	0.00781250	101,103	combat	0
+hard	Mourner (Level 108)	1/128	0.00781250	108	combat	0
+hard	Paladin	1/500	0.00200000	70	thieving	0
+hard	Sergeant Steelwill	1/128	0.00781250	142	combat	0
+hard	Sergeant Grimspike	1/128	0.00781250	142	combat	0
+hard	Flight Kilisa	1/128	0.00781250	159	combat	0
+hard	Wingman Skree	1/128	0.00781250	143	combat	0
+hard	Flockleader Geerin	1/128	0.00781250	149	combat	0
+hard	Zakl'n Gritch	1/128	0.00781250	142	combat	0
+hard	Tstanon Karlak	1/128	0.00781250	145	combat	0
+hard	Magpie impling jar	1/50	0.02000000		reward	0
+hard	Cave kraken	1/100	0.01000000	127	combat	0
+hard	Nature impling jar	1/100	0.01000000		reward	0
+hard	Elder Chaos druid	1/128	0.00781250	129	combat	1
+hard	Scorpia	1/100	0.01000000	225	combat	1
+hard	Crazy archaeologist	1/128	0.00781250	204	combat	1
+hard	Chaos Fanatic	1/128	0.00781250	202	combat	1
+hard	Smoke devil	1/128	0.00781250	160	combat	0
+hard	Thermonuclear smoke devil	1/96	0.01041667	301	combat	0
+hard	Saradomin priest	1/128	0.00781250	113	combat	0
+hard	Ork	1/128	0.00781250	107	combat	0
+hard	Ninja impling jar	1/25	0.04000000		reward	0
+hard	Frost dragon	1/128	0.00781250	202	combat	0
+hard	Chest (Rogues' Castle) (Medium Wilderness Diary)	1/99	0.01010101	84	thieving	1
+hard	Chest (Rogues' Castle) (Hard Wilderness Diary)	1/99	0.01010101	84	thieving	1
+hard	Experiment No.2	1/128	0.00781250	109	combat	0
+hard	Gangster	1/65	0.01538462	45,50	combat	0
+hard	Gang boss	1/65	0.01538462	76,83	combat	0
+hard	Lizardman shaman	1/200	0.00500000	150	combat	0
+hard	Tortured gorilla	1/300	0.00333333	141,142	combat	0
+hard	Demonic gorilla	1/100	0.01000000	275	combat	0
+hard	Brutal blue dragon	1/128	0.00781250	271	combat	0
+hard	Brutal black dragon	1/128	0.00781250	318	combat	0
+hard	Brutal red dragon	1/128	0.00781250	289	combat	0
+hard	Deviant spectre	1/128	0.00781250	169	combat	0
+hard	Warped Jelly	1/64	0.01562500	112	combat	0
+hard	Twisted Banshee	1/128	0.00781250	89	combat	0
+hard	Greater Nechryael (Regular)	1/128	0.00781250	200	combat	0
+hard	Greater Nechryael (Wilderness Slayer Cave)	1/128	0.00781250	200	combat	1
+hard	Mutated Bloodveld	1/128	0.00781250	123	combat	0
+hard	Skotizo	Always	0.00000000	321	combat	0
+hard	Greater abyssal demon	10/128	0.07812500	342	combat	0
+hard	Abhorrent spectre	10/128	0.07812500	253	combat	0
+hard	Night beast	10/128	0.07812500	374	combat	0
+hard	King kurask	10/128	0.07812500	295	combat	0
+hard	Marble gargoyle	10/128	0.07812500	349	combat	0
+hard	Nechryarch (Normal)	10/128	0.07812500	300	combat	0
+hard	Nechryarch (Greater)	1/128	0.00781250	300	combat	0
+hard	Vitreous Jelly	10/128	0.07812500	206	combat	0
+hard	Cave abomination	10/128	0.07812500	206	combat	0
+hard	Repugnant spectre	10/128	0.07812500	335	combat	0
+hard	Insatiable mutated Bloodveld	10/128	0.07812500	278	combat	0
+hard	Insatiable Bloodveld	10/256	0.03906250	202	combat	0
+hard	Nuclear smoke devil	10/128	0.07812500	280	combat	0
+hard	Armoured zombie (Zemouregal's Base)	1/128	0.00781250	82	combat	0
+hard	Aquanite	1/125	0.00800000	145	combat	0
+hard	Spitting Wyvern	1/118	0.00847458	139	combat	0
+hard	Taloned Wyvern	1/118	0.00847458	147	combat	0
+hard	Long-tailed Wyvern	1/118	0.00847458	152	combat	0
+hard	Vitreous Warped Jelly	10/64	0.15625000	241	combat	0
+hard	Screaming twisted banshee	10/128	0.07812500	144	combat	0
+hard	Wyrm	1/256	0.00390625	97	combat	0
+hard	Drake	1/128	0.00781250	192	combat	0
+hard	Hydra	1/128	0.00781250	194	combat	0
+hard	Alchemical Hydra	1/100	0.01000000	426	combat	0
+hard	Skeleton (Shayzien Crypts)	1/100	0.01000000	132	combat	0
+hard	Zombie (Shayzien Crypts)	1/100	0.01000000	132	combat	0
+hard	Sarachnis	1/40	0.02500000	318	combat	0
+hard	Temple Spider	1/200	0.00500000	75	combat	0
+hard	Undead Druid	1/100	0.01000000	105	combat	0
+hard	Guard (Prifddinas)	1/128	0.00781250	108	combat	0
+hard	Iorwerth Warrior (Iorwerth Camp)	1/128	0.00781250	108	combat	0
+hard	Iorwerth Warrior (Iorwerth Dungeon)	1/128	0.00781250	108	combat	0
+hard	Iorwerth Archer	1/128	0.00781250	90	combat	0
+hard	Elf Archer	1/128	0.00781250	90	combat	0
+hard	Basilisk Knight	1/192	0.00520833	204	combat	0
+hard	Basilisk Sentinel	10/192	0.05208333	358	combat	0
+hard	Vyrewatch Sentinel	1/100	0.01000000	151	combat	0
+hard	Coffin (Hallowed Sepulchre)	1/50	0.02000000	66	thieving	0
+hard	Shadow Wyrm	10/256	0.03906250	259	combat	0
+hard	Spiked Turoth	10/128	0.07812500	244	combat	0
+hard	Guardian Drake	10/128	0.07812500	376	combat	0
+hard	Colossal Hydra	10/128	0.07812500	309	combat	0
+hard	Casket (Reward pool)	2/100	0.02000000		reward	0
+hard	Vardorvis	1/160	0.00625000	572,784,1136	combat	0
+hard	Albatross	1/120	0.00833333	110	combat	0
+hard	Araxyte (Level 96)	1/128	0.00781250	96	combat	0
+hard	Araxyte (Level 146)	1/86	0.01162791	146	combat	0
+hard	Silver Chest (red)	2/152.39	0.01312422		reward	0
+hard	Silver Chest (brown)	2/152.46	0.01311819		reward	0
+hard	Silver Chest (crimson)	2/152.53	0.01311217		reward	0
+hard	Silver Chest (black)	2/152.6	0.01310616		reward	0
+hard	Silver Chest (purple)	2/152.67	0.01310015		reward	0
+hard	Blood Reaver	1/112	0.00892857	161,174	combat	0
+hard	Intricate pouch	1/10	0.10000000		reward	0
+hard	Duke Sucellus	1/160	0.00625000	538,758,1099	combat	0
+hard	The Whisperer	1/160	0.00625000	587,791,1146	combat	0
+hard	The Leviathan	1/160	0.00625000	593,798,1157	combat	0
+hard	Phantom Muspah	1/30	0.03333333	368,741	combat	0
+hard	Cyclops (God Wars Dungeon)	1/512	0.00195312	81	combat	0
+hard	Cyclops (Catacombs of Kourend)	1/512	0.00195312	56,76	combat	0
+hard	Mutated Terrorbird	Rare	0.00000000	178	combat	0
+hard	Mutated Tortoise	Rare	0.00000000	247	combat	0
+hard	Warped Tortoise	Rare	0.00000000	121	combat	0
+hard	Warped Terrorbird	1/128	0.00781250	96,138	combat	0
+hard	Stingray	1/185	0.00540541	92	combat	0
+hard	Sulphur Nagua	1/256	0.00390625	98	combat	0
+hard	The Hueycoatl	1/50	0.02000000	642	combat	0
+hard	Elite Black Knight	Rare	0.00000000	138	combat	0
+hard	Elite Dark Mage	Rare	0.00000000	96	combat	0
+hard	Elite Dark Ranger	Rare	0.00000000	96	combat	0
+hard	Elite Dark Warrior	Rare	0.00000000	96	combat	0
+hard	Skeleton (Lucien's camp)	1/100	0.01000000	132	combat	0
+hard	Dreadborn Araxyte	1/192	0.00520833	281	combat	0
+hard	Frost Nagua	Rare	0.00000000	104	combat	0
+hard	Chilled jelly	1/64	0.01562500	112	combat	0
+hard	Armoured zombie (Zemouregal's Fort)	1/100	0.01000000	105	combat	0
+hard	Moss Giant (Iorwerth Dungeon)	1/200	0.00500000	84	combat	0
+hard	Eldric the Ice King	1/25	0.04000000	350	combat	0
+hard	Branda the Fire Queen	1/25	0.04000000	350	combat	0
+hard	Martial salvage	1/500	0.00200000	73	sailing	0
+hard	Clue turtle (Levels 50-69)	5/20	0.25000000	50	sailing	0
+hard	Clue turtle (Levels 70+)	3/20	0.15000000	70	sailing	0
+hard	Earthen Nagua	1/128	0.00781250	128	combat	0
+hard	Frigatebird	1/170	0.00588235	78	combat	0
+hard	Gryphon	1/100	0.01000000	95	combat	0
+hard	Elder aquanite	Unknown	0.00000000	305	combat	0
+hard	Lava Strykewyrm	1/128	0.00781250	116	combat	0
+hard	Magma strykewyrm	Unknown	0.00000000	249	combat	0
+hard	Dire gryphon	Unknown	0.00000000	209	combat	0
+hard	Reinforced chest	1/140	0.00714286	76	thieving	0
+hard	Narwhal	1/150	0.00666667	111	combat	0
+hard	Tiger shark	Rare	0.00000000	125	combat	0
+hard	Spined kraken	Rare	0.00000000	128	combat	0
+hard	Vitreous Chilled Jelly	10/64	0.15625000	241	combat	0
+hard	Manta ray (monster)	1/120	0.00833333	133	combat	0
+elite	Mithril dragon	1/350	0.00285714	304	combat	0
+elite	King Black Dragon	1/450	0.00222222	276	combat	1
+elite	Giant Mole	1/500	0.00200000	230	combat	0
+elite	Kalphite Queen	1/100	0.01000000	333	combat	0
+elite	Abyssal demon (Standard)	1/1,200	0.00083333	124	combat	0
+elite	Abyssal demon (Wilderness Slayer Cave)	1/1,200	0.00083333	124	combat	1
+elite	Chaos Elemental	1/200	0.00500000	305	combat	1
+elite	Dark beast	1/1,200	0.00083333	182	combat	0
+elite	Skeletal Wyvern	1/350	0.00285714	140	combat	0
+elite	Steel dragon (Standard)	1/500	0.00200000	246,274	combat	0
+elite	Dagannoth Rex	1/750	0.00133333	303	combat	0
+elite	Black dragon (Regular)	1/500	0.00200000	227	combat	0
+elite	Black dragon (Wilderness Slayer Cave)	1/500	0.00200000	247	combat	1
+elite	Hero	1/900	0.00111111	80	thieving	0
+elite	Salarin the twisted	1/500	0.00200000	70	combat	0
+elite	Dagannoth Supreme	1/750	0.00133333	303	combat	0
+elite	Dagannoth Prime	1/750	0.00133333	303	combat	0
+elite	Dragon impling jar	1/50	0.02000000		reward	0
+elite	Dragon impling	1/50	0.02000000	83,93	hunter	0
+elite	K'ril Tsutsaroth	1/250	0.00400000	650	combat	0
+elite	Commander Zilyana	1/250	0.00400000	596	combat	0
+elite	Kree'arra	1/250	0.00400000	580	combat	0
+elite	General Graardor	1/250	0.00400000	624	combat	0
+elite	Cave kraken	1/1,200	0.00083333	127	combat	0
+elite	Kraken	1/500	0.00200000	291	combat	0
+elite	Lava dragon	1/250	0.00400000	252	combat	1
+elite	Callisto	1/100	0.01000000	470	combat	1
+elite	Vet'ion	1/100	0.01000000	454	combat	1
+elite	Venenatis	1/100	0.01000000	464	combat	1
+elite	Smoke devil	1/750	0.00133333	160	combat	0
+elite	Thermonuclear smoke devil	1/500	0.00200000	301	combat	0
+elite	Nex	1/48	0.02083333	1001	combat	0
+elite	Tormented Demon	1/128	0.00781250	450	combat	0
+elite	Corporeal Beast	1/200	0.00500000	785	combat	1
+elite	Zulrah	1/75	0.01333333	725	combat	0
+elite	Barbarian Assault/Gambles (High)	1/15	0.06666667		reward	0
+elite	Cerberus	1/100	0.01000000	318	combat	0
+elite	Abyssal Sire	1/180	0.00555556	350	combat	0
+elite	Lizardman shaman	1/1,200	0.00083333	150	combat	0
+elite	Tortured gorilla	1/1,500	0.00066667	141,142	combat	0
+elite	Demonic gorilla	1/500	0.00200000	275	combat	0
+elite	Brutal blue dragon	1/750	0.00133333	271	combat	0
+elite	Brutal black dragon	1/250	0.00400000	318	combat	0
+elite	Brutal red dragon	1/500	0.00200000	289	combat	0
+elite	Skotizo	1/5	0.20000000	321	combat	0
+elite	Rune dragon	1/300	0.00333333	380	combat	0
+elite	Greater abyssal demon	1/120	0.00833333	342	combat	0
+elite	Night beast	1/120	0.00833333	374	combat	0
+elite	Nuclear smoke devil	10/750	0.01333333	280	combat	0
+elite	Adamant dragon	1/320	0.00312500	338	combat	0
+elite	Ancient Wyvern	1/350	0.00285714	210	combat	0
+elite	Deranged archaeologist	1/200	0.00500000	276	combat	0
+elite	Grotesque Guardians	1/230	0.00434783		combat	0
+elite	Vorkath (Post-quest)	1/65	0.01538462	732	combat	0
+elite	Hydra	1/512	0.00195312	194	combat	0
+elite	Alchemical Hydra	1/256	0.00390625	426	combat	0
+elite	Yama	1/30	0.03333333	1238	combat	0
+elite	Sarachnis	1/60	0.01666667	318	combat	0
+elite	Chest (Barrows)	1/200	0.00500000		reward	0
+elite	Crystal impling jar	1/50	0.02000000		reward	0
+elite	Crystal impling	1/50	0.02000000	80,90	hunter	0
+elite	Reward Chest (The Gauntlet) (Regular)	1/25	0.04000000		reward	0
+elite	Reward Chest (The Gauntlet) (Corrupted)	1/20	0.05000000		reward	0
+elite	The Nightmare	1/190	0.00526316	814	combat	0
+elite	Monumental chest	1/25	0.04000000		combat	0
+elite	Phosani's Nightmare	1/35	0.02857143	1024	combat	0
+elite	Coffin (Hallowed Sepulchre)	1/60	0.01666667	66	thieving	0
+elite	Grand Hallowed Coffin	1/30	0.03333333	84	thieving	0
+elite	Colossal Hydra	10/512	0.01953125	309	combat	0
+elite	Gold key red	1/139	0.00719424		combat	0
+elite	Gold key brown	1/139	0.00719424		combat	0
+elite	Gold key crimson	1/139	0.00719424		combat	0
+elite	Gold key black	1/139	0.00719424		combat	0
+elite	Gold key purple	1/139	0.00719424		combat	0
+elite	Vardorvis	1/160	0.00625000	572,784,1136	combat	0
+elite	Ancient chest	1/12	0.08333333		combat	0
+elite	Gold Chest (red)	1/143.91	0.00694879		reward	0
+elite	Gold Chest (crimson)	1/144.09	0.00694011		reward	0
+elite	Gold Chest (brown)	1/144	0.00694444		reward	0
+elite	Gold Chest (black)	1/144.18	0.00693577		reward	0
+elite	Gold Chest (purple)	1/144.28	0.00693097		reward	0
+elite	Chest (Tombs of Amascut)	Varies	0.00000000		reward	0
+elite	Duke Sucellus	1/160	0.00625000	538,758,1099	combat	0
+elite	The Whisperer	1/160	0.00625000	587,791,1146	combat	0
+elite	The Leviathan	1/160	0.00625000	593,798,1157	combat	0
+elite	Phantom Muspah	1/45	0.02222222	368,741	combat	0
+elite	Artio	1/100	0.01000000	320	combat	1
+elite	Calvar'ion	1/100	0.01000000	264	combat	1
+elite	Spindel	1/100	0.01000000	302	combat	1
+elite	Araxxor	1/50	0.02000000	890	combat	0
+elite	Amoxliatl (Post-quest)	1/200	0.00500000		combat	0
+elite	Doom of Mokhaiotl	1/75	0.01333333	558,608,658,708,758,808,858,908	combat	0
+elite	Eldric the Ice King	1/100	0.01000000	350	combat	0
+elite	Branda the Fire Queen	1/100	0.01000000	350	combat	0
+elite	Great white shark	1/200	0.00500000	175	combat	0
+elite	Clue turtle (Levels 70+)	2/20	0.10000000	70	sailing	0
+elite	Shellbane gryphon	1/200	0.00500000	235	combat	0
+elite	Orca	1/130	0.00769231	205	combat	0
+elite	Armoured kraken	1/160	0.00625000	180	combat	0
+elite	Vampyre kraken	1/150	0.00666667	211	combat	0
+elite	Maggot King	1/40	0.02500000	741	combat	0
+elite	Veiled kraken	1/140	0.00714286	210	combat	0
+elite	Venator	1/1,250	0.00080000	246	combat	0
+elite	Blood-starved venator	Unknown	0.00000000	246	combat	0
+elite	Chest (The Fractured Archive) (Standard)	1/10	0.10000000		reward	0

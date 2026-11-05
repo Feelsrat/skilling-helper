@@ -1,0 +1,1108 @@
+#beginner	1	3	Beginner clues generate a minimum of 1 reward and a maximum of 3, granting an average of 2 rewards per casket. On average it will take 597 beginner clues to obtain every unique, not counting the black pickaxe which you can get from easy clues at a higher rate.
+#easy	2	4	Easy clues generate a minimum of 2 rewards and a maximum of 4, granting an average of 3 rewards per casket. Additionally, players have a 1/50 chance to receive a master clue scroll upon opening an easy casket. Chance of a clue scroll unique item from an easy casket is 247/1080, or roughly 22.9%.
+#medium	3	5	Medium clues generate a minimum of 3 rewards and a maximum of 5, granting an average of 4 rewards per casket. Additionally, players have a 1/30 chance to receive a master clue scroll upon opening a medium casket. On average, it will take 2076 reward caskets to obtain all the unique drops specific to medium clues (not including drops shared by other clue tiers).
+#hard	4	6	Hard clues generate a minimum of 4 rewards and a maximum of 6, granting an average of 5 rewards per casket. Additionally, players have a 1/15 chance of receiving a master clue scroll upon opening a hard casket. On average, it will take 5484 reward caskets to obtain all the (non-mega-rare) unique drops specific to hard clues (not including drops shared by other clue tiers). Chance of a clue scroll unique item from a hard casket is 5x 1/12.5, which becomes 1/2.93 or 34.1%.
+#elite	4	6	Elite clues generate a minimum of 4 rewards and a maximum of 6, granting an average of 5 rewards per casket. Additionally, players have a 1/5 chance to receive a master clue scroll upon opening an elite casket - this does not take up one of the 4-6 reward slots.
+#master	5	7	Master clues generate a minimum of 5 rewards and a maximum of 7, granting an average of 6 rewards per casket. Additionally, players have a 1/1,000 chance to receive the Bloodhound pet upon opening a master casket.
+beginner	Beginner clue uniques	Mole slippers	23285	1	1/360	0.00277778
+beginner	Beginner clue uniques	Frog slippers	23288	1	1/360	0.00277778
+beginner	Beginner clue uniques	Bear feet	23291	1	1/360	0.00277778
+beginner	Beginner clue uniques	Demon feet	23294	1	1/360	0.00277778
+beginner	Beginner clue uniques	Jester cape	23297	1	1/360	0.00277778
+beginner	Beginner clue uniques	Shoulder parrot	23300	1	1/360	0.00277778
+beginner	Beginner clue uniques	Monk's robe top (t)	23303	1	1/360	0.00277778
+beginner	Beginner clue uniques	Monk's robe (t)	23306	1	1/360	0.00277778
+beginner	Beginner clue uniques	Amulet of defence (t)	23309	1	1/360	0.00277778
+beginner	Beginner clue uniques	Sandwich lady hat	23312	1	1/360	0.00277778
+beginner	Beginner clue uniques	Sandwich lady top	23315	1	1/360	0.00277778
+beginner	Beginner clue uniques	Sandwich lady bottom	23318	1	1/360	0.00277778
+beginner	Beginner clue uniques	Rune scimitar ornament kit (Guthix)	23321	1	1/360	0.00277778
+beginner	Beginner clue uniques	Rune scimitar ornament kit (Saradomin)	23324	1	1/360	0.00277778
+beginner	Beginner clue uniques	Rune scimitar ornament kit (Zamorak)	23327	1	1/360	0.00277778
+beginner	Black items table	Black 2h sword	1313	1	11/8856	0.00124210
+beginner	Black items table	Black axe	1361	1	11/8856	0.00124210
+beginner	Black items table	Black battleaxe	1367	1	11/8856	0.00124210
+beginner	Black items table	Black chainbody	1107	1	11/8856	0.00124210
+beginner	Black items table	Black dagger	1217	1	11/8856	0.00124210
+beginner	Black items table	Black full helm	1165	1	11/8856	0.00124210
+beginner	Black items table	Black kiteshield	1195	1	11/8856	0.00124210
+beginner	Black items table	Black longsword	1297	1	11/8856	0.00124210
+beginner	Black items table	Black mace	1426	1	11/8856	0.00124210
+beginner	Black items table	Black med helm	1151	1	11/8856	0.00124210
+beginner	Black items table	Black pickaxe	12297	1	11/8856	0.00124210
+beginner	Black items table	Black platebody	1125	1	11/8856	0.00124210
+beginner	Black items table	Black plateskirt	1089	1	11/8856	0.00124210
+beginner	Black items table	Black platelegs	1077	1	11/8856	0.00124210
+beginner	Black items table	Black sq shield	1179	1	11/8856	0.00124210
+beginner	Black items table	Black scimitar	1327	1	11/8856	0.00124210
+beginner	Black items table	Black shortsword	1283	1	11/8856	0.00124210
+beginner	Black items table	Black warhammer	1341	1	11/8856	0.00124210
+beginner	Weapons and armour	Shortbow	841	1	11/492	0.02235772
+beginner	Weapons and armour	Longbow	839	1	11/492	0.02235772
+beginner	Weapons and armour	Oak shortbow	843	1	11/492	0.02235772
+beginner	Weapons and armour	Oak longbow	845	1	11/492	0.02235772
+beginner	Weapons and armour	Iron pickaxe	1267	1	11/492	0.02235772
+beginner	Weapons and armour	Staff of air	1381	1	11/492	0.02235772
+beginner	Weapons and armour	Staff of water	1383	1	11/492	0.02235772
+beginner	Weapons and armour	Staff of earth	1385	1	11/492	0.02235772
+beginner	Weapons and armour	Staff of fire	1387	1	11/492	0.02235772
+beginner	Weapons and armour	Steel full helm	1157	1	11/492	0.02235772
+beginner	Weapons and armour	Steel platebody	1119	1	11/492	0.02235772
+beginner	Weapons and armour	Steel platelegs	1069	1	11/492	0.02235772
+beginner	Weapons and armour	Steel plateskirt	1083	1	11/492	0.02235772
+beginner	Weapons and armour	Steel longsword	1295	1	11/492	0.02235772
+beginner	Weapons and armour	Steel dagger	1207	1	11/492	0.02235772
+beginner	Weapons and armour	Steel axe	1353	1	11/492	0.02235772
+beginner	Weapons and armour	Steel battleaxe	1365	1	11/492	0.02235772
+beginner	Weapons and armour	Leather cowl	1167	1	11/492	0.02235772
+beginner	Weapons and armour	Leather body	1129	1	11/492	0.02235772
+beginner	Weapons and armour	Leather chaps	1095	1	11/492	0.02235772
+beginner	Weapons and armour	Leather vambraces	1063	1	11/492	0.02235772
+beginner	Weapons and armour	Hardleather body	1131	1	11/492	0.02235772
+beginner	Weapons and armour	Blue wizard hat	579	1	11/492	0.02235772
+beginner	Weapons and armour	Blue wizard robe	577	1	11/492	0.02235772
+beginner	Weapons and armour	Wizard hat	1017	1	11/492	0.02235772
+beginner	Weapons and armour	Black robe	581	1	11/492	0.02235772
+beginner	Runes and ammunition	Air rune	556	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Mind rune	558	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Water rune	555	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Earth rune	557	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Fire rune	554	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Body rune	559	15-35	11/492	0.02235772
+beginner	Runes and ammunition	Chaos rune	562	2-7	11/492	0.02235772
+beginner	Runes and ammunition	Nature rune	561	2-7	11/492	0.02235772
+beginner	Runes and ammunition	Law rune	563	2-7	11/492	0.02235772
+beginner	Runes and ammunition	Bronze arrow	882	15-30	11/492	0.02235772
+beginner	Runes and ammunition	Iron arrow	884	7-15	11/492	0.02235772
+beginner	Food	Cabbage	1965	5-9 (noted)	1/24	0.04166667
+beginner	Food	Shrimps	315	5-14 (noted)	11/492	0.02235772
+beginner	Food	Sardine	325	5-12 (noted)	11/492	0.02235772
+beginner	Food	Herring	347	5-9 (noted)	11/492	0.02235772
+beginner	Tertiary	Minor beginner scroll case	30902	1	Always	0.00000000
+beginner	Tertiary	Major beginner scroll case	30904	1	Always	0.00000000
+beginner	Tertiary	Explore	0	1	Always	0.00000000
+easy	Easy clue uniques	Willow comp bow	10280	1	11/3960	0.00277778
+easy	Easy clue uniques	Amulet of magic (t)	10366	1	11/3960	0.00277778
+easy	Easy clue uniques	Team cape zero	20211	1	1/5616	0.00017806
+easy	Easy clue uniques	Team cape i	20217	1	1/5616	0.00017806
+easy	Easy clue uniques	Team cape x	20214	1	1/5616	0.00017806
+easy	Easy clue uniques	Cape of skulls	23351	1	1/5616	0.00017806
+easy	Easy clue uniques	Golden chef's hat	20205	1	1/2808	0.00035613
+easy	Easy clue uniques	Golden apron	20208	1	1/2808	0.00035613
+easy	Easy clue uniques	Wooden shield (g)	20166	1	1/1404	0.00071225
+easy	Easy clue uniques	Black full helm (t)	2587	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (t)	2583	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platelegs (t)	2585	1	1/1404	0.00071225
+easy	Easy clue uniques	Black plateskirt (t)	3472	1	1/1404	0.00071225
+easy	Easy clue uniques	Black kiteshield (t)	2589	1	1/1404	0.00071225
+easy	Easy clue uniques	Black full helm (g)	2595	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (g)	2591	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platelegs (g)	2593	1	1/1404	0.00071225
+easy	Easy clue uniques	Black plateskirt (g)	3473	1	1/1404	0.00071225
+easy	Easy clue uniques	Black kiteshield (g)	2597	1	1/1404	0.00071225
+easy	Easy clue uniques	Black shield (h1)	7332	1	1/1404	0.00071225
+easy	Easy clue uniques	Black shield (h2)	7338	1	1/1404	0.00071225
+easy	Easy clue uniques	Black shield (h3)	7344	1	1/1404	0.00071225
+easy	Easy clue uniques	Black shield (h4)	7350	1	1/1404	0.00071225
+easy	Easy clue uniques	Black shield (h5)	7356	1	1/1404	0.00071225
+easy	Easy clue uniques	Black helm (h1)	10306	1	1/1404	0.00071225
+easy	Easy clue uniques	Black helm (h2)	10308	1	1/1404	0.00071225
+easy	Easy clue uniques	Black helm (h3)	10310	1	1/1404	0.00071225
+easy	Easy clue uniques	Black helm (h4)	10312	1	1/1404	0.00071225
+easy	Easy clue uniques	Black helm (h5)	10314	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (h1)	23366	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (h2)	23369	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (h3)	23372	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (h4)	23375	1	1/1404	0.00071225
+easy	Easy clue uniques	Black platebody (h5)	23378	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel full helm (t)	20193	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel platebody (t)	20184	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel platelegs (t)	20187	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel plateskirt (t)	20190	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel kiteshield (t)	20196	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel full helm (g)	20178	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel platebody (g)	20169	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel platelegs (g)	20172	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel plateskirt (g)	20175	1	1/1404	0.00071225
+easy	Easy clue uniques	Steel kiteshield (g)	20181	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron full helm (t)	12231	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron platebody (t)	12225	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron platelegs (t)	12227	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron plateskirt (t)	12229	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron kiteshield (t)	12233	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron full helm (g)	12241	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron platebody (g)	12235	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron platelegs (g)	12237	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron plateskirt (g)	12239	1	1/1404	0.00071225
+easy	Easy clue uniques	Iron kiteshield (g)	12243	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze full helm (t)	12221	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze platebody (t)	12215	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze platelegs (t)	12217	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze plateskirt (t)	12219	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze kiteshield (t)	12223	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze full helm (g)	12211	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze platebody (g)	12205	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze platelegs (g)	12207	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze plateskirt (g)	12209	1	1/1404	0.00071225
+easy	Easy clue uniques	Bronze kiteshield (g)	12213	1	1/1404	0.00071225
+easy	Easy clue uniques	Studded body (g)	7362	1	1/1404	0.00071225
+easy	Easy clue uniques	Studded chaps (g)	7366	1	1/1404	0.00071225
+easy	Easy clue uniques	Studded body (t)	7364	1	1/1404	0.00071225
+easy	Easy clue uniques	Studded chaps (t)	7368	1	1/1404	0.00071225
+easy	Easy clue uniques	Leather body (g)	23381	1	1/1404	0.00071225
+easy	Easy clue uniques	Leather chaps (g)	23384	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue wizard hat (g)	7394	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue wizard robe (g)	7390	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue skirt (g)	7386	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue wizard hat (t)	7396	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue wizard robe (t)	7392	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue skirt (t)	7388	1	1/1404	0.00071225
+easy	Easy clue uniques	Black wizard hat (g)	12453	1	1/1404	0.00071225
+easy	Easy clue uniques	Black wizard robe (g)	12449	1	1/1404	0.00071225
+easy	Easy clue uniques	Black skirt (g)	12445	1	1/1404	0.00071225
+easy	Easy clue uniques	Black wizard hat (t)	12455	1	1/1404	0.00071225
+easy	Easy clue uniques	Black wizard robe (t)	12451	1	1/1404	0.00071225
+easy	Easy clue uniques	Black skirt (t)	12447	1	1/1404	0.00071225
+easy	Easy clue uniques	Monk's robe top (g)	20199	1	1/14040	0.00007123
+easy	Easy clue uniques	Monk's robe (g)	20202	1	1/14040	0.00007123
+easy	Easy clue uniques	Saradomin robe top	10458	1	1/1404	0.00071225
+easy	Easy clue uniques	Saradomin robe legs	10464	1	1/1404	0.00071225
+easy	Easy clue uniques	Guthix robe top	10462	1	1/1404	0.00071225
+easy	Easy clue uniques	Guthix robe legs	10466	1	1/1404	0.00071225
+easy	Easy clue uniques	Zamorak robe top	10460	1	1/1404	0.00071225
+easy	Easy clue uniques	Zamorak robe legs	10468	1	1/1404	0.00071225
+easy	Easy clue uniques	Ancient robe top	12193	1	1/1404	0.00071225
+easy	Easy clue uniques	Ancient robe legs	12195	1	1/1404	0.00071225
+easy	Easy clue uniques	Armadyl robe top	12253	1	1/1404	0.00071225
+easy	Easy clue uniques	Armadyl robe legs	12255	1	1/1404	0.00071225
+easy	Easy clue uniques	Bandos robe top	12265	1	1/1404	0.00071225
+easy	Easy clue uniques	Bandos robe legs	12267	1	1/1404	0.00071225
+easy	Easy clue uniques	Bob's red shirt	10316	1	1/1404	0.00071225
+easy	Easy clue uniques	Bob's green shirt	10320	1	1/1404	0.00071225
+easy	Easy clue uniques	Bob's blue shirt	10318	1	1/1404	0.00071225
+easy	Easy clue uniques	Bob's black shirt	10322	1	1/1404	0.00071225
+easy	Easy clue uniques	Bob's purple shirt	10324	1	1/1404	0.00071225
+easy	Easy clue uniques	Highwayman mask	2631	1	1/1404	0.00071225
+easy	Easy clue uniques	Blue beret	2633	1	1/1404	0.00071225
+easy	Easy clue uniques	Black beret	2635	1	1/1404	0.00071225
+easy	Easy clue uniques	Red beret	12247	1	1/1404	0.00071225
+easy	Easy clue uniques	White beret	2637	1	1/1404	0.00071225
+easy	Easy clue uniques	A powdered wig	10392	1	1/1404	0.00071225
+easy	Easy clue uniques	Beanie	12245	1	1/1404	0.00071225
+easy	Easy clue uniques	Imp mask	12249	1	1/1404	0.00071225
+easy	Easy clue uniques	Goblin mask	12251	1	1/1404	0.00071225
+easy	Easy clue uniques	Sleeping cap	10398	1	1/1404	0.00071225
+easy	Easy clue uniques	Flared trousers	10394	1	1/1404	0.00071225
+easy	Easy clue uniques	Pantaloons	10396	1	1/1404	0.00071225
+easy	Easy clue uniques	Black cane	12375	1	1/1404	0.00071225
+easy	Easy clue uniques	Staff of Bob the Cat	23363	1	1/1404	0.00071225
+easy	Easy clue uniques	Red elegant shirt	10404	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Red elegant blouse	10424	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Red elegant legs	10406	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Red elegant skirt	10426	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Green elegant shirt	10412	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Green elegant blouse	10432	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Green elegant legs	10414	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Green elegant skirt	10434	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Blue elegant shirt	10408	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Blue elegant blouse	10428	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Blue elegant legs	10410	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Blue elegant skirt	10430	1	1/2808.0	0.00035613
+easy	Easy clue uniques	Amulet of power (t)	23354	1	1/1404	0.00071225
+easy	Easy clue uniques	Ham joint	23360	1	1/1404	0.00071225
+easy	Easy clue uniques	Rain bow	23357	1	1/1404	0.00071225
+easy	Standard table / Weapons and armour	Black full helm	1165	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black platebody	1125	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black platelegs	1077	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black longsword	1297	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black battleaxe	1367	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black axe	1361	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black dagger	1217	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Steel pickaxe	1269	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Black pickaxe	12297	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Coif	1169	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Studded body	1133	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Studded chaps	1097	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Willow shortbow	849	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Willow longbow	847	1	99/3960	0.02500000
+easy	Standard table / Weapons and armour	Staff of air	1381	1	11/396	0.02777778
+easy	Standard table / Weapons and armour	Amulet of magic	1727	1	99/3960	0.02500000
+easy	Standard table / Runes	Air rune	556	30-50	11/396	0.02777778
+easy	Standard table / Runes	Mind rune	558	30-50	11/396	0.02777778
+easy	Standard table / Runes	Water rune	555	30-50	11/396	0.02777778
+easy	Standard table / Runes	Earth rune	557	30-50	11/396	0.02777778
+easy	Standard table / Runes	Fire rune	554	30-50	11/396	0.02777778
+easy	Standard table / Runes	Body rune	559	30-50	11/396	0.02777778
+easy	Standard table / Runes	Chaos rune	562	5-10	11/396	0.02777778
+easy	Standard table / Runes	Nature rune	561	5-10	11/396	0.02777778
+easy	Standard table / Runes	Law rune	563	5-10	11/396	0.02777778
+easy	Standard table / Food	Trout	333	6-10 (noted)	11/396	0.02777778
+easy	Standard table / Food	Salmon	329	6-10 (noted)	11/396	0.02777778
+easy	Shared treasure trail items	Coins	995	50-200	11/396	0.02777778
+easy	Shared treasure trail items	Coins	995	3000-7000	22/1188	0.01851852
+easy	Shared treasure trail items	Coins	995	10000-15000	77/23760	0.00324074
+easy	Shared treasure trail items	Coins	995	3400-8200	4/7020	0.00056980
+easy	Shared treasure trail items	Purple sweets	10476	2-6	11/396	0.02777778
+easy	Shared treasure trail items	Purple sweets	10476	8-12	77/23760	0.00324074
+easy	Shared treasure trail items	Red firelighter	7329	3-5	11/1980	0.00555556
+easy	Shared treasure trail items	Green firelighter	7330	3-5	11/1980	0.00555556
+easy	Shared treasure trail items	Blue firelighter	7331	3-5	11/1980	0.00555556
+easy	Shared treasure trail items	Purple firelighter	10326	3-5	11/1980	0.00555556
+easy	Shared treasure trail items	White firelighter	10327	3-5	11/1980	0.00555556
+easy	Shared treasure trail items	Holy blessing	20220	1	11/23760	0.00046296
+easy	Shared treasure trail items	Unholy blessing	20223	1	11/23760	0.00046296
+easy	Shared treasure trail items	Peaceful blessing	20226	1	11/23760	0.00046296
+easy	Shared treasure trail items	War blessing	20232	1	11/23760	0.00046296
+easy	Shared treasure trail items	Honourable blessing	20229	1	11/23760	0.00046296
+easy	Shared treasure trail items	Ancient blessing	20235	1	11/23760	0.00046296
+easy	Shared treasure trail items	Charge dragonstone jewellery scroll	20238	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Nardah teleport	12402	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Mos le'harmless teleport	12411	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Mort'ton teleport	12406	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Feldip hills teleport	12404	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Lunar isle teleport	12405	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Digsite teleport	12403	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Piscatoris teleport	12408	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Pest control teleport	12407	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Tai bwo wannai teleport	12409	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Lumberyard teleport	12642	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Iorwerth camp teleport	12410	5-15	231/104544	0.00220960
+easy	Shared treasure trail items	Master scroll book (empty)	21387	1	11/8712	0.00126263
+easy	Shared treasure trail items	Saradomin page 1	3827	1	11/9504	0.00115741
+easy	Shared treasure trail items	Saradomin page 2	3828	1	11/9504	0.00115741
+easy	Shared treasure trail items	Saradomin page 3	3829	1	11/9504	0.00115741
+easy	Shared treasure trail items	Saradomin page 4	3830	1	11/9504	0.00115741
+easy	Shared treasure trail items	Zamorak page 1	3831	1	11/9504	0.00115741
+easy	Shared treasure trail items	Zamorak page 2	3832	1	11/9504	0.00115741
+easy	Shared treasure trail items	Zamorak page 3	3833	1	11/9504	0.00115741
+easy	Shared treasure trail items	Zamorak page 4	3834	1	11/9504	0.00115741
+easy	Shared treasure trail items	Guthix page 1	3835	1	11/9504	0.00115741
+easy	Shared treasure trail items	Guthix page 2	3836	1	11/9504	0.00115741
+easy	Shared treasure trail items	Guthix page 3	3837	1	11/9504	0.00115741
+easy	Shared treasure trail items	Guthix page 4	3838	1	11/9504	0.00115741
+easy	Shared treasure trail items	Bandos page 1	12613	1	11/9504	0.00115741
+easy	Shared treasure trail items	Bandos page 2	12614	1	11/9504	0.00115741
+easy	Shared treasure trail items	Bandos page 3	12615	1	11/9504	0.00115741
+easy	Shared treasure trail items	Bandos page 4	12616	1	11/9504	0.00115741
+easy	Shared treasure trail items	Armadyl page 1	12617	1	11/9504	0.00115741
+easy	Shared treasure trail items	Armadyl page 2	12618	1	11/9504	0.00115741
+easy	Shared treasure trail items	Armadyl page 3	12619	1	11/9504	0.00115741
+easy	Shared treasure trail items	Armadyl page 4	12620	1	11/9504	0.00115741
+easy	Shared treasure trail items	Ancient page 1	12621	1	11/9504	0.00115741
+easy	Shared treasure trail items	Ancient page 2	12622	1	11/9504	0.00115741
+easy	Shared treasure trail items	Ancient page 3	12623	1	11/9504	0.00115741
+easy	Shared treasure trail items	Ancient page 4	12624	1	11/9504	0.00115741
+easy	Tertiary	Minor easy scroll case	30906	1	Always	0.00000000
+easy	Tertiary	Major easy scroll case	30908	1	Always	0.00000000
+easy	Tertiary	Clue scroll (master)	19835	1	1/50	0.02000000
+easy	Tertiary	Large spade	20164	1	Always	0.00000000
+medium	Medium clue uniques	Gnomish firelighter	20278	1	10/3410	0.00293255
+medium	Medium clue uniques	Yew comp bow	10282	1	10/3410	0.00293255
+medium	Medium clue uniques	Strength amulet (t)	10364	1	10/3410	0.00293255
+medium	Medium clue uniques	Ranger boots	2577	1	1/1133	0.00088261
+medium	Medium clue uniques	Wizard boots	2579	1	1/1133	0.00088261
+medium	Medium clue uniques	Holy sandals	12598	1	1/1133	0.00088261
+medium	Medium clue uniques	Spiked manacles	23389	1	1/1133	0.00088261
+medium	Medium clue uniques	Climbing boots (g)	23413	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant full helm (t)	2605	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (t)	2599	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platelegs (t)	2601	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant plateskirt (t)	3474	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant kiteshield (t)	2603	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant full helm (g)	2613	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (g)	2607	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platelegs (g)	2609	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant plateskirt (g)	3475	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant kiteshield (g)	2611	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant shield (h1)	7334	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant shield (h2)	7340	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant shield (h3)	7346	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant shield (h4)	7352	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant shield (h5)	7358	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant helm (h1)	10296	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant helm (h2)	10298	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant helm (h3)	10300	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant helm (h4)	10302	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant helm (h5)	10304	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (h1)	23392	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (h2)	23395	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (h3)	23398	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (h4)	23401	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant platebody (h5)	23404	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril full helm (g)	12283	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril platebody (g)	12277	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril platelegs (g)	12279	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril plateskirt (g)	12285	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril kiteshield (g)	12281	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril full helm (t)	12293	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril platebody (t)	12287	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril platelegs (t)	12289	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril plateskirt (t)	12295	1	1/1133	0.00088261
+medium	Medium clue uniques	Mithril kiteshield (t)	12291	1	1/1133	0.00088261
+medium	Medium clue uniques	Green d'hide body (g)	7370	1	1/1133	0.00088261
+medium	Medium clue uniques	Green d'hide body (t)	7372	1	1/1133	0.00088261
+medium	Medium clue uniques	Green d'hide chaps (g)	7378	1	1/1133	0.00088261
+medium	Medium clue uniques	Green d'hide chaps (t)	7380	1	1/1133	0.00088261
+medium	Medium clue uniques	Saradomin mitre	10452	1	1/1133	0.00088261
+medium	Medium clue uniques	Saradomin cloak	10446	1	1/1133	0.00088261
+medium	Medium clue uniques	Guthix mitre	10454	1	1/1133	0.00088261
+medium	Medium clue uniques	Guthix cloak	10448	1	1/1133	0.00088261
+medium	Medium clue uniques	Zamorak mitre	10456	1	1/1133	0.00088261
+medium	Medium clue uniques	Zamorak cloak	10450	1	1/1133	0.00088261
+medium	Medium clue uniques	Ancient mitre	12203	1	1/1133	0.00088261
+medium	Medium clue uniques	Ancient cloak	12197	1	1/1133	0.00088261
+medium	Medium clue uniques	Ancient stole	12201	1	1/1133	0.00088261
+medium	Medium clue uniques	Ancient crozier	12199	1	1/1133	0.00088261
+medium	Medium clue uniques	Armadyl mitre	12259	1	1/1133	0.00088261
+medium	Medium clue uniques	Armadyl cloak	12261	1	1/1133	0.00088261
+medium	Medium clue uniques	Armadyl stole	12257	1	1/1133	0.00088261
+medium	Medium clue uniques	Armadyl crozier	12263	1	1/1133	0.00088261
+medium	Medium clue uniques	Bandos mitre	12271	1	1/1133	0.00088261
+medium	Medium clue uniques	Bandos cloak	12273	1	1/1133	0.00088261
+medium	Medium clue uniques	Bandos stole	12269	1	1/1133	0.00088261
+medium	Medium clue uniques	Bandos crozier	12275	1	1/1133	0.00088261
+medium	Medium clue uniques	Red boater	7319	1	1/1133	0.00088261
+medium	Medium clue uniques	Green boater	7323	1	1/1133	0.00088261
+medium	Medium clue uniques	Orange boater	7321	1	1/1133	0.00088261
+medium	Medium clue uniques	Black boater	7327	1	1/1133	0.00088261
+medium	Medium clue uniques	Blue boater	7325	1	1/1133	0.00088261
+medium	Medium clue uniques	Pink boater	12309	1	1/1133	0.00088261
+medium	Medium clue uniques	Purple boater	12311	1	1/1133	0.00088261
+medium	Medium clue uniques	White boater	12313	1	1/1133	0.00088261
+medium	Medium clue uniques	Red headband	2645	1	1/1133	0.00088261
+medium	Medium clue uniques	Black headband	2647	1	1/1133	0.00088261
+medium	Medium clue uniques	Brown headband	2649	1	1/1133	0.00088261
+medium	Medium clue uniques	White headband	12299	1	1/1133	0.00088261
+medium	Medium clue uniques	Blue headband	12301	1	1/1133	0.00088261
+medium	Medium clue uniques	Gold headband	12303	1	1/1133	0.00088261
+medium	Medium clue uniques	Pink headband	12305	1	1/1133	0.00088261
+medium	Medium clue uniques	Green headband	12307	1	1/1133	0.00088261
+medium	Medium clue uniques	Crier hat	12319	1	1/1133	0.00088261
+medium	Medium clue uniques	Crier coat	20240	1	1/1133	0.00088261
+medium	Medium clue uniques	Crier bell	20243	1	1/1133	0.00088261
+medium	Medium clue uniques	Adamant cane	12377	1	1/1133	0.00088261
+medium	Medium clue uniques	Arceuus banner	20251	1	1/1133	0.00088261
+medium	Medium clue uniques	Piscarilius banner	20260	1	1/1133	0.00088261
+medium	Medium clue uniques	Hosidius banner	20254	1	1/1133	0.00088261
+medium	Medium clue uniques	Shayzien banner	20263	1	1/1133	0.00088261
+medium	Medium clue uniques	Lovakengj banner	20257	1	1/1133	0.00088261
+medium	Medium clue uniques	Cabbage round shield	20272	1	1/1133	0.00088261
+medium	Medium clue uniques	Black unicorn mask	20266	1	1/2266	0.00044131
+medium	Medium clue uniques	White unicorn mask	20269	1	1/2266	0.00044131
+medium	Medium clue uniques	Cat mask	12361	1	1/1133	0.00088261
+medium	Medium clue uniques	Penguin mask	12428	1	1/1133	0.00088261
+medium	Medium clue uniques	Leprechaun hat	12359	1	1/1133	0.00088261
+medium	Medium clue uniques	Black leprechaun hat	20246	1	1/1133	0.00088261
+medium	Medium clue uniques	Wolf mask	23407	1	1/1133	0.00088261
+medium	Medium clue uniques	Wolf cloak	23410	1	1/1133	0.00088261
+medium	Medium clue uniques	Purple elegant shirt	10416	1	8/18128	0.00044131
+medium	Medium clue uniques	Purple elegant blouse	10436	1	8/18128	0.00044131
+medium	Medium clue uniques	Purple elegant legs	10418	1	8/18128	0.00044131
+medium	Medium clue uniques	Purple elegant skirt	10438	1	8/18128	0.00044131
+medium	Medium clue uniques	Black elegant shirt	10400	1	8/18128	0.00044131
+medium	Medium clue uniques	White elegant blouse	10420	1	8/18128	0.00044131
+medium	Medium clue uniques	Black elegant legs	10402	1	8/18128	0.00044131
+medium	Medium clue uniques	White elegant skirt	10422	1	8/18128	0.00044131
+medium	Medium clue uniques	Pink elegant shirt	12315	1	8/18128	0.00044131
+medium	Medium clue uniques	Pink elegant blouse	12339	1	8/18128	0.00044131
+medium	Medium clue uniques	Pink elegant legs	12317	1	8/18128	0.00044131
+medium	Medium clue uniques	Pink elegant skirt	12341	1	8/18128	0.00044131
+medium	Medium clue uniques	Gold elegant shirt	12347	1	8/18128	0.00044131
+medium	Medium clue uniques	Gold elegant blouse	12343	1	8/18128	0.00044131
+medium	Medium clue uniques	Gold elegant legs	12349	1	8/18128	0.00044131
+medium	Medium clue uniques	Gold elegant skirt	12345	1	8/18128	0.00044131
+medium	Standard table / Weapons and armour	Adamant full helm	1161	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant platebody	1123	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant platelegs	1073	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant longsword	1301	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant dagger	1211	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant battleaxe	1371	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant axe	1357	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Adamant pickaxe	1271	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Green d'hide body	1135	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Green d'hide chaps	1099	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Yew shortbow	857	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Yew longbow	855	1	90/3410	0.02639296
+medium	Standard table / Weapons and armour	Fire battlestaff	1393	1	10/341	0.02932551
+medium	Standard table / Weapons and armour	Amulet of power	1731	1	90/3410	0.02639296
+medium	Standard table / Runes	Air rune	556	50-100	10/341	0.02932551
+medium	Standard table / Runes	Mind rune	558	50-100	10/341	0.02932551
+medium	Standard table / Runes	Water rune	555	50-100	10/341	0.02932551
+medium	Standard table / Runes	Earth rune	557	50-100	10/341	0.02932551
+medium	Standard table / Runes	Fire rune	554	50-100	10/341	0.02932551
+medium	Standard table / Runes	Chaos rune	562	10-20	10/341	0.02932551
+medium	Standard table / Runes	Nature rune	561	10-20	10/341	0.02932551
+medium	Standard table / Runes	Law rune	563	10-20	10/341	0.02932551
+medium	Standard table / Runes	Death rune	560	10-20	10/341	0.02932551
+medium	Standard table / Food	Lobster	379	8-12 (noted)	10/341	0.02932551
+medium	Standard table / Food	Swordfish	373	8-12 (noted)	10/341	0.02932551
+medium	Shared treasure trail items	Coins	995	200-1000	10/341	0.02932551
+medium	Shared treasure trail items	Coins	995	10000-15000	70/6820	0.01026393
+medium	Shared treasure trail items	Purple sweets	10476	5-10	10/341	0.02932551
+medium	Shared treasure trail items	Purple sweets	10476	8-12	70/6820	0.01026393
+medium	Shared treasure trail items	Red firelighter	7329	4-10	90/17050	0.00527859
+medium	Shared treasure trail items	Green firelighter	7330	4-10	90/17050	0.00527859
+medium	Shared treasure trail items	Blue firelighter	7331	4-10	90/17050	0.00527859
+medium	Shared treasure trail items	Purple firelighter	10326	4-10	90/17050	0.00527859
+medium	Shared treasure trail items	White firelighter	10327	4-10	90/17050	0.00527859
+medium	Shared treasure trail items	Holy blessing	20220	1	10/6820	0.00146628
+medium	Shared treasure trail items	Unholy blessing	20223	1	10/6820	0.00146628
+medium	Shared treasure trail items	Peaceful blessing	20226	1	10/6820	0.00146628
+medium	Shared treasure trail items	War blessing	20232	1	10/6820	0.00146628
+medium	Shared treasure trail items	Honourable blessing	20229	1	10/6820	0.00146628
+medium	Shared treasure trail items	Ancient blessing	20235	1	10/6820	0.00146628
+medium	Shared treasure trail items	Charge dragonstone jewellery scroll	20238	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Nardah teleport	12402	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Mos le'harmless teleport	12411	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Mort'ton teleport	12406	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Feldip hills teleport	12404	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Lunar isle teleport	12405	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Digsite teleport	12403	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Piscatoris teleport	12408	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Pest control teleport	12407	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Tai bwo wannai teleport	12409	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Lumberyard teleport	12642	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Iorwerth camp teleport	12410	5-15	210/90024	0.00233271
+medium	Shared treasure trail items	Master scroll book (empty)	21387	1	10/7502	0.00133298
+medium	Shared treasure trail items	Saradomin page 1	3827	1	10/8184	0.00122190
+medium	Shared treasure trail items	Saradomin page 2	3828	1	10/8184	0.00122190
+medium	Shared treasure trail items	Saradomin page 3	3829	1	10/8184	0.00122190
+medium	Shared treasure trail items	Saradomin page 4	3830	1	10/8184	0.00122190
+medium	Shared treasure trail items	Zamorak page 1	3831	1	10/8184	0.00122190
+medium	Shared treasure trail items	Zamorak page 2	3832	1	10/8184	0.00122190
+medium	Shared treasure trail items	Zamorak page 3	3833	1	10/8184	0.00122190
+medium	Shared treasure trail items	Zamorak page 4	3834	1	10/8184	0.00122190
+medium	Shared treasure trail items	Guthix page 1	3835	1	10/8184	0.00122190
+medium	Shared treasure trail items	Guthix page 2	3836	1	10/8184	0.00122190
+medium	Shared treasure trail items	Guthix page 3	3837	1	10/8184	0.00122190
+medium	Shared treasure trail items	Guthix page 4	3838	1	10/8184	0.00122190
+medium	Shared treasure trail items	Bandos page 1	12613	1	10/8184	0.00122190
+medium	Shared treasure trail items	Bandos page 2	12614	1	10/8184	0.00122190
+medium	Shared treasure trail items	Bandos page 3	12615	1	10/8184	0.00122190
+medium	Shared treasure trail items	Bandos page 4	12616	1	10/8184	0.00122190
+medium	Shared treasure trail items	Armadyl page 1	12617	1	10/8184	0.00122190
+medium	Shared treasure trail items	Armadyl page 2	12618	1	10/8184	0.00122190
+medium	Shared treasure trail items	Armadyl page 3	12619	1	10/8184	0.00122190
+medium	Shared treasure trail items	Armadyl page 4	12620	1	10/8184	0.00122190
+medium	Shared treasure trail items	Ancient page 1	12621	1	10/8184	0.00122190
+medium	Shared treasure trail items	Ancient page 2	12622	1	10/8184	0.00122190
+medium	Shared treasure trail items	Ancient page 3	12623	1	10/8184	0.00122190
+medium	Shared treasure trail items	Ancient page 4	12624	1	10/8184	0.00122190
+medium	Tertiary	Minor medium scroll case	30910	1	Always	0.00000000
+medium	Tertiary	Major medium scroll case	30912	1	Always	0.00000000
+medium	Tertiary	Clue scroll (master)	19835	1	1/30	0.03333333
+medium	Tertiary	Clueless scroll	20249	1	always	0.00000000
+hard	Hard clue uniques	Magic comp bow	10284	1	1/270.8	0.00369276
+hard	Hard clue uniques	Amulet of glory (t4)	10354	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Robin Hood hat	2581	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Enchanted hat	7400	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Enchanted top	7399	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Enchanted robe	7398	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Dragon boots ornament kit	22231	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune full helm (t)	2627	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune platebody (t)	2623	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune platelegs (t)	2625	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune plateskirt (t)	3477	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune kiteshield (t)	2629	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune full helm (g)	2619	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune platebody (g)	2615	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune platelegs (g)	2617	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune plateskirt (g)	3476	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune kiteshield (g)	2621	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune shield (h1)	7336	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune shield (h2)	7342	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune shield (h3)	7348	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune shield (h4)	7354	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune shield (h5)	7360	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune helm (h1)	10286	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune helm (h2)	10288	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune helm (h3)	10290	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune helm (h4)	10292	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune helm (h5)	10294	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune platebody (h1)	23209	1	1/8125.0	0.00012308
+hard	Hard clue uniques	Rune platebody (h2)	23212	1	1/8125.0	0.00012308
+hard	Hard clue uniques	Rune platebody (h3)	23215	1	1/8125.0	0.00012308
+hard	Hard clue uniques	Rune platebody (h4)	23218	1	1/8125.0	0.00012308
+hard	Hard clue uniques	Rune platebody (h5)	23221	1	1/8125.0	0.00012308
+hard	Hard clue uniques	Zamorak full helm	2657	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak platebody	2653	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak platelegs	2655	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak plateskirt	3478	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak kiteshield	2659	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix full helm	2673	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix platebody	2669	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix platelegs	2671	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix plateskirt	3480	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix kiteshield	2675	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin full helm	2665	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin platebody	2661	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin platelegs	2663	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin plateskirt	3479	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin kiteshield	2667	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient full helm	12466	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient platebody	12460	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient platelegs	12462	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient plateskirt	12464	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient kiteshield	12468	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl full helm	12476	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl platebody	12470	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl platelegs	12472	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl plateskirt	12474	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl kiteshield	12478	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos full helm	12486	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos platebody	12480	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos platelegs	12482	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos plateskirt	12484	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos kiteshield	12488	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red d'hide body (g)	12327	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red d'hide body (t)	12331	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red d'hide chaps (g)	12329	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red d'hide chaps (t)	12333	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Blue d'hide body (g)	7374	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Blue d'hide body (t)	7376	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Blue d'hide chaps (g)	7382	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Blue d'hide chaps (t)	7384	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin coif	10390	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin d'hide body	10386	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin chaps	10388	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin bracers	10384	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin d'hide boots	19933	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin d'hide shield	23191	1	1/9750.0	0.00010256
+hard	Hard clue uniques	Guthix coif	10382	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix d'hide body	10378	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix chaps	10380	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix bracers	10376	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix d'hide boots	19927	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix d'hide shield	23188	1	1/9750.0	0.00010256
+hard	Hard clue uniques	Zamorak coif	10374	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak d'hide body	10370	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak chaps	10372	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak bracers	10368	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak d'hide boots	19936	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak d'hide shield	23194	1	1/9750.0	0.00010256
+hard	Hard clue uniques	Bandos coif	12504	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos d'hide body	12500	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos chaps	12502	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos bracers	12498	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos d'hide boots	19924	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Bandos d'hide shield	23203	1	1/9750.0	0.00010256
+hard	Hard clue uniques	Armadyl coif	12512	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl d'hide body	12508	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl chaps	12510	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl bracers	12506	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl d'hide boots	19930	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Armadyl d'hide shield	23200	1	1/9750	0.00010256
+hard	Hard clue uniques	Ancient coif	12496	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient d'hide body	12492	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient chaps	12494	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient bracers	12490	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient d'hide boots	19921	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Ancient d'hide shield	23197	1	1/9750.0	0.00010256
+hard	Hard clue uniques	Saradomin stole	10470	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Saradomin crozier	10440	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix stole	10472	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Guthix crozier	10442	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak stole	10474	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zamorak crozier	10444	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Zombie head (Treasure Trails)	19912	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Cyclops head	19915	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Pirate's hat	2651	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red cavalier	12323	1	1/1625.0	0.00061538
+hard	Hard clue uniques	White cavalier	12321	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Navy cavalier	12325	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Tan cavalier	2639	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Dark cavalier	2641	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Black cavalier	2643	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Pith helmet	12516	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Explorer backpack	12514	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Green dragon mask	12518	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Blue dragon mask	12520	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Red dragon mask	12522	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Black dragon mask	12524	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Nunchaku	19918	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune cane	12379	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Dual sai	23206	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Thieving bag	23224	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Rune defender ornament kit	23227	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Berserker necklace ornament kit	23237	1	1/1625.0	0.00061538
+hard	Hard clue uniques	Tzhaar-ket-om ornament kit	23232	1	1/1625.0	0.00061538
+hard	Hard clue uniques / Mega-rare table - Hard clues	Super energy(4)	3016	15 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Super restore(4)	3024	15 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Antifire potion(4)	2452	15 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Super attack(4)	2436	5 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Super strength(4)	2440	5 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Super defence(4)	2442	5 (noted)	1/16250.0	0.00006154
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded full helm	3486	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded platebody	3481	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded platelegs	3483	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded plateskirt	3485	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded kiteshield	3488	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded med helm	20146	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded chainbody	20149	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded sq shield	20152	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded 2h sword	20155	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded spear	20158	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	Gilded hasta	20161	1	1/35750.0	0.00002797
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age full helmet	10350	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age platebody	10348	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age platelegs	10346	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age plateskirt	23242	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age kiteshield	10352	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age range coif	10334	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age range top	10330	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age range legs	10332	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age vambraces	10336	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age mage hat	10342	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age robe top	10338	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age robe	10340	1	1/211250.0	0.00000473
+hard	Hard clue uniques / Mega-rare table - Hard clues	3rd Age amulet	10344	1	1/211250.0	0.00000473
+hard	Standard table / Weapons and armour	Rune full helm	1163	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune platebody	1127	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune platelegs	1079	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune plateskirt	1093	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune kiteshield	1201	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune longsword	1303	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune dagger	1213	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune battleaxe	1373	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune axe	1359	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Rune pickaxe	1275	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Black d'hide body	2503	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Black d'hide chaps	2497	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Magic shortbow	861	1	1/27.1	0.03690037
+hard	Standard table / Weapons and armour	Magic longbow	859	1	1/30.1	0.03322259
+hard	Standard table / Runes	Nature rune	561	30-50	1/27.1	0.03690037
+hard	Standard table / Runes	Law rune	563	30-50	1/27.1	0.03690037
+hard	Standard table / Runes	Blood rune	565	20-30	1/27.1	0.03690037
+hard	Standard table / Food	Lobster	379	12-15 (noted)	1/27.1	0.03690037
+hard	Standard table / Food	Shark	385	12-15 (noted)	1/27.1	0.03690037
+hard	Shared treasure trail items	Coins	995	1000-5000	1/27.1	0.03690037
+hard	Shared treasure trail items	Coins	995	10000-15000	1/77.4	0.01291990
+hard	Shared treasure trail items	Purple sweets	10476	7-15	1/27.1	0.03690037
+hard	Shared treasure trail items	Purple sweets	10476	8-12	1/77.4	0.01291990
+hard	Shared treasure trail items	Red firelighter	7329	9-15	1/135.4	0.00738552
+hard	Shared treasure trail items	Green firelighter	7330	9-15	1/135.4	0.00738552
+hard	Shared treasure trail items	Blue firelighter	7331	9-15	1/135.4	0.00738552
+hard	Shared treasure trail items	Purple firelighter	10326	9-15	1/135.4	0.00738552
+hard	Shared treasure trail items	White firelighter	10327	9-15	1/135.4	0.00738552
+hard	Shared treasure trail items	Holy blessing	20220	1	1/541.7	0.00184604
+hard	Shared treasure trail items	Unholy blessing	20223	1	1/541.7	0.00184604
+hard	Shared treasure trail items	Peaceful blessing	20226	1	1/541.7	0.00184604
+hard	Shared treasure trail items	War blessing	20232	1	1/541.7	0.00184604
+hard	Shared treasure trail items	Honourable blessing	20229	1	1/541.7	0.00184604
+hard	Shared treasure trail items	Ancient blessing	20235	1	1/541.7	0.00184604
+hard	Shared treasure trail items	Charge dragonstone jewellery scroll	20238	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Nardah teleport	12402	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Mos le'harmless teleport	12411	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Mort'ton teleport	12406	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Feldip hills teleport	12404	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Lunar isle teleport	12405	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Digsite teleport	12403	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Piscatoris teleport	12408	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Pest control teleport	12407	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Tai bwo wannai teleport	12409	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Lumberyard teleport	12642	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Iorwerth camp teleport	12410	5-15	1/340.5	0.00293686
+hard	Shared treasure trail items	Master scroll book (empty)	21387	1	1/595.8	0.00167842
+hard	Shared treasure trail items	Saradomin page 1	3827	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Saradomin page 2	3828	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Saradomin page 3	3829	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Saradomin page 4	3830	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Zamorak page 1	3831	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Zamorak page 2	3832	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Zamorak page 3	3833	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Zamorak page 4	3834	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Guthix page 1	3835	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Guthix page 2	3836	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Guthix page 3	3837	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Guthix page 4	3838	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Bandos page 1	12613	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Bandos page 2	12614	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Bandos page 3	12615	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Bandos page 4	12616	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Armadyl page 1	12617	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Armadyl page 2	12618	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Armadyl page 3	12619	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Armadyl page 4	12620	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Ancient page 1	12621	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Ancient page 2	12622	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Ancient page 3	12623	1	1/650.0	0.00153846
+hard	Shared treasure trail items	Ancient page 4	12624	1	1/650.0	0.00153846
+hard	Tertiary	Clue scroll (master)	19835	1	1/15	0.06666667
+hard	Tertiary	Minor hard scroll case	30914	1	Always	0.00000000
+hard	Tertiary	Major hard scroll case	30916	1	Always	0.00000000
+hard	Tertiary	Uri transform	0	1	always	0.00000000
+elite	Elite clue uniques	Dragon full helm ornament kit	12538	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dragon chainbody ornament kit	12534	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dragon legs/skirt ornament kit	12536	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dragon sq shield ornament kit	12532	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dragon scimitar ornament kit	20002	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Fury ornament kit	12526	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Light infinity colour kit	12530	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dark infinity colour kit	12528	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Royal crown	12397	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Royal gown top	12393	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Royal gown bottom	12395	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Royal sceptre	12439	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Musketeer hat	12351	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Musketeer tabard	12441	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Musketeer pants	12443	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Black d'hide body (g)	12381	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Black d'hide body (t)	12385	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Black d'hide chaps (g)	12383	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Black d'hide chaps (t)	12387	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Rangers' tunic	12596	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Ranger gloves	19994	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Holy wraps	19997	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Bronze dragon mask	12363	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Iron dragon mask	12365	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Steel dragon mask	12367	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Mithril dragon mask	12369	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Adamant dragon mask	23270	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Rune dragon mask	23273	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Arceuus scarf	19943	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Hosidius scarf	19946	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Lovakengj scarf	19949	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Piscarilius scarf	19952	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Shayzien scarf	19955	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Katana	12357	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dragon cane	12373	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Bucket helm	19991	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Blacksmith's helm	19988	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Deerstalker	12540	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Afro	12430	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Big pirate hat	12355	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Top hat	12432	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Monocle	12353	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Briefcase	12335	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Sagacious spectacles	12337	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Dark bow tie	19970	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Dark tuxedo jacket	19958	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Dark tuxedo cuffs	19961	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Dark trousers	19964	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Dark tuxedo shoes	19967	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Light bow tie	19985	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Light tuxedo jacket	19973	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Light tuxedo cuffs	19976	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Light trousers	19979	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Light tuxedo shoes	19982	1	1/12750.0	0.00007843
+elite	Elite clue uniques	Rangers' tights	23249	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Uri's hat	23255	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Giant boot	23252	1	1/1275.0	0.00078431
+elite	Elite clue uniques	Fremennik kilt	23246	1	1/1275.0	0.00078431
+elite	Elite clue uniques / Mega rare table - Elite clues	Ring of nature	20005	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Crystal key	989	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Lava dragon mask	12371	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Battlestaff	1391	100 (noted)	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Extended antifire(4)	11951	30 (noted)	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Super restore(4)	3024	30 (noted)	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Saradomin brew(4)	6685	30 (noted)	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Ranging potion(4)	2444	30 (noted)	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded full helm	3486	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded platebody	3481	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded platelegs	3483	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded plateskirt	3485	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded kiteshield	3488	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded med helm	20146	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded chainbody	20149	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded sq shield	20152	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded 2h sword	20155	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded spear	20158	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded hasta	20161	1	1/32257.5	0.00003100
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded scimitar	12389	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded boots	12391	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded coif	23258	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded d'hide vambraces	23261	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded d'hide body	23264	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded d'hide chaps	23267	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded pickaxe	23276	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded axe	23279	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	Gilded spade	23282	1	1/14662.5	0.00006820
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age full helmet	10350	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age platebody	10348	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age platelegs	10346	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age plateskirt	23242	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age kiteshield	10352	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age range coif	10334	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age range top	10330	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age range legs	10332	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age vambraces	10336	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age mage hat	10342	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age robe top	10338	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age robe	10340	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age amulet	10344	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age longsword	12426	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age wand	12422	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age cloak	12437	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mega rare table - Elite clues	3rd Age bow	12424	1	1/249262.5	0.00000401
+elite	Elite clue uniques / Mimic rewards	Ring of 3rd Age	23185	1	6/250	0.02400000
+elite	Elite clue uniques / Mimic rewards	Death rune	560	120-600	243/1250	0.19440000
+elite	Elite clue uniques / Mimic rewards	Blood rune	565	100-500	243/1250	0.19440000
+elite	Elite clue uniques / Mimic rewards	Grimy ranarr weed	207	5-25 (noted)	243/1250	0.19440000
+elite	Elite clue uniques / Mimic rewards	Wine of Zamorak	245	5-25 (noted)	243/1250	0.19440000
+elite	Elite clue uniques / Mimic rewards	Raw manta ray	389	3-15 (noted)	243/1250	0.19440000
+elite	Standard table / Weapons and armour	Rune platebody	1127	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Rune platelegs	1079	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Rune plateskirt	1093	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Rune kiteshield	1201	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Rune crossbow	9185	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Dragon dagger	1215	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Dragon mace	1434	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Dragon longsword	1305	1	1/32.3	0.03095975
+elite	Standard table / Weapons and armour	Onyx bolt tips	9194	8-12	1/32.3	0.03095975
+elite	Standard table / Runes	Law rune	563	50-75	1/32.3	0.03095975
+elite	Standard table / Runes	Death rune	560	50-75	1/32.3	0.03095975
+elite	Standard table / Runes	Blood rune	565	50-75	1/32.3	0.03095975
+elite	Standard table / Runes	Soul rune	566	50-75	1/32.3	0.03095975
+elite	Standard table / Jewellery	Dragonstone bracelet	11115	1	1/32.3	0.03095975
+elite	Standard table / Jewellery	Dragon necklace	1664	1	1/32.3	0.03095975
+elite	Standard table / Jewellery	Dragonstone ring	1645	1	1/32.3	0.03095975
+elite	Standard table / Food	Tuna potato	7060	15-20 (noted)	1/32.3	0.03095975
+elite	Standard table / Food	Summer pie	7218	15-20 (noted)	1/32.3	0.03095975
+elite	Standard table / Resources	Oak plank	8778	60-80 (noted)	1/32.3	0.03095975
+elite	Standard table / Resources	Teak plank	8780	40-50 (noted)	1/32.3	0.03095975
+elite	Standard table / Resources	Mahogany plank	8782	20-30 (noted)	1/32.3	0.03095975
+elite	Standard table / Resources	Runite bar	2363	1-3 (noted)	1/32.3	0.03095975
+elite	Standard table / Resources	Tooth half of key	985	1	1/64.6	0.01547988
+elite	Standard table / Resources	Loop half of key	987	1	1/64.6	0.01547988
+elite	Standard table / Resources	Palm tree seed	5289	1	1/96.9	0.01031992
+elite	Standard table / Resources	Yew seed	5315	1	1/96.9	0.01031992
+elite	Standard table / Resources	Magic seed	5316	1	1/96.9	0.01031992
+elite	Shared treasure trail items	Coins	995	20000-30000	1/32.3	0.03095975
+elite	Shared treasure trail items	Coins	995	10000-15000	1/92.3	0.01083424
+elite	Shared treasure trail items	Purple sweets	10476	9-23	1/32.3	0.03095975
+elite	Shared treasure trail items	Purple sweets	10476	8-12	1/92.3	0.01083424
+elite	Shared treasure trail items	Red firelighter	7329	9-15	1/161.5	0.00619195
+elite	Shared treasure trail items	Green firelighter	7330	9-15	1/161.5	0.00619195
+elite	Shared treasure trail items	Blue firelighter	7331	9-15	1/161.5	0.00619195
+elite	Shared treasure trail items	Purple firelighter	10326	9-15	1/161.5	0.00619195
+elite	Shared treasure trail items	White firelighter	10327	9-15	1/161.5	0.00619195
+elite	Shared treasure trail items	Holy blessing	20220	1	1/645.8	0.00154847
+elite	Shared treasure trail items	Unholy blessing	20223	1	1/645.8	0.00154847
+elite	Shared treasure trail items	Peaceful blessing	20226	1	1/645.8	0.00154847
+elite	Shared treasure trail items	War blessing	20232	1	1/645.8	0.00154847
+elite	Shared treasure trail items	Honourable blessing	20229	1	1/645.8	0.00154847
+elite	Shared treasure trail items	Ancient blessing	20235	1	1/645.8	0.00154847
+elite	Shared treasure trail items	Charge dragonstone jewellery scroll	20238	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Nardah teleport	12402	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Mos le'harmless teleport	12411	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Mort'ton teleport	12406	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Feldip hills teleport	12404	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Lunar isle teleport	12405	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Digsite teleport	12403	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Piscatoris teleport	12408	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Pest control teleport	12407	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Tai bwo wannai teleport	12409	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Lumberyard teleport	12642	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Iorwerth camp teleport	12410	5-15	1/203.0	0.00492611
+elite	Shared treasure trail items	Master scroll book (empty)	21387	1	1/355.2	0.00281532
+elite	Shared treasure trail items	Saradomin page 1	3827	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Saradomin page 2	3828	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Saradomin page 3	3829	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Saradomin page 4	3830	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Zamorak page 1	3831	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Zamorak page 2	3832	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Zamorak page 3	3833	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Zamorak page 4	3834	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Guthix page 1	3835	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Guthix page 2	3836	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Guthix page 3	3837	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Guthix page 4	3838	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Bandos page 1	12613	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Bandos page 2	12614	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Bandos page 3	12615	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Bandos page 4	12616	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Armadyl page 1	12617	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Armadyl page 2	12618	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Armadyl page 3	12619	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Armadyl page 4	12620	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Ancient page 1	12621	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Ancient page 2	12622	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Ancient page 3	12623	1	1/775.0	0.00129032
+elite	Shared treasure trail items	Ancient page 4	12624	1	1/775.0	0.00129032
+elite	Tertiary	Clue scroll (master)	19835	1	1/5	0.20000000
+elite	Tertiary	Minor elite scroll case	30918	1	Always	0.00000000
+elite	Tertiary	Major elite scroll case	30920	1	Always	0.00000000
+elite	Tertiary	Heavy casket	19941	1	always	0.00000000
+master	Master clue uniques	Occult ornament kit	20065	1	1/851.0	0.00117509
+master	Master clue uniques	Torture ornament kit	20062	1	1/851.0	0.00117509
+master	Master clue uniques	Anguish ornament kit	22246	1	1/851.0	0.00117509
+master	Master clue uniques	Tormented ornament kit	23348	1	1/851.0	0.00117509
+master	Master clue uniques	Dragon defender ornament kit	20143	1	1/851.0	0.00117509
+master	Master clue uniques	Dragon kiteshield ornament kit	22239	1	1/25530.0	0.00003917
+master	Master clue uniques	Dragon platebody ornament kit	22236	1	1/12765.0	0.00007834
+master	Master clue uniques	Hood of darkness	20128	1	1/851.0	0.00117509
+master	Master clue uniques	Robe top of darkness	20131	1	1/851.0	0.00117509
+master	Master clue uniques	Gloves of darkness	20134	1	1/851.0	0.00117509
+master	Master clue uniques	Robe bottom of darkness	20137	1	1/851.0	0.00117509
+master	Master clue uniques	Boots of darkness	20140	1	1/851.0	0.00117509
+master	Master clue uniques	Samurai kasa	20035	1	1/851.0	0.00117509
+master	Master clue uniques	Samurai shirt	20038	1	1/851.0	0.00117509
+master	Master clue uniques	Samurai gloves	20041	1	1/851.0	0.00117509
+master	Master clue uniques	Samurai greaves	20044	1	1/851.0	0.00117509
+master	Master clue uniques	Samurai boots	20047	1	1/851.0	0.00117509
+master	Master clue uniques	Arceuus hood	20113	1	1/851.0	0.00117509
+master	Master clue uniques	Hosidius hood	20116	1	1/851.0	0.00117509
+master	Master clue uniques	Lovakengj hood	20119	1	1/851.0	0.00117509
+master	Master clue uniques	Piscarilius hood	20122	1	1/851.0	0.00117509
+master	Master clue uniques	Shayzien hood	20125	1	1/851.0	0.00117509
+master	Master clue uniques	Old demon mask	20029	1	1/851.0	0.00117509
+master	Master clue uniques	Lesser demon mask	20020	1	1/851.0	0.00117509
+master	Master clue uniques	Greater demon mask	20023	1	1/851.0	0.00117509
+master	Master clue uniques	Black demon mask	20026	1	1/851.0	0.00117509
+master	Master clue uniques	Jungle demon mask	20032	1	1/851.0	0.00117509
+master	Master clue uniques	Left eye patch	19724	1	1/851.0	0.00117509
+master	Master clue uniques	Bowl wig	20110	1	1/851.0	0.00117509
+master	Master clue uniques	Ale of the gods	20056	1	1/851.0	0.00117509
+master	Master clue uniques	Obsidian cape (r)	20050	1	1/851.0	0.00117509
+master	Master clue uniques	Fancy tiara	20008	1	1/851.0	0.00117509
+master	Master clue uniques	Half moon spectacles	20053	1	1/851.0	0.00117509
+master	Master clue uniques	Armadyl godsword ornament kit	20068	1	1/3404.0	0.00029377
+master	Master clue uniques	Bandos godsword ornament kit	20071	1	1/3404.0	0.00029377
+master	Master clue uniques	Saradomin godsword ornament kit	20074	1	1/3404.0	0.00029377
+master	Master clue uniques	Zamorak godsword ornament kit	20077	1	1/3404.0	0.00029377
+master	Master clue uniques	Ankou mask	20095	1	1/12765.0	0.00007834
+master	Master clue uniques	Ankou top	20098	1	1/12765.0	0.00007834
+master	Master clue uniques	Ankou gloves	20101	1	1/12765.0	0.00007834
+master	Master clue uniques	Ankou's leggings	20104	1	1/12765.0	0.00007834
+master	Master clue uniques	Ankou socks	20107	1	1/12765.0	0.00007834
+master	Master clue uniques	Mummy's head	20080	1	1/12765.0	0.00007834
+master	Master clue uniques	Mummy's body	20083	1	1/12765.0	0.00007834
+master	Master clue uniques	Mummy's hands	20086	1	1/12765.0	0.00007834
+master	Master clue uniques	Mummy's legs	20089	1	1/12765.0	0.00007834
+master	Master clue uniques	Mummy's feet	20092	1	1/12765.0	0.00007834
+master	Master clue uniques / Mega-rare table - Master clues	Bucket helm (g)	20059	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Ring of coins	20017	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Cabbage	1965	3	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Anti-venom+(4)	12913	15 (noted)	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Torstol	269	50 (noted)	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded full helm	3486	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded platebody	3481	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded platelegs	3483	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded plateskirt	3485	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded kiteshield	3488	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded med helm	20146	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded chainbody	20149	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded sq shield	20152	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded 2h sword	20155	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded spear	20158	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded hasta	20161	1	1/149776.0	0.00000668
+master	Master clue uniques / Mega-rare table - Master clues	Gilded scimitar	12389	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded boots	12391	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded coif	23258	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded d'hide vambraces	23261	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded d'hide body	23264	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded d'hide chaps	23267	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded pickaxe	23276	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded axe	23279	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	Gilded spade	23282	1	1/13616.0	0.00007344
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age full helmet	10350	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age platebody	10348	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age platelegs	10346	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age plateskirt	23242	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age kiteshield	10352	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age range coif	10334	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age range top	10330	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age range legs	10332	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age vambraces	10336	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age mage hat	10342	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age robe top	10338	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age robe	10340	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age amulet	10344	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age druidic robe top	23336	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age druidic robe bottoms	23339	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age druidic cloak	23345	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age longsword	12426	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age bow	12424	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age wand	12422	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age druidic staff	23342	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age cloak	12437	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age pickaxe	20014	1	1/313168.0	0.00000319
+master	Master clue uniques / Mega-rare table - Master clues	3rd Age axe	20011	1	1/313168.0	0.00000319
+master	Master clue uniques / Mimic rewards	Ring of 3rd Age	23185	1	6/228	0.02631579
+master	Master clue uniques / Mimic rewards	Death rune	560	100-600	221/1140	0.19385965
+master	Master clue uniques / Mimic rewards	Blood rune	565	83-500	221/1140	0.19385965
+master	Master clue uniques / Mimic rewards	Grimy ranarr weed	207	4-25 (noted)	221/1140	0.19385965
+master	Master clue uniques / Mimic rewards	Wine of Zamorak	245	4-25 (noted)	221/1140	0.19385965
+master	Master clue uniques / Mimic rewards	Raw manta ray	389	2-15 (noted)	221/1140	0.19385965
+master	Standard table / Weapons	Dragon dagger	1215	1	1/30.3	0.03300330
+master	Standard table / Weapons	Dragon mace	1434	1	1/30.3	0.03300330
+master	Standard table / Weapons	Dragon longsword	1305	1	1/30.3	0.03300330
+master	Standard table / Weapons	Dragon scimitar	4587	1	1/30.3	0.03300330
+master	Standard table / Weapons	Dragon battleaxe	1377	1	1/30.3	0.03300330
+master	Standard table / Weapons	Dragon halberd	3204	1	1/30.3	0.03300330
+master	Standard table / Runes and ammunition	Nature rune	561	100-200	1/30.3	0.03300330
+master	Standard table / Runes and ammunition	Death rune	560	100-200	1/30.3	0.03300330
+master	Standard table / Runes and ammunition	Blood rune	565	100-200	1/30.3	0.03300330
+master	Standard table / Runes and ammunition	Soul rune	566	100-200	1/30.3	0.03300330
+master	Standard table / Runes and ammunition	Onyx bolts (e)	9245	15-25	1/30.3	0.03300330
+master	Standard table / Food	Manta ray	391	15-25 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Wine of Zamorak	245	35-50 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Limpwurt root	225	40-60 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Grimy ranarr weed	207	5-10 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Grimy toadflax	3049	25-35 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Grimy snapdragon	3051	5-10 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Runite ore	451	5-8 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Runite bar	2363	5-7 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Black dragonhide	1747	5-25 (noted)	1/30.3	0.03300330
+master	Standard table / Resources	Tooth half of key	985	1	1/60.6	0.01650165
+master	Standard table / Resources	Loop half of key	987	1	1/60.6	0.01650165
+master	Standard table / Resources	Palm tree seed	5289	1-2	1/91.0	0.01098901
+master	Standard table / Resources	Yew seed	5315	1-2	1/91.0	0.01098901
+master	Standard table / Resources	Magic seed	5316	1-2	1/91.0	0.01098901
+master	Shared treasure trail items	Coins	995	20000-35000	1/30.3	0.03300330
+master	Shared treasure trail items	Coins	995	10000-15000	1/86.6	0.01154734
+master	Shared treasure trail items	Coins	995	15000-30000	1/381.0	0.00262467
+master	Shared treasure trail items	Purple sweets	10476	14-33	1/30.3	0.03300330
+master	Shared treasure trail items	Purple sweets	10476	8-12	1/86.6	0.01154734
+master	Shared treasure trail items	Red firelighter	7329	20-38	1/151.6	0.00659631
+master	Shared treasure trail items	Green firelighter	7330	20-38	1/151.6	0.00659631
+master	Shared treasure trail items	Blue firelighter	7331	20-38	1/151.6	0.00659631
+master	Shared treasure trail items	Purple firelighter	10326	20-38	1/151.6	0.00659631
+master	Shared treasure trail items	White firelighter	10327	20-38	1/151.6	0.00659631
+master	Shared treasure trail items	Holy blessing	20220	1	1/606.4	0.00164908
+master	Shared treasure trail items	Unholy blessing	20223	1	1/606.4	0.00164908
+master	Shared treasure trail items	Peaceful blessing	20226	1	1/606.4	0.00164908
+master	Shared treasure trail items	War blessing	20232	1	1/606.4	0.00164908
+master	Shared treasure trail items	Honourable blessing	20229	1	1/606.4	0.00164908
+master	Shared treasure trail items	Ancient blessing	20235	1	1/606.4	0.00164908
+master	Shared treasure trail items	Charge dragonstone jewellery scroll	20238	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Nardah teleport	12402	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Mos le'harmless teleport	12411	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Mort'ton teleport	12406	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Feldip hills teleport	12404	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Lunar isle teleport	12405	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Digsite teleport	12403	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Piscatoris teleport	12408	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Pest control teleport	12407	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Tai bwo wannai teleport	12409	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Lumberyard teleport	12642	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Iorwerth camp teleport	12410	5-15	1/190.6	0.00524659
+master	Shared treasure trail items	Master scroll book (empty)	21387	1	1/333.5	0.00299850
+master	Shared treasure trail items	Saradomin page 1	3827	1	1/702.6	0.00142328
+master	Shared treasure trail items	Saradomin page 2	3828	1	1/702.6	0.00142328
+master	Shared treasure trail items	Saradomin page 3	3829	1	1/702.6	0.00142328
+master	Shared treasure trail items	Saradomin page 4	3830	1	1/702.6	0.00142328
+master	Shared treasure trail items	Zamorak page 1	3831	1	1/702.6	0.00142328
+master	Shared treasure trail items	Zamorak page 2	3832	1	1/702.6	0.00142328
+master	Shared treasure trail items	Zamorak page 3	3833	1	1/702.6	0.00142328
+master	Shared treasure trail items	Zamorak page 4	3834	1	1/702.6	0.00142328
+master	Shared treasure trail items	Guthix page 1	3835	1	1/702.6	0.00142328
+master	Shared treasure trail items	Guthix page 2	3836	1	1/702.6	0.00142328
+master	Shared treasure trail items	Guthix page 3	3837	1	1/702.6	0.00142328
+master	Shared treasure trail items	Guthix page 4	3838	1	1/702.6	0.00142328
+master	Shared treasure trail items	Bandos page 1	12613	1	1/702.6	0.00142328
+master	Shared treasure trail items	Bandos page 2	12614	1	1/702.6	0.00142328
+master	Shared treasure trail items	Bandos page 3	12615	1	1/702.6	0.00142328
+master	Shared treasure trail items	Bandos page 4	12616	1	1/702.6	0.00142328
+master	Shared treasure trail items	Armadyl page 1	12617	1	1/702.6	0.00142328
+master	Shared treasure trail items	Armadyl page 2	12618	1	1/702.6	0.00142328
+master	Shared treasure trail items	Armadyl page 3	12619	1	1/702.6	0.00142328
+master	Shared treasure trail items	Armadyl page 4	12620	1	1/702.6	0.00142328
+master	Shared treasure trail items	Ancient page 1	12621	1	1/702.6	0.00142328
+master	Shared treasure trail items	Ancient page 2	12622	1	1/702.6	0.00142328
+master	Shared treasure trail items	Ancient page 3	12623	1	1/702.6	0.00142328
+master	Shared treasure trail items	Ancient page 4	12624	1	1/702.6	0.00142328
+master	Tertiary	Bloodhound	19730	1	1/1000	0.00100000
+master	Tertiary	Scroll sack	22675	1	always	0.00000000
+master	Tertiary	Minor master scroll case	30922	1	Always	0.00000000
+master	Tertiary	Major master scroll case	30924	1	Always	0.00000000

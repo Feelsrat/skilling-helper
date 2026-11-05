@@ -61,6 +61,11 @@ public class DiaryItem
 		return new DiaryItem("Any " + tool.getNoun(), 1, tool.allIds(), 0, null, tool, 0);
 	}
 
+	public DiaryItem withAmount(int amount)
+	{
+		return new DiaryItem(name, amount, ids, buyId, howToGet, tool, skipVarbit);
+	}
+
 	public DiaryItem skipWhenVarbit(int varbit)
 	{
 		return new DiaryItem(name, amount, ids, buyId, howToGet, tool, varbit);

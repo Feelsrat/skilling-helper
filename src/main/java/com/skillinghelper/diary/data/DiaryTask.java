@@ -17,6 +17,15 @@ import net.runelite.api.Skill;
 @Builder
 public class DiaryTask
 {
+	/**
+	 * Fixed key for guides built from these tasks outside the diaries (e.g. ways to get a clue scroll), or null to
+	 * key the task by region, tier and number.
+	 */
+	String id;
+	/**
+	 * Can be done on a free-to-play world (diary tasks never can).
+	 */
+	boolean freeToPlay;
 	DiaryRegion region;
 	DiaryTier tier;
 	/**
@@ -105,6 +114,10 @@ public class DiaryTask
 
 	public String key()
 	{
+		if (id != null)
+		{
+			return id;
+		}
 		return region.name() + "." + tier.name() + "." + number;
 	}
 

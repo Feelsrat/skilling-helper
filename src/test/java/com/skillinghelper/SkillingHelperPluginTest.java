@@ -1,6 +1,7 @@
 package com.skillinghelper;
 
 import com.skillinghelper.banked.BankedXpPlugin;
+import com.skillinghelper.clue.ClueScrollGuidePlugin;
 import com.skillinghelper.collection.CollectionLogPlugin;
 import com.skillinghelper.diary.AchievementDiaryPlugin;
 import com.skillinghelper.money.MoneyMakingPlugin;
@@ -15,7 +16,7 @@ public class SkillingHelperPluginTest
 	{
 		ExternalPluginManager.loadBuiltin(SkillingHelperPlugin.class, PvmProgressionPlugin.class,
 			MoneyMakingPlugin.class, BankedXpPlugin.class, AchievementDiaryPlugin.class,
-			QuestOrderPlugin.class, CollectionLogPlugin.class);
+			QuestOrderPlugin.class, CollectionLogPlugin.class, ClueScrollGuidePlugin.class);
 		RuneLite.main(args);
 	}
 }

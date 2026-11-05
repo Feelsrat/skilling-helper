@@ -55,7 +55,7 @@ public final class DiaryGuide
 	public static List<String> missing(DiaryTask t, DiaryPlayer p)
 	{
 		List<String> out = new ArrayList<>();
-		if (!p.isMembers())
+		if (!p.isMembers() && !t.isFreeToPlay())
 		{
 			out.add("A members world");
 		}
@@ -139,7 +139,7 @@ public final class DiaryGuide
 	/**
 	 * Whether every item the task needs can be bought or is owned, so the guide won't get stuck on it.
 	 */
-	static boolean obtainable(DiaryTask t, DiaryPlayer p)
+	public static boolean obtainable(DiaryTask t, DiaryPlayer p)
 	{
 		for (DiaryItem item : t.getItems())
 		{

@@ -13,7 +13,7 @@ import lombok.Value;
  * What to do right now for the running diary guide. Rebuilt every tick and read by the overlays and the panel.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class DiaryStep
 {
 	public enum Kind

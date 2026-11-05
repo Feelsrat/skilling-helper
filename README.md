@@ -176,6 +176,27 @@ the "New item added to your collection log" chat message, and saved per account;
 log page says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is rebuilt
 with `python3 tools/collection/build_collection_log.py <cache dir> src/main/resources/com/skillinghelper/collection/collection-log.tsv`.
 
+## Clue Scroll Guide
+
+A panel for Treasure Trails that works alongside RuneLite's built-in Clue Scroll plugin (which solves each step; the
+panel offers to turn it on if it's off):
+
+- **Your clues**: every clue scroll, scroll box, clue bottle/nest/geode and reward casket you carry or have in the
+  bank, per tier, with a warning when you're near your scroll box limit and new drops would be lost.
+- **Guide**: opens caskets and scroll boxes you already have, takes your clue and a spade out of the bank, tells you how
+  to start the clue, and when you have none of a tier, walks you through getting one step by step (goblins, dark
+  wizards, H.A.M. members, wealthy citizens, Falador guards, or impling jars bought on the GE). Master: collects one
+  easy, medium, hard and elite clue and takes you to Watson.
+- **Rewards**: what each tier's caskets can give, the average casket value at today's GE prices, its most valuable
+  uniques, master clue chances and milestone rewards.
+- **STASH units**: the Construction level and planks per tier, and all 119 units with the items they hold (ticked
+  when you own them all). Click one to be guided there.
+- **Drop sources**: the best clue drop rates of each tier from the wiki. Wilderness units and sources only show when
+  Wilderness is allowed.
+
+The data (rewards, STASH units, drop sources) is built from the OSRS Wiki by `tools/clue/build_clue_data.py`; the
+plugin doesn't go online for it.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it
