@@ -268,7 +268,7 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 	}
 
 	/**
-	 * Another plugin in this jar asked to show one minigame: select it and open the panel.
+	 * Another plugin in this jar asked to show one minigame: select it, start its guide and open the panel.
 	 */
 	@Subscribe
 	public void onOpenMinigameRequest(OpenMinigameRequest e)
@@ -279,11 +279,24 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 			return;
 		}
 		configManager.setConfiguration(MinigameGuidesConfig.GROUP, SELECTED_KEY, m.getId());
-		if (m != selected)
+		selected = m;
+		// Start it straight away (the Account Planner's guided route relies on that); minigames whose full guide is
+		// in another plugin hand over to it, the rest run here
+		if (m.getSkillingMethod() != null)
 		{
 			running = false;
+			eventBus.post(new OpenMethodRequest(m.getSkillingMethod()));
 		}
-		selected = m;
+		else if (m.getPvmContent() != null)
+		{
+			running = false;
+			eventBus.post(new StartPvmGuideRequest(m.getPvmContent()));
+		}
+		else
+		{
+			running = true;
+			checkShortestPath = true;
+		}
 		refresh();
 		SwingUtilities.invokeLater(() -> clientToolbar.openPanel(navButton));
 	}
