@@ -1,6 +1,7 @@
 package com.skillinghelper.planner;
 
 import com.google.inject.Provides;
+import com.skillinghelper.OpenQuestRequest;
 import com.skillinghelper.SkillingHelperConfig;
 import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankItems;
@@ -14,6 +15,7 @@ import com.skillinghelper.planner.api.PlanStep;
 import com.skillinghelper.planner.api.PlanStepProvider;
 import com.skillinghelper.planner.api.StepKind;
 import com.skillinghelper.planner.ui.PlannerPanel;
+import com.skillinghelper.quests.QuestIgnoreList;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -814,6 +816,13 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 				// Skipped, not done: the route just moves on
 				routeStepTitle = null;
 				routeDone--;
+			}
+			PlanStep step = planned.get(stepId);
+			if (step != null && step.getOpen() instanceof OpenQuestRequest)
+			{
+				// One ignore list for quests, shared with the Quest Order Guide (undo it there)
+				QuestIgnoreList.set(configManager, ((OpenQuestRequest) step.getOpen()).getQuest(), true);
+				return;
 			}
 			skipped.add(stepId);
 			saveSkipped();
