@@ -29,6 +29,13 @@ public class QuestView
 		String detail;
 	}
 
+	@Value
+	public static class Ignored
+	{
+		String key;
+		String name;
+	}
+
 	boolean loggedIn;
 	Route route;
 	boolean routeAuto;
@@ -42,5 +49,9 @@ public class QuestView
 	 * The next rows on the route that aren't done, in order.
 	 */
 	List<Row> upcoming;
+	/**
+	 * Rows on the player's ignore list, in route order.
+	 */
+	List<Ignored> ignored;
 	boolean wildernessAllowed;
 }

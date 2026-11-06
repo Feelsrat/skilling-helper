@@ -46,6 +46,7 @@ public class QuestStepProvider implements PlanStepProvider
 		}
 		names.addAll(QuestData.quests().keySet());
 		int qp = a.getVarp().applyAsInt(VarPlayerID.QP);
+		Set<String> ignored = QuestIgnoreList.parse(a.getProfileConfig().apply(QuestIgnoreList.PROFILE_KEY));
 		List<PlanStep> out = new ArrayList<>();
 		Set<Quest> seen = new LinkedHashSet<>();
 		for (String name : names)
@@ -56,12 +57,12 @@ public class QuestStepProvider implements PlanStepProvider
 			{
 				continue;
 			}
-			out.add(step(route, info, q, a, qp));
+			out.add(step(route, info, q, a, qp, ignored.contains(info.getName())));
 		}
 		return out;
 	}
 
-	private static PlanStep step(Route route, QuestInfo info, Quest q, AccountState a, int qp)
+	private static PlanStep step(Route route, QuestInfo info, Quest q, AccountState a, int qp, boolean ignored)
 	{
 		PlanStep.PlanStepBuilder b = PlanStep.builder()
 			.id(PlanStep.questId(q))
@@ -69,6 +70,7 @@ public class QuestStepProvider implements PlanStepProvider
 			.title(info.shortName())
 			.finishes(q)
 			.done(a.quest(q) == QuestState.FINISHED)
+			.ignored(ignored)
 			.why(why(info))
 			.minutes(minutes(info.getLength()))
 			.value(VALUE)

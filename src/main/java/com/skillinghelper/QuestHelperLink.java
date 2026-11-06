@@ -2,6 +2,7 @@ package com.skillinghelper;
 
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 
@@ -24,6 +25,13 @@ public final class QuestHelperLink
 	public static final String MISSING = "The Quest Helper plugin isn't installed or isn't turned on. Get it from "
 		+ "the Plugin Hub (or turn it on) to be shown every step of the quest.";
 
+	/**
+	 * Quest Helper's config group and the settings this jar reads or (on the player's press) changes.
+	 */
+	public static final String CONFIG_GROUP = "questhelper";
+	static final String AUTO_START_KEY = "autoStartQuests";
+	static final String ORDER_KEY = "orderListBy";
+
 	private static boolean warned;
 
 	private QuestHelperLink()
@@ -40,6 +48,32 @@ public final class QuestHelperLink
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Whether Quest Helper starts guiding a quest by itself when the game says it started (its default).
+	 */
+	public static boolean autoStarts(ConfigManager configManager)
+	{
+		String v = configManager.getConfiguration(CONFIG_GROUP, AUTO_START_KEY);
+		return v == null || Boolean.parseBoolean(v);
+	}
+
+	/**
+	 * Turns on Quest Helper's "Auto start helper" setting. Only on the player's press.
+	 */
+	public static void enableAutoStart(ConfigManager configManager)
+	{
+		configManager.setConfiguration(CONFIG_GROUP, AUTO_START_KEY, true);
+	}
+
+	/**
+	 * Sorts Quest Helper's quest list by the wiki's optimal order (main or Ironman), the same route as this guide.
+	 * Only on the player's press.
+	 */
+	public static void sortOptimal(ConfigManager configManager, boolean ironman)
+	{
+		configManager.setConfiguration(CONFIG_GROUP, ORDER_KEY, ironman ? "OPTIMAL_IRONMAN" : "OPTIMAL");
 	}
 
 	static boolean isQuestHelper(String className, String name)

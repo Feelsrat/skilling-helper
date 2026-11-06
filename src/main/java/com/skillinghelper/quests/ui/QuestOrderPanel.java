@@ -14,7 +14,9 @@ import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -25,6 +27,7 @@ public class QuestOrderPanel extends PluginPanel
 {
 	private static final int WIDTH = GuideUi.WIDTH;
 	private static final int CARD = GuideUi.CARD_WIDTH;
+	private static final String IGNORED = "Ignored";
 
 	public interface Listener
 	{
@@ -52,6 +55,15 @@ public class QuestOrderPanel extends PluginPanel
 		void onOpenRoutePage();
 
 		void onGetQuestHelper();
+
+		/**
+		 * Add a route row to the ignore list (shared with the Account Planner), or take it off.
+		 */
+		void onIgnore(String key, boolean ignore);
+
+		void onQuestHelperAutoStart();
+
+		void onSortQuestHelper();
 	}
 
 	private final Listener listener;
@@ -143,8 +155,11 @@ public class QuestOrderPanel extends PluginPanel
 				page == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(page)),
 				step.getKind() == QuestStep.Kind.ACTIVITY && key != null
 					? GuideUi.small("Done", () -> listener.onMarkDone(key)) : null,
+				step.isOfferAutoStart() ? GuideUi.small("Auto start", listener::onQuestHelperAutoStart) : null,
 				key != null && step.getKind() != QuestStep.Kind.TRAIN
-					? GuideUi.small("Skip", () -> listener.onSkip(key)) : null);
+					? GuideUi.small("Skip", () -> listener.onSkip(key)) : null,
+				key != null && step.getKind() != QuestStep.Kind.TRAIN
+					? GuideUi.small("Ignore", () -> listener.onIgnore(key, true)) : null);
 			if (!v.isRunning())
 			{
 				card.add(Box.createVerticalStrut(6));
@@ -181,9 +196,23 @@ public class QuestOrderPanel extends PluginPanel
 				body.add(Box.createVerticalStrut(3));
 			}
 		}
+		if (!v.getIgnored().isEmpty())
+		{
+			body.add(GuideUi.section(IGNORED + " (" + v.getIgnored().size() + ")"));
+			body.add(GuideUi.hint("Never suggested here or in the Account Planner. Click one to bring it back."));
+			for (QuestView.Ignored r : v.getIgnored())
+			{
+				JPanel row = GuideUi.row(false);
+				row.add(GuideUi.line("• " + r.getName(), GuideUi.MUTED, CARD));
+				GuideUi.clickable(row, "Stop ignoring this", () -> listener.onIgnore(r.getKey(), false));
+				body.add(GuideUi.full(row));
+				body.add(Box.createVerticalStrut(3));
+			}
+		}
 		body.add(Box.createVerticalStrut(6));
-		body.add(GuideUi.actions(GuideUi.small("The wiki's full route", listener::onOpenRoutePage)));
-		GuideUi.foldSections(body, GuideUi.MORE::equals, openSections);
+		body.add(GuideUi.actions(GuideUi.small("The wiki's full route", listener::onOpenRoutePage),
+			v.isQuestHelper() ? GuideUi.small("Sort Quest Helper the same", listener::onSortQuestHelper) : null));
+		GuideUi.foldSections(body, t -> GuideUi.MORE.equals(t) || t.startsWith(IGNORED), openSections);
 		finish();
 	}
 
@@ -230,8 +259,32 @@ public class QuestOrderPanel extends PluginPanel
 		{
 			row.add(GuideUi.text("Skipped for now.", GuideUi.MUTED, CARD));
 		}
-		GuideUi.clickable(row, "Do this next", () -> listener.onPick(r.getKey()));
+		GuideUi.clickable(row, "Do this next (right-click to ignore)", () -> listener.onPick(r.getKey()));
+		JPopupMenu menu = new JPopupMenu();
+		JMenuItem next = new JMenuItem("Do this next");
+		next.addActionListener(e -> listener.onPick(r.getKey()));
+		JMenuItem ignore = new JMenuItem("Ignore (never suggest)");
+		ignore.addActionListener(e -> listener.onIgnore(r.getKey(), true));
+		menu.add(next);
+		menu.add(ignore);
+		popup(row, menu);
 		return GuideUi.full(row);
+	}
+
+	/**
+	 * Right-click anywhere on the row (its labels too) opens the menu.
+	 */
+	private static void popup(JComponent c, JPopupMenu menu)
+	{
+		c.setComponentPopupMenu(menu);
+		for (java.awt.Component k : c.getComponents())
+		{
+			if (k instanceof JComponent)
+			{
+				((JComponent) k).setInheritsPopupMenu(true);
+				popup((JComponent) k, menu);
+			}
+		}
 	}
 
 	private void finish()
