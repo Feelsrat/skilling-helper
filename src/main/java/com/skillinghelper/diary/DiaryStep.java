@@ -13,7 +13,7 @@ import lombok.Value;
  * What to do right now for the running diary guide. Rebuilt every tick and read by the overlays and the panel.
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class DiaryStep
 {
 	public enum Kind
@@ -68,6 +68,11 @@ public class DiaryStep
 	 * Where to walk to, or null when the step doesn't move the player.
 	 */
 	Location destination;
+	/**
+	 * Where the task itself happens, even while this step sends the player to a bank first. Travel items are
+	 * planned for this spot.
+	 */
+	Location goal;
 	@Builder.Default
 	Set<String> npcs = Collections.emptySet();
 	@Builder.Default

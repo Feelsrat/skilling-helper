@@ -223,4 +223,45 @@ public class DiaryGuideTest
 		bank.put(ItemID.COINS, 1_000_000);
 		assertEquals(30_000 + 5 * 1000, DiaryGuide.cost(planks, b.bank(bank).build()));
 	}
+
+	@Test
+	public void oneBankTripAlsoGrabsTheNextTasksItems()
+	{
+		DiaryTask bucket = null;
+		DiaryTask oak = null;
+		for (DiaryTask t : Diaries.tasks(DiaryRegion.FREMENNIK, DiaryTier.EASY))
+		{
+			if (t.getNumber() == 8)
+			{
+				bucket = t;
+			}
+			if (t.getNumber() == 10)
+			{
+				oak = t;
+			}
+		}
+		assertNotNull(bucket);
+		assertNotNull(oak);
+		Map<Integer, Integer> bank = new HashMap<>();
+		bank.put(ItemID.BUCKET_EMPTY, 1);
+		bank.put(ItemID.TINDERBOX, 1);
+		bank.put(ItemID.RUNE_AXE, 1);
+		DiaryPlayer p = player(99).bank(bank).bankOpen(true).build();
+
+		DiaryStep step = DiaryGuide.resolve(bucket, p, java.util.List.of(oak));
+		assertEquals(DiaryStep.Kind.WITHDRAW, step.getKind());
+		assertEquals(Integer.valueOf(1), step.getWithdraw().get(ItemID.BUCKET_EMPTY));
+		assertEquals(Integer.valueOf(1), step.getWithdraw().get(ItemID.TINDERBOX));
+
+		// Carrying the bucket already: the open bank still offers the oak task's things
+		Map<Integer, Integer> carried = new HashMap<>();
+		carried.put(ItemID.BUCKET_EMPTY, 1);
+		DiaryStep extras = DiaryGuide.resolve(bucket, p.toBuilder().carried(carried).build(), java.util.List.of(oak));
+		assertEquals(DiaryStep.Kind.WITHDRAW, extras.getKind());
+		assertTrue(extras.getWithdraw().containsKey(ItemID.TINDERBOX));
+
+		// No room: the extras are left out
+		DiaryStep full = DiaryGuide.resolve(bucket, p.toBuilder().freeSlots(1).build(), java.util.List.of(oak));
+		assertFalse(full.getWithdraw().containsKey(ItemID.TINDERBOX));
+	}
 }

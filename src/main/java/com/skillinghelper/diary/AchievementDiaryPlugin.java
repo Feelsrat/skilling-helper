@@ -120,6 +120,10 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	private final Map<Quest, QuestState> quests = new HashMap<>();
 	private int questCountdown;
 	private Map<Integer, Integer> bankCounts;
+	/**
+	 * Task key the bank was last opened for.
+	 */
+	private String bankedFor;
 	private boolean checkShortestPath = true;
 
 	/**
@@ -322,11 +326,32 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 			.carried(carried())
 			.bank(bankCounts == null ? null : new HashMap<>(bankCounts))
 			.bankOpen(bankWidget != null && !bankWidget.isHidden())
+			.bankedFor(bankedFor)
+			.freeSlots(freeSlots())
+			.stackable(id -> itemManager.getItemComposition(id).isStackable())
 			.members(client.getWorldType().contains(WorldType.MEMBERS))
 			.allowWilderness(Wilderness.allowed(configManager))
 			.preferShops(config.preferShops())
 			.buyPrice(id -> (int) Math.min(Integer.MAX_VALUE, itemManager.getItemPrice(id)))
 			.build();
+	}
+
+	private int freeSlots()
+	{
+		ItemContainer inv = client.getItemContainer(InventoryID.INV);
+		if (inv == null)
+		{
+			return 28;
+		}
+		int used = 0;
+		for (Item item : inv.getItems())
+		{
+			if (item.getId() > 0)
+			{
+				used++;
+			}
+		}
+		return Math.max(0, 28 - used);
 	}
 
 	private Map<Integer, Integer> carried()
@@ -362,8 +387,15 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 		DiaryStep next = null;
 		if (running && p != null)
 		{
+			if (p.isBankOpen() && step != null && step.getTaskKey() != null)
+			{
+				// Remember which task the bank was opened for, so a travel item left behind isn't asked for again
+				bankedFor = step.getTaskKey();
+			}
 			next = DiaryGuide.resolve(region, tier, p, skipped, picked);
-			Location dest = next.getDestination();
+			// Plan teleports for where the task happens, not for the bank the step may send the player to first
+			Location dest = next.getKind() == DiaryStep.Kind.DO ? null
+				: next.getGoal() != null ? next.getGoal() : next.getDestination();
 			if (dest != null && !client.getTopLevelWorldView().isInstance())
 			{
 				Map<Integer, Integer> bank = p.getBank();

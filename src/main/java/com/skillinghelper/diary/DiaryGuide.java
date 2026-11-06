@@ -40,6 +40,10 @@ public final class DiaryGuide
 	/**
 	 * Bought tools when none is owned: the best of these the player can use (all on the Grand Exchange).
 	 */
+	/**
+	 * How many tasks ahead one bank trip grabs items for.
+	 */
+	private static final int UPCOMING = 3;
 	private static final Set<String> BUYABLE_TOOLS = Set.of("Rune", "Adamant", "Mithril", "Steel", "Iron", "Bronze");
 
 	private DiaryGuide()
@@ -177,13 +181,53 @@ public final class DiaryGuide
 		{
 			return lockedTier(left, p, skipped);
 		}
-		return resolve(task, p);
+		return resolve(task, p, upcoming(tasks, p, skipped, task));
+	}
+
+	/**
+	 * The tasks after the current one in walking order that the player can do, so one bank trip can grab their
+	 * items too.
+	 */
+	static List<DiaryTask> upcoming(List<DiaryTask> tasks, DiaryPlayer p, Set<String> skipped, DiaryTask current)
+	{
+		List<DiaryTask> out = new ArrayList<>();
+		for (DiaryTask t : tasks)
+		{
+			if (out.size() >= UPCOMING)
+			{
+				break;
+			}
+			if (t != current && !done(t, p) && !skipped.contains(t.key()) && missing(t, p).isEmpty() && obtainable(t, p))
+			{
+				out.add(t);
+			}
+		}
+		return out;
 	}
 
 	/**
 	 * The next step for one task.
 	 */
 	public static DiaryStep resolve(DiaryTask t, DiaryPlayer p)
+	{
+		return resolve(t, p, List.of());
+	}
+
+	/**
+	 * The next step for one task, with the tasks after it whose items are worth grabbing on the same bank trip.
+	 */
+	static DiaryStep resolve(DiaryTask t, DiaryPlayer p, List<DiaryTask> upcoming)
+	{
+		DiaryStep step = stepFor(t, p, upcoming);
+		if (step.getKind() == DiaryStep.Kind.LOCKED || step.getKind() == DiaryStep.Kind.GET_ITEM)
+		{
+			return step;
+		}
+		DiaryStage stage = t.getStages().get(stageIndex(t, p));
+		return step.toBuilder().goal(stage.getAt()).build();
+	}
+
+	private static DiaryStep stepFor(DiaryTask t, DiaryPlayer p, List<DiaryTask> upcoming)
 	{
 		List<String> missing = missing(t, p);
 		if (!missing.isEmpty())
@@ -199,7 +243,7 @@ public final class DiaryGuide
 		DiaryStage stage = t.getStages().get(stageIndex);
 		if (!stage.isStarted())
 		{
-			DiaryStep supplies = supplies(t, p);
+			DiaryStep supplies = supplies(t, p, upcoming);
 			if (supplies != null)
 			{
 				return supplies;
@@ -211,6 +255,11 @@ public final class DiaryGuide
 		Location at = stage.getAt();
 		if (at != null && !inside && !at.contains(me))
 		{
+			DiaryStep travelTrip = travelTrip(t, p, at, upcoming);
+			if (travelTrip != null)
+			{
+				return travelTrip;
+			}
 			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.TRAVEL, t)
 				.title("Walk to " + at.getName())
 				.destination(at);
@@ -350,10 +399,16 @@ public final class DiaryGuide
 	 */
 	static DiaryStep supplies(DiaryTask t, DiaryPlayer p)
 	{
+		return supplies(t, p, List.of());
+	}
+
+	static DiaryStep supplies(DiaryTask t, DiaryPlayer p, List<DiaryTask> upcoming)
+	{
 		List<Need> needs = needs(t, p);
 		if (needs.isEmpty())
 		{
-			return null;
+			// Bank already open: still worth grabbing the next tasks' items while here
+			return p.isBankOpen() ? extrasStep(t, p, upcoming, needs) : null;
 		}
 		for (Need n : needs)
 		{
@@ -447,14 +502,16 @@ public final class DiaryGuide
 			b.line("For \"" + t.label() + "\" you need:");
 			needs.forEach(n -> b.line("- " + amount(n.getItem(), n.getId(), n.getAmount())));
 			travelLines(b, p);
+			extraLines(b, p, upcoming, needs, withdraw);
 			return b.build();
 		}
 		DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.WITHDRAW, t)
-			.title("Take out what this task needs")
-			.withdraw(withdraw);
+			.title("Take out what this task needs");
 		b.line("Take these out (outlined in the bank):");
 		needs.forEach(n -> b.line("- " + amount(n.getItem(), n.getId(), n.getAmount())));
 		travelLines(b, p);
+		extraLines(b, p, upcoming, needs, withdraw);
+		b.withdraw(withdraw);
 		b.line("To take an exact number, right-click the item and choose Withdraw-X, then type it.");
 		if (!toBuy.isEmpty())
 		{
@@ -462,6 +519,153 @@ public final class DiaryGuide
 				+ (shop != null ? " or " + shop.getShop().getName() : "") + ".");
 		}
 		return b.build();
+	}
+
+	/**
+	 * Bank trip for a travel item (teleport, jewellery, fare) when the walk is long and a bank is on the way, so the
+	 * player doesn't walk across the map with the teleport sitting in the bank. Asked once per task: if the bank
+	 * was opened for this task and closed without taking it, the guide just walks.
+	 */
+	private static DiaryStep travelTrip(DiaryTask t, DiaryPlayer p, Location at, List<DiaryTask> upcoming)
+	{
+		List<TravelPick> fromBank = new ArrayList<>();
+		for (TravelPick pick : p.getTravel())
+		{
+			if (!pick.isCarried())
+			{
+				fromBank.add(pick);
+			}
+		}
+		if (fromBank.isEmpty())
+		{
+			return null;
+		}
+		if (p.isBankOpen())
+		{
+			Map<Integer, Integer> withdraw = new LinkedHashMap<>();
+			DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.WITHDRAW, t)
+				.title("Take out what gets you there faster");
+			b.line("Take these out (outlined in the bank):");
+			travelLines(b, p);
+			extraLines(b, p, upcoming, List.of(), withdraw);
+			b.line("Then close the bank and the guide shows the way to " + at.getName() + ".");
+			return b.withdraw(withdraw).build();
+		}
+		if (t.key().equals(p.getBankedFor()))
+		{
+			return null;
+		}
+		WorldPoint me = p.getLocation();
+		Location bank = me == null ? null : Banks.nearest(me, p.isMembers());
+		if (bank == null)
+		{
+			return null;
+		}
+		int toBank = bank.getPoint().distanceTo2D(me);
+		int toSpot = at.getPoint().distanceTo2D(me);
+		if (!bank.contains(me) && toBank * 2 > toSpot)
+		{
+			// The bank is not on the way: walking is quicker than the detour
+			return null;
+		}
+		DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.OPEN_BANK, t)
+			.title("Grab your teleport from the bank first")
+			.npcs(BANK_NPCS)
+			.objects(BANK_OBJECTS);
+		if (!bank.contains(me))
+		{
+			b.destination(bank).line("Walk to " + bank.getName() + " (follow the arrow).");
+		}
+		b.line("Click a bank booth or banker (outlined) and choose Bank.");
+		b.line("It saves a long walk to " + at.getName() + ". Take out:");
+		travelLines(b, p);
+		b.line("Close the bank without it and the guide just walks you there.");
+		return b.build();
+	}
+
+	/**
+	 * Bank-open step for the next tasks' items when the current task already has everything, or null when there's
+	 * nothing more to grab.
+	 */
+	private static DiaryStep extrasStep(DiaryTask t, DiaryPlayer p, List<DiaryTask> upcoming, List<Need> current)
+	{
+		Map<Integer, Integer> withdraw = new LinkedHashMap<>();
+		DiaryStep.DiaryStepBuilder b = step(DiaryStep.Kind.WITHDRAW, t)
+			.title("While the bank is open, grab the next tasks' items");
+		if (!extraLines(b, p, upcoming, current, withdraw))
+		{
+			return null;
+		}
+		b.line("Or close the bank and carry on with \"" + t.label() + "\".");
+		return b.withdraw(withdraw).build();
+	}
+
+	/**
+	 * Adds the items of the next few tasks that are already in the bank and fit in the inventory, so one trip
+	 * covers several tasks (Zygor style). Returns whether anything was added.
+	 */
+	private static boolean extraLines(DiaryStep.DiaryStepBuilder b, DiaryPlayer p, List<DiaryTask> upcoming,
+		List<Need> current, Map<Integer, Integer> withdraw)
+	{
+		Map<Integer, Integer> taken = new LinkedHashMap<>();
+		for (Need n : current)
+		{
+			taken.merge(n.getId(), n.getAmount(), Integer::sum);
+		}
+		int slots = p.getFreeSlots() - slots(current, p) - (int) p.getTravel().stream().filter(x -> !x.isCarried()).count();
+		boolean header = false;
+		for (DiaryTask u : upcoming)
+		{
+			List<Need> extra = new ArrayList<>();
+			for (Need n : needs(u, p))
+			{
+				int have = taken.getOrDefault(n.getId(), 0);
+				boolean single = n.getAmount() == 1;
+				if (single && have > 0)
+				{
+					continue; // one axe, tinderbox, spade... does both tasks
+				}
+				extra.add(n);
+			}
+			if (extra.isEmpty())
+			{
+				continue;
+			}
+			boolean inBank = true;
+			for (Need n : extra)
+			{
+				inBank &= n.getId() > 0 && n.getInBank() >= n.getAmount() + taken.getOrDefault(n.getId(), 0);
+			}
+			int need = slots(extra, p);
+			if (!inBank || need > slots)
+			{
+				continue;
+			}
+			slots -= need;
+			if (!header)
+			{
+				b.line("Also take these for the next tasks, so you don't have to come back:");
+				header = true;
+			}
+			for (Need n : extra)
+			{
+				taken.merge(n.getId(), n.getAmount(), Integer::sum);
+				b.line("- " + amount(n.getItem(), n.getId(), n.getAmount()) + " (for " + u.getName() + ")");
+			}
+		}
+		taken.forEach((id, amount) -> withdraw.merge(id, amount, Math::max));
+		return header;
+	}
+
+	private static int slots(List<Need> needs, DiaryPlayer p)
+	{
+		int n = 0;
+		for (Need need : needs)
+		{
+			boolean stacks = p.getStackable().test(need.getId()) || need.getId() == ItemID.COINS;
+			n += stacks ? (p.getCarried().getOrDefault(need.getId(), 0) > 0 ? 0 : 1) : need.getAmount();
+		}
+		return n;
 	}
 
 	/**

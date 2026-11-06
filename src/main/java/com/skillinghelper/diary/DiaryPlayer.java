@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import lombok.Builder;
 import lombok.Value;
@@ -55,6 +56,20 @@ public class DiaryPlayer
 	 */
 	Map<Integer, Integer> bank;
 	boolean bankOpen;
+	/**
+	 * Key of the task the bank was last opened for, so a skipped travel item doesn't send the player back again.
+	 */
+	String bankedFor;
+	/**
+	 * Empty inventory slots.
+	 */
+	@Builder.Default
+	int freeSlots = 28;
+	/**
+	 * Whether an item stacks in one inventory slot.
+	 */
+	@Builder.Default
+	IntPredicate stackable = id -> false;
 	boolean members;
 	boolean allowWilderness;
 	boolean preferShops;
