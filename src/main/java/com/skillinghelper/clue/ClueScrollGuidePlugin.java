@@ -120,6 +120,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	private ModelOutlineRenderer outlineRenderer;
 
 	private NameTargets targets;
+	private ClueStepReader stepReader;
 	private ClueSceneOverlay sceneOverlay;
 	private CluePanel panel;
 	private NavigationButton navButton;
@@ -155,6 +156,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	protected void startUp()
 	{
 		targets = new NameTargets(client);
+		stepReader = new ClueStepReader(client, pluginManager);
 		sceneOverlay = new ClueSceneOverlay(client, this, config, targets, outlineRenderer);
 		eventBus.register(targets);
 		bankFilter.attach(this);
@@ -300,6 +302,8 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 		configManager.setConfiguration(ClueScrollGuideConfig.GROUP, "tier", t.name());
 		tier = t;
 		stashKey = null;
+		running = true;
+		checkShortestPath = true;
 		refresh();
 		NavigationButton button = navButton;
 		if (button != null)
@@ -459,7 +463,9 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 		{
 			return ClueGuide.reword(DiaryGuide.resolve(ClueGuide.stashTask(stash), p));
 		}
-		return ClueGuide.resolve(tier, holdings, p, pickedWays.get(tier), cluePluginOn);
+		ClueStep clueStep = holdings.get(tier, ClueItem.Kind.CLUE).total() > 0
+			? stepReader.read(p.getLocation(), p.getBank()) : null;
+		return ClueGuide.resolve(tier, holdings, p, pickedWays.get(tier), cluePluginOn, clueStep);
 	}
 
 	private static ClueData.Stash stash(String key)

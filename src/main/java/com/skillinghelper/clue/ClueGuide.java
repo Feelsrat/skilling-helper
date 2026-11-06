@@ -23,7 +23,8 @@ import net.runelite.api.gameval.ItemID;
 /**
  * The clue guide for one tier, for someone who has never done a clue: open what you already have first (caskets,
  * scroll boxes, bottles), then do the clue you hold with the kit it needs, and only then go and get a new one.
- * Solving each step is left to RuneLite's own Clue Scroll plugin, which this guide points to. Recomputed every tick.
+ * Each step is read from RuneLite's own Clue Scroll plugin and turned into what to bring, where to walk and what to
+ * click. Recomputed every tick.
  */
 public final class ClueGuide
 {
@@ -48,6 +49,17 @@ public final class ClueGuide
 	 * @param cluePlugin whether RuneLite's Clue Scroll plugin is on
 	 */
 	public static DiaryStep resolve(ClueTier tier, ClueHoldings h, DiaryPlayer p, String way, boolean cluePlugin)
+	{
+		return resolve(tier, h, p, way, cluePlugin, null);
+	}
+
+	/**
+	 * The next step for the tier.
+	 *
+	 * @param step the clue step the player is on, read from RuneLite's Clue Scroll plugin, or null when unknown
+	 */
+	public static DiaryStep resolve(ClueTier tier, ClueHoldings h, DiaryPlayer p, String way, boolean cluePlugin,
+		ClueStep step)
 	{
 		if (tier.isMembers() && !p.isMembers())
 		{
@@ -75,7 +87,29 @@ public final class ClueGuide
 		ClueHoldings.Stack clue = h.get(tier, ClueItem.Kind.CLUE);
 		if (clue.total() > 0)
 		{
-			return reword(DiaryGuide.resolve(solveTask(tier, clue, p, cluePlugin), p));
+			if (step == null)
+			{
+				return reword(DiaryGuide.resolve(readTask(tier, clue, p, cluePlugin), p));
+			}
+			if (step.getLocation() != null && Wilderness.contains(step.getLocation()) && !p.isAllowWilderness())
+			{
+				return DiaryStep.builder().kind(DiaryStep.Kind.LOCKED)
+					.title("This clue step is in the Wilderness")
+					.line("Other players can attack and kill you there, so the guide doesn't go there unless you "
+						+ "turn on Wilderness in the panel.")
+					.line("Turn it on (and bring only what you can lose), or drop the clue and get a new one.")
+					.build();
+			}
+			DiaryStep out = reword(DiaryGuide.resolve(solveTask(tier, clue, step, p), p));
+			if (out.getKind() == DiaryStep.Kind.DO && out.getDestination() == null && step.getLocation() != null
+				&& radius(step) == 0)
+			{
+				// Keep the arrow on the dig tile while standing on it
+				WorldPoint wp = step.getLocation();
+				out = out.toBuilder().destination(Location.of("the dig spot", wp.getX(), wp.getY(), wp.getPlane(), 0))
+					.build();
+			}
+			return out;
 		}
 		ClueHoldings.Stack containers = h.get(tier, ClueItem.Kind.CONTAINER);
 		if (containers.getCarried() > 0)
@@ -221,45 +255,270 @@ public final class ClueGuide
 	}
 
 	/**
-	 * Doing the clue the player holds: take it (and a spade) out of the bank if needed, then read it and follow the
-	 * Clue Scroll plugin.
+	 * Doing the clue the player holds when the step isn't known yet: take it out of the bank if needed and read it,
+	 * so RuneLite's Clue Scroll plugin can work out the step and this guide can walk the player through it.
 	 */
-	static DiaryTask solveTask(ClueTier tier, ClueHoldings.Stack clue, DiaryPlayer p, boolean cluePlugin)
+	static DiaryTask readTask(ClueTier tier, ClueHoldings.Stack clue, DiaryPlayer p, boolean cluePlugin)
+	{
+		DiaryTask.DiaryTaskBuilder t = solveBase(tier, clue);
+		DiaryStage.DiaryStageBuilder s = DiaryStage.builder()
+			.title("Read your " + tier.getLabel().toLowerCase() + " clue")
+			.use(ids(clue.getCarriedIds()));
+		if (!cluePlugin)
+		{
+			s.line("First turn on RuneLite's Clue Scroll plugin (the button in this panel). It knows the answer to "
+				+ "every clue; this guide reads it and then tells you where to go and what to click.");
+		}
+		s.line("1. Click the clue in your inventory (outlined) and choose Read.")
+			.line("2. This panel then shows the step: where to walk, what to bring and what to click.")
+			.line("Got a puzzle box or light box instead? Click it and choose Open: RuneLite's Puzzle Solver plugin "
+				+ "shows which tile to click next.");
+		kitLines(tier, s, p, false);
+		return t.stage(s.build()).build();
+	}
+
+	/**
+	 * The clue step the player is on, as a guided task: bring the clue, a spade and the emote items (from the bank
+	 * if needed), walk to the spot, then click exactly what the step needs.
+	 */
+	static DiaryTask solveTask(ClueTier tier, ClueHoldings.Stack clue, ClueStep step, DiaryPlayer p)
+	{
+		DiaryTask.DiaryTaskBuilder t = solveBase(tier, clue);
+		WorldPoint where = step.getLocation();
+		t.wilderness(where != null && Wilderness.contains(where));
+		if (step.isSpade())
+		{
+			t.item(SPADE);
+		}
+		boolean haveLight = owns(p, LIGHTS);
+		if (step.isLight() && haveLight)
+		{
+			t.item(DiaryItem.owned("Lit light source", "Light a lantern, candle or torch with a tinderbox.", LIGHTS));
+		}
+		List<String> missing = new ArrayList<>();
+		List<String> wear = new ArrayList<>();
+		for (ClueStep.Need n : step.getItems())
+		{
+			wear.add(n.getName());
+			if (!n.isHave())
+			{
+				if (n.getBankId() > 0)
+				{
+					t.item(DiaryItem.of(n.getName(), n.getBankId()));
+				}
+				else
+				{
+					missing.add(n.getName());
+				}
+			}
+		}
+
+		DiaryStage.DiaryStageBuilder s = DiaryStage.builder().title(title(step));
+		if (where != null)
+		{
+			s.at(Location.of(placeName(step), where.getX(), where.getY(), where.getPlane(), radius(step)));
+		}
+		s.npcs(step.getNpcs()).objects(step.getObjects());
+		if (step.getSolution() != null && !step.getSolution().isEmpty())
+		{
+			s.line("The clue means: " + step.getSolution());
+		}
+		int n = 1;
+		switch (step.getType())
+		{
+			case EMOTE:
+				if (!missing.isEmpty())
+				{
+					s.line(step.getStash() != null
+						? "Not carried or in your bank: " + String.join(", ", missing) + ". If you filled the "
+						+ "STASH unit here, click it (outlined) and choose Search to take them out."
+						: "You still need: " + String.join(", ", missing) + ". Get them first (Grand Exchange).");
+				}
+				if (step.getStash() != null)
+				{
+					s.object(step.getStash());
+				}
+				if (!wear.isEmpty())
+				{
+					s.line(n++ + ". Wear " + String.join(", ", wear) + ": click each in your inventory and choose "
+						+ "Wear or Wield.");
+				}
+				if (!step.getEmotes().isEmpty())
+				{
+					s.line(n++ + ". Open the Emotes tab (the smiley face icon) and click " + String.join(", then ",
+						step.getEmotes()) + ".");
+				}
+				s.line(n++ + ". Uri (a ghostly man) appears next to you: click him and choose Talk-to.");
+				if (step.getEnemy() != null)
+				{
+					s.line("A " + step.getEnemy() + " may appear first and attack: kill it, then do the emotes again.");
+				}
+				break;
+			case MUSIC:
+				s.line(n++ + ". Open the Music tab (the music note icon) and click " + quote(step.getSong())
+					+ " so it plays. You need to have unlocked it.");
+				s.line(n++ + ". Click Cecilia (outlined) and choose Talk-to.");
+				break;
+			case HOT_COLD:
+				s.line(n++ + ". Click the strange device in your inventory and choose Feel: the chat says how warm "
+					+ "you are.");
+				s.line(n++ + ". Walk where the arrow points and Feel again. RuneLite narrows the spot down each time.");
+				s.line(n++ + ". When the device says you're right on it, click your spade (outlined) and choose Dig.");
+				break;
+			case FAIRY_RING:
+				s.line("This clue is a fairy ring code: " + step.getText() + ". The ring nearest the spot is the "
+					+ "quickest way there (needs Fairy Tale II started and a dramen or lunar staff).");
+				s.line(n++ + ". Stand on the tile the arrow points at.");
+				s.line(n++ + ". Click your spade in your inventory (outlined) and choose Dig.");
+				break;
+			default:
+				if (!step.getNpcs().isEmpty())
+				{
+					s.line(n++ + ". Click " + String.join(" or ", step.getNpcs()) + " (outlined) and choose Talk-to.");
+					if (step.getAnswer() != null && !step.getAnswer().isEmpty())
+					{
+						s.line(n++ + ". They ask you a question: type " + step.getAnswer() + " and press Enter.");
+					}
+				}
+				else if (!step.getObjects().isEmpty())
+				{
+					s.line(n++ + ". Click the " + String.join(" or ", step.getObjects())
+						+ " (outlined) and choose Search (or Open).");
+				}
+				else if (step.isSpade())
+				{
+					s.line(n++ + ". Stand on the tile the arrow points at.");
+					s.line(n++ + ". Click your spade in your inventory (outlined) and choose Dig.");
+				}
+				else if (step.getText() != null)
+				{
+					s.line("The clue says: " + step.getText());
+				}
+				if (step.getType() == ClueStep.Type.CHALLENGE || step.getType() == ClueStep.Type.FALO)
+				{
+					if (!step.getItems().isEmpty())
+					{
+						s.line("Bring: " + String.join(", ", wear) + (missing.isEmpty() ? "."
+							: " (still missing: " + String.join(", ", missing) + ")."));
+					}
+					if (step.getText() != null && step.getType() == ClueStep.Type.CHALLENGE)
+					{
+						s.line("Do this, then talk to them again: " + step.getText());
+					}
+				}
+				if (step.getEnemy() != null)
+				{
+					s.line("A " + step.getEnemy() + " appears and attacks: kill it, then do it again.");
+				}
+				break;
+		}
+		if (step.isSpade())
+		{
+			s.use(SPADES[0]).use(SPADES[1]).use(SPADES[2]);
+		}
+		if (step.isLight() && !haveLight)
+		{
+			s.line("This spot is dark: bring a lit lantern, candle or torch (light it with a tinderbox).");
+		}
+		if (where == null && !step.getSpots().isEmpty())
+		{
+			s.line("It can be at " + step.getSpots().size() + " spots: the arrow points at the nearest.");
+		}
+		s.line("Done? The clue turns into the next step (or a reward casket) and this panel moves on by itself.");
+		kitLines(tier, s, p, true);
+		return t.stage(s.build()).build();
+	}
+
+	private static DiaryTask.DiaryTaskBuilder solveBase(ClueTier tier, ClueHoldings.Stack clue)
 	{
 		DiaryTask.DiaryTaskBuilder t = DiaryTask.builder()
 			.id("clue." + tier.name() + ".solve")
 			.name("Do your " + tier.getLabel().toLowerCase() + " clue")
 			.text("Do your " + tier.getLabel().toLowerCase() + " clue")
-			.freeToPlay(!tier.isMembers())
-			.item(SPADE);
+			.freeToPlay(!tier.isMembers());
 		if (clue.getCarried() == 0)
 		{
 			t.item(DiaryItem.owned(tier.getLabel() + " clue scroll", "It's in your bank.", clue.ids()));
 		}
-		DiaryStage.DiaryStageBuilder s = DiaryStage.builder()
-			.title("Do your " + tier.getLabel().toLowerCase() + " clue (" + tier.getSteps() + ")")
-			.use(ids(clue.getCarriedIds()))
-			.line("1. Click the clue in your inventory (outlined) and choose Read.")
-			.line(cluePlugin
-				? "2. RuneLite's Clue Scroll plugin now shows where to go and what to do: follow its arrow and its text box."
-				: "2. Turn on RuneLite's Clue Scroll plugin (button in this panel): it shows where to go and what to do for every step.")
-			.line("3. Map and coordinate steps: stand on the marked spot and click your spade (Dig).")
-			.line("4. Emote steps: wear the items it lists (a STASH unit nearby can hold them), do the emote from the "
-				+ "Emotes tab, then talk to Uri when he appears.")
-			.line("5. Puzzle boxes: RuneLite's Puzzle Solver plugin shows which tile to click next.")
-			.line("6. Each step gives you the next one. The last gives a reward casket: open it.");
+		return t;
+	}
+
+	private static void kitLines(ClueTier tier, DiaryStage.DiaryStageBuilder s, DiaryPlayer p, boolean known)
+	{
+		if (!known)
+		{
+			s.line("Keep a spade with you: many steps are digs.");
+		}
 		if (tier.ordinal() >= ClueTier.HARD.ordinal())
 		{
-			s.line("Some steps make you kill something first: carry a weapon, armour and food.");
-			s.line(owns(p, LIGHTS) ? "You have a light source: bring it for dark caves."
-				: "Bring a lit lantern or torch: some steps are in dark caves.");
+			s.line("Some " + tier.getLabel().toLowerCase() + " steps make you kill something first: carry a weapon, "
+				+ "armour and food.");
 		}
-		if (tier.isWildernessSteps())
+	}
+
+	private static String title(ClueStep step)
+	{
+		switch (step.getType())
 		{
-			s.line("⚠ Some steps are in the Wilderness, where other players can attack you. Bring only what you can "
-				+ "lose, or drop the clue if you don't want to go.");
+			case EMOTE:
+				return "Do the emote" + (step.getEmotes().isEmpty() ? "" : ": " + String.join(", then ", step.getEmotes()));
+			case MUSIC:
+				return "Play " + quote(step.getSong()) + " to Cecilia";
+			case HOT_COLD:
+				return "Find the spot with the strange device";
+			default:
+				if (!step.getNpcs().isEmpty())
+				{
+					return "Talk to " + String.join(" or ", step.getNpcs());
+				}
+				if (!step.getObjects().isEmpty())
+				{
+					return "Search the " + String.join(" or ", step.getObjects());
+				}
+				return step.isSpade() ? "Dig here with your spade" : "Do the clue step";
 		}
-		return t.stage(s.build()).build();
+	}
+
+	private static String placeName(ClueStep step)
+	{
+		if (step.getType() == ClueStep.Type.EMOTE && step.getSolution() != null)
+		{
+			return step.getSolution();
+		}
+		if (!step.getNpcs().isEmpty())
+		{
+			return String.join(" or ", step.getNpcs());
+		}
+		if (!step.getObjects().isEmpty())
+		{
+			return "the " + String.join(" or ", step.getObjects());
+		}
+		return step.isSpade() ? "the dig spot" : "the clue spot";
+	}
+
+	/**
+	 * How close counts as there: dig spots need the exact tile, NPCs wander.
+	 */
+	static int radius(ClueStep step)
+	{
+		if (step.getType() == ClueStep.Type.EMOTE)
+		{
+			return 3;
+		}
+		if (!step.getNpcs().isEmpty())
+		{
+			return 6;
+		}
+		if (!step.getObjects().isEmpty())
+		{
+			return 3;
+		}
+		return step.isSpade() ? 0 : 3;
+	}
+
+	private static String quote(String s)
+	{
+		return "\"" + (s == null ? "the song" : s) + "\"";
 	}
 
 	/**

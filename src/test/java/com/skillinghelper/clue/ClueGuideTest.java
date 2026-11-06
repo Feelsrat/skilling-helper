@@ -118,12 +118,71 @@ public class ClueGuideTest
 		assertTrue(step.getLines().get(0).contains("Read"));
 	}
 
-	@Test
-	public void carriedClueWithoutSpadeBuysOne()
+	private static DiaryStep resolve(ClueTier tier, DiaryPlayer p, ClueStep clueStep)
 	{
-		DiaryStep step = resolve(ClueTier.EASY, player(50, Map.of(EASY_CLUE, 1), new HashMap<>()).build());
+		return ClueGuide.resolve(tier, ClueHoldings.of(p.getCarried(), p.getBank(), ClueGuideTest::classify), p, null,
+			true, clueStep);
+	}
+
+	private static final WorldPoint DIG = new WorldPoint(3230, 3209, 0);
+
+	private static ClueStep dig()
+	{
+		return ClueStep.builder().type(ClueStep.Type.COORDINATE).location(DIG).spade(true).build();
+	}
+
+	@Test
+	public void digStepWithoutSpadeBuysOne()
+	{
+		DiaryStep step = resolve(ClueTier.EASY, player(50, Map.of(EASY_CLUE, 1), new HashMap<>()).build(), dig());
 		assertEquals(DiaryStep.Kind.BUY, step.getKind());
 		assertTrue(step.getWithdraw().containsKey(ItemID.SPADE));
+	}
+
+	@Test
+	public void digStepWalksToTheTileThenDigs()
+	{
+		Map<Integer, Integer> kit = Map.of(EASY_CLUE, 1, ItemID.SPADE, 1);
+		DiaryStep walk = resolve(ClueTier.EASY, player(50, kit, new HashMap<>()).build(), dig());
+		assertEquals(DiaryStep.Kind.TRAVEL, walk.getKind());
+		assertEquals(DIG, walk.getDestination().getPoint());
+		DiaryStep there = resolve(ClueTier.EASY, player(50, kit, new HashMap<>()).location(DIG).build(), dig());
+		assertEquals(DiaryStep.Kind.DO, there.getKind());
+		assertTrue(there.getUse().contains(ItemID.SPADE));
+		assertTrue(there.getLines().stream().anyMatch(l -> l.contains("Dig")));
+		assertEquals(DIG, there.getDestination().getPoint());
+	}
+
+	@Test
+	public void npcStepOutlinesTheNpcAndGivesTheAnswer()
+	{
+		ClueStep talk = ClueStep.builder().type(ClueStep.Type.ANAGRAM).npc("Hans").answer("5")
+			.location(LUMBRIDGE).build();
+		DiaryStep step = resolve(ClueTier.MEDIUM, player(50, Map.of(MEDIUM_CLUE, 1), new HashMap<>()).build(), talk);
+		assertEquals(DiaryStep.Kind.DO, step.getKind());
+		assertTrue(step.getNpcs().contains("Hans"));
+		assertTrue(step.getLines().stream().anyMatch(l -> l.contains("type 5")));
+	}
+
+	@Test
+	public void emoteItemsComeOutOfTheBank()
+	{
+		ClueStep emote = ClueStep.builder().type(ClueStep.Type.EMOTE).location(LUMBRIDGE).emote("Cheer")
+			.item(new ClueStep.Need("Bronze axe", false, ItemID.BRONZE_AXE)).build();
+		Map<Integer, Integer> bank = new HashMap<>(Map.of(ItemID.BRONZE_AXE, 1));
+		DiaryStep step = resolve(ClueTier.EASY, player(50, Map.of(EASY_CLUE, 1), bank).build(), emote);
+		assertEquals(DiaryStep.Kind.OPEN_BANK, step.getKind());
+		assertTrue(step.getWithdraw().containsKey(ItemID.BRONZE_AXE));
+	}
+
+	@Test
+	public void wildernessStepNeedsOptIn()
+	{
+		ClueStep wildy = ClueStep.builder().type(ClueStep.Type.COORDINATE).spade(true)
+			.location(new WorldPoint(3100, 3700, 0)).build();
+		DiaryStep step = resolve(ClueTier.HARD, player(80, Map.of(HARD_CLUE, 1, ItemID.SPADE, 1), new HashMap<>())
+			.build(), wildy);
+		assertEquals(DiaryStep.Kind.LOCKED, step.getKind());
 	}
 
 	@Test

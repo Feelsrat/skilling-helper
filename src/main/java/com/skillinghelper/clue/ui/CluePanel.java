@@ -151,8 +151,8 @@ public class CluePanel extends PluginPanel
 
 		if (!v.isCluePluginOn())
 		{
-			body.add(GuideUi.line("⚠ RuneLite's Clue Scroll plugin is off. It shows where every clue step is and what to "
-				+ "do there; this guide relies on it.", GuideUi.WARN, GuideUi.TEXT, WIDTH));
+			body.add(GuideUi.line("⚠ RuneLite's Clue Scroll plugin is off. This guide reads each clue step from it "
+				+ "to tell you where to go and what to click, so turn it on.", GuideUi.WARN, GuideUi.TEXT, WIDTH));
 			body.add(Box.createVerticalStrut(3));
 			body.add(GuideUi.button("Turn on the Clue Scroll plugin", listener::onTurnOnCluePlugin));
 			body.add(Box.createVerticalStrut(6));

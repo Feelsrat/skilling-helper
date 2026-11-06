@@ -180,13 +180,15 @@ with `python3 tools/collection/build_collection_log.py <cache dir> src/main/reso
 
 ## Clue Scroll Guide
 
-A panel for Treasure Trails that works alongside RuneLite's built-in Clue Scroll plugin (which solves each step; the
-panel offers to turn it on if it's off):
+A step-by-step guide for Treasure Trails. It reads the clue step you're on from RuneLite's built-in Clue Scroll plugin
+(the panel offers to turn it on if it's off) and walks you through it: what to bring and wear (taken out of the bank),
+an arrow and Shortest Path route to the spot, the NPC, object or STASH unit outlined, and exactly what to click (Dig,
+Talk-to, Search, the emotes, the song, the challenge answer). It moves on by itself when the clue changes.
 
 - **Your clues**: every clue scroll, scroll box, clue bottle/nest/geode and reward casket you carry or have in the
   bank, per tier, with a warning when you're near your scroll box limit and new drops would be lost.
-- **Guide**: opens caskets and scroll boxes you already have, takes your clue and a spade out of the bank, tells you how
-  to start the clue, and when you have none of a tier, walks you through getting one step by step (goblins, dark
+- **Guide**: opens caskets and scroll boxes you already have, takes your clue and a spade out of the bank, guides every
+  step of the clue you hold, and when you have none of a tier, walks you through getting one step by step (goblins, dark
   wizards, H.A.M. members, wealthy citizens, Falador guards, or impling jars bought on the GE). Master: collects one
   easy, medium, hard and elite clue and takes you to Watson.
 - **Rewards**: what each tier's caskets can give, the average casket value at today's GE prices, its most valuable
