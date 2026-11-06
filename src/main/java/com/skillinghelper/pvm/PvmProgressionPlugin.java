@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Target;
@@ -66,6 +67,7 @@ import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.SpriteID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -146,7 +148,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 	@Inject
 	private HiscoreClient hiscoreClient;
 	@Inject
-	private PvmBankFilter bankFilter;
+	private BankFilter bankFilter;
 	@Inject
 	private PvmWidgetOverlay widgetOverlay;
 	@Inject
@@ -294,8 +296,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 			.build();
 		clientToolbar.addNavigation(navButton);
 		eventBus.register(targets);
-		bankFilter.startUp();
-		eventBus.register(bankFilter);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		overlayManager.add(widgetOverlay);
@@ -321,8 +322,7 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 		overlayManager.remove(widgetOverlay);
 		puzzleAnswer = null;
 		eventBus.unregister(targets);
-		eventBus.unregister(bankFilter);
-		bankFilter.shutDown();
+		bankFilter.detach(this);
 		clientThread.invoke(() ->
 		{
 			stopGuide();
@@ -761,13 +761,9 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 
 	private void stopGuide()
 	{
-		boolean filtered = !bankItems.isEmpty();
 		bankItems = Set.of();
 		tripStocked = false;
-		if (filtered)
-		{
-			bankFilter.relayout();
-		}
+		bankFilter.show(this, null);
 		guide = null;
 		guideContent = null;
 		step = null;
@@ -815,11 +811,8 @@ public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.
 				items.add(pick.getItemId());
 			}
 		}
-		if (!items.equals(bankItems))
-		{
-			bankItems = items;
-			bankFilter.relayout();
-		}
+		bankItems = items;
+		bankFilter.show(this, BankFilter.Need.sprite("PvM loadout", SpriteID.Staticons.ATTACK, items));
 		if (next.equals(step))
 		{
 			return false;

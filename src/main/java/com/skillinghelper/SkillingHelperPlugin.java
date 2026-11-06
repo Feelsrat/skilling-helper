@@ -203,8 +203,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		prices.updateRefresh();
 
 		eventBus.register(tracker);
-		bankFilter.startUp();
-		eventBus.register(bankFilter);
+		bankFilter.attach(this);
 		eventBus.register(bankAmountSwapper);
 		eventBus.register(shortestPath);
 		eventBus.register(tog);
@@ -248,7 +247,6 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 	{
 		prices.shutDown();
 		eventBus.unregister(tracker);
-		eventBus.unregister(bankFilter);
 		eventBus.unregister(bankAmountSwapper);
 		eventBus.unregister(tog);
 		eventBus.unregister(plunder);
@@ -260,7 +258,7 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		overlayManager.remove(minimapOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
-		bankFilter.shutDown();
+		bankFilter.detach(this);
 		clientThread.invoke(() ->
 		{
 			bankCache.save();
@@ -396,9 +394,10 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		{
 			prices.updateRefresh();
 		}
-		if ("bankFilterOn".equals(e.getKey()))
+		if (BankFilter.KEY_ON.equals(e.getKey()))
 		{
-			// Saved by the bank button itself, nothing in the guide changes
+			// Saved by the shared bank button (from any plugin): only the panel's button text changes
+			clientThread.invokeLater(this::refresh);
 			return;
 		}
 		clientThread.invokeLater(() ->
@@ -960,6 +959,8 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 		next = showPath(next);
 		guide = next;
 
+		bankFilter.show(this, next.isActive() ? BankFilter.Need.skill("Skilling Helper items", next.getSkill(),
+			next.getBankItems().keySet()) : null);
 		final ActiveGuide forPanel = next;
 		final TrainingPreference pref = settings.getPreference();
 		final boolean filterOn = bankFilter.isActive();

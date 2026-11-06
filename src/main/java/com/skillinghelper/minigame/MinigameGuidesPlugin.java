@@ -7,6 +7,7 @@ import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.bank.BankCache;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
@@ -52,6 +53,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -88,6 +90,8 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 	 */
 	private static final int QUEST_REFRESH_TICKS = 50;
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -146,6 +150,7 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 		targets = new NameTargets(client);
 		sceneOverlay = new MinigameSceneOverlay(client, this, config, targets, outlineRenderer);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		skillMethods.clear();
@@ -173,6 +178,7 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -410,6 +416,7 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 			}
 		}
 		step = next;
+		showInBank();
 		if (next != null)
 		{
 			targets.track(next.getNpcs(), next.getObjects());
@@ -686,5 +693,14 @@ public class MinigameGuidesPlugin extends Plugin implements MinigamePanel.Listen
 		{
 			LinkBrowser.browse(WIKI_URL + m.getWikiPage());
 		}
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		DiaryStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.item("Minigame items", ItemID.PEST_VOID_KNIGHT_MACE, step.bankItems()));
 	}
 }

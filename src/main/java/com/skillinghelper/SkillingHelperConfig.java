@@ -424,7 +424,8 @@ public interface SkillingHelperConfig extends Config
 	@ConfigItem(
 		keyName = "showBankButton",
 		name = "Bank filter button",
-		description = "Add a button to the bank that shows only the items the current guide needs",
+		description = "Add one button to the bank that shows only the items the running guide needs. It is shared by "
+			+ "every plugin in Skilling Helper and follows whichever guide you started last",
 		section = highlightSection,
 		position = 7
 	)

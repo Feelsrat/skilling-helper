@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.OpenQuestRequest;
 import com.skillinghelper.QuestHelperLink;
 import com.skillinghelper.ShortestPathLink;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.diary.AchievementDiaryConfig;
@@ -47,6 +48,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.callback.ClientThread;
@@ -87,6 +89,8 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 	private static final int UPCOMING_ROWS = 25;
 	private static final String TICKED_KEY = "ticked";
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -145,6 +149,7 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 		targets = new NameTargets(client);
 		sceneOverlay = new QuestSceneOverlay(client, this, config, targets, outlineRenderer);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(listOverlay);
 		overlayManager.add(itemOverlay);
@@ -167,6 +172,7 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(listOverlay);
 		overlayManager.remove(itemOverlay);
@@ -383,6 +389,7 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 			}
 		}
 		step = running ? next : null;
+		showInBank();
 		if (running && next != null)
 		{
 			targets.track(next.getNpc() == null ? Collections.emptySet() : Set.of(next.getNpc()),
@@ -691,5 +698,14 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 	public void onGetQuestHelper()
 	{
 		LinkBrowser.browse("https://runelite.net/plugin-hub/show/quest-helper");
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		QuestStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.leaveAlone("Quest Order Guide", ItemID.SKILLCAPE_QP));
 	}
 }

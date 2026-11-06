@@ -8,6 +8,7 @@ import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartDiaryGuideRequest;
 import com.skillinghelper.TrainSkillRequest;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Wilderness;
@@ -57,6 +58,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -95,6 +97,8 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 	 */
 	private static final int SLOW_REFRESH_TICKS = 50;
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -156,6 +160,7 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 		sceneOverlay = new DiarySceneOverlay(client, () -> step, config::targetColor, targets, outlineRenderer);
 		itemOverlay = new DiaryItemOverlay(() -> step, config::itemColor, itemManager, configManager);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		panel = new UnlocksPanel(this);
@@ -177,6 +182,7 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -442,6 +448,7 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 		}
 		unlockStep = next;
 		step = next == null ? null : next.getStep();
+		showInBank();
 		if (step != null)
 		{
 			targets.track(step.getNpcs(), step.getObjects());
@@ -674,5 +681,14 @@ public class AccountUnlocksPlugin extends Plugin implements UnlocksPanel.Listene
 		{
 			LinkBrowser.browse(WIKI_URL + page);
 		}
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		DiaryStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.item("Account Unlock items", ItemID.GRACEFUL_HOOD, step.bankItems()));
 	}
 }

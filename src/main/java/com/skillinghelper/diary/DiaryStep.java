@@ -2,6 +2,7 @@ package com.skillinghelper.diary;
 
 import com.skillinghelper.data.Location;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,4 +93,16 @@ public class DiaryStep
 	 */
 	@Builder.Default
 	Set<Integer> travel = Collections.emptySet();
+
+	/**
+	 * Everything this step wants from the bank, for the shared bank filter button: what to take out, what gets
+	 * used, and the travel item.
+	 */
+	public Set<Integer> bankItems()
+	{
+		Set<Integer> items = new HashSet<>(withdraw.keySet());
+		items.addAll(use);
+		items.addAll(travel);
+		return items;
+	}
 }

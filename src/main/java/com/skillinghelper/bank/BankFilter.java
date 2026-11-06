@@ -1,14 +1,15 @@
 package com.skillinghelper.bank;
 
 import com.skillinghelper.SkillingHelperConfig;
-import com.skillinghelper.GuideHost;
-import com.skillinghelper.SkillingHelperPlugin;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
+import java.util.Objects;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Value;
 import net.runelite.api.Client;
 import net.runelite.api.ScriptID;
 import net.runelite.api.Skill;
@@ -18,91 +19,241 @@ import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.SpriteID;
+import net.runelite.api.widgets.ItemQuantityMode;
 import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.bank.BankSearch;
 
 /**
- * Adds a button to the bank that, like Quest Helper's, shows only the items the open guide needs. It hooks the
- * bank's own search filter script, so nothing is clicked or moved for the player. Once switched on it stays on,
- * across bank visits and restarts, until the player switches it off.
+ * The one button at the top of the bank, shared by every plugin in this jar. Like Quest Helper's, it shows only
+ * the items the running guide needs: whichever plugin's guide was started last (Skilling Helper, PvM, Money
+ * Making, a diary, a clue...). It answers the bank's own search filter script, so nothing is clicked or moved for
+ * the player. Once switched on it stays on, across bank visits and restarts, until the player switches it off.
+ *
+ * <p>Only one instance exists for all plugins: it only needs client-wide services, so Guice makes it in the client's
+ * injector rather than each plugin's. Each plugin {@link #attach}es on start up, tells it what its guide needs with
+ * {@link #show}, and {@link #detach}es on shut down. The on/off state and the "Bank filter button" setting live in
+ * Skilling Helper's config group.
  */
 @Singleton
 public class BankFilter
 {
+	public static final String KEY_ON = "bankFilterOn";
+	public static final String KEY_SHOW_BUTTON = "showBankButton";
 	private static final int BUTTON_SIZE = 25;
+
+	/**
+	 * What one plugin's running guide wants from the bank, and how the button looks while it's the one shown.
+	 */
+	@EqualsAndHashCode
+	public static final class Need
+	{
+		@Getter
+		private final String label;
+		private final int spriteId;
+		private final int itemId;
+		/**
+		 * Canonical item ids to show, or null to leave the bank alone (another plugin, like Quest Helper, filters it).
+		 */
+		private final Set<Integer> items;
+
+		private Need(String label, int spriteId, int itemId, Set<Integer> items)
+		{
+			this.label = label;
+			this.spriteId = spriteId;
+			this.itemId = itemId;
+			this.items = items == null ? null : Set.copyOf(items);
+		}
+
+		/**
+		 * A guide shown on the button by a sprite, such as a skill icon.
+		 */
+		public static Need sprite(String label, int spriteId, Set<Integer> items)
+		{
+			return new Need(label, spriteId, -1, items);
+		}
+
+		/**
+		 * A guide shown on the button by an item's picture.
+		 */
+		public static Need item(String label, int itemId, Set<Integer> items)
+		{
+			return new Need(label, -1, itemId, items);
+		}
+
+		/**
+		 * A guide whose items another plugin filters (Quest Helper's own bank button): ours stays out of the way.
+		 */
+		public static Need leaveAlone(String label, int itemId)
+		{
+			return new Need(label, -1, itemId, null);
+		}
+
+		/**
+		 * The button's skill icon for a skill guide, or a generic one.
+		 */
+		public static Need skill(String label, Skill skill, Set<Integer> items)
+		{
+			return sprite(label, skillSprite(skill), items);
+		}
+	}
 
 	private final Client client;
 	private final ClientThread clientThread;
 	private final BankSearch bankSearch;
 	private final ItemManager itemManager;
-	private final GuideHost plugin;
 	private final ConfigManager configManager;
-	private final Options options;
+	private final EventBus eventBus;
 
+	/**
+	 * The plugins that are on and using the button.
+	 */
+	private final Set<Object> users = new HashSet<>();
+	/**
+	 * Each plugin's running guide, and when each started; guarded by this.
+	 */
+	private final Map<Object, Need> needs = new HashMap<>();
+	private final Map<Object, Long> started = new HashMap<>();
+	private long startCount;
+
+	/**
+	 * The guide the filter follows: the one started last. Read on the client thread for every bank item.
+	 */
+	private volatile Need current;
 	@Getter
-	private boolean active;
+	private volatile boolean active;
 	private Widget button;
 	private long lastTap;
 
 	@Inject
 	BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
-		SkillingHelperPlugin plugin, SkillingHelperConfig config, ConfigManager configManager)
-	{
-		this(client, clientThread, bankSearch, itemManager, plugin, configManager,
-			new Options(SkillingHelperConfig.GROUP, 0, "Skilling Helper items", config::showBankButton,
-				config::bankFilterOn));
-	}
-
-	/**
-	 * For another plugin in this jar that runs its own guide, with its own button slot and saved setting.
-	 */
-	public BankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager,
-		GuideHost plugin, ConfigManager configManager, Options options)
+		ConfigManager configManager, EventBus eventBus)
 	{
 		this.client = client;
 		this.clientThread = clientThread;
 		this.bankSearch = bankSearch;
 		this.itemManager = itemManager;
-		this.plugin = plugin;
 		this.configManager = configManager;
-		this.options = options;
-		this.active = options.getSavedOn().getAsBoolean();
+		this.eventBus = eventBus;
 	}
 
 	/**
-	 * Where a plugin's button goes and where its on/off setting is saved.
+	 * A plugin starting up. The first one adds the button to an open bank and picks the saved on/off back up.
 	 */
-	@Value
-	public static class Options
+	public void attach(Object owner)
 	{
-		/**
-		 * Config group the "bankFilterOn" setting is saved in.
-		 */
-		String configGroup;
-		/**
-		 * Which button this is, counting from 0 next to the bank's tutorial button.
-		 */
-		int slot;
-		/**
-		 * The button's name in its menu option.
-		 */
-		String label;
-		BooleanSupplier showButton;
-		BooleanSupplier savedOn;
+		boolean first;
+		synchronized (this)
+		{
+			first = users.isEmpty();
+			if (!users.add(owner))
+			{
+				return;
+			}
+		}
+		if (first)
+		{
+			active = Boolean.TRUE.equals(configManager.getConfiguration(SkillingHelperConfig.GROUP, KEY_ON,
+				Boolean.class));
+			eventBus.register(this);
+			clientThread.invokeLater(() ->
+			{
+				addButton();
+				relayout();
+			});
+		}
 	}
 
 	/**
-	 * Picks the saved setting back up: the plugin may have been switched off and on, which keeps this instance.
+	 * A plugin shutting down: its guide stops counting, and the last one out takes the button away and shows the
+	 * whole bank again (the on/off setting is kept for next time).
 	 */
-	public void startUp()
+	public void detach(Object owner)
 	{
-		active = options.getSavedOn().getAsBoolean();
+		boolean last;
+		synchronized (this)
+		{
+			if (!users.remove(owner))
+			{
+				return;
+			}
+			needs.remove(owner);
+			started.remove(owner);
+			current = pickCurrent();
+			last = users.isEmpty();
+		}
+		if (last)
+		{
+			eventBus.unregister(this);
+			clientThread.invoke(() ->
+			{
+				current = null;
+				relayout();
+				removeButton();
+			});
+		}
+		else
+		{
+			clientThread.invoke(this::refresh);
+		}
+	}
+
+	/**
+	 * What the plugin's guide needs from the bank now, or null when it has no guide running. Cheap to call every
+	 * tick: nothing happens unless it changed.
+	 */
+	public void show(Object owner, Need need)
+	{
+		Need before;
+		Need after;
+		synchronized (this)
+		{
+			if (!users.contains(owner) || Objects.equals(needs.get(owner), need))
+			{
+				return;
+			}
+			if (need == null)
+			{
+				needs.remove(owner);
+				started.remove(owner);
+			}
+			else
+			{
+				if (!needs.containsKey(owner))
+				{
+					started.put(owner, ++startCount);
+				}
+				needs.put(owner, need);
+			}
+			before = current;
+			after = pickCurrent();
+			current = after;
+		}
+		if (!Objects.equals(before, after))
+		{
+			clientThread.invoke(this::refresh);
+		}
+	}
+
+	private Need pickCurrent()
+	{
+		Object best = null;
+		long bestAt = -1;
+		for (Map.Entry<Object, Long> e : started.entrySet())
+		{
+			if (e.getValue() > bestAt)
+			{
+				best = e.getKey();
+				bestAt = e.getValue();
+			}
+		}
+		return best == null ? null : needs.get(best);
 	}
 
 	public void toggle()
@@ -110,22 +261,29 @@ public class BankFilter
 		clientThread.invoke(() -> setActive(!active));
 	}
 
-	public void setActive(boolean active)
+	public void setActive(boolean on)
 	{
-		this.active = active;
-		configManager.setConfiguration(options.getConfigGroup(), "bankFilterOn", active);
+		active = on;
+		configManager.setConfiguration(SkillingHelperConfig.GROUP, KEY_ON, on);
+		refresh();
+		// Once more after this tick's scripts, in case the first layout ran too early to show
+		clientThread.invokeLater(this::relayout);
+	}
+
+	/**
+	 * Re-draws the button and re-filters an open bank. Client thread.
+	 */
+	private void refresh()
+	{
 		updateButton();
+		relayout();
+	}
+
+	private void relayout()
+	{
 		if (client.getItemContainer(InventoryID.BANK) != null && client.getWidget(InterfaceID.Bankmain.ITEMS) != null)
 		{
 			bankSearch.layoutBank();
-			// Once more after this tick's scripts, in case the first layout ran too early to show
-			clientThread.invokeLater(() ->
-			{
-				if (client.getWidget(InterfaceID.Bankmain.ITEMS) != null)
-				{
-					bankSearch.layoutBank();
-				}
-			});
 		}
 	}
 
@@ -142,20 +300,6 @@ public class BankFilter
 		}
 		lastTap = now;
 		setActive(!active);
-	}
-
-	public void shutDown()
-	{
-		clientThread.invoke(() ->
-		{
-			// Show the whole bank again, but remember the setting for next time
-			active = false;
-			if (client.getItemContainer(InventoryID.BANK) != null)
-			{
-				bankSearch.layoutBank();
-			}
-			removeButton();
-		});
 	}
 
 	@Subscribe
@@ -180,8 +324,10 @@ public class BankFilter
 	@Subscribe(priority = -1)
 	public void onScriptCallbackEvent(ScriptCallbackEvent e)
 	{
-		// No guide open means no items to show, so show the whole bank
-		if (!active || !plugin.getGuide().isActive())
+		Need need = current;
+		// No guide running means no items to show, so show the whole bank; an empty list too, since an empty bank
+		// looks broken rather than "nothing needed"
+		if (!active || need == null || need.items == null || need.items.isEmpty())
 		{
 			return;
 		}
@@ -190,17 +336,14 @@ public class BankFilter
 		switch (e.getEventName())
 		{
 			case "getSearchingTagTab":
-				intStack[intStackSize - 1] = 1;
-				break;
 			case "bankBuildTab":
-				// single tab view, so tab separators don't leave gaps
+				// One tab view, so tab separators don't leave gaps
 				intStack[intStackSize - 1] = 1;
 				break;
 			case "bankSearchFilter":
 			{
 				int itemId = intStack[intStackSize - 1];
-				Map<Integer, ?> wanted = plugin.getGuide().getBankItems();
-				boolean show = itemId > -1 && wanted.containsKey(itemManager.canonicalize(itemId));
+				boolean show = itemId > -1 && need.items.contains(itemManager.canonicalize(itemId));
 				intStack[intStackSize - 2] = show ? 1 : 0;
 				break;
 			}
@@ -211,7 +354,8 @@ public class BankFilter
 
 	private void addButton()
 	{
-		if (!options.getShowButton().getAsBoolean())
+		if (button != null || Boolean.FALSE.equals(configManager.getConfiguration(SkillingHelperConfig.GROUP,
+			KEY_SHOW_BUTTON, Boolean.class)))
 		{
 			return;
 		}
@@ -222,15 +366,13 @@ public class BankFilter
 		}
 		Widget parent = tut.getParent();
 		button = parent.createChild(-1, WidgetType.GRAPHIC);
-		button.setOriginalX(tut.getOriginalX() + tut.getOriginalWidth() + 4 + options.getSlot() * (BUTTON_SIZE + 4));
+		button.setOriginalX(tut.getOriginalX() + tut.getOriginalWidth() + 4);
 		button.setOriginalY(tut.getOriginalY());
 		button.setOriginalWidth(BUTTON_SIZE);
 		button.setOriginalHeight(BUTTON_SIZE);
 		button.setXPositionMode(tut.getXPositionMode());
 		button.setYPositionMode(tut.getYPositionMode());
 		button.setHasListener(true);
-		button.setAction(0, "Toggle");
-		button.setName("<col=ff9040>" + options.getLabel() + "</col>");
 		button.setOnOpListener((JavaScriptCallback) ev -> clientThread.invokeLater(this::buttonTapped));
 		updateButton();
 		button.revalidate();
@@ -242,34 +384,65 @@ public class BankFilter
 		{
 			return;
 		}
-		Skill skill = plugin.getGuide().getSkill();
-		button.setSpriteId(skillSprite(skill));
+		Need need = current;
+		if (need != null && need.itemId > 0)
+		{
+			button.setSpriteId(-1);
+			button.setItemId(need.itemId);
+			button.setItemQuantity(1);
+			button.setItemQuantityMode(ItemQuantityMode.NEVER);
+		}
+		else
+		{
+			button.setItemId(-1);
+			button.setSpriteId(need != null && need.spriteId > 0 ? need.spriteId : SpriteID.Staticons.WOODCUTTING);
+		}
+		String label = need == null ? "no guide running" : need.label;
+		button.setName("<col=ff9040>" + label + "</col>");
 		button.setOpacity(active ? 0 : 140);
-		button.setAction(0, active ? "Show all items" : "Show only items for this guide");
+		String action;
+		if (active)
+		{
+			action = "Show all items";
+		}
+		else if (need != null && need.items == null)
+		{
+			action = "Show only items for this guide (Quest Helper's bank button filters quest items)";
+		}
+		else
+		{
+			action = "Show only items for this guide";
+		}
+		button.setAction(0, action);
+		button.revalidate();
 	}
 
 	private void removeButton()
 	{
-		if (button != null)
+		if (button == null)
 		{
-			Widget parent = button.getParent();
-			if (parent != null && parent.getChildren() != null)
-			{
-				Widget[] children = parent.getChildren();
-				for (int i = 0; i < children.length; i++)
-				{
-					if (children[i] == button)
-					{
-						children[i] = null;
-					}
-				}
-				parent.revalidate();
-			}
-			button = null;
+			return;
 		}
+		Widget parent = button.getParent();
+		if (parent != null && parent.getChildren() != null)
+		{
+			Widget[] children = parent.getChildren();
+			for (int i = 0; i < children.length; i++)
+			{
+				if (children[i] == button)
+				{
+					children[i] = null;
+				}
+			}
+			parent.revalidate();
+		}
+		button = null;
 	}
 
-	private static int skillSprite(Skill skill)
+	/**
+	 * The stat icon for a skill guide's button.
+	 */
+	public static int skillSprite(Skill skill)
 	{
 		if (skill == null)
 		{

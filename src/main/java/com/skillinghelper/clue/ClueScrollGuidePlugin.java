@@ -3,6 +3,7 @@ package com.skillinghelper.clue;
 import com.google.inject.Provides;
 import com.skillinghelper.OpenClueGuideRequest;
 import com.skillinghelper.ShortestPathLink;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.clue.data.ClueData;
 import com.skillinghelper.clue.data.ClueItem;
@@ -51,6 +52,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -90,6 +92,8 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	private static final Pattern COMPLETED = Pattern.compile(
 		"You have completed ([\\d,]+) (beginner|easy|medium|hard|elite|master) Treasure Trails?");
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -153,6 +157,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 		targets = new NameTargets(client);
 		sceneOverlay = new ClueSceneOverlay(client, this, config, targets, outlineRenderer);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		tier = savedTier();
@@ -175,6 +180,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -426,6 +432,7 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 			}
 		}
 		step = next;
+		showInBank();
 		if (next != null)
 		{
 			targets.track(next.getNpcs(), next.getObjects());
@@ -710,5 +717,14 @@ public class ClueScrollGuidePlugin extends Plugin implements CluePanel.Listener
 	public void onOpenWiki()
 	{
 		LinkBrowser.browse(WIKI_URL + tier.getWikiPage());
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		DiaryStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.item("Clue Scroll items", ItemID.TRAIL_CLUE_BEGINNER, step.bankItems()));
 	}
 }

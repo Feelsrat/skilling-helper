@@ -62,7 +62,6 @@ import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.bank.BankSearch;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -113,7 +112,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	@Inject
 	private ItemManager itemManager;
 	@Inject
-	private BankSearch bankSearch;
+	private BankFilter bankFilter;
 	@Inject
 	private ModelOutlineRenderer outlines;
 	@Inject
@@ -132,7 +131,6 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	private TargetTracker tracker;
 	private ShortestPathBridge shortestPath;
 	private PathDisplay path;
-	private BankFilter bankFilter;
 	private BankAmountSwapper amountSwapper;
 	private SceneHighlightOverlay sceneOverlay;
 	private MinimapArrowOverlay minimapOverlay;
@@ -188,9 +186,6 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		tracker.addInterestingTargets(List.of(SellStep.CLERK));
 		shortestPath = new ShortestPathBridge(eventBus, displayConfig, configManager, "bankedxp:");
 		path = new PathDisplay(client, displayConfig, worldMapPointManager, shortestPath);
-		bankFilter = new BankFilter(client, clientThread, bankSearch, itemManager, this, configManager,
-			new BankFilter.Options(BankedXpConfig.GROUP, 3, "Banked XP items", config::showBankButton,
-				config::bankFilterOn));
 		amountSwapper = new BankAmountSwapper(client, this, displayConfig, itemManager);
 		sceneOverlay = new SceneHighlightOverlay(client, this, displayConfig, tracker, outlines);
 		minimapOverlay = new MinimapArrowOverlay(client, this, displayConfig);
@@ -198,9 +193,8 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 
 		eventBus.register(tracker);
 		eventBus.register(shortestPath);
-		eventBus.register(bankFilter);
 		eventBus.register(amountSwapper);
-		bankFilter.startUp();
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(minimapOverlay);
 		overlayManager.add(itemOverlay);
@@ -228,9 +222,8 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	protected void shutDown()
 	{
 		eventBus.unregister(tracker);
-		eventBus.unregister(bankFilter);
 		eventBus.unregister(amountSwapper);
-		bankFilter.shutDown();
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(minimapOverlay);
 		overlayManager.remove(itemOverlay);
@@ -244,7 +237,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			t.clear();
 			eventBus.unregister(sp);
 		});
-		guide = ActiveGuide.NONE;
+		setGuide(ActiveGuide.NONE);
 		running = false;
 		profitRun = null;
 		profileLoaded = false;
@@ -273,7 +266,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 				running = false;
 				profitRun = null;
 			}
-			guide = ActiveGuide.NONE;
+			setGuide(ActiveGuide.NONE);
 			path.clear();
 		}
 	}
@@ -431,7 +424,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			.bankKnown(state.bankKnown());
 		if (!state.bankKnown())
 		{
-			guide = ActiveGuide.NONE;
+			setGuide(ActiveGuide.NONE);
 			path.show(null);
 			show(p, view.running(running).build());
 			return;
@@ -450,7 +443,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 
 		if (!running)
 		{
-			guide = ActiveGuide.NONE;
+			setGuide(ActiveGuide.NONE);
 			path.show(null);
 			lastActivity = null;
 			show(p, view.running(false).build());
@@ -485,7 +478,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			.wikiPage(plan.getMethod().getWikiPage())
 			.build();
 		step = showPath(step);
-		guide = next.toBuilder().step(step).build();
+		setGuide(next.toBuilder().step(step).build());
 		show(p, view.running(true).current(current).step(step).requirements(plan.getRequirements()).build());
 	}
 
@@ -525,7 +518,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 				.wikiPage(plan.getMethod().getWikiPage())
 				.build();
 			step = showPath(step);
-			guide = next.toBuilder().step(step).build();
+			setGuide(next.toBuilder().step(step).build());
 			show(p, view.running(true).current(current).queue(List.of(current)).step(step)
 				.requirements(plan.getRequirements()).build());
 			return;
@@ -543,7 +536,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			profitRun = null;
 			running = false;
 			lastActivity = null;
-			guide = ActiveGuide.NONE;
+			setGuide(ActiveGuide.NONE);
 			path.show(null);
 			show(p, view.profitRun(null).running(false).build());
 			return;
@@ -563,7 +556,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 			.wikiPage("Grand_Exchange")
 			.build();
 		sell = showPath(sell);
-		guide = next.toBuilder().step(sell).build();
+		setGuide(next.toBuilder().step(sell).build());
 		show(p, view.running(true).current(current).queue(List.of(current)).step(sell).build());
 	}
 
@@ -614,7 +607,7 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 		}
 		running = false;
 		lastActivity = null;
-		guide = ActiveGuide.NONE;
+		setGuide(ActiveGuide.NONE);
 		path.show(null);
 	}
 
@@ -730,6 +723,16 @@ public class BankedXpPlugin extends Plugin implements GuideHost, BankedXpPanel.L
 	public void onToggleBankFilter()
 	{
 		bankFilter.toggle();
+	}
+
+	/**
+	 * Swaps in the new guide and tells the shared bank button what it needs.
+	 */
+	private void setGuide(ActiveGuide next)
+	{
+		guide = next;
+		bankFilter.show(this, next.isActive() ? BankFilter.Need.skill("Banked XP items", next.getSkill(),
+			next.getBankItems().keySet()) : null);
 	}
 
 	@Override

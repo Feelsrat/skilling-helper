@@ -36,26 +36,4 @@ public interface BankedXpConfig extends Config
 	{
 		return false;
 	}
-
-	@ConfigItem(
-		keyName = "showBankButton",
-		name = "Bank button",
-		description = "Add a button to the bank that shows only the items the Banked XP guide needs right now",
-		position = 2
-	)
-	default boolean showBankButton()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-		keyName = "bankFilterOn",
-		name = "",
-		description = "",
-		hidden = true
-	)
-	default boolean bankFilterOn()
-	{
-		return true;
-	}
 }

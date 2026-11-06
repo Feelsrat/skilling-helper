@@ -9,6 +9,7 @@ import com.skillinghelper.SkillingHelperPlugin;
 import com.skillinghelper.StartBankProfitRequest;
 import com.skillinghelper.StartPvmGuideRequest;
 import com.skillinghelper.bank.BankCache;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.banked.BankedXpPlugin;
 import com.skillinghelper.banked.profit.BankProfit;
 import com.skillinghelper.banked.profit.ProfitRecipe;
@@ -126,7 +127,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	@Inject
 	private MoneyItemOverlay itemOverlay;
 	@Inject
-	private MoneyBankFilter bankFilter;
+	private BankFilter bankFilter;
 	@Inject
 	private WikiPriceClient wikiPrices;
 	@Inject
@@ -273,8 +274,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		}
 
 		eventBus.register(targets);
-		bankFilter.startUp();
-		eventBus.register(bankFilter);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		panel = new MoneyMakingPanel(this);
@@ -300,8 +300,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
-		eventBus.unregister(bankFilter);
-		bankFilter.shutDown();
+		bankFilter.detach(this);
 		wikiVolumes.cancel();
 		wikiVolumes.clear();
 		overlayManager.remove(sceneOverlay);
@@ -953,11 +952,10 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 
 	private void setBankItems(Set<Integer> ids)
 	{
-		if (!ids.equals(bankItems))
-		{
-			bankItems = Set.copyOf(ids);
-			bankFilter.relayout();
-		}
+		bankItems = Set.copyOf(ids);
+		// The shared bank button: coins on it while a money guide is the one shown
+		bankFilter.show(this, guide == null ? null
+			: BankFilter.Need.item("Money Making supplies", ItemID.COINS_10000, bankItems));
 	}
 
 	private MoneyMethod find(String page)

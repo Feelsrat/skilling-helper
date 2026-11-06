@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.OpenDiaryRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartDiaryGuideRequest;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Wilderness;
@@ -45,6 +46,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -80,6 +82,8 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	 */
 	private static final int QUEST_REFRESH_TICKS = 50;
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -143,6 +147,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 		sceneOverlay = new DiarySceneOverlay(client, this::getStep, config::targetColor, targets, outlineRenderer);
 		itemOverlay = new DiaryItemOverlay(this::getStep, config::itemColor, itemManager, configManager);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		region = savedRegion();
@@ -166,6 +171,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -440,6 +446,7 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 			}
 		}
 		step = next;
+		showInBank();
 		if (next != null)
 		{
 			targets.track(next.getNpcs(), next.getObjects());
@@ -726,5 +733,14 @@ public class AchievementDiaryPlugin extends Plugin implements DiaryPanel.Listene
 	public void onOpenWiki()
 	{
 		LinkBrowser.browse(WIKI_URL + region.getWikiPage());
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		DiaryStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.item("Achievement Diary items", ItemID.ARDY_CAPE_EASY, step.bankItems()));
 	}
 }

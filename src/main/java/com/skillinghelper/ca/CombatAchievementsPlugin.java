@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import com.skillinghelper.OpenCombatAchievementsRequest;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.StartPvmGuideRequest;
+import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.ca.data.CaMonster;
 import com.skillinghelper.ca.data.CaMonsters;
@@ -52,6 +53,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
+import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
@@ -102,6 +104,8 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 	private static final Pattern KILL_COUNT = Pattern.compile(
 		"Your (?:completed |subdued )?(.+?) (?:kill |completion |success |chest |harvest |)count is: ?([0-9,]+)");
 
+	@Inject
+	private BankFilter bankFilter;
 	@Inject
 	private Client client;
 	@Inject
@@ -166,6 +170,7 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 		targets = new NameTargets(client);
 		sceneOverlay = new CaSceneOverlay(client, this, config, targets, outlineRenderer);
 		eventBus.register(targets);
+		bankFilter.attach(this);
 		overlayManager.add(sceneOverlay);
 		overlayManager.add(itemOverlay);
 		scope = savedScope();
@@ -192,6 +197,7 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 	protected void shutDown()
 	{
 		eventBus.unregister(targets);
+		bankFilter.detach(this);
 		overlayManager.remove(sceneOverlay);
 		overlayManager.remove(itemOverlay);
 		clientToolbar.removeNavigation(navButton);
@@ -551,6 +557,7 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 		if (!loggedIn)
 		{
 			step = null;
+			showInBank();
 			trackNames(null, null);
 			clearWay();
 			pushView(CaView.builder().loggedIn(false).scope(scope).tiers(List.of()).tasks(List.of()).build());
@@ -610,6 +617,7 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 			clearWay();
 		}
 		step = next;
+		showInBank();
 		pushView(buildView(p, power, ranked, points, context.build(), next, current));
 	}
 
@@ -916,5 +924,14 @@ public class CombatAchievementsPlugin extends Plugin implements CaPanel.Listener
 	{
 		// PvM Progression picks this up when it's turned on
 		clientThread.invokeLater(() -> eventBus.post(new StartPvmGuideRequest(pvmId)));
+	}
+
+	/**
+	 * Tells the bank button shared by every plugin in this jar what the current step needs.
+	 */
+	private void showInBank()
+	{
+		DiaryStep step = this.step;
+		bankFilter.show(this, step == null ? null : BankFilter.Need.item("Combat Achievement items", ItemID.CA_OFFHAND_EASY, step.bankItems()));
 	}
 }
