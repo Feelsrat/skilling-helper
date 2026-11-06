@@ -59,6 +59,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 
@@ -80,6 +81,10 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 	 * How often quest states and diary/boss progress are read again (quests are client scripts).
 	 */
 	private static final int REFRESH_TICKS = 50;
+	/**
+	 * How often the route checks whether its current step is done.
+	 */
+	private static final int ROUTE_REFRESH_TICKS = 5;
 
 	@Inject
 	private Client client;
@@ -103,6 +108,10 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 	private BankCache bankCache;
 	@Inject
 	private ScheduledExecutorService executor;
+	@Inject
+	private OverlayManager overlayManager;
+	@Inject
+	private RouteOverlay routeOverlay;
 
 	private PlannerPanel panel;
 	private NavigationButton navButton;
@@ -128,6 +137,26 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 	 */
 	private Map<String, PlanStep> planned = Collections.emptyMap();
 	private PlannerView shownView;
+	private PathPlanner.Plan lastPlan;
+	private List<String> lastProviders = Collections.emptyList();
+	private Set<StepKind> lastHidden = Collections.emptySet();
+	private boolean lastWilderness;
+
+	/**
+	 * The guided route: one step at a time, each started in its own plugin, moving on by itself.
+	 */
+	private boolean routeOn;
+	private String routeStepId;
+	private String routeStepTitle;
+	/**
+	 * Steps finished since the route was started this session.
+	 */
+	private int routeDone;
+	/**
+	 * Open the current step's guide again once the first plan after a login is in.
+	 */
+	private boolean resumePending;
+	private int routeCountdown;
 
 	@Override
 	protected void startUp()
@@ -143,6 +172,7 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 			.panel(panel)
 			.build();
 		clientToolbar.addNavigation(navButton);
+		overlayManager.add(routeOverlay);
 		countdown = 0;
 		dirty = true;
 		clientThread.invokeLater(this::replan);
@@ -152,6 +182,14 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 	protected void shutDown()
 	{
 		clientToolbar.removeNavigation(navButton);
+		overlayManager.remove(routeOverlay);
+		routeOverlay.setLines(null, null, null, 0);
+		routeOn = false;
+		routeStepId = null;
+		routeStepTitle = null;
+		routeDone = 0;
+		resumePending = false;
+		lastPlan = null;
 		panel = null;
 		shownView = null;
 		lastInputs = null;
@@ -186,6 +224,10 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 			levels.clear();
 			bankCounts = null;
 			profileLoaded = null;
+			routeOn = false;
+			routeStepId = null;
+			lastPlan = null;
+			routeOverlay.setLines(null, null, null, 0);
 			replan();
 		}
 	}
@@ -245,6 +287,17 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 			readQuests();
 			dirty = true;
 		}
+		else if (routeOn && --routeCountdown <= 0)
+		{
+			// Notice the current step is done within a few seconds: read its quest and ask the providers again
+			routeCountdown = ROUTE_REFRESH_TICKS;
+			PlanStep current = routeStepId == null ? null : planned.get(routeStepId);
+			if (current != null && current.getFinishes() != null)
+			{
+				quests.put(current.getFinishes(), current.getFinishes().getState(client));
+			}
+			dirty = true;
+		}
 		if (dirty)
 		{
 			replan();
@@ -272,6 +325,13 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 		skipped.clear();
 		skipped.addAll(split(configManager.getRSProfileConfiguration(AccountPlannerConfig.GROUP,
 			AccountPlannerConfig.KEY_SKIPPED)));
+		String route = configManager.getRSProfileConfiguration(AccountPlannerConfig.GROUP,
+			AccountPlannerConfig.KEY_ROUTE);
+		routeOn = route != null;
+		routeStepId = route == null || route.isEmpty() ? null : route;
+		routeStepTitle = null;
+		resumePending = routeOn;
+		routeDone = 0;
 	}
 
 	private AccountState readAccount()
@@ -401,8 +461,6 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 			.price(id -> 0).build();
 		PathPlanner.Settings settings = new PathPlanner.Settings(new HashSet<>(skipped), hidden);
 		SkillHours hours = skillHours;
-		int length = config.planLength();
-		int skippedCount = skipped.size();
 		int gen = ++generation;
 		List<PlanStep> planSteps = steps;
 		executor.execute(() ->
@@ -410,37 +468,19 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 			try
 			{
 				PathPlanner.Plan plan = PathPlanner.plan(planSteps, snapshot, hours, settings);
-				Map<String, PlanStep> byId = new HashMap<>();
-				List<PlannerView.Row> rows = new ArrayList<>();
-				for (PathPlanner.Planned p : plan.getSteps())
-				{
-					PlanStep s = p.getStep();
-					byId.put(s.getId(), s);
-					if (rows.size() < length)
-					{
-						rows.add(new PlannerView.Row(s.getId(), s.getKind(), s.getTitle(), s.getWhy(), p.getReason(),
-							p.getHours(), s.getHowTo(), s.getNotes(), s.getOpenIn(), s.getOpen() != null,
-							s.getWikiPage(), s.isWilderness()));
-					}
-				}
-				PlannerView view = PlannerView.builder()
-					.loggedIn(true)
-					.rows(rows)
-					.planSize(plan.getSteps().size())
-					.totalHours(plan.getTotalHours())
-					.progress(new EnumMap<>(plan.getProgress()))
-					.hiddenKinds(hidden)
-					.skipped(skippedCount)
-					.unreachable(plan.getUnreachable())
-					.wildernessAllowed(snapshot.isAllowWilderness())
-					.providers(names)
-					.build();
 				clientThread.invokeLater(() ->
 				{
 					if (gen == generation && client.getGameState() == GameState.LOGGED_IN)
 					{
+						lastPlan = plan;
+						lastProviders = names;
+						lastHidden = hidden;
+						lastWilderness = snapshot.isAllowWilderness();
+						Map<String, PlanStep> byId = new HashMap<>();
+						plan.getSteps().forEach(p -> byId.put(p.getStep().getId(), p.getStep()));
 						planned = byId;
-						show(view);
+						followRoute();
+						publish();
 					}
 				});
 			}
@@ -449,6 +489,169 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 				log.debug("Account plan failed", ex);
 			}
 		});
+	}
+
+	/**
+	 * Sends the panel the last plan, with the route's current step first while the route runs. Client thread.
+	 */
+	private void publish()
+	{
+		PathPlanner.Plan plan = lastPlan;
+		if (plan == null)
+		{
+			return;
+		}
+		List<PathPlanner.Planned> order = new ArrayList<>(plan.getSteps());
+		if (routeOn && routeStepId != null)
+		{
+			for (int i = 0; i < order.size(); i++)
+			{
+				if (order.get(i).getStep().getId().equals(routeStepId))
+				{
+					order.add(0, order.remove(i));
+					break;
+				}
+			}
+		}
+		List<PlannerView.Row> rows = new ArrayList<>();
+		for (PathPlanner.Planned p : order)
+		{
+			if (rows.size() >= config.planLength())
+			{
+				break;
+			}
+			PlanStep s = p.getStep();
+			rows.add(new PlannerView.Row(s.getId(), s.getKind(), s.getTitle(), s.getWhy(), p.getReason(),
+				p.getHours(), s.getHowTo(), s.getNotes(), s.getOpenIn(), s.getOpen() != null, s.getWikiPage(),
+				s.isWilderness()));
+		}
+		show(PlannerView.builder()
+			.loggedIn(true)
+			.rows(rows)
+			.planSize(plan.getSteps().size())
+			.totalHours(plan.getTotalHours())
+			.progress(new EnumMap<>(plan.getProgress()))
+			.hiddenKinds(lastHidden)
+			.skipped(skipped.size())
+			.unreachable(plan.getUnreachable())
+			.wildernessAllowed(lastWilderness)
+			.providers(lastProviders)
+			.routeOn(routeOn)
+			.routeDone(routeDone)
+			.build());
+		updateOverlay(order);
+	}
+
+	// ---- The route ----
+
+	/**
+	 * While the route runs: when its current step is done (gone from the plan), start the next one in its own
+	 * plugin's guide. After a login it opens the current step's guide again. Client thread.
+	 */
+	private void followRoute()
+	{
+		if (!routeOn || lastPlan == null)
+		{
+			return;
+		}
+		List<PathPlanner.Planned> order = lastPlan.getSteps();
+		if (order.isEmpty())
+		{
+			chat("the route is finished: every planned step is done. Well played!");
+			setRoute(false, null);
+			return;
+		}
+		PlanStep current = routeStepId == null ? null : planned.get(routeStepId);
+		if (current == null)
+		{
+			String finished = routeStepTitle;
+			if (routeStepId != null)
+			{
+				routeDone++;
+			}
+			begin(order.get(0).getStep(), finished);
+		}
+		else if (resumePending)
+		{
+			resumePending = false;
+			openGuide(current, true);
+		}
+	}
+
+	private void begin(PlanStep step, String finished)
+	{
+		resumePending = false;
+		routeStepTitle = step.getTitle();
+		setRoute(true, step.getId());
+		chat((finished != null ? "done: " + finished + ". " : "") + "Next: " + step.getTitle()
+			+ (step.getOpenIn() != null ? " (guided in " + step.getOpenIn() + ")" : "") + ".");
+		openGuide(step, true);
+	}
+
+	/**
+	 * Posts the step's open request so its plugin starts guiding it.
+	 */
+	private void openGuide(PlanStep s, boolean fromRoute)
+	{
+		if (s.getOpen() == null)
+		{
+			if (fromRoute)
+			{
+				chat("no guide for this one yet: the planner panel says how to do it. Press Skip there when "
+					+ "you're done with it.");
+			}
+			return;
+		}
+		if (!isActive(s.getOpenIn()))
+		{
+			chat("turn on the " + s.getOpenIn() + " plugin (in the plugin list) so it can guide this step.");
+			return;
+		}
+		eventBus.post(s.getOpen());
+	}
+
+	private void setRoute(boolean on, String stepId)
+	{
+		routeOn = on;
+		routeStepId = on ? stepId : null;
+		if (!on)
+		{
+			routeStepTitle = null;
+		}
+		if (profileLoaded == null)
+		{
+			return;
+		}
+		if (on)
+		{
+			configManager.setRSProfileConfiguration(AccountPlannerConfig.GROUP, AccountPlannerConfig.KEY_ROUTE,
+				stepId == null ? "" : stepId);
+		}
+		else
+		{
+			configManager.unsetRSProfileConfiguration(AccountPlannerConfig.GROUP, AccountPlannerConfig.KEY_ROUTE);
+		}
+	}
+
+	private void updateOverlay(List<PathPlanner.Planned> order)
+	{
+		if (!routeOn || order.isEmpty() || !config.routeBox())
+		{
+			routeOverlay.setLines(null, null, null, 0);
+			return;
+		}
+		PlanStep now = order.get(0).getStep();
+		PlanStep next = order.size() > 1 ? order.get(1).getStep() : null;
+		routeOverlay.setLines(now.getKind().getLabel() + ": " + now.getTitle(), now.getOpenIn(),
+			next == null ? null : next.getTitle(), routeDone);
+	}
+
+	private void chat(String message)
+	{
+		if (client.getGameState() == GameState.LOGGED_IN)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Account route: " + message, null);
+		}
 	}
 
 	private static List<PlanStep> collect(AccountState account)
@@ -576,10 +779,42 @@ public class AccountPlannerPlugin extends Plugin implements PlannerPanel.Listene
 	}
 
 	@Override
+	public void onStartRoute()
+	{
+		clientThread.invokeLater(() ->
+		{
+			if (client.getGameState() != GameState.LOGGED_IN || lastPlan == null || lastPlan.getSteps().isEmpty())
+			{
+				return;
+			}
+			routeDone = 0;
+			routeOn = true;
+			begin(lastPlan.getSteps().get(0).getStep(), null);
+			publish();
+		});
+	}
+
+	@Override
+	public void onStopRoute()
+	{
+		clientThread.invokeLater(() ->
+		{
+			setRoute(false, null);
+			publish();
+		});
+	}
+
+	@Override
 	public void onSkip(String stepId)
 	{
 		clientThread.invokeLater(() ->
 		{
+			if (stepId.equals(routeStepId))
+			{
+				// Skipped, not done: the route just moves on
+				routeStepTitle = null;
+				routeDone--;
+			}
 			skipped.add(stepId);
 			saveSkipped();
 			replan();

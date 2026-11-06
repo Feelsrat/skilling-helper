@@ -17,6 +17,10 @@ public interface AccountPlannerConfig extends Config
 	 * Hidden, per RuneScape profile: comma-separated ids of skipped steps.
 	 */
 	String KEY_SKIPPED = "skipped";
+	/**
+	 * Hidden, per RuneScape profile: set while the guided route runs, to the id of its current step.
+	 */
+	String KEY_ROUTE = "route";
 
 	@Range(min = 5, max = 200)
 	@ConfigItem(
@@ -28,5 +32,16 @@ public interface AccountPlannerConfig extends Config
 	default int planLength()
 	{
 		return 30;
+	}
+
+	@ConfigItem(
+		keyName = "routeBox",
+		name = "Route box",
+		description = "While the route runs, show its current and next step in a small box on the game screen",
+		position = 1
+	)
+	default boolean routeBox()
+	{
+		return true;
 	}
 }

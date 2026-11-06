@@ -36,6 +36,10 @@ import net.runelite.client.ui.PluginPanel;
  */
 public class PlannerPanel extends PluginPanel
 {
+	/**
+	 * Later steps listed under the route's current one.
+	 */
+	private static final int ROUTE_PREVIEW = 5;
 	private static final int WIDTH = GuideUi.WIDTH;
 	private static final int CARD = GuideUi.CARD_WIDTH;
 	private static final Map<StepKind, Color> KIND_COLORS = new EnumMap<>(StepKind.class);
@@ -62,6 +66,13 @@ public class PlannerPanel extends PluginPanel
 		void onOpen(String stepId);
 
 		void onSkip(String stepId);
+
+		/**
+		 * Start the guided route: the next step starts in its own guide, and each one after it by itself.
+		 */
+		void onStartRoute();
+
+		void onStopRoute();
 
 		void onUnskipAll();
 
@@ -140,8 +151,25 @@ public class PlannerPanel extends PluginPanel
 			body.add(GuideUi.text("Every step the plugins know about is done, skipped or switched off below.",
 				GuideUi.MUTED, WIDTH));
 		}
+		else if (v.isRouteOn())
+		{
+			body.add(routeCard(rows.get(0), v.getRouteDone()));
+			if (rows.size() > 1)
+			{
+				body.add(GuideUi.section("Coming up"));
+				for (int i = 1; i < Math.min(rows.size(), ROUTE_PREVIEW + 1); i++)
+				{
+					body.add(row(rows.get(i), i + 1));
+				}
+			}
+		}
 		else
 		{
+			body.add(GuideUi.primary("▶ Start route", listener::onStartRoute));
+			body.add(Box.createVerticalStrut(3));
+			body.add(GuideUi.hint("Guides you through every step below, one after another: each starts in its own "
+				+ "guide (bank, travel and what to click), and the next one starts by itself when it's done."));
+			body.add(Box.createVerticalStrut(6));
 			body.add(card(rows.get(0), 1, "Next up"));
 			if (rows.size() > 1)
 			{
@@ -253,6 +281,59 @@ public class PlannerPanel extends PluginPanel
 	{
 		body.revalidate();
 		body.repaint();
+	}
+
+	/**
+	 * The route's current step: what it is and why, which guide is running it, and Stop / Skip / reopen.
+	 */
+	private JComponent routeCard(PlannerView.Row r, int done)
+	{
+		Color color = KIND_COLORS.getOrDefault(r.getKind(), GuideUi.TEXT);
+		List<String> lines = new ArrayList<>();
+		if (r.isCanOpen())
+		{
+			lines.add("▶ " + r.getOpenIn() + " is guiding this step: follow its path, highlights and steps (it "
+				+ "sends you to the bank for what to bring)");
+		}
+		else
+		{
+			lines.add("⚠ No guide for this step yet: do it as below, then press Skip");
+			for (int i = 0; i < r.getHowTo().size(); i++)
+			{
+				lines.add((i + 1) + ". " + r.getHowTo().get(i));
+			}
+		}
+		lines.add("Then: the next step starts by itself when this one is done");
+		if (r.getWhy() != null)
+		{
+			lines.add("Why: " + r.getWhy());
+		}
+		if (r.getReason() != null)
+		{
+			lines.add("↑ " + r.getReason());
+		}
+		if (r.getHours() > 0)
+		{
+			lines.add("ℹ About " + hours(r.getHours()));
+		}
+		if (r.isWilderness())
+		{
+			lines.add("⚠ " + Wilderness.TAG + ": " + Wilderness.WARNING);
+		}
+		for (String n : r.getNotes())
+		{
+			lines.add("? " + n);
+		}
+		String kicker = "Route · " + r.getKind().getLabel() + (done > 0 ? " · " + done + " done" : "");
+		JButton reopen = r.isCanOpen() ? GuideUi.small("Show guide", () -> listener.onOpen(r.getId())) : null;
+		if (reopen != null)
+		{
+			reopen.setToolTipText("Open " + r.getOpenIn() + " on this step again");
+		}
+		JButton skip = GuideUi.small("Skip", () -> listener.onSkip(r.getId()));
+		skip.setToolTipText("Leave this step out and go on to the next one");
+		JButton wiki = r.getWikiPage() == null ? null : GuideUi.small("Wiki", () -> listener.onWiki(r.getWikiPage()));
+		return GuideUi.stepCard(color, kicker, r.getTitle(), lines, listener::onStopRoute, reopen, skip, wiki);
 	}
 
 	/**

@@ -31,6 +31,11 @@ public class PlannerView
 	@Builder.Default
 	List<String> unreachable = Collections.emptyList();
 	boolean wildernessAllowed;
+	/**
+	 * The guided route runs: {@link #rows} starts with its current step.
+	 */
+	boolean routeOn;
+	int routeDone;
 	@Builder.Default
 	List<String> providers = Collections.emptyList();
 
@@ -66,7 +71,7 @@ public class PlannerView
 		}
 		PlannerView v = (PlannerView) o;
 		return loggedIn == v.loggedIn && planSize == v.planSize && Double.compare(totalHours, v.totalHours) == 0
-			&& skipped == v.skipped && unreachable.equals(v.unreachable) && wildernessAllowed == v.wildernessAllowed
+			&& skipped == v.skipped && routeOn == v.routeOn && routeDone == v.routeDone && unreachable.equals(v.unreachable) && wildernessAllowed == v.wildernessAllowed
 			&& rows.equals(v.rows) && hiddenKinds.equals(v.hiddenKinds) && providers.equals(v.providers)
 			&& progressKey(progress).equals(progressKey(v.progress));
 	}

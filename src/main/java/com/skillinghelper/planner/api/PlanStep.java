@@ -46,6 +46,11 @@ public class PlanStep
 	 * Done already: counted for progress, never planned.
 	 */
 	boolean done;
+	/**
+	 * The player chose not to do it, in its own plugin (e.g. the Quest Order Guide's ignore list): never planned,
+	 * and counted as had for whatever waits on it, like a step skipped in the planner.
+	 */
+	boolean ignored;
 
 	// ---- What it needs ----
 

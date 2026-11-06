@@ -105,6 +105,18 @@ public class PathPlannerTest
 	}
 
 	@Test
+	public void ignoredStepsAreLeftOutAndCountAsHad()
+	{
+		PlanStep quest = PlanStep.builder().id(PlanStep.questId(Quest.COOKS_ASSISTANT)).kind(StepKind.QUEST)
+			.title("Cook's Assistant").finishes(Quest.COOKS_ASSISTANT).ignored(true).build();
+		PlanStep after = PlanStep.builder().id("x:after").kind(StepKind.OTHER).title("After")
+			.quest(Quest.COOKS_ASSISTANT).build();
+		PathPlanner.Plan plan = PathPlanner.plan(List.of(quest, after), account(50), HOURS, NONE);
+		assertEquals(1, plan.getSteps().size());
+		assertEquals("x:after", plan.getSteps().get(0).getStep().getId());
+	}
+
+	@Test
 	public void moneyStepWhenShortOfGold()
 	{
 		PlanStep pricey = PlanStep.builder().id("x:p").kind(StepKind.OTHER).title("Pricey").gpCost(1_000_000).build();

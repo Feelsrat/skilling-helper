@@ -165,7 +165,8 @@ public final class PathPlanner
 				p[0]++;
 				doneIds.add(s.getId());
 			}
-			else if (settings.getSkipped().contains(s.getId()) || settings.getHiddenKinds().contains(s.getKind()))
+			else if (s.isIgnored() || settings.getSkipped().contains(s.getId())
+				|| settings.getHiddenKinds().contains(s.getKind()))
 			{
 				// Left to the player: counts as had for whatever comes after it
 				doneIds.add(s.getId());
