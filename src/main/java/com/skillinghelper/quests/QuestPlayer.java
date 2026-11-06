@@ -41,6 +41,14 @@ public class QuestPlayer
 	 * Whether the Quest Helper plugin is installed and on.
 	 */
 	boolean questHelper;
+	/**
+	 * Quest Helper's own "Auto start helper" setting: it starts guiding a quest the moment the game says it started.
+	 */
+	boolean questHelperAutoStart;
+	/**
+	 * The player's ignore list ({@link QuestIgnoreList}).
+	 */
+	Set<String> ignored;
 	@Builder.Default
 	List<TravelPick> travel = Collections.emptyList();
 

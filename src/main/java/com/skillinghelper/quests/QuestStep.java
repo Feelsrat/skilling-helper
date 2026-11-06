@@ -64,6 +64,10 @@ public class QuestStep
 	 */
 	String diary;
 	/**
+	 * Quest Helper is on but its "Auto start helper" setting is off: offer to turn it on.
+	 */
+	boolean offerAutoStart;
+	/**
 	 * Travel items to outline in the bank.
 	 */
 	@Singular("travelItem")

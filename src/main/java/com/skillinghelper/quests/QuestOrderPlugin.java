@@ -241,7 +241,8 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 	@Subscribe
 	public void onConfigChanged(ConfigChanged e)
 	{
-		if (QuestOrderConfig.GROUP.equals(e.getGroup()) || Wilderness.isSettingChange(e))
+		if (QuestOrderConfig.GROUP.equals(e.getGroup()) || Wilderness.isSettingChange(e)
+			|| QuestIgnoreList.isSettingChange(e) || QuestHelperLink.CONFIG_GROUP.equals(e.getGroup()))
 		{
 			clientThread.invokeLater(() ->
 			{
@@ -326,6 +327,8 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 			.allowWilderness(Wilderness.allowed(configManager))
 			.location(me == null ? null : WorldPoint.fromLocalInstance(client, me.getLocalLocation()))
 			.questHelper(QuestHelperLink.isActive(pluginManager))
+			.questHelperAutoStart(QuestHelperLink.autoStarts(configManager))
+			.ignored(QuestIgnoreList.load(configManager))
 			.build();
 	}
 
@@ -404,11 +407,17 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 	{
 		int done = 0;
 		List<QuestView.Row> upcoming = new ArrayList<>();
+		List<QuestView.Ignored> ignored = new ArrayList<>();
 		for (QuestPlanner.RowState s : states)
 		{
 			if (s.getStatus() == QuestPlanner.Status.DONE)
 			{
 				done++;
+				continue;
+			}
+			if (s.getStatus() == QuestPlanner.Status.IGNORED)
+			{
+				ignored.add(new QuestView.Ignored(s.getRow().key(), QuestPlanner.label(s.getRow())));
 				continue;
 			}
 			if (upcoming.size() >= UPCOMING_ROWS)
@@ -436,6 +445,7 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 			.running(running)
 			.step(next)
 			.upcoming(upcoming)
+			.ignored(ignored)
 			.wildernessAllowed(Wilderness.allowed(configManager))
 			.build();
 	}
@@ -643,6 +653,38 @@ public class QuestOrderPlugin extends Plugin implements QuestOrderPanel.Listener
 			Route r = route();
 			SwingUtilities.invokeLater(() -> LinkBrowser.browse(WIKI_URL + r.getWikiPage()));
 		});
+	}
+
+	@Override
+	public void onIgnore(String key, boolean ignore)
+	{
+		clientThread.invokeLater(() ->
+		{
+			for (OrderRow row : QuestData.route(route()))
+			{
+				if (row.key().equals(key))
+				{
+					if (ignore && key.equals(picked))
+					{
+						picked = null;
+					}
+					QuestIgnoreList.set(configManager, QuestIgnoreList.entry(row), ignore);
+					return;
+				}
+			}
+		});
+	}
+
+	@Override
+	public void onQuestHelperAutoStart()
+	{
+		QuestHelperLink.enableAutoStart(configManager);
+	}
+
+	@Override
+	public void onSortQuestHelper()
+	{
+		clientThread.invokeLater(() -> QuestHelperLink.sortOptimal(configManager, route() == Route.IRONMAN));
 	}
 
 	@Override

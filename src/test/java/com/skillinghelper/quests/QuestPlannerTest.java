@@ -32,7 +32,9 @@ public class QuestPlannerTest
 			.members(true)
 			.claimedDiaries(Set.of())
 			.ticked(Set.of())
-			.questHelper(true);
+			.questHelper(true)
+			.questHelperAutoStart(true)
+			.ignored(Set.of());
 	}
 
 	@Test
@@ -93,6 +95,33 @@ public class QuestPlannerTest
 		QuestStep picked = QuestPlanner.step(QuestPlanner.evaluate(Route.MAIN, p, Set.of()), "QUEST:Sheep Shearer",
 			p, true);
 		assertEquals(QuestStep.Kind.CONTINUE, picked.getKind());
+	}
+
+	@Test
+	public void ignoredQuestsAreNeverNext()
+	{
+		Map<String, QuestState> q = new HashMap<>();
+		q.put("Learning the Ropes", QuestState.FINISHED);
+		QuestPlayer p = player(1, q).ignored(Set.of("Cook's Assistant")).build();
+		List<QuestPlanner.RowState> states = QuestPlanner.evaluate(Route.MAIN, p, Set.of());
+		assertTrue(states.stream().anyMatch(s -> s.getRow().getRef().equals("Cook's Assistant")
+			&& s.getStatus() == QuestPlanner.Status.IGNORED));
+		assertEquals("Sheep Shearer", QuestPlanner.step(states, null, p, true).getTitle());
+	}
+
+	@Test
+	public void questHelperTakesOverOrOffersAutoStart()
+	{
+		Map<String, QuestState> q = new HashMap<>();
+		q.put("Learning the Ropes", QuestState.FINISHED);
+		QuestPlayer auto = player(1, q).build();
+		QuestStep a = QuestPlanner.step(QuestPlanner.evaluate(Route.MAIN, auto, Set.of()), null, auto, true);
+		assertTrue(a.getLines().stream().anyMatch(l -> l.contains("takes over by itself")));
+		assertTrue(!a.isOfferAutoStart());
+		assertEquals("Cook", a.getNpc());
+		QuestPlayer manual = player(1, q).questHelperAutoStart(false).build();
+		QuestStep m = QuestPlanner.step(QuestPlanner.evaluate(Route.MAIN, manual, Set.of()), null, manual, true);
+		assertTrue(m.isOfferAutoStart());
 	}
 
 	@Test

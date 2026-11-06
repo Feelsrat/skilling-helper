@@ -48,7 +48,11 @@ public final class QuestPlanner
 		/**
 		 * Skipped by the player this session.
 		 */
-		SKIPPED
+		SKIPPED,
+		/**
+		 * On the player's ignore list: never suggested.
+		 */
+		IGNORED
 	}
 
 	@Value
@@ -83,7 +87,11 @@ public final class QuestPlanner
 		}
 		List<String> missing = missing(row, p);
 		Status status;
-		if (!missing.isEmpty())
+		if (p.getIgnored() != null && p.getIgnored().contains(QuestIgnoreList.entry(row)))
+		{
+			status = Status.IGNORED;
+		}
+		else if (!missing.isEmpty())
 		{
 			status = Status.LOCKED;
 		}
@@ -343,64 +351,36 @@ public final class QuestPlanner
 			b.line("⚠ " + Wilderness.WARNING);
 		}
 		String startQh = rfd
-			? "Right-click " + QuestData.RFD + " and choose \"Start Quest Helper\" on the " + name.substring(5)
-			+ " line."
-			: "Right-click " + listName + " and choose \"Start Quest Helper\".";
-		if (p.isQuestHelper())
+			? "right-click " + QuestData.RFD + " in the Quest list (outlined) and choose \"Start Quest Helper\" on the "
+			+ name.substring(5) + " line"
+			: "right-click " + listName + " in the Quest list (outlined) and choose \"Start Quest Helper\"";
+		boolean auto = p.isQuestHelper() && p.isQuestHelperAutoStart();
+		if (!p.isQuestHelper())
 		{
-			if (started)
+			b.line("⚠ Quest Helper isn't installed or is turned off, so there are no click-by-click steps inside the "
+				+ "quest. Get \"Quest Helper\" from the Plugin Hub for them; until then follow the wiki guide (button "
+				+ "below).");
+		}
+		int n = 1;
+		if (started)
+		{
+			if (p.isQuestHelper())
 			{
-				b.line("1. You've started this quest. Keep following Quest Helper's steps.");
-				b.line("2. If its steps aren't showing, open the Quest list (the blue quest icon in your side tabs), "
-					+ "find " + listName + " (outlined) and " + Character.toLowerCase(startQh.charAt(0))
-					+ startQh.substring(1));
-				b.line("3. This guide moves on by itself when the quest is done.");
+				b.line(n++ + ". You've started this quest. Follow Quest Helper: its panel lists every step and it "
+					+ "highlights what to click.");
+				b.line(n++ + ". Not showing? Open the Quest list (the blue quest icon in your side tabs) and "
+					+ startQh + ".");
 			}
 			else
 			{
-				b.line("1. Open the Quest list: click the blue quest icon in your side tabs. " + listName
-					+ " is outlined there.");
-				b.line("2. " + startQh);
-				b.line("3. Quest Helper's panel opens with every step and a list of the items to bring, ticked "
-					+ "when you have them. Bank for those first.");
-				b.line("4. Follow Quest Helper from there. This guide moves on by itself when the quest is done.");
+				b.line(n++ + ". You've started this quest: carry on with the wiki guide.");
 			}
 		}
 		else
 		{
-			b.line("⚠ Quest Helper isn't installed or is turned off, so there are no click-by-click steps. Get "
-				+ "\"Quest Helper\" from the Plugin Hub (the wrench icon, then Plugin Hub) for them.");
-			if (!started)
-			{
-				b.line("Until then: get the items below, go to the start (route drawn), then follow the wiki guide "
-					+ "(button below).");
-			}
-			else
-			{
-				b.line("Until then: follow the wiki guide (button below). This guide moves on when the quest is done.");
-			}
-		}
-		if (!started)
-		{
-			if (!q.getStart().isEmpty())
-			{
-				b.line("Where: " + q.getStart());
-			}
-			if (q.getStartPoint() != null)
-			{
-				b.destination(q.getStartPoint());
-				if (drawRoute)
-				{
-					b.line("The way to the start is drawn on your screen and minimap.");
-				}
-			}
-			if (!q.getStartNpc().isEmpty())
-			{
-				b.npc(q.getStartNpc());
-			}
 			if (!q.getItems().isEmpty() && !partial)
 			{
-				b.line("Bring: " + String.join(", ", q.getItems()));
+				b.line(n++ + ". Bank first and take: " + String.join(", ", q.getItems()));
 			}
 			for (TravelPick t : p.getTravel())
 			{
@@ -410,6 +390,41 @@ public final class QuestPlanner
 					b.travelItem(t.getItemId());
 				}
 			}
+			if (!q.getStart().isEmpty() || q.getStartPoint() != null)
+			{
+				b.line(n++ + ". Go to the start" + (q.getStart().isEmpty() ? "" : ": " + q.getStart())
+					+ (q.getStartPoint() != null && drawRoute ? " The way is drawn on your screen and minimap." : ""));
+			}
+			if (q.getStartPoint() != null)
+			{
+				b.destination(q.getStartPoint());
+			}
+			if (!q.getStartNpc().isEmpty())
+			{
+				b.npc(q.getStartNpc());
+				b.line(n++ + ". Talk to " + q.getStartNpc() + " (outlined) and say yes when asked to help: that "
+					+ "starts the quest.");
+			}
+			if (auto)
+			{
+				b.line(n++ + ". Quest Helper takes over by itself the moment the quest starts: its panel opens with "
+					+ "every step, and it highlights each NPC, object and item to click.");
+				b.line("Tip: to see Quest Helper's item checklist before you go, " + startQh + ".");
+				b.line("Tip: if Quest Helper is already on another quest it won't switch by itself: right-click that "
+					+ "quest in the Quest list and choose \"Stop Quest Helper\" first.");
+			}
+			else if (p.isQuestHelper())
+			{
+				b.offerAutoStart(true);
+				b.line(n++ + ". Then " + startQh + ". Quest Helper shows every step from there.");
+				b.line("Tip: press \"Auto start\" below and Quest Helper takes over by itself whenever a quest "
+					+ "starts (its \"Auto start helper\" setting).");
+			}
+			else
+			{
+				b.line(n++ + ". Then follow the wiki guide (button below).");
+			}
+			b.line(n + ". This guide moves on by itself when the quest is done.");
 		}
 		if (!q.getKills().isEmpty())
 		{

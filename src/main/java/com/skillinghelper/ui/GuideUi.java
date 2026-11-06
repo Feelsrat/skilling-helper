@@ -763,7 +763,11 @@ public final class GuideUi
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				action.run();
+				// Right-click is left for a row's own menu
+				if (!javax.swing.SwingUtilities.isRightMouseButton(e))
+				{
+					action.run();
+				}
 			}
 
 			@Override
