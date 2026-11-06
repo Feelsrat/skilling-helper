@@ -166,17 +166,18 @@ Data is rebuilt with `python3 tools/quests/build_quests.py src/main/resources/co
 
 ## Collection Log Guide
 
-Also in the jar: **Collection Log Guide** (red book icon). It shows the collection log slots you don't have yet that
-most players have (the wiki's completion figures, so the quickest ones come first), the pages you're closest to
-finishing, every pet with where it comes from, and the whole log by tab. Pick one for beginner steps: where a full
-guide exists elsewhere in the jar (PvM Progression for bosses and raids, Minigame Guides for Wintertodt, Tempoross,
-Guardians of the Rift, Castle Wars and other minigames, Skilling Helper for rooftops and skilling pets, Clue Scroll
-Guide for the clue pages) "Open full guide" starts it, and boss pages also open their Combat Achievement Guides
-tasks; otherwise "Show the way" draws
-the route with Shortest Path and the boss is outlined. Your log is read from the log pages you open in game and from
-the "New item added to your collection log" chat message, and saved per account; items in your bank count until the
-log page says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is rebuilt
-with `python3 tools/collection/build_collection_log.py <cache dir> src/main/resources/com/skillinghelper/collection/collection-log.tsv`.
+Also in the jar: **Collection Log Guide** (red book icon). Sync once: open your collection log in game and click its
+Search button (the plugin outlines it); the whole log is read in one go and the panel shows "✔ Synced" with the time.
+After that the "New item added to your collection log" chat message and any log page you open keep it up to date, and
+the panel tells you when the game counts more slots than it knows. Press **Start guide** and it takes you to the
+quickest slot you can get (the wiki's completion figures), step by step: what you're missing, the bank trip for what
+to bring, the walk (with travel item tips, Shortest Path route and hint arrow), how to get in, what to click (the boss
+is outlined) and "keep going" until the slot is logged, then it moves on to the next one by itself. Click any slot or
+page in the lists (quickest slots, closest pages, pets, browse by tab) to be guided to that one instead. Pages with a
+full guide elsewhere in the jar (PvM Progression, Minigame Guides, Skilling Helper, Clue Scroll Guide) open that guide
+by themselves; boss pages also link their Combat Achievement Guides tasks. Saved per account; items in your bank count
+until the log says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is
+rebuilt with `python3 tools/collection/build_collection_log.py <cache dir> src/main/resources/com/skillinghelper/collection/collection-log.tsv`.
 
 ## Clue Scroll Guide
 

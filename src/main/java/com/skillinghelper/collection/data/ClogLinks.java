@@ -144,6 +144,30 @@ public final class ClogLinks
 		return caMonsters.contains(name.toLowerCase()) ? name : null;
 	}
 
+	private static volatile Map<String, com.skillinghelper.ca.data.CaMonster> monsters;
+
+	/**
+	 * Combat Achievement Guides' data on this page's boss (entrance, how to get in, items, what to outline), or null.
+	 */
+	public static com.skillinghelper.ca.data.CaMonster monster(ClogEntry e)
+	{
+		Map<String, com.skillinghelper.ca.data.CaMonster> byName = monsters;
+		if (byName == null)
+		{
+			byName = new HashMap<>();
+			for (com.skillinghelper.ca.data.CaMonster m : com.skillinghelper.ca.data.CaMonsters.all())
+			{
+				byName.put(m.getName().toLowerCase(), m);
+			}
+			monsters = byName;
+		}
+		if (e.getTab() != ClogTab.BOSSES && e.getTab() != ClogTab.RAIDS && !CA_BOSS.containsKey(e.getName()))
+		{
+			return null;
+		}
+		return byName.get(CA_BOSS.getOrDefault(e.getName(), e.getName()).toLowerCase());
+	}
+
 	private static void method(String entry, String id)
 	{
 		ENTRIES.put(entry, GuideLink.method(id));

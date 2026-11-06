@@ -184,123 +184,92 @@ public final class ClogPlanner
 		return out;
 	}
 
-	// ---- One page ----
+	// ---- The guide ----
 
-	public ClogView.EntryDetail detail(ClogEntry e, boolean showingWay, List<String> travelTips)
+	/**
+	 * Whether the plugin can take the player to this slot from this page.
+	 */
+	public boolean guided(ClogEntry e, ClogItem item)
 	{
-		GuideLink link = ClogLinks.of(e);
-		ClogRequirements.Check check = checks.apply(e, link);
-		List<ClogView.SlotRow> slots = new ArrayList<>();
-		boolean anyUnknown = false;
-		for (ClogItem i : e.getItems())
-		{
-			// On the pet pages each pet links to where it's from (its boss, or its skill)
-			slots.add(e.isPets() ? slot(i) : new ClogView.SlotRow(i.getId(), i.getName(), e.getName(),
-				i.getPercent(), progress.state(i.getId()), List.of(), e.isWilderness(),
-				link == null ? null : label(link)));
-			anyUnknown |= progress.state(i.getId()) == ClogProgress.State.UNKNOWN;
-		}
-		return new ClogView.EntryDetail(e.getName(), e.getTab(), e.getIntro(), have(e), e.getItems().size(), slots,
-			steps(e, link, check, anyUnknown, travelTips), check.getMissing(), check.getTrain(), e.isWilderness(),
-			link == null ? null : label(link), e.getLocation() != null, showingWay, ClogLinks.caBoss(e, caMonsters));
+		return e.isPets() ? ClogLinks.of(item, data) != null : ClogGuide.guidable(e);
 	}
 
 	/**
-	 * Numbered beginner steps for a page: what it is, how to get there, what to do, and how the log is tracked.
+	 * The slot to go for next: the quickest one of {@code page} if given and it has one left, else the quickest
+	 * slot overall the player can do and be guided to. Locked and Wilderness ones (unless opted in) and
+	 * {@code skipped} ones are passed over. Null when there's nothing left.
 	 */
-	List<String> steps(ClogEntry e, GuideLink link, ClogRequirements.Check check, boolean anyUnknown,
-		List<String> travelTips)
+	public ClogView.SlotRow next(String page, Set<Integer> skipped)
 	{
-		List<String> s = new ArrayList<>();
-		if (check.isLocked())
+		if (page != null)
 		{
-			s.add("First get: " + String.join(", ", check.getMissing()) + ".");
-		}
-		if (link != null)
-		{
-			s.add(guideStep(link));
-		}
-		else if (e.getLocation() != null)
-		{
-			s.add("Press \"Show the way\": the route is drawn (with the Shortest Path plugin) and the hint arrow "
-				+ "points at where to go.");
-			s.addAll(travelTips);
-		}
-		else if (e.getTab() != ClogTab.CLUES && !e.isPets())
-		{
-			s.add("Press \"Open wiki page\" to see where to go and what to bring.");
-		}
-		s.add(doStep(e));
-		if (e.isWilderness())
-		{
-			s.add("This is in the Wilderness: other players can attack you there, and you lose most of what you "
-				+ "carry if you die. Bring only what you are OK to lose.");
-		}
-		s.add("Each slot you get is ticked here by itself, from the game's \"New item added to your collection log\" "
-			+ "message.");
-		if (anyUnknown)
-		{
-			s.add("Open this page in your collection log once (Character Summary tab, then Collection Log), so "
-				+ "the plugin can see which slots you already have.");
-		}
-		return s;
-	}
-
-	private static String guideStep(GuideLink link)
-	{
-		if (link.getKind() == GuideLink.Kind.SKILL)
-		{
-			return "Press \"Open full guide\": Skilling Helper takes you through training "
-				+ link.getSkill().getName() + " step by step (where to go, what to bring, what to click).";
-		}
-		return "Press \"Open full guide\": " + link.getKind().getPlugin() + " has a click-by-click guide for this "
-			+ "(where to go, what to bring, what to click).";
-	}
-
-	private String doStep(ClogEntry e)
-	{
-		if (e.isPets())
-		{
-			return "Pets drop at random from their boss, activity or skill. Skilling pets come from training the "
-				+ "skill, with a better chance at higher levels. Click a pet below to open its guide or the page of "
-				+ "the boss it comes from.";
-		}
-		switch (e.getTab())
-		{
-			case BOSSES:
-				List<String> npcs = e.npcNames();
-				return (npcs.isEmpty() ? "Take part in " + e.getName() : "Kill " + String.join(" or ", npcs))
-					+ ". Every kill or completion rolls for the slots below; the outlined target is what to attack.";
-			case RAIDS:
-				return "Join a group (or go solo) at the raid's entrance. The slots come from the reward chest when "
-					+ "the raid is completed.";
-			case CLUES:
-				return clueStep(e);
-			case MINIGAMES:
-				return "Play " + e.getName() + ". The slots are bought with its reward points or won as its "
-					+ "rewards; the wiki page lists the cost of each.";
-			default:
-				return "The wiki page lists where each slot comes from.";
-		}
-	}
-
-	private static String clueStep(ClogEntry e)
-	{
-		String n = e.getName().toLowerCase(Locale.ROOT);
-		for (String tier : new String[]{"beginner", "easy", "medium", "hard", "elite", "master"})
-		{
-			if (n.startsWith(tier))
+			ClogEntry e = data.entry(page);
+			if (e != null)
 			{
-				return "Get a " + tier + " clue scroll (a drop from many monsters; the wiki page lists the best ones), "
-					+ "read it, do each step, and open the reward casket at the end. Every casket rolls for these "
-					+ "slots" + (n.contains("rare") ? ", but these are the rare rolls, so expect many caskets." : ".");
+				for (ClogItem i : left(e))
+				{
+					ClogView.SlotRow row = e.isPets() ? slot(i) : pageSlot(e, i);
+					if (!skipped.contains(i.getId()) && row.isGuided())
+					{
+						return row;
+					}
+				}
+			}
+			return null;
+		}
+		List<ClogView.SlotRow> all = new ArrayList<>();
+		for (ClogItem item : data.items().values())
+		{
+			if (progress.has(item.getId()) || skipped.contains(item.getId()))
+			{
+				continue;
+			}
+			ClogView.SlotRow row = slot(item);
+			if (row.isGuided() && row.getMissing().isEmpty() && (allowWilderness || !row.isWilderness()))
+			{
+				all.add(row);
 			}
 		}
-		if (n.startsWith("shared"))
+		return all.stream().max(Comparator.comparingDouble((ClogView.SlotRow r) -> rank(r.getPercent()))
+			.thenComparing(ClogView.SlotRow::getName, Comparator.reverseOrder())).orElse(null);
+	}
+
+	/**
+	 * The page's slots still to get, the quickest first.
+	 */
+	public List<ClogItem> left(ClogEntry e)
+	{
+		List<ClogItem> left = new ArrayList<>();
+		for (ClogItem i : e.getItems())
 		{
-			return "Any clue scroll's reward casket (easy and up) can roll these slots.";
+			if (!progress.has(i.getId()))
+			{
+				left.add(i);
+			}
 		}
-		return "The wiki page shows how to get these.";
+		left.sort(Comparator.comparingDouble(i -> -i.rankPercent()));
+		return left;
+	}
+
+	/**
+	 * Every slot of the page as rows, in the game's order.
+	 */
+	public List<ClogView.SlotRow> pageSlots(ClogEntry e)
+	{
+		List<ClogView.SlotRow> out = new ArrayList<>();
+		for (ClogItem i : e.getItems())
+		{
+			out.add(e.isPets() ? slot(i) : pageSlot(e, i));
+		}
+		return out;
+	}
+
+	private ClogView.SlotRow pageSlot(ClogEntry e, ClogItem i)
+	{
+		GuideLink link = ClogLinks.of(e);
+		return new ClogView.SlotRow(i.getId(), i.getName(), e.getName(), i.getPercent(), progress.state(i.getId()),
+			checks.apply(e, link).getMissing(), e.isWilderness(), link == null ? null : label(link),
+			ClogGuide.guidable(e));
 	}
 
 	// ---- Rows ----
@@ -314,7 +283,7 @@ public final class ClogPlanner
 			String page = data.entriesOf(item.getId()).stream().anyMatch(e -> "Skilling Pets".equals(e.getName()))
 				? "Skilling Pets" : "All Pets";
 			return new ClogView.SlotRow(item.getId(), item.getName(), page, item.getPercent(),
-				progress.state(item.getId()), checks.apply(null, petLink).getMissing(), false, label(petLink));
+				progress.state(item.getId()), checks.apply(null, petLink).getMissing(), false, label(petLink), true);
 		}
 		ClogEntry best = null;
 		ClogRequirements.Check bestCheck = null;
@@ -328,7 +297,7 @@ public final class ClogPlanner
 			}
 			GuideLink link = e.isPets() ? ClogLinks.of(item, data) : ClogLinks.of(e);
 			ClogRequirements.Check c = checks.apply(e.isPets() ? null : e, link);
-			int score = (c.isLocked() ? 0 : 4) + (e.isWilderness() && !allowWilderness ? 0 : 2) + (link != null ? 1 : 0);
+			int score = (c.isLocked() ? 0 : 4) + (e.isWilderness() && !allowWilderness ? 0 : 2) + (link != null || ClogGuide.guidable(e) ? 1 : 0);
 			if (score > bestScore)
 			{
 				best = e;
@@ -340,11 +309,11 @@ public final class ClogPlanner
 		if (best == null)
 		{
 			return new ClogView.SlotRow(item.getId(), item.getName(), "", item.getPercent(),
-				progress.state(item.getId()), List.of(), false, null);
+				progress.state(item.getId()), List.of(), false, null, false);
 		}
 		return new ClogView.SlotRow(item.getId(), item.getName(), best.getName(), item.getPercent(),
 			progress.state(item.getId()), bestCheck.getMissing(), best.isWilderness(),
-			bestLink == null ? null : label(bestLink));
+			bestLink == null ? null : label(bestLink), bestLink != null || ClogGuide.guidable(best));
 	}
 
 	private ClogView.EntryRow entryRow(ClogEntry e)
@@ -366,7 +335,7 @@ public final class ClogPlanner
 		GuideLink link = ClogLinks.of(e);
 		ClogRequirements.Check c = e.isPets() ? ClogRequirements.Check.NONE : checks.apply(e, link);
 		return new ClogView.EntryRow(e.getName(), e.getTab(), e.getItems().size() - left.size(), e.getItems().size(),
-			next, c.getMissing(), e.isWilderness(), link == null ? null : label(link));
+			next, c.getMissing(), e.isWilderness(), link == null ? null : label(link), ClogGuide.guidable(e));
 	}
 
 	private boolean shown(List<String> missing, boolean wilderness)

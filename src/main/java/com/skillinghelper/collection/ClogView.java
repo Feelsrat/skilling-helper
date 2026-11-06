@@ -48,13 +48,47 @@ public class ClogView
 	 */
 	int gameCount;
 	int gameTotal;
+	/**
+	 * When the log was last read in full (the log's Search button), epoch millis; 0 = never.
+	 */
+	long syncedAt;
+	/**
+	 * Slots the game counts as filled beyond what the plugin knows (new since the last sync, while the new-slot chat
+	 * message is off), 0 when in step.
+	 */
+	int unsynced;
 	Mode mode;
 	ClogTab tab;
 	List<SlotRow> slots;
 	List<EntryRow> entries;
-	EntryDetail detail;
 	boolean wildernessAllowed;
 	boolean showLocked;
+	/**
+	 * The running guide: its step and what it's going for; null when no guide runs.
+	 */
+	Guide guide;
+
+	@Value
+	public static class Guide
+	{
+		String entry;
+		String slot;
+		com.skillinghelper.diary.DiaryStep step;
+		/**
+		 * Plugin the page's full guide is in, or null.
+		 */
+		String handOff;
+		/**
+		 * Combat Achievement Guides' name for the boss, or null.
+		 */
+		String combatAchievements;
+		/**
+		 * Every slot of the page.
+		 */
+		List<SlotRow> slots;
+		int have;
+		int total;
+	}
 
 	@Value
 	public static class SlotRow
@@ -73,6 +107,10 @@ public class ClogView
 		 * Plugin with a full guide for it, or null.
 		 */
 		String guide;
+		/**
+		 * The plugin can take the player there (a guide, boss data or a place on the map).
+		 */
+		boolean guided;
 	}
 
 	@Value
@@ -89,27 +127,6 @@ public class ClogView
 		List<String> missing;
 		boolean wilderness;
 		String guide;
-	}
-
-	@Value
-	public static class EntryDetail
-	{
-		String name;
-		ClogTab tab;
-		String intro;
-		int have;
-		int total;
-		List<SlotRow> slots;
-		List<String> steps;
-		List<String> missing;
-		List<String> train;
-		boolean wilderness;
-		String guide;
-		boolean hasPlace;
-		boolean showingWay;
-		/**
-		 * The boss as Combat Achievement Guides names it, when it has combat tasks; else null.
-		 */
-		String combatAchievements;
+		boolean guided;
 	}
 }

@@ -26,7 +26,7 @@ public class CaGuideTest
 {
 	private static final WorldPoint LUMBRIDGE = new WorldPoint(3222, 3218, 0);
 
-	static DiaryPlayer.DiaryPlayerBuilder player(int level)
+	public static DiaryPlayer.DiaryPlayerBuilder player(int level)
 	{
 		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
 		for (Skill s : Skill.values())

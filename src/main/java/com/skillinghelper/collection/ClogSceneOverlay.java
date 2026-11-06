@@ -1,13 +1,14 @@
 package com.skillinghelper.collection;
 
+import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.overlay.NameTargets;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.Map;
-import java.util.Set;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.Player;
+import net.runelite.api.TileObject;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -15,7 +16,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.outline.ModelOutlineRenderer;
 
 /**
- * Outlines the boss or monster of the collection log page the player picked.
+ * Outlines what the running guide says to click: the boss or monster, and the entrance.
  */
 class ClogSceneOverlay extends Overlay
 {
@@ -42,21 +43,32 @@ class ClogSceneOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D g)
 	{
-		Set<String> names = plugin.getOutlined();
+		DiaryStep step = plugin.getStep();
 		Player player = client.getLocalPlayer();
-		if (names.isEmpty() || player == null || !config.outlineTargets())
+		if (step == null || player == null || !config.outlineTargets())
 		{
 			return null;
 		}
 		WorldPoint me = player.getWorldLocation();
 		for (Map.Entry<NPC, String> e : targets.getNpcs())
 		{
-			WorldPoint at = e.getKey().getWorldLocation();
-			if (names.contains(e.getValue()) && at != null && at.distanceTo2D(me) <= MAX_DISTANCE)
+			if (step.getNpcs().contains(e.getValue()) && near(e.getKey().getWorldLocation(), me))
+			{
+				outlines.drawOutline(e.getKey(), 2, config.targetColor(), 4);
+			}
+		}
+		for (Map.Entry<TileObject, String> e : targets.getObjects())
+		{
+			if (step.getObjects().contains(e.getValue()) && near(e.getKey().getWorldLocation(), me))
 			{
 				outlines.drawOutline(e.getKey(), 2, config.targetColor(), 4);
 			}
 		}
 		return null;
+	}
+
+	private static boolean near(WorldPoint wp, WorldPoint me)
+	{
+		return wp != null && wp.distanceTo2D(me) <= MAX_DISTANCE;
 	}
 }

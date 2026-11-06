@@ -3,6 +3,8 @@ package com.skillinghelper.collection.ui;
 import com.skillinghelper.collection.ClogPlanner;
 import com.skillinghelper.collection.ClogProgress;
 import com.skillinghelper.collection.ClogView;
+import com.skillinghelper.collection.CollectionLogPlugin;
+import com.skillinghelper.diary.DiaryStep;
 import com.skillinghelper.collection.data.ClogTab;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.ui.GuideUi;
@@ -17,7 +19,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -25,8 +26,9 @@ import javax.swing.JPanel;
 import net.runelite.client.ui.PluginPanel;
 
 /**
- * Side panel: how full the log is, then one of four lists (quickest slots, closest pages, pets, browse by tab);
- * picking a row opens that page with beginner steps, its slots and buttons to the full guide, the route or the wiki.
+ * Side panel: how full the log is and whether it's synced, then either the running guide's step (with the page's
+ * slots under it) or a Start button and one of four lists (quickest slots, closest pages, pets, browse by tab);
+ * clicking a row starts the guide on it.
  */
 public class CollectionLogPanel extends PluginPanel
 {
@@ -39,16 +41,29 @@ public class CollectionLogPanel extends PluginPanel
 
 		void onTab(ClogTab tab);
 
-		void onPickEntry(String name);
+		/**
+		 * Starts the guide on the quickest slot anywhere.
+		 */
+		void onStart();
 
-		void onBack();
-
-		void onShowWay(boolean show);
+		void onStop();
 
 		/**
-		 * Opens the full guide for a page; for the pet pages, the guide of that pet.
+		 * Starts the guide on a page, working through its slots.
 		 */
-		void onOpenGuide(String entry, int itemId);
+		void onPickEntry(String name);
+
+		/**
+		 * Starts the guide on one slot, at the page given.
+		 */
+		void onPickSlot(String entry, int itemId);
+
+		void onSkip();
+
+		/**
+		 * Opens the current page's full guide again, in its own plugin.
+		 */
+		void onOpenGuide();
 
 		void onOpenCombatAchievements(String monster);
 
@@ -124,7 +139,8 @@ public class CollectionLogPanel extends PluginPanel
 		updating = true;
 		modes.setSelectedItem(v.getMode());
 		tabs.setSelectedItem(v.getTab());
-		tabs.setVisible(v.getMode() == ClogView.Mode.BROWSE && v.getDetail() == null);
+		modes.setVisible(v.getGuide() == null);
+		tabs.setVisible(v.getMode() == ClogView.Mode.BROWSE && v.getGuide() == null);
 		wilderness.setSelected(v.isWildernessAllowed());
 		locked.setSelected(v.isShowLocked());
 		updating = false;
@@ -137,12 +153,15 @@ public class CollectionLogPanel extends PluginPanel
 			return;
 		}
 		summary(v);
-		if (v.getDetail() != null)
+		if (v.getGuide() != null)
 		{
-			detail(v.getDetail());
+			guide(v.getGuide());
 		}
 		else
 		{
+			body.add(GuideUi.primary("▶ Start guide (quickest slot first)", listener::onStart));
+			body.add(GuideUi.hint("Or click any slot or page below to be guided to it, step by step."));
+			body.add(Box.createVerticalStrut(6));
 			switch (v.getMode())
 			{
 				case QUICKEST:
@@ -166,28 +185,71 @@ public class CollectionLogPanel extends PluginPanel
 		boolean game = v.getGameTotal() > 0;
 		body.add(GuideUi.progress("Slots filled", game ? v.getGameCount() : v.getHave(),
 			game ? v.getGameTotal() : v.getTotal()));
-		if (v.getSeen() < v.getTotal() / 2 && v.getDetail() == null)
+		body.add(Box.createVerticalStrut(3));
+		if (v.getSyncedAt() == 0)
 		{
-			body.add(Box.createVerticalStrut(3));
-			JPanel card = GuideUi.card(GuideUi.WARN);
 			List<String> lines = new ArrayList<>();
-			lines.add("1. Open the Character Summary tab (the green \"quest list\" tab) and click Collection Log. "
-				+ "Or read the collection log book.");
-			lines.add("2. Click through the pages you care about. Each page you open is read and remembered.");
-			lines.add("3. In the game's Settings, search \"collection log\" and turn on the new-slot chat message, "
-				+ "so new slots are ticked off as you get them.");
+			lines.add("1. Open your collection log: the Character Summary tab (green quest list tab), then "
+				+ "Collection Log. Or read the collection log book.");
+			lines.add("2. Click the log's Search button at the top (outlined in yellow). Don't type anything.");
+			lines.add("That's all: the whole log is read in one go, and this box turns into \"✔ Synced\".");
 			lines.add("Until then, items in your bank count as filled slots.");
-			GuideUi.fillStep(card, "Sync", GuideUi.WARN, "Let the plugin see your log", lines);
-			body.add(GuideUi.full(card));
+			body.add(GuideUi.stepCard(GuideUi.WARN, "Sync", "Sync your log once", lines, null));
+		}
+		else if (v.getUnsynced() > 0)
+		{
+			List<String> lines = new ArrayList<>();
+			lines.add("The game counts " + v.getUnsynced() + " more filled slot" + (v.getUnsynced() == 1 ? "" : "s")
+				+ " than the plugin knows. Open the log and click Search again (outlined in yellow).");
+			lines.add("Tip: turn on the game's \"collection log\" new-slot chat message (Settings, search "
+				+ "\"collection\"), then new slots are ticked off as you get them.");
+			body.add(GuideUi.stepCard(GuideUi.WARN, "Sync", "New slots to sync", lines, null));
+		}
+		else
+		{
+			body.add(GuideUi.line("✔ Synced " + CollectionLogPlugin.syncLabel(v.getSyncedAt()), GuideUi.GOOD, WIDTH));
 		}
 		body.add(Box.createVerticalStrut(6));
+	}
+
+	private void guide(ClogView.Guide g)
+	{
+		DiaryStep step = g.getStep();
+		Color accent = step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN
+			: step.getKind() == DiaryStep.Kind.DONE ? GuideUi.GOOD : GuideUi.HINT;
+		String ca = g.getCombatAchievements();
+		String page = g.getEntry();
+		body.add(GuideUi.stepCard(accent, "Now", step.getTitle(), step.getLines(), listener::onStop,
+			g.getSlot() == null ? null : GuideUi.small("Skip slot", listener::onSkip),
+			g.getHandOff() == null ? null : GuideUi.small("Open guide", listener::onOpenGuide),
+			ca == null ? null : GuideUi.small("Combat tasks", () -> listener.onOpenCombatAchievements(ca)),
+			page == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(page))));
+		if (page == null)
+		{
+			return;
+		}
+		body.add(GuideUi.more());
+		body.add(GuideUi.section(page + "  " + g.getHave() + "/" + g.getTotal()));
+		boolean pets = page.endsWith("Pets");
+		for (ClogView.SlotRow s : g.getSlots())
+		{
+			JComponent line = GuideUi.line((s.getName().equals(g.getSlot()) ? "▶ " : marker(s.getState()) + " ")
+				+ s.getName() + "  " + ClogPlanner.percent(s.getPercent()) + stateNote(s.getState()),
+				s.getName().equals(g.getSlot()) ? GuideUi.GOLD : color(s.getState()), WIDTH);
+			if (!has(s.getState()) && !s.getName().equals(g.getSlot()) && (!pets || s.isGuided()))
+			{
+				GuideUi.clickable(line, "Go for this slot instead", () -> listener.onPickSlot(pets ? s.getEntry()
+					: page, s.getId()));
+			}
+			body.add(line);
+		}
 	}
 
 	private void quickest(ClogView v)
 	{
 		body.add(GuideUi.section("Quickest new slots"));
 		body.add(GuideUi.text("Slots you don't have yet that most players have: usually the fastest to get. "
-			+ "% = share of players with it. Click one to see how.", GuideUi.MUTED, WIDTH));
+			+ "% = share of players with it. Click one to be guided to it.", GuideUi.MUTED, WIDTH));
 		body.add(Box.createVerticalStrut(4));
 		if (v.getSlots().isEmpty())
 		{
@@ -205,7 +267,7 @@ public class CollectionLogPanel extends PluginPanel
 		body.add(GuideUi.section("Pets"));
 		long have = v.getSlots().stream().filter(s -> has(s.getState())).count();
 		body.add(GuideUi.line(have + " of " + v.getSlots().size() + " pets", GuideUi.GOLD, GuideUi.TEXT, WIDTH));
-		body.add(GuideUi.text("The ones most players have come first. Click one to see where it's from.",
+		body.add(GuideUi.text("The ones most players have come first. Click one to be guided to it.",
 			GuideUi.MUTED, WIDTH));
 		body.add(Box.createVerticalStrut(4));
 		for (ClogView.SlotRow s : v.getSlots())
@@ -218,12 +280,12 @@ public class CollectionLogPanel extends PluginPanel
 	private void closest(ClogView v)
 	{
 		body.add(GuideUi.section("Closest to complete"));
-		body.add(GuideUi.text("Pages you've started, fewest slots left first. Click one for its steps.",
+		body.add(GuideUi.text("Pages you've started, fewest slots left first. Click one to be guided through it.",
 			GuideUi.MUTED, WIDTH));
 		body.add(Box.createVerticalStrut(4));
 		if (v.getEntries().isEmpty())
 		{
-			body.add(GuideUi.text("No pages started yet that you can do. Open your collection log so the plugin "
+			body.add(GuideUi.text("No pages started yet that you can do. Sync your log (above) so the plugin "
 				+ "can see what you have.", GuideUi.MUTED, WIDTH));
 		}
 		for (ClogView.EntryRow e : v.getEntries())
@@ -240,76 +302,6 @@ public class CollectionLogPanel extends PluginPanel
 		{
 			body.add(entryRow(e));
 			body.add(Box.createVerticalStrut(3));
-		}
-	}
-
-	private void detail(ClogView.EntryDetail d)
-	{
-		body.add(GuideUi.actions(GuideUi.small("‹ Back to the list", listener::onBack)));
-		body.add(Box.createVerticalStrut(6));
-		body.add(GuideUi.headline(d.getName(), Color.WHITE, WIDTH));
-		Color c = d.getHave() == d.getTotal() ? GuideUi.GOOD : GuideUi.TEXT;
-		body.add(GuideUi.line((d.getHave() == d.getTotal() ? "✔ " : "") + d.getHave() + " of " + d.getTotal()
-			+ " slots", c, WIDTH));
-		if (d.isWilderness())
-		{
-			body.add(GuideUi.line(Wilderness.TAG, Wilderness.COLOR, WIDTH));
-		}
-		if (!d.getIntro().isEmpty())
-		{
-			body.add(Box.createVerticalStrut(3));
-			body.add(GuideUi.text(d.getIntro(), GuideUi.MUTED, WIDTH));
-		}
-		for (String m : d.getMissing())
-		{
-			body.add(GuideUi.check(false, m, WIDTH));
-		}
-		for (String t : d.getTrain())
-		{
-			body.add(GuideUi.line("• " + t, GuideUi.WARN, GuideUi.TEXT, WIDTH));
-		}
-
-		body.add(Box.createVerticalStrut(6));
-		List<String> steps = new ArrayList<>();
-		for (int i = 0; i < d.getSteps().size(); i++)
-		{
-			steps.add((i + 1) + ". " + d.getSteps().get(i));
-		}
-		JButton go = null;
-		if (d.getGuide() != null)
-		{
-			go = GuideUi.primary("▶ Open full guide", () -> listener.onOpenGuide(d.getName(), -1));
-		}
-		else if (d.isHasPlace())
-		{
-			go = d.isShowingWay() ? GuideUi.button("Stop showing the way", () -> listener.onShowWay(false))
-				: GuideUi.primary("▶ Show the way", () -> listener.onShowWay(true));
-		}
-		String ca = d.getCombatAchievements();
-		JPanel card = GuideUi.stepCard(GuideUi.HINT, "How to", "Getting these slots", steps, null,
-			ca == null ? null : GuideUi.small("Combat tasks", () -> listener.onOpenCombatAchievements(ca)),
-			GuideUi.small("Wiki", () -> listener.onOpenWiki(d.getName())));
-		if (go != null)
-		{
-			card.add(Box.createVerticalStrut(4));
-			card.add(go);
-		}
-		body.add(card);
-
-		body.add(GuideUi.section("Slots"));
-		boolean pets = d.getName().endsWith("Pets");
-		for (ClogView.SlotRow s : d.getSlots())
-		{
-			if (pets)
-			{
-				body.add(slotRow(s));
-				body.add(Box.createVerticalStrut(3));
-			}
-			else
-			{
-				body.add(GuideUi.line(marker(s.getState()) + " " + s.getName() + "  " + ClogPlanner.percent(s.getPercent())
-					+ stateNote(s.getState()), color(s.getState()), WIDTH));
-			}
 		}
 	}
 
@@ -339,17 +331,9 @@ public class CollectionLogPanel extends PluginPanel
 		{
 			row.add(GuideUi.text("Full guide: " + s.getGuide(), GuideUi.HINT, CARD - 12));
 		}
-		if (s.getEntry().endsWith("Pets") || s.getEntry().isEmpty())
+		if (s.isGuided() && !s.getEntry().isEmpty() && !has(s.getState()))
 		{
-			// A skilling pet (or one with no page of its own): its guide is the skill's
-			if (s.getGuide() != null)
-			{
-				clickable(row, "Open the guide for it", () -> listener.onOpenGuide(s.getEntry(), s.getId()));
-			}
-		}
-		else
-		{
-			clickable(row, "See how to get it", () -> listener.onPickEntry(s.getEntry()));
+			clickable(row, "Guide me to it, step by step", () -> listener.onPickSlot(s.getEntry(), s.getId()));
 		}
 		return GuideUi.full(row);
 	}
@@ -376,7 +360,10 @@ public class CollectionLogPanel extends PluginPanel
 		{
 			row.add(GuideUi.text("Full guide: " + e.getGuide(), GuideUi.HINT, CARD - 12));
 		}
-		clickable(row, "See how to finish it", () -> listener.onPickEntry(e.getName()));
+		if (!done)
+		{
+			clickable(row, "Guide me through this page, slot by slot", () -> listener.onPickEntry(e.getName()));
+		}
 		return GuideUi.full(row);
 	}
 

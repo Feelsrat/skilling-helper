@@ -86,4 +86,41 @@ public interface CollectionLogConfig extends Config
 	{
 		return new Color(0, 255, 255, 200);
 	}
+
+	@Alpha
+	@ConfigItem(
+		keyName = "itemColor",
+		name = "Item colour",
+		description = "Colour of the items to take out of the bank and the ones to use",
+		section = guideSection,
+		position = 4
+	)
+	default Color itemColor()
+	{
+		return new Color(255, 215, 90, 220);
+	}
+
+	@ConfigItem(
+		keyName = "preferShops",
+		name = "Buy from shops when cheaper",
+		description = "Send you to an NPC shop instead of the Grand Exchange when it sells what you need for less",
+		section = guideSection,
+		position = 5
+	)
+	default boolean preferShops()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "highlightSearch",
+		name = "Highlight the log's Search button",
+		description = "While the log hasn't been synced (or the game counts more slots than the plugin knows), "
+			+ "outline the collection log's Search button: clicking it once reads the whole log",
+		position = 2
+	)
+	default boolean highlightSearch()
+	{
+		return true;
+	}
 }

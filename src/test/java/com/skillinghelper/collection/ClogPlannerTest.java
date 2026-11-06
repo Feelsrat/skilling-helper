@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import com.skillinghelper.collection.data.ClogData;
 import com.skillinghelper.collection.data.ClogEntry;
@@ -136,22 +137,26 @@ public class ClogPlannerTest
 	}
 
 	@Test
-	public void everyPageHasBeginnerSteps()
+	public void nextGoesForTheQuickestGuidedSlot()
 	{
-		ClogPlanner p = fresh(1);
-		for (ClogEntry e : DATA.entries())
-		{
-			ClogView.EntryDetail d = p.detail(e, false, List.of());
-			assertTrue(e.getName() + " has too few steps", d.getSteps().size() >= 2);
-			assertEquals(e.getItems().size(), d.getSlots().size());
-			if (e.isWilderness())
-			{
-				assertTrue(e.getName(), d.getSteps().stream().anyMatch(s -> s.contains("Wilderness")));
-			}
-		}
-		ClogView.EntryDetail mole = p.detail(DATA.entry("Giant Mole"), false, List.of());
-		assertEquals("PvM Progression", mole.getGuide());
-		assertTrue(mole.getSteps().stream().anyMatch(s -> s.contains("Open full guide")));
+		ClogPlanner p = fresh(99);
+		ClogView.SlotRow next = p.next(null, Set.of());
+		assertNotNull(next);
+		assertTrue(next.isGuided());
+		assertEquals(p.quickest().stream().filter(ClogView.SlotRow::isGuided).findFirst().orElseThrow().getId(),
+			next.getId());
+		ClogView.SlotRow after = p.next(null, Set.of(next.getId()));
+		assertNotEquals(next.getId(), after.getId());
+
+		ClogEntry mole = DATA.entry("Giant Mole");
+		ClogView.SlotRow onPage = p.next("Giant Mole", Set.of());
+		assertEquals("Giant Mole", onPage.getEntry());
+		assertEquals(p.left(mole).get(0).getId(), onPage.getId());
+		assertEquals(mole.getItems().size(), p.pageSlots(mole).size());
+
+		Set<Integer> all = new HashSet<>();
+		mole.getItems().forEach(i -> all.add(i.getId()));
+		assertNull(planner(99, all, Set.of(), Set.of(), false, false).next("Giant Mole", Set.of()));
 	}
 
 	@Test
@@ -174,7 +179,6 @@ public class ClogPlannerTest
 		assertEquals(planner(50, have, Set.of(), Set.of(), false, false).closest(),
 			planner(50, new HashSet<>(have), Set.of(), Set.of(), false, false).closest());
 		ClogEntry mole = DATA.entry("Giant Mole");
-		assertEquals(fresh(50).detail(mole, false, List.of()), fresh(50).detail(mole, false, List.of()));
-		assertNotEquals(fresh(50).detail(mole, false, List.of()), fresh(50).detail(mole, true, List.of()));
+		assertEquals(fresh(50).pageSlots(mole), fresh(50).pageSlots(mole));
 	}
 }
