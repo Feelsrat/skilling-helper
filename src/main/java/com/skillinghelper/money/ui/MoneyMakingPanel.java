@@ -1,5 +1,6 @@
 package com.skillinghelper.money.ui;
 
+import com.skillinghelper.banked.profit.BankProfit;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.money.MoneyGuide;
@@ -7,14 +8,13 @@ import com.skillinghelper.money.MoneyOption;
 import com.skillinghelper.money.MoneyStep;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
-import java.awt.BorderLayout;
+import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
+import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,20 +31,14 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.runelite.api.Skill;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
-import com.skillinghelper.ui.GuideUi;
-import com.skillinghelper.ui.HiddenRedraws;
 
 /**
  * Side panel: the wiki's money making methods the player can do, best gp/hr first, with filters. Clicking one shows
@@ -76,6 +70,11 @@ public class MoneyMakingPanel extends PluginPanel
 		 * Let every guide pick Wilderness methods, or leave them out again.
 		 */
 		void onAllowWilderness(boolean allow);
+
+		/**
+		 * Start the guide that processes a banked item for profit and sells it.
+		 */
+		void onStartBankProfit(String recipeId);
 	}
 
 	private final Listener listener;
@@ -87,6 +86,17 @@ public class MoneyMakingPanel extends PluginPanel
 	private final JTextField search = new JTextField();
 	private final JPanel guideBox = new JPanel();
 	private final JPanel list = new JPanel();
+	private final JPanel filters = new JPanel();
+	private final JButton wikiTab = new Skin.Pill("Wiki guides");
+	private final JButton bankTab = new Skin.Pill("My bank");
+	private final JLabel intro;
+	private final JLabel moreToggle = new JLabel();
+	private boolean moreOpen;
+	private final BankProfitList bankList;
+	/**
+	 * Showing what the bank can be processed into instead of the wiki's methods.
+	 */
+	private boolean bankMode;
 
 	private List<MoneyOption> options = Collections.emptyList();
 	private Map<String, String> fullGuides = Collections.emptyMap();
@@ -106,38 +116,29 @@ public class MoneyMakingPanel extends PluginPanel
 		super(false);
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = new JPanel();
-		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-		header.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Money Making");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(left(title));
+		JPanel header = GuideUi.header("Money Making", "/com/skillinghelper/money/icon.png");
+		JPanel tabs = new JPanel(new GridLayout(1, 2, 4, 0));
+		tabs.setBackground(Skin.BG);
+		wikiTab.setToolTipText("The OSRS Wiki's money making guides you can do");
+		bankTab.setToolTipText("Things in your bank you can craft, cook, fletch, smith or mix into something worth more");
+		wikiTab.setFocusPainted(false);
+		bankTab.setFocusPainted(false);
+		wikiTab.addActionListener(e -> setBankMode(false));
+		bankTab.addActionListener(e -> setBankMode(true));
+		tabs.add(wikiTab);
+		tabs.add(bankTab);
+		header.add(full(tabs));
 		header.add(Box.createVerticalStrut(4));
-		header.add(text("OSRS Wiki money making guides, best gp/hr at today's prices first.", MUTED));
-		header.add(Box.createVerticalStrut(6));
+		intro = GuideUi.text(WIKI_INTRO, MUTED, TEXT_WIDTH);
 
 		category.addItem(ALL);
 		category.addActionListener(e -> filtersChanged());
 		effort.addActionListener(e -> filtersChanged());
-		showLocked.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		showLocked.setForeground(Color.LIGHT_GRAY);
-		showLocked.setFont(FontManager.getRunescapeSmallFont());
-		showLocked.addActionListener(e -> filtersChanged());
-		showLosing.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		showLosing.setForeground(Color.LIGHT_GRAY);
-		showLosing.setFont(FontManager.getRunescapeSmallFont());
-		showLosing.addActionListener(e -> filtersChanged());
-		showWilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		showWilderness.setForeground(Wilderness.COLOR);
-		showWilderness.setFont(FontManager.getRunescapeSmallFont());
-		showWilderness.setToolTipText("Off: Wilderness methods are hidden. Shared with the other guides in this plugin pack.");
-		showWilderness.addActionListener(e ->
+		GuideUi.toggle(showLocked, GuideUi.TEXT, "Also list the ones you're missing levels, quests or gp for",
+			this::filtersChanged);
+		GuideUi.toggle(showLosing, GuideUi.TEXT, "Also list the ones losing money or not selling right now",
+			this::filtersChanged);
+		GuideUi.wilderness(showWilderness, "Off: Wilderness methods are hidden.", () ->
 		{
 			if (!updating)
 			{
@@ -146,6 +147,7 @@ public class MoneyMakingPanel extends PluginPanel
 			}
 		});
 		search.setToolTipText("Search by name, item or skill");
+		search.putClientProperty("JTextField.placeholderText", "Search name, item or skill");
 		search.getDocument().addDocumentListener(new DocumentListener()
 		{
 			@Override
@@ -167,41 +169,90 @@ public class MoneyMakingPanel extends PluginPanel
 			}
 		});
 		JPanel combos = new JPanel(new GridLayout(1, 2, 4, 0));
-		combos.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		combos.setBackground(Skin.BG);
 		combos.add(category);
 		combos.add(effort);
-		header.add(full(combos));
-		header.add(Box.createVerticalStrut(4));
-		header.add(full(search));
-		header.add(left(showLocked));
-		header.add(left(showLosing));
-		header.add(left(showWilderness));
-		add(header, BorderLayout.NORTH);
-
+		filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
+		filters.setBackground(Skin.BG);
+		filters.add(full(search));
+		filters.add(Box.createVerticalStrut(2));
+		header.add(full(filters));
+		GuideUi.options(header, GuideUi.subheading("Filter"), full(combos), showLocked, showLosing, showWilderness);
 		guideBox.setLayout(new BoxLayout(guideBox, BoxLayout.Y_AXIS));
-		guideBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		guideBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 6, 6)));
+		guideBox.setOpaque(false);
 		guideBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 		guideBox.setVisible(false);
 
 		list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
-		list.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		list.setBackground(Skin.BG);
 		JPanel body = new JPanel();
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		GuideUi.frame(this, header, body);
 		body.add(guideBox);
 		body.add(Box.createVerticalStrut(6));
+		moreToggle.setFont(FontManager.getRunescapeBoldFont());
+		moreToggle.setForeground(ColorScheme.BRAND_ORANGE);
+		GuideUi.clickable(moreToggle, "Show or fold away the list", () ->
+		{
+			moreOpen = !moreOpen;
+			showMore();
+		});
+		body.add(left(moreToggle));
+		body.add(left(intro));
+		body.add(Box.createVerticalStrut(4));
 		body.add(list);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
 
-		list.add(text("Log in to see the money makers you can do.", MUTED));
+		list.add(GuideUi.empty("Not logged in", "Log in to see the money makers you can do."));
+		bankList = new BankProfitList(list, listener::onStartBankProfit, listener::onOpenWiki);
+		styleTabs();
+		showMore();
+	}
+
+	private static final String WIKI_INTRO = "OSRS Wiki money making guides, best gp/hr at today's prices first.";
+	private static final String BANK_INTRO = "Items in your bank you can process and sell for more, most profit first.";
+
+	/**
+	 * Shows what the bank can be processed into for profit. Runs on the Swing thread.
+	 */
+	public void updateBank(BankProfit.Result result, boolean loggedIn,
+		boolean bankKnown, boolean guideOn, int soonLevels)
+	{
+		redraws.run("bank", () ->
+		{
+			bankList.update(result, loggedIn, bankKnown, guideOn, soonLevels);
+			if (bankMode)
+			{
+				rebuild();
+			}
+		});
+	}
+
+	/**
+	 * Switches to the "From my bank" list. Runs on the Swing thread.
+	 */
+	public void showBankTab()
+	{
+		setBankMode(true);
+	}
+
+	private void setBankMode(boolean bank)
+	{
+		if (bankMode == bank)
+		{
+			return;
+		}
+		bankMode = bank;
+		styleTabs();
+		rebuild();
+	}
+
+	private void styleTabs()
+	{
+		GuideUi.select(wikiTab, !bankMode, GuideUi.TEXT);
+		GuideUi.select(bankTab, bankMode, GuideUi.TEXT);
+		filters.setVisible(!bankMode);
+		intro.setText(GuideUi.text(bankMode ? BANK_INTRO : WIKI_INTRO, MUTED, TEXT_WIDTH).getText());
+		revalidate();
+		repaint();
 	}
 
 	/**
@@ -283,22 +334,40 @@ public class MoneyMakingPanel extends PluginPanel
 		guideBox.setVisible(step != null);
 		if (step != null)
 		{
-			GuideUi.fillStep(guideBox, "Now", HINT, step.getTitle(), step.getLines());
+			List<String> lines = new ArrayList<>(step.getLines());
 			if (isWilderness(running))
 			{
-				guideBox.add(Box.createVerticalStrut(4));
-				guideBox.add(GuideUi.line(Wilderness.TAG + ": " + Wilderness.WARNING, Wilderness.COLOR,
-					GuideUi.CARD_WIDTH));
+				lines.add(Wilderness.TAG + ": " + Wilderness.WARNING);
 			}
-			guideBox.add(Box.createVerticalStrut(6));
+			JButton have = null;
 			if (step.isSupplyStep())
 			{
-				guideBox.add(button("I have everything", listener::onHaveSupplies));
+				have = GuideUi.small("I have everything", listener::onHaveSupplies);
+				have.setToolTipText("Skip the shopping list and go to the money maker");
 			}
-			guideBox.add(button("Stop guide", listener::onStopGuide));
+			String page = running;
+			guideBox.add(GuideUi.stepCard(HINT, "Now", step.getTitle(), lines, listener::onStopGuide, have,
+				page == null ? null : GuideUi.small("Wiki", () -> listener.onOpenWiki(page.replace(' ', '_')))));
 		}
+		showMore();
 		guideBox.revalidate();
 		guideBox.repaint();
+	}
+
+	/**
+	 * While a guide runs, only its step shows: the list folds away under "More about this guide".
+	 */
+	private void showMore()
+	{
+		boolean folded = step != null;
+		boolean show = !folded || moreOpen;
+		moreToggle.setVisible(folded);
+		moreToggle.setText("<html><font face='Dialog' size='-1'>" + (moreOpen ? "▾" : "▸") + "</font>&nbsp;"
+			+ GuideUi.MORE + "</html>");
+		list.setVisible(show);
+		intro.setVisible(show);
+		revalidate();
+		repaint();
 	}
 
 	private boolean isWilderness(String page)
@@ -319,6 +388,13 @@ public class MoneyMakingPanel extends PluginPanel
 	private void rebuild()
 	{
 		list.removeAll();
+		if (bankMode)
+		{
+			bankList.rebuild();
+			list.revalidate();
+			list.repaint();
+			return;
+		}
 		List<MoneyOption> visible = new ArrayList<>();
 		for (MoneyOption o : options)
 		{
@@ -329,7 +405,7 @@ public class MoneyMakingPanel extends PluginPanel
 		}
 		if (options.isEmpty())
 		{
-			list.add(text("Log in to see the money makers you can do.", MUTED));
+			list.add(GuideUi.empty("Not logged in", "Log in to see the money makers you can do."));
 		}
 		else if (visible.isEmpty())
 		{
@@ -422,11 +498,11 @@ public class MoneyMakingPanel extends PluginPanel
 	{
 		MoneyMethod m = o.getMethod();
 		boolean open = m.getPage().equals(selected);
-		JPanel row = new JPanel();
-		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
-		row.setBackground(open ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
 		Color edge = m.getPage().equals(running) ? HINT : o.isGood() ? GOOD : o.isAvailable() ? WARN : BAD;
-		row.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, edge), new EmptyBorder(4, 6, 4, 6)));
+		Skin.Surface row = new Skin.Surface(null, 10).accent(edge);
+		row.setLayout(new BoxLayout(row, BoxLayout.Y_AXIS));
+		row.setBackground(open ? Skin.CARD_HOVER : Skin.CARD);
+		row.setBorder(new EmptyBorder(6, 10, 6, 7));
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel name = GuideUi.text(m.getName(), Color.WHITE, TEXT_WIDTH - 15);
@@ -451,15 +527,10 @@ public class MoneyMakingPanel extends PluginPanel
 		{
 			row.add(text("Full guide in " + fullGuides.get(m.getPage()), HINT, TEXT_WIDTH - 15));
 		}
-		row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		row.addMouseListener(new MouseAdapter()
+		GuideUi.clickable(row, open ? "Click to close" : "Click for the details and the Start button", () ->
 		{
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				selected = Objects.equals(selected, m.getPage()) ? null : m.getPage();
-				rebuild();
-			}
+			selected = Objects.equals(selected, m.getPage()) ? null : m.getPage();
+			rebuild();
 		});
 		if (open)
 		{
@@ -475,16 +546,18 @@ public class MoneyMakingPanel extends PluginPanel
 		box.add(Box.createVerticalStrut(4));
 		boolean isRunning = m.getPage().equals(running);
 		String full = fullGuides.get(m.getPage());
+		JButton wiki = GuideUi.small("Wiki", () -> listener.onOpenWiki(m.wikiPath()));
 		if (isRunning)
 		{
-			box.add(button("Stop guide", listener::onStopGuide));
+			box.add(GuideUi.actions(GuideUi.small("Stop guide", listener::onStopGuide), wiki));
 		}
 		else
 		{
-			box.add(button(full != null ? "Start (opens " + full + ")" : "Start guide",
+			box.add(GuideUi.primary(full != null ? "▶ Start (opens " + full + ")" : "▶ Start guide",
 				() -> listener.onStartGuide(m.getPage())));
+			box.add(Box.createVerticalStrut(3));
+			box.add(GuideUi.actions(wiki));
 		}
-		box.add(button("Open wiki page", () -> listener.onOpenWiki(m.wikiPath())));
 		box.add(Box.createVerticalStrut(4));
 
 		if (m.isRecurring())
@@ -667,9 +740,7 @@ public class MoneyMakingPanel extends PluginPanel
 
 	private static JButton button(String label, Runnable action)
 	{
-		JButton b = new JButton(label);
-		b.addActionListener(e -> action.run());
-		return full(b);
+		return GuideUi.button(label, action);
 	}
 
 	private static <T extends JComponent> T left(T c)

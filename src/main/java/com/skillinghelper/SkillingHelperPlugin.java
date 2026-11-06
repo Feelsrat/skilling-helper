@@ -6,10 +6,10 @@ import com.skillinghelper.bank.BankCache;
 import com.skillinghelper.bank.BankFilter;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Mooring;
+import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.PatchType;
 import com.skillinghelper.data.SlayerPlaces;
 import com.skillinghelper.data.TrainingPreference;
-import com.skillinghelper.data.Outleveled;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
 import com.skillinghelper.engine.Format;
@@ -18,17 +18,17 @@ import com.skillinghelper.engine.MethodOption;
 import com.skillinghelper.engine.MethodPlanner;
 import com.skillinghelper.engine.PlanSegment;
 import com.skillinghelper.engine.PlayerState;
-import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.Requirement;
+import com.skillinghelper.engine.Route;
 import com.skillinghelper.engine.StepResolver;
 import com.skillinghelper.engine.StepType;
 import com.skillinghelper.overlay.ItemHighlightOverlay;
 import com.skillinghelper.overlay.MinimapArrowOverlay;
 import com.skillinghelper.overlay.SceneHighlightOverlay;
-import com.skillinghelper.shops.Shops;
 import com.skillinghelper.plunder.PlunderOverlay;
 import com.skillinghelper.plunder.PlunderTracker;
 import com.skillinghelper.plunder.PyramidPlunder;
+import com.skillinghelper.shops.Shops;
 import com.skillinghelper.thieving.ArtefactHeist;
 import com.skillinghelper.thieving.BlackjackSwapper;
 import com.skillinghelper.tog.TearsOfGuthix;
@@ -40,8 +40,10 @@ import com.skillinghelper.ui.SkillingHelperPanel;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
@@ -940,7 +942,16 @@ public class SkillingHelperPlugin extends Plugin implements SkillingHelperPanel.
 			: picks != null ? ActiveGuide.builder().picks(picks).build()
 			: ActiveGuide.NONE;
 		long now = Instant.now().getEpochSecond();
+		Map<Skill, Integer> levels = new EnumMap<>(Skill.class);
+		if (!next.isActive())
+		{
+			for (Skill s : SkillingHelperPanel.GRID_ORDER)
+			{
+				levels.put(s, client.getRealSkillLevel(s));
+			}
+		}
 		next = next.toBuilder()
+			.levels(levels)
 			.weeklyState(tog.getStatus().getState())
 			.weeklyStatus(TearsOfGuthix.describe(tog.getStatus(), now))
 			.weeklyCalendarUrl(TearsOfGuthix.calendarUrl(tog.getStatus(), now))

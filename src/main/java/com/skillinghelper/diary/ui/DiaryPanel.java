@@ -9,30 +9,21 @@ import com.skillinghelper.diary.data.DiaryReward;
 import com.skillinghelper.diary.data.DiaryTier;
 import com.skillinghelper.engine.Format;
 import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
 import com.skillinghelper.ui.HiddenRedraws;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.HashSet;
 import java.util.Map;
-import javax.swing.BorderFactory;
+import java.util.Set;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
-import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 
 /**
@@ -74,27 +65,14 @@ public class DiaryPanel extends PluginPanel
 	private DiaryView view;
 	private DiaryTier tier = DiaryTier.EASY;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 
 	public DiaryPanel(Listener listener)
 	{
 		super(false);
 		this.listener = listener;
 		redraws = new HiddenRedraws(this);
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JPanel header = column();
-		header.setBorder(new EmptyBorder(0, 0, 6, 0));
-		JLabel title = new JLabel("Achievement Diaries");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(GuideUi.left(title));
-		header.add(Box.createVerticalStrut(4));
-		header.add(GuideUi.text("Step-by-step guides for every task, and what each tier's reward gives you.",
-			GuideUi.MUTED, WIDTH));
-		header.add(Box.createVerticalStrut(6));
-
+		JPanel header = GuideUi.header("Achievement Diaries", "/com/skillinghelper/diary/icon.png");
 		regions.setRenderer(new DefaultListCellRenderer()
 		{
 			@Override
@@ -123,13 +101,10 @@ public class DiaryPanel extends PluginPanel
 		header.add(GuideUi.full(regions));
 		header.add(Box.createVerticalStrut(4));
 		JPanel tiers = new JPanel(new GridLayout(1, 4, 3, 0));
-		tiers.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		tiers.setBackground(Skin.BG);
 		for (DiaryTier t : DiaryTier.values())
 		{
-			JButton b = new JButton(t.getLabel());
-			b.setFont(FontManager.getRunescapeSmallFont());
-			b.setMargin(new java.awt.Insets(2, 1, 2, 1));
-			b.addActionListener(e ->
+			JButton b = GuideUi.tab(t.getLabel(), () ->
 			{
 				tier = t;
 				listener.onSelect((DiaryRegion) regions.getSelectedItem(), t);
@@ -138,31 +113,16 @@ public class DiaryPanel extends PluginPanel
 			tiers.add(b);
 		}
 		header.add(GuideUi.full(tiers));
-		wilderness.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wilderness.setForeground(Wilderness.COLOR);
-		wilderness.setFont(FontManager.getRunescapeSmallFont());
-		wilderness.setToolTipText("Off: Wilderness tasks are skipped. Shared with the other guides in this plugin pack.");
-		wilderness.addActionListener(e ->
+		header.add(Box.createVerticalStrut(4));
+		GuideUi.options(header, GuideUi.wilderness(wilderness, "Off: Wilderness tasks are skipped.", () ->
 		{
 			if (!updating)
 			{
 				listener.onAllowWilderness(wilderness.isSelected());
 			}
-		});
-		header.add(GuideUi.left(wilderness));
-		add(header, BorderLayout.NORTH);
-
-		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-		body.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(body, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-		body.add(GuideUi.text("Log in to see your diaries.", GuideUi.MUTED, WIDTH));
+		}));
+		GuideUi.frame(this, header, body);
+		body.add(GuideUi.empty("Not logged in", "Log in to see your diaries and get guided through each task."));
 	}
 
 	/**
@@ -188,7 +148,7 @@ public class DiaryPanel extends PluginPanel
 			DiaryView.TierRow row = v.getTiers().isEmpty() ? null : v.getTiers().get(t.ordinal());
 			String mark = row == null ? "" : row.isClaimed() ? "✔ " : "";
 			b.setText(mark + t.getLabel());
-			b.setForeground(t == tier ? GuideUi.OPTION : row != null && row.isClaimed() ? GuideUi.GOOD : GuideUi.TEXT);
+			GuideUi.select(b, t == tier, row != null && row.isClaimed() ? GuideUi.GOOD : GuideUi.TEXT);
 		}
 		rebuild();
 	}
@@ -199,63 +159,71 @@ public class DiaryPanel extends PluginPanel
 		DiaryView v = view;
 		if (v == null || !v.isLoggedIn())
 		{
-			body.add(GuideUi.text("Log in to see your diaries.", GuideUi.MUTED, WIDTH));
+			body.add(GuideUi.empty("Not logged in", "Log in to see your diaries and get guided through each task."));
 			finish();
 			return;
 		}
 		DiaryView.TierRow row = v.getTiers().get(tier.ordinal());
+		DiaryStep step = v.getStep();
+		JButton wiki = GuideUi.small("Wiki", listener::onOpenWiki);
+		if (v.isGuided() && v.isRunning() && step != null)
+		{
+			String key = step.getTaskKey();
+			body.add(GuideUi.stepCard(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT, "Now",
+				step.getTitle(), step.getLines(), listener::onStopGuide, wiki,
+				key != null && step.getKind() != DiaryStep.Kind.CLAIM
+					? GuideUi.small("Skip task", () -> listener.onSkipTask(key)) : null));
+			body.add(GuideUi.more());
+		}
 		String headline = v.getRegion().getLabel() + " " + tier.getLabel();
-		body.add(GuideUi.headline(headline, Color.WHITE, WIDTH));
 		if (v.isGuided())
 		{
-			Color c = row.isClaimed() ? GuideUi.GOOD : row.getDone() == row.getTotal() ? GuideUi.GOLD : GuideUi.TEXT;
-			String status = row.isClaimed() ? "✔ Done and reward claimed"
-				: row.getDone() == row.getTotal() ? "★ All tasks done: claim your reward"
-				: row.getDone() + " of " + row.getTotal() + " tasks done";
-			body.add(GuideUi.line(status, c, WIDTH));
-			if (!row.isClaimed() && row.getDone() < row.getTotal())
+			body.add(GuideUi.progress(headline, row.getDone(),
+				row.getTotal()));
+			body.add(Box.createVerticalStrut(3));
+			if (row.isClaimed())
 			{
-				body.add(GuideUi.line(v.getTierCost() > 0
-					? "Costs about " + Format.gp(v.getTierCost()) + " more to finish (Grand Exchange prices, what you own counts)"
-					: "Costs nothing more to finish", GuideUi.GOLD, GuideUi.TEXT, WIDTH));
+				body.add(GuideUi.line("✔ Done and reward claimed", GuideUi.GOOD, WIDTH));
+			}
+			else if (row.getDone() == row.getTotal())
+			{
+				body.add(GuideUi.line("★ All tasks done: claim your reward", GuideUi.GOLD, WIDTH));
+			}
+			else
+			{
+				body.add(GuideUi.stat("Left to buy", v.getTierCost() > 0 ? "~" + Format.gp(v.getTierCost()) : "nothing",
+					GuideUi.GOLD));
 			}
 		}
 		else
 		{
+			body.add(GuideUi.headline(headline, Color.WHITE, WIDTH));
 			body.add(GuideUi.line(row.isClaimed() ? "✔ Reward claimed" : "Not finished yet",
 				row.isClaimed() ? GuideUi.GOOD : GuideUi.TEXT, WIDTH));
 			body.add(Box.createVerticalStrut(3));
 			body.add(GuideUi.line("⚠ Step-by-step guides for this diary are coming soon. The reward and its perks are below.",
 				GuideUi.WARN, GuideUi.TEXT, WIDTH));
 		}
-		body.add(Box.createVerticalStrut(6));
-		if (v.isGuided())
-		{
-			if (v.isRunning())
-			{
-				body.add(GuideUi.button("Stop guide", listener::onStopGuide));
-			}
-			else if (!row.isClaimed())
-			{
-				body.add(GuideUi.button("Start guide", listener::onStartGuide));
-			}
-		}
-		body.add(Box.createVerticalStrut(3));
-		body.add(GuideUi.button("Open wiki page", listener::onOpenWiki));
+		body.add(Box.createVerticalStrut(8));
 
-		DiaryStep step = v.getStep();
-		if (v.isRunning() && step != null)
+		if (v.isGuided() && v.isRunning() && step != null)
 		{
-			body.add(Box.createVerticalStrut(8));
-			JPanel card = GuideUi.card(step.getKind() == DiaryStep.Kind.LOCKED ? GuideUi.WARN : GuideUi.HINT);
-			GuideUi.fillStep(card, "Now", GuideUi.HINT, step.getTitle(), step.getLines());
-			if (step.getTaskKey() != null && step.getKind() != DiaryStep.Kind.CLAIM)
-			{
-				String key = step.getTaskKey();
-				card.add(Box.createVerticalStrut(6));
-				card.add(GuideUi.button("Skip this task for now", () -> listener.onSkipTask(key)));
-			}
-			body.add(GuideUi.full(card));
+			// The step card at the top has the buttons
+			body.add(GuideUi.hint("Click a task below to do it next."));
+		}
+		else if (v.isGuided() && v.isRunning())
+		{
+			body.add(GuideUi.actions(GuideUi.small("Stop guide", listener::onStopGuide), wiki));
+		}
+		else if (v.isGuided() && !row.isClaimed())
+		{
+			body.add(GuideUi.primary("▶ Start guide", listener::onStartGuide));
+			body.add(Box.createVerticalStrut(3));
+			body.add(GuideUi.actions(wiki));
+		}
+		else
+		{
+			body.add(GuideUi.actions(wiki));
 		}
 
 		DiaryReward reward = Diaries.reward(v.getRegion(), tier);
@@ -282,24 +250,20 @@ public class DiaryPanel extends PluginPanel
 		if (v.isGuided())
 		{
 			body.add(GuideUi.section("Tasks"));
-			body.add(GuideUi.text("Click a task to be guided through it next.", GuideUi.MUTED, WIDTH));
-			body.add(Box.createVerticalStrut(4));
+			body.add(GuideUi.hint("Click a task to be guided through it next."));
 			for (DiaryView.TaskRow t : v.getTasks())
 			{
 				body.add(taskRow(t));
 				body.add(Box.createVerticalStrut(3));
 			}
 		}
+		GuideUi.foldSections(body, t -> t.equals(GuideUi.MORE) || t.equals("Reward"), openSections);
 		finish();
 	}
 
 	private JComponent taskRow(DiaryView.TaskRow t)
 	{
-		JPanel row = column();
-		row.setOpaque(true);
-		boolean current = t.getState() == DiaryView.TaskState.CURRENT;
-		row.setBackground(current ? ColorScheme.DARKER_GRAY_HOVER_COLOR : ColorScheme.DARKER_GRAY_COLOR);
-		row.setBorder(BorderFactory.createEmptyBorder(4, 5, 4, 5));
+		JPanel row = GuideUi.row(t.getState() == DiaryView.TaskState.CURRENT);
 		String marker;
 		Color color;
 		switch (t.getState())
@@ -353,16 +317,7 @@ public class DiaryPanel extends PluginPanel
 			{
 				row.add(GuideUi.text("Skipped for now.", GuideUi.MUTED, CARD));
 			}
-			row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			row.setToolTipText("Guide me through this task");
-			row.addMouseListener(new MouseAdapter()
-			{
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					listener.onPickTask(t.getKey());
-				}
-			});
+			GuideUi.clickable(row, "Guide me through this task", () -> listener.onPickTask(t.getKey()));
 		}
 		return GuideUi.full(row);
 	}
@@ -371,14 +326,5 @@ public class DiaryPanel extends PluginPanel
 	{
 		body.revalidate();
 		body.repaint();
-	}
-
-	private static JPanel column()
-	{
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		p.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		p.setAlignmentX(LEFT_ALIGNMENT);
-		return p;
 	}
 }

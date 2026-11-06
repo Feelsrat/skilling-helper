@@ -6,6 +6,7 @@ import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Range;
 
 @ConfigGroup(MoneyMakingConfig.GROUP)
 public interface MoneyMakingConfig extends Config
@@ -83,6 +84,20 @@ public interface MoneyMakingConfig extends Config
 	default boolean livePrices()
 	{
 		return false;
+	}
+
+	@Range(max = 20)
+	@ConfigItem(
+		keyName = "bankSoonLevels",
+		name = "\"Soon\" levels",
+		description = "In the My bank list, also show recipes up to this many levels above yours when they'd make "
+			+ "more from the same items",
+		section = pricesSection,
+		position = 1
+	)
+	default int bankSoonLevels()
+	{
+		return 5;
 	}
 
 	@Alpha

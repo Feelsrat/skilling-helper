@@ -69,6 +69,11 @@ public class ActiveGuide
 	@Builder.Default
 	List<String> activityInfo = Collections.emptyList();
 	/**
+	 * The player's real level in each skill, for the skill grid shown while no guide is open. Empty otherwise.
+	 */
+	@Builder.Default
+	Map<Skill, Integer> levels = Collections.emptyMap();
+	/**
 	 * Whether the weekly Tears of Guthix is up, shown even with no guide open.
 	 */
 	TearsOfGuthix.State weeklyState;

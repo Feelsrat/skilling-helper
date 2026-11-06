@@ -2,14 +2,24 @@ package com.skillinghelper.money;
 
 import com.google.inject.Provides;
 import com.skillinghelper.OpenMethodRequest;
+import com.skillinghelper.OpenMoneyMakingRequest;
+import com.skillinghelper.PlayerSnapshot;
 import com.skillinghelper.ShortestPathLink;
 import com.skillinghelper.SkillingHelperPlugin;
+import com.skillinghelper.StartBankProfitRequest;
 import com.skillinghelper.StartPvmGuideRequest;
+import com.skillinghelper.bank.BankCache;
+import com.skillinghelper.banked.BankedXpPlugin;
+import com.skillinghelper.banked.profit.BankProfit;
+import com.skillinghelper.banked.profit.ProfitRecipe;
+import com.skillinghelper.banked.profit.ProfitRecipes;
 import com.skillinghelper.bank.BankItems;
 import com.skillinghelper.data.Location;
 import com.skillinghelper.data.Method;
 import com.skillinghelper.data.Wilderness;
 import com.skillinghelper.data.guides.GuideRepository;
+import com.skillinghelper.engine.Format;
+import com.skillinghelper.engine.PlayerState;
 import com.skillinghelper.engine.PriceLookup;
 import com.skillinghelper.money.data.MoneyItem;
 import com.skillinghelper.money.data.MoneyMethod;
@@ -21,6 +31,7 @@ import com.skillinghelper.travel.TravelAdvisor;
 import com.skillinghelper.travel.TravelPick;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +42,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Item;
@@ -46,6 +58,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.ItemID;
@@ -54,6 +67,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.RuneScapeProfileChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -71,8 +85,9 @@ import net.runelite.client.util.LinkBrowser;
  */
 @PluginDescriptor(
 	name = "Money Making",
-	description = "The OSRS Wiki money making guides you can do right now, sorted by gp/hr, with step-by-step guides",
-	tags = {"money", "gold", "gp", "profit", "money making", "guide", "wiki", "moneymaking"}
+	description = "The OSRS Wiki money making guides you can do right now, sorted by gp/hr, with step-by-step guides, "
+		+ "and what your bank can be crafted into for profit",
+	tags = {"money", "gold", "gp", "profit", "money making", "guide", "wiki", "moneymaking", "bank", "crafting"}
 )
 public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listener
 {
@@ -116,6 +131,10 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private WikiPriceClient wikiPrices;
 	@Inject
 	private WikiVolumeClient wikiVolumes;
+	@Inject
+	private PlayerSnapshot snapshot;
+	@Inject
+	private BankCache bankCache;
 
 	private MoneyMakingPanel panel;
 	private NavigationButton navButton;
@@ -142,6 +161,24 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	private boolean checkShortestPath = true;
 	private List<MoneyOption> ranked = Collections.emptyList();
 	private MoneyPlayer player = MoneyPlayer.NONE;
+
+	// ---- From my bank ----
+
+	/**
+	 * Quests the bank recipes need, read with the others.
+	 */
+	private static final Set<Quest> PROFIT_QUESTS = profitQuests();
+	private final Set<Quest> profitQuestsDone = EnumSet.noneOf(Quest.class);
+	private BankProfit.Result bankProfit = BankProfit.Result.NONE;
+	/**
+	 * What the bank list was last sent, to skip sending the same again.
+	 */
+	private List<Object> shownBank;
+	private boolean bankProfitDirty = true;
+	/**
+	 * The account changed, so the shared bank cache may hold another account's bank.
+	 */
+	private boolean reloadBank = true;
 
 	// ---- The running guide ----
 
@@ -243,6 +280,8 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		panel = new MoneyMakingPanel(this);
 		shownRanking = null;
 		shownFullGuides = null;
+		shownBank = null;
+		bankProfitDirty = true;
 		panel.setWildernessAllowed(Wilderness.allowed(configManager));
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "icon.png");
 		navButton = NavigationButton.builder()
@@ -279,6 +318,7 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		bankCounts = null;
 		panel = null;
 		ranked = Collections.emptyList();
+		bankProfit = BankProfit.Result.NONE;
 	}
 
 	@Provides
@@ -288,6 +328,36 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 	}
 
 	// ---- Game events ----
+
+	/**
+	 * Another plugin in this jar (Account Planner) needs the player to make some gold: open the list.
+	 */
+	@Subscribe
+	public void onOpenMoneyMakingRequest(OpenMoneyMakingRequest e)
+	{
+		long fromBank = bankProfit.totalNow();
+		boolean bankCovers = fromBank > 0 && fromBank >= e.getGoal();
+		if (bankCovers)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Money Making: processing what's already in your "
+				+ "bank makes about " + Format.gp(fromBank) + (e.getGoal() > 0 ? ", enough for your next planned step"
+				: "") + ". Open \"My bank\" in the panel.", null);
+		}
+		else if (e.getGoal() > 0)
+		{
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Money Making: pick a money maker to make about "
+				+ Format.gp(e.getGoal()) + " for your next planned step.", null);
+		}
+		final MoneyMakingPanel p = panel;
+		SwingUtilities.invokeLater(() ->
+		{
+			if (bankCovers && p != null)
+			{
+				p.showBankTab();
+			}
+			clientToolbar.openPanel(navButton);
+		});
+	}
 
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged e)
@@ -301,6 +371,17 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		else if (e.getGameState() == GameState.LOGIN_SCREEN)
 		{
 			questsDone.clear();
+			profitQuestsDone.clear();
+			reloadBank = true;
+			bankProfit = BankProfit.Result.NONE;
+			bankProfitDirty = true;
+			shownBank = null;
+			final MoneyMakingPanel p = panel;
+			final int soon = config.bankSoonLevels();
+			if (p != null)
+			{
+				SwingUtilities.invokeLater(() -> p.updateBank(BankProfit.Result.NONE, false, false, true, soon));
+			}
 			bankCounts = null;
 			pathTarget = null;
 			hintArrowSet = false;
@@ -324,6 +405,9 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			return;
 		}
 		Map<Integer, Integer> counts = BankItems.count(e.getItemContainer(), itemManager);
+		// Shared with the other guides; keeps "From my bank" right when only this plugin is on
+		bankCache.update(e.getItemContainer());
+		bankProfitDirty = true;
 		boolean first = bankCounts == null;
 		bankCounts = counts;
 		if (first)
@@ -331,6 +415,22 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			// Now gold and owned supplies are known, so affordability can be checked
 			rankDirty = true;
 		}
+	}
+
+	@Subscribe
+	public void onWidgetClosed(WidgetClosed e)
+	{
+		if (e.getGroupId() == InterfaceID.BANKMAIN)
+		{
+			bankCache.save();
+		}
+	}
+
+	@Subscribe
+	public void onRuneScapeProfileChanged(RuneScapeProfileChanged e)
+	{
+		reloadBank = true;
+		bankProfitDirty = true;
 	}
 
 	@Subscribe
@@ -404,6 +504,12 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			rankDirty = false;
 			rank();
+			bankProfitDirty = true;
+		}
+		if (bankProfitDirty)
+		{
+			bankProfitDirty = false;
+			findBankProfit();
 		}
 		updateGuide();
 	}
@@ -412,6 +518,14 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 
 	private void readQuests()
 	{
+		profitQuestsDone.clear();
+		for (Quest q : PROFIT_QUESTS)
+		{
+			if (q.getState(client) == QuestState.FINISHED)
+			{
+				profitQuestsDone.add(q);
+			}
+		}
 		questsDone.clear();
 		for (Map.Entry<String, Quest> e : quests.entrySet())
 		{
@@ -461,6 +575,50 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 			shownRanking = list;
 			shownFullGuides = fullGuides;
 			SwingUtilities.invokeLater(() -> p.update(list, fullGuides));
+		}
+	}
+
+	// ---- From my bank ----
+
+	private static Set<Quest> profitQuests()
+	{
+		Set<Quest> out = EnumSet.noneOf(Quest.class);
+		for (ProfitRecipe r : ProfitRecipes.all())
+		{
+			out.addAll(r.getActivity().getMethod().getQuests());
+		}
+		return out;
+	}
+
+	/**
+	 * Works out what the bank can be processed into for profit and sends it to the panel when it changed. Client
+	 * thread.
+	 */
+	private void findBankProfit()
+	{
+		if (client.getGameState() != GameState.LOGGED_IN || client.getLocalPlayer() == null)
+		{
+			return;
+		}
+		// Skilling Helper and Banked XP share this cache and may have a newer copy, unless the account changed
+		if (bankCache.get() == null || reloadBank)
+		{
+			bankCache.load();
+			reloadBank = false;
+		}
+		PlayerState state = snapshot.take(null, profitQuestsDone, profitQuestsDone, config.preferShops());
+		bankProfit = BankProfit.find(state, prices, config.bankSoonLevels(),
+			config.livePrices() ? wikiVolumes.get() : Collections.emptyMap());
+		boolean guideOn = isActive(BankedXpPlugin.class);
+		boolean bankKnown = state.bankKnown();
+		int soon = config.bankSoonLevels();
+		List<Object> sent = List.of(bankProfit, bankKnown, guideOn, soon);
+		final MoneyMakingPanel p = panel;
+		if (p != null && !sent.equals(shownBank))
+		{
+			shownBank = sent;
+			final BankProfit.Result result = bankProfit;
+			SwingUtilities.invokeLater(() -> p.updateBank(result, true, bankKnown, guideOn, soon));
 		}
 	}
 
@@ -739,6 +897,23 @@ public class MoneyMakingPlugin extends Plugin implements MoneyMakingPanel.Listen
 		{
 			suppliesDone = true;
 			updateGuide();
+		});
+	}
+
+	@Override
+	public void onStartBankProfit(String recipeId)
+	{
+		clientThread.invokeLater(() ->
+		{
+			if (!isActive(BankedXpPlugin.class))
+			{
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Money Making: turn on the Banked XP Guide "
+					+ "plugin (it comes with this one) for the step-by-step guide.", null);
+				return;
+			}
+			stopGuide();
+			pushStep(null);
+			eventBus.post(new StartBankProfitRequest(recipeId));
 		});
 	}
 

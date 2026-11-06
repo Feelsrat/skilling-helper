@@ -223,7 +223,7 @@ public final class BankedPlanner
 	/**
 	 * Why the player can't do an activity now: a level, quest or members' world they don't have. Null when they can.
 	 */
-	static String lockReason(BankedActivity a, PlayerState s)
+	public static String lockReason(BankedActivity a, PlayerState s)
 	{
 		Method m = a.getMethod();
 		if (s.level(m.getSkill()) < m.getMinLevel())

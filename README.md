@@ -153,6 +153,65 @@ levels, quests and world allow, and sorts them by gp/hr at today's GE prices.
 The method list is bundled with the plugin (built from the wiki by `tools/money/build_money_methods.py`). Prices come
 from RuneLite's own GE guide unless you turn on live wiki prices.
 
+## Quest Order Guide
+
+Also in the jar: **Quest Order Guide** (blue quest icon). It follows the OSRS Wiki's
+[optimal quest guide](https://oldschool.runescape.wiki/w/Optimal_quest_guide) (main or Ironman route, picked by
+account type) and shows what's done, what you can do now, and what's missing for the rest (quests, levels, Quest
+points, members). The next quest is handed over to the [Quest Helper](https://runelite.net/plugin-hub/show/quest-helper)
+plugin for the click-by-click steps: the guide draws the way to the start with Shortest Path, outlines the NPC who
+starts it and the quest's line in the Quest list, and tells you to right-click it and choose "Start Quest Helper".
+Without Quest Helper it warns once in the chat and in the panel. Diary rows send you to Achievement Diary Guides.
+Data is rebuilt with `python3 tools/quests/build_quests.py src/main/resources/com/skillinghelper/quests`.
+
+## Collection Log Guide
+
+Also in the jar: **Collection Log Guide** (red book icon). It shows the collection log slots you don't have yet that
+most players have (the wiki's completion figures, so the quickest ones come first), the pages you're closest to
+finishing, every pet with where it comes from, and the whole log by tab. Pick one for beginner steps: where a full
+guide exists elsewhere in the jar (PvM Progression for bosses and raids, Minigame Guides for Wintertodt, Tempoross,
+Guardians of the Rift, Castle Wars and other minigames, Skilling Helper for rooftops and skilling pets, Clue Scroll
+Guide for the clue pages) "Open full guide" starts it, and boss pages also open their Combat Achievement Guides
+tasks; otherwise "Show the way" draws
+the route with Shortest Path and the boss is outlined. Your log is read from the log pages you open in game and from
+the "New item added to your collection log" chat message, and saved per account; items in your bank count until the
+log page says otherwise. Wilderness pages follow the shared Wilderness setting. No network requests. Data is rebuilt
+with `python3 tools/collection/build_collection_log.py <cache dir> src/main/resources/com/skillinghelper/collection/collection-log.tsv`.
+
+## Clue Scroll Guide
+
+A panel for Treasure Trails that works alongside RuneLite's built-in Clue Scroll plugin (which solves each step; the
+panel offers to turn it on if it's off):
+
+- **Your clues**: every clue scroll, scroll box, clue bottle/nest/geode and reward casket you carry or have in the
+  bank, per tier, with a warning when you're near your scroll box limit and new drops would be lost.
+- **Guide**: opens caskets and scroll boxes you already have, takes your clue and a spade out of the bank, tells you how
+  to start the clue, and when you have none of a tier, walks you through getting one step by step (goblins, dark
+  wizards, H.A.M. members, wealthy citizens, Falador guards, or impling jars bought on the GE). Master: collects one
+  easy, medium, hard and elite clue and takes you to Watson.
+- **Rewards**: what each tier's caskets can give, the average casket value at today's GE prices, its most valuable
+  uniques, master clue chances and milestone rewards.
+- **STASH units**: the Construction level and planks per tier, and all 119 units with the items they hold (ticked
+  when you own them all). Click one to be guided there.
+- **Drop sources**: the best clue drop rates of each tier from the wiki. Wilderness units and sources only show when
+  Wilderness is allowed.
+
+The data (rewards, STASH units, drop sources) is built from the OSRS Wiki by `tools/clue/build_clue_data.py`; the
+plugin doesn't go online for it.
+
+## Account Unlocks
+
+Also in the jar: **Account Unlocks** (padlock icon). A checklist of the unlocks that make the game smoother, in a
+suggested order: graceful, a house, the Dramen staff, fairy rings, spirit trees, gnome gliders, the easy diary
+rewards (Ardougne cloak, Explorer's ring, Karamja gloves, Varrock armour), coal and gem bags, the Ectophial, Ava's
+accumulator, the Slayer helmet unlock, the rune pouch, Barrows gloves, Ancient Magicks, the Lunar spellbook and
+staffless fairy rings. Each row says what it gives, how it's got and what's still missing; done ones are ticked (read
+from quests, varbits, claimed diary rewards and the items in your bank). Start the guide, or click a row, and it
+takes you through the next part: quests go to Quest Helper (warns in the chat and panel if it's missing), diary
+rewards open Achievement Diary Guides, points to earn (marks of grace, golden nuggets, Slayer points) open Skilling
+Helper, and the last part (buying it from Grace, Percy, a Slayer master or the Culinaromancer's chest) is guided step
+by step with the bank, the route and what to click. No network requests.
+
 ## Network use
 
 Skilling Helper makes no network requests unless you turn on **Live OSRS Wiki prices** (off by default). With it on, it

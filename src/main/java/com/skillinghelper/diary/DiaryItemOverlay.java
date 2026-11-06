@@ -4,7 +4,7 @@ import com.skillinghelper.travel.TravelSettings;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import javax.inject.Inject;
+import java.util.function.Supplier;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.config.ConfigManager;
@@ -12,22 +12,21 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 
 /**
- * Outlines what to take out of the bank for the next diary task (a travel item in its own colour), and the
- * inventory items to use.
+ * Outlines what to take out of the bank for the next step (a travel item in its own colour), and the inventory
+ * items to use. Shared by the guides that run on {@link DiaryStep}s (diaries, account unlocks).
  */
-class DiaryItemOverlay extends WidgetItemOverlay
+public class DiaryItemOverlay extends WidgetItemOverlay
 {
-	private final AchievementDiaryPlugin plugin;
-	private final AchievementDiaryConfig config;
+	private final Supplier<DiaryStep> step;
+	private final Supplier<Color> color;
 	private final ItemManager itemManager;
 	private final ConfigManager configManager;
 
-	@Inject
-	DiaryItemOverlay(AchievementDiaryPlugin plugin, AchievementDiaryConfig config, ItemManager itemManager,
+	public DiaryItemOverlay(Supplier<DiaryStep> step, Supplier<Color> color, ItemManager itemManager,
 		ConfigManager configManager)
 	{
-		this.plugin = plugin;
-		this.config = config;
+		this.step = step;
+		this.color = color;
 		this.itemManager = itemManager;
 		this.configManager = configManager;
 		showOnBank();
@@ -37,7 +36,7 @@ class DiaryItemOverlay extends WidgetItemOverlay
 	@Override
 	public void renderItemOverlay(Graphics2D g, int itemId, WidgetItem item)
 	{
-		DiaryStep step = plugin.getStep();
+		DiaryStep step = this.step.get();
 		if (step == null)
 		{
 			return;
@@ -49,8 +48,8 @@ class DiaryItemOverlay extends WidgetItemOverlay
 		{
 			return;
 		}
-		Color color = travel ? TravelSettings.color(configManager) : config.itemColor();
+		Color outline = travel ? TravelSettings.color(configManager) : color.get();
 		Rectangle bounds = item.getCanvasBounds();
-		g.drawImage(itemManager.getItemOutline(itemId, item.getQuantity(), color), bounds.x, bounds.y, null);
+		g.drawImage(itemManager.getItemOutline(itemId, item.getQuantity(), outline), bounds.x, bounds.y, null);
 	}
 }

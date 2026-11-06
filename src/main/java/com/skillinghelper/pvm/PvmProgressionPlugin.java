@@ -101,8 +101,8 @@ import net.runelite.client.util.Text;
 public class PvmProgressionPlugin extends Plugin implements PvmProgressionPanel.Listener
 {
 	static final String GROUP = "pvm-progression";
-	private static final String KEY_KILL_COUNTS = "killCounts";
-	private static final String KEY_MARKED_DONE = "markedDone";
+	static final String KEY_KILL_COUNTS = "killCounts";
+	static final String KEY_MARKED_DONE = "markedDone";
 	private static final String KEY_BANK = "bankOwned";
 	private static final String KEY_BANK_COUNTS = "bankCounts";
 	private static final String WIKI_URL = "https://oldschool.runescape.wiki/w/";

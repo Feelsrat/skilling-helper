@@ -15,14 +15,19 @@ import com.skillinghelper.pvm.guide.PvmGuides;
 import com.skillinghelper.pvm.guide.PvmStep;
 import com.skillinghelper.pvm.guide.Supply;
 import com.skillinghelper.pvm.guide.WaveCard;
+import com.skillinghelper.ui.GuideUi;
+import com.skillinghelper.ui.Skin;
+import com.skillinghelper.ui.HiddenRedraws;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -32,18 +37,11 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import lombok.Value;
 import net.runelite.api.Skill;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
-import com.skillinghelper.ui.GuideUi;
-import com.skillinghelper.ui.HiddenRedraws;
 
 /**
  * Side panel: a dropdown of all combat content sorted by the level it needs, and a checklist for the one picked with
@@ -114,6 +112,7 @@ public class PvmProgressionPanel extends PluginPanel
 	 */
 	private String pickedId;
 	private boolean updating;
+	private final Set<String> openSections = new HashSet<>();
 	private List<Readiness> ladder;
 	private boolean wildernessAllowed;
 	private boolean hideOutleveled = true;
@@ -123,7 +122,7 @@ public class PvmProgressionPanel extends PluginPanel
 	/**
 	 * Holds the running guide's current step, so it can change every tick without rebuilding the panel.
 	 */
-	private final JPanel stepBox = new JPanel();
+	private final JPanel stepBox = new Skin.Surface(null, 10).accent(HINT);
 
 	/**
 	 * Holds back redraws while the panel is closed.
@@ -135,22 +134,7 @@ public class PvmProgressionPanel extends PluginPanel
 		super(false);
 		redraws = new HiddenRedraws(this);
 		this.listener = listener;
-		setLayout(new BorderLayout());
-		setBorder(new EmptyBorder(8, 8, 8, 8));
-		setBackground(ColorScheme.DARK_GRAY_COLOR);
-
-		JLabel title = new JLabel("PvM Progression");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		title.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JPanel header = new JPanel();
-		header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-		header.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		header.setBorder(new EmptyBorder(0, 0, 8, 0));
-		header.add(title);
-		header.add(Box.createVerticalStrut(6));
-		header.add(text("Sorted by the level each one needs:", MUTED));
-		header.add(Box.createVerticalStrut(2));
+		JPanel header = GuideUi.header("PvM Progression", "/com/skillinghelper/pvm/icon.png");
 		picker.setRenderer(new PickerRenderer());
 		picker.setMaximumRowCount(20);
 		picker.addActionListener(e ->
@@ -165,24 +149,12 @@ public class PvmProgressionPanel extends PluginPanel
 			}
 		});
 		header.add(full(picker));
-		add(header, BorderLayout.NORTH);
+		GuideUi.frame(this, header, content);
 
-		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-		content.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(content, BorderLayout.NORTH);
-		JScrollPane scroll = new JScrollPane(wrapper);
-		scroll.setBorder(null);
-		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		add(scroll, BorderLayout.CENTER);
-
-		content.add(text("Log in to see which boss to work towards next.", MUTED));
+		content.add(GuideUi.empty("Not logged in", "Log in to see which boss to work towards next."));
 
 		stepBox.setLayout(new BoxLayout(stepBox, BoxLayout.Y_AXIS));
-		stepBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		stepBox.setBorder(new CompoundBorder(new MatteBorder(0, 3, 0, 0, HINT), new EmptyBorder(6, 6, 7, 6)));
+		stepBox.setBorder(new EmptyBorder(9, 11, 10, 9));
 		stepBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 	}
 
@@ -291,6 +263,7 @@ public class PvmProgressionPanel extends PluginPanel
 		if (step != null)
 		{
 			GuideUi.fillStep(stepBox, "Now", HINT, step.getTitle(), Collections.emptyList());
+			GuideUi.addStop(stepBox, "Now", HINT, listener::onStopGuide);
 			if (step.getWave() != null)
 			{
 				stepBox.add(Box.createVerticalStrut(5));
@@ -332,6 +305,15 @@ public class PvmProgressionPanel extends PluginPanel
 	{
 		content.removeAll();
 		Readiness shown = (Readiness) picker.getSelectedItem();
+		boolean guiding = shown != null && shown.getContent().getId().equals(guides.getActiveId())
+			&& PvmGuides.forContent(shown.getContent().getId()) != null;
+		if (guiding)
+		{
+			// Guiding: just the step, everything else folded away under it
+			fillStep(guides.getStep());
+			content.add(stepBox);
+			content.add(GuideUi.more());
+		}
 		if (Readiness.next(ladder, wildernessAllowed) == null)
 		{
 			content.add(text("You've done everything on the list. Nice work!", GOOD));
@@ -343,6 +325,8 @@ public class PvmProgressionPanel extends PluginPanel
 		{
 			detail(shown);
 		}
+		GuideUi.foldSections(content, t -> t.equals(GuideUi.MORE) || t.endsWith("Learn the fight")
+			|| t.endsWith("Get the kill"), openSections);
 		content.revalidate();
 		content.repaint();
 	}
@@ -377,7 +361,8 @@ public class PvmProgressionPanel extends PluginPanel
 			+ String.join(", ", skipped) + ". Pick " + (skipped.size() == 1 ? "it" : "one")
 			+ " in the list to do it anyway.", Wilderness.COLOR));
 		content.add(Box.createVerticalStrut(3));
-		content.add(button("Include Wilderness bosses", () -> listener.onAllowWilderness(true)));
+		content.add(GuideUi.actions(GuideUi.small("Include Wilderness bosses",
+			() -> listener.onAllowWilderness(true))));
 		content.add(Box.createVerticalStrut(8));
 	}
 
@@ -396,8 +381,8 @@ public class PvmProgressionPanel extends PluginPanel
 			+ " hidden from the list."
 			: outgrown + (outgrown == 1 ? " boss is" : " bosses are") + " past your level range.", MUTED));
 		content.add(Box.createVerticalStrut(3));
-		content.add(button(hideOutleveled ? "Show outgrown bosses" : "Hide outgrown bosses",
-			() -> listener.onHideOutleveled(!hideOutleveled)));
+		content.add(GuideUi.actions(GuideUi.small(hideOutleveled ? "Show outgrown bosses" : "Hide outgrown bosses",
+			() -> listener.onHideOutleveled(!hideOutleveled))));
 		content.add(Box.createVerticalStrut(8));
 	}
 
@@ -440,14 +425,11 @@ public class PvmProgressionPanel extends PluginPanel
 			content.add(Box.createVerticalStrut(6));
 			if (c.getId().equals(guides.getActiveId()))
 			{
-				fillStep(guides.getStep());
-				content.add(stepBox);
-				content.add(Box.createVerticalStrut(4));
-				content.add(button("Stop guide", listener::onStopGuide));
+				content.add(GuideUi.hint("Guide running: its step is at the top."));
 			}
 			else
 			{
-				content.add(button("Start guide", () -> listener.onStartGuide(c)));
+				content.add(GuideUi.primary("▶ Start guide", () -> listener.onStartGuide(c)));
 			}
 		}
 
@@ -491,14 +473,8 @@ public class PvmProgressionPanel extends PluginPanel
 		if (c.getLocation() != null)
 		{
 			content.add(Box.createVerticalStrut(4));
-			if (c.getId().equals(pathId))
-			{
-				content.add(button("Clear path", listener::onClearPath));
-			}
-			else
-			{
-				content.add(button("Show path", () -> listener.onShowPath(c)));
-			}
+			content.add(GuideUi.actions(c.getId().equals(pathId) ? GuideUi.small("Clear path", listener::onClearPath)
+				: GuideUi.small("Show path", () -> listener.onShowPath(c))));
 		}
 
 		content.add(section(step++ + ". Learn the fight"));
@@ -514,7 +490,7 @@ public class PvmProgressionPanel extends PluginPanel
 		}
 		content.add(text("Read the strategy guide before your first try.", Color.LIGHT_GRAY));
 		content.add(Box.createVerticalStrut(4));
-		content.add(button("Open wiki strategy guide", () -> listener.onOpenWiki(c.getWikiPage())));
+		content.add(GuideUi.actions(GuideUi.small("Wiki strategy guide", () -> listener.onOpenWiki(c.getWikiPage()))));
 
 		content.add(section(step + ". Get the kill"));
 		if (r.getKillCount() > 0)
@@ -529,7 +505,8 @@ public class PvmProgressionPanel extends PluginPanel
 		if (r.getKillCount() == 0 || marked)
 		{
 			content.add(Box.createVerticalStrut(4));
-			content.add(button(marked ? "Mark as not done" : "Mark as done", () -> listener.onToggleDone(c)));
+			content.add(GuideUi.actions(GuideUi.small(marked ? "Mark as not done" : "Mark as done",
+				() -> listener.onToggleDone(c))));
 		}
 	}
 
@@ -683,12 +660,11 @@ public class PvmProgressionPanel extends PluginPanel
 			return text(label, color);
 		}
 		JPanel row = new JPanel(new BorderLayout(4, 0));
-		row.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		row.setBackground(Skin.BG);
 		row.add(text(label, color, TEXT_WIDTH - 55), BorderLayout.CENTER);
-		JButton train = new JButton("Train");
+		JButton train = GuideUi.small("Train", () -> listener.onTrain(s.getSkill(), s.getLevel()));
 		train.setToolTipText("Open the Skilling Helper guide for " + s.getSkill().getName() + " to level "
 			+ s.getLevel());
-		train.addActionListener(e -> listener.onTrain(s.getSkill(), s.getLevel()));
 		row.add(train, BorderLayout.EAST);
 		return full(row);
 	}
@@ -767,7 +743,7 @@ public class PvmProgressionPanel extends PluginPanel
 		int width = TEXT_WIDTH - 25;
 		JPanel box = new JPanel();
 		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-		box.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		box.setBackground(Skin.CARD);
 		box.setBorder(new EmptyBorder(6, 6, 6, 6));
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -807,10 +783,10 @@ public class PvmProgressionPanel extends PluginPanel
 		if (card.getTip() != null)
 		{
 			box.add(Box.createVerticalStrut(6));
-			JPanel tip = new JPanel();
+			JPanel tip = new Skin.Surface(null, 8).accent(HINT).edge(null);
 			tip.setLayout(new BoxLayout(tip, BoxLayout.Y_AXIS));
-			tip.setBackground(ColorScheme.DARK_GRAY_COLOR);
-			tip.setBorder(new CompoundBorder(new MatteBorder(0, 2, 0, 0, HINT), new EmptyBorder(3, 5, 3, 3)));
+			tip.setBackground(Skin.WELL);
+			tip.setBorder(new EmptyBorder(5, 9, 5, 5));
 			tip.setAlignmentX(Component.LEFT_ALIGNMENT);
 			JLabel heading = new JLabel("Wiki tip");
 			heading.setFont(FontManager.getRunescapeSmallFont());
@@ -874,13 +850,6 @@ public class PvmProgressionPanel extends PluginPanel
 			return GuideUi.line(s, GOOD, GuideUi.TEXT, width);
 		}
 		return GuideUi.line(s, color, width);
-	}
-
-	private static JButton button(String label, Runnable action)
-	{
-		JButton b = new JButton(label);
-		b.addActionListener(e -> action.run());
-		return full(b);
 	}
 
 	private static <T extends JComponent> T left(T c)
